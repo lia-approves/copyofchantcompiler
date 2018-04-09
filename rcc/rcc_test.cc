@@ -1,4 +1,4 @@
-#include <gtest/gtest.h>
+#include "gtest/gtest.h"
 #include "./rcc.h"
 
 TEST(MagicNumberTest, GetRCCMagicNumber) {
