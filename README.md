@@ -23,7 +23,7 @@ The steps for installing all of these are easily googlable, so make sure you hav
 
 ## Step 1: Making a project repository
 
-Go to the [UCSB Github](https://github.ucsb.edu/) website and create a private repository within the **CS160-S18** organization. Make up a team name and call the repository `team-<name>`. Be original. If your Github account isn't added to this organization, please contact any of the TAs to fix that as soon as possible. You **cannot** go on without first finishing this step. 
+Go to the [UCSB Github](https://github.ucsb.edu/) website and create a private repository within the **CS160-S18** organization. Make up a team name and call the repository `team-<name>`. Be original. If your Github account isn't added to this organization, please contact any of the TAs to fix that as soon as possible. You **cannot** go on without first finishing this step.
 
 Your new repository is ready, but quite empty. We've created a good foundation for your team, complete with testing, continuous integration and bazel configurations.
 
@@ -78,16 +78,18 @@ Do this line by line, so that you can catch any error that happens.
 
 ## Step 3: Compiling and testing locally
 
-You can now try compiling the project. To compile the project, we're using 
+You can now try compiling the project. To compile the project, we're using
 **bazel**. If you don't know how to use it, a tutorial is included [here](link). Entering the directory, we can now run:
 
-```bazel build rcc:ucsb-rcc```
+```bazel build rcc:rcc```
 
 to compile the project.
 
 To test locally, you can run the following:
 
-```bazel test rcc:ucsb-rcc-test```
+```bazel test rcc:rcc_test.cc```
+
+MAKE SURE THAT YOU USE CARETS (<>) to include gtest!
 
 ### Step 3a: Branch out
 
