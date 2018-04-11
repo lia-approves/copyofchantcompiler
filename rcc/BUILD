@@ -10,8 +10,9 @@ cc_library(
 cc_test(
 	name = "rcc_test",
 	deps = ["@gtest//:main", ":rcc"],
+	copts = ["-Iexternal/gtest/googletest-release-1.8.0/googletest/include"],
 	srcs = ["rcc_test.cc"],
-	timeout = "short", 
+	timeout = "short",
 	size = "small",
 )
 
