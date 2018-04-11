@@ -3,7 +3,7 @@ cc_library(
 	name = "rcc",
 	copts = ["-Wall -g"],
 	srcs = ["rcc.cc","interpreter.cc"],
-	hdrs = ["rcc.h","interpreter.h"],
+	hdrs = ["rcc.h","interpreter.h","abstract_syntax_tree.h","memory.h"],
 	visibility = ["//public:__pkg__"],
 )
 
@@ -20,6 +20,6 @@ cc_test(
 	name = "interpreter_test",
 	deps = ["@gtest//:main", ":rcc"],
 	srcs = ["interpreter_test.cc"],
-	timeout = "short", 
+	timeout = "short",
 	size = "small",
 )
