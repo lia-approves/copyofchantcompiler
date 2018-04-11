@@ -87,7 +87,7 @@ to compile the project.
 
 To test locally, you can run the following:
 
-```bazel test rcc:rcc_test.cc```
+```bazel test rcc:rcc_test```
 
 MAKE SURE THAT YOU USE CARETS (<>) to include gtest!
 
