@@ -3,7 +3,7 @@ cc_library(
   copts = ["-Wall -g"],
   srcs = ["state.cc", "dfa.cc", "AcceptingState.cc"],
   hdrs = ["dfa.h", "state.h", "AcceptingState.h"],
-  visibility = ["//public:__pkg__"],
+  visibility = ["//visibility:public"],
 )
 
 cc_test(
