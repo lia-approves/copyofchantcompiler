@@ -15,8 +15,9 @@ public:
   int nextState(char input);
 
 private:
+  int id;
   map<char, int> transitions;
-  
+
 }
 
 
