@@ -1,4 +1,4 @@
-#include "scanner/state.h"
+#include "state.h"
 
 namespace cs160 {
 namespace scanner {

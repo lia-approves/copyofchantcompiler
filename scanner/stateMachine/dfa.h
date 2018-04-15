@@ -1,7 +1,7 @@
 #ifndef DFA_H_
 #define DFA_H_
 
-#include "scanner/state.h"
+#include "state.h"
 #include <map>
 
 namespace cs160 {

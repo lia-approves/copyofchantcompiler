@@ -1,5 +1,5 @@
-#include "scanner/dfa.h"
-#include "scanner/state.h"
+#include "dfa.h"
+#include "state.h"
 #include <map>
 
 namespace cs160 {
