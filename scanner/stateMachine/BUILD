@@ -7,11 +7,9 @@ cc_library(
 )
 
 cc_test(
-  name = "scanner_test",
+  name = "stateMachine_test",
   deps = ["@gtest//:main", ":scanner"],
-  srcs = [
-    "state.cc"
-  ],
+  srcs = [],
   timeout = "short",
   size = "small",
 )
