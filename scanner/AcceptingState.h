@@ -8,7 +8,7 @@ template<typename Token>
 
 class AcceptingState : public State {
   public:
-    acceptingState(int id, Token result) : State(id);
+    AcceptingState(int id, Token result) : State(id);
 
   private:
     Token token;

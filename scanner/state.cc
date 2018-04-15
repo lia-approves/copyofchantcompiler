@@ -1,38 +1,37 @@
 #include "scanner/state.h"
-#include <pair>
 
 namespace cs160 {
 namespace scanner {
 
 template<typename Token>
-State::State(int id) {
+State<Token>::State(int id) {
     this->id = id;
 }
 template<typename Token>
-State::~State(void) {}
+State<Token>::~State(void) {}
 
 template<typename Token>
-void State::addTransition(char trigger, int nextStateId) {
+void State<Token>::addTransition(char trigger, int nextStateId) {
   transitions[trigger] = nextStateId;
 }
 
 template<typename Token>
-int State::nextState(char input) {
+int State<Token>::nextState(char input) {
   return transitions[input];
 }
 
 template<typename Token>
-int State::getId() {
+int State<Token>::getId() {
   return id;
 }
 
 template<typename Token>
-virtual bool State::isAccepting() {
+bool State<Token>::isAccepting() {
   return false;
 }
 
 template<typename Token>
-virtual Token State::getToken() {
+Token State<Token>::getToken() {
   return NULL;
 }
 

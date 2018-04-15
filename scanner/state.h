@@ -21,10 +21,12 @@ public:
 
 private:
   int id;
-  map<char, int> transitions;
+  std::map<char, int> transitions;
+
+};
+
 
 }
-
-
 }
-}
+
+#endif // STATE_H_
