@@ -1,22 +1,22 @@
 
-#ifndef RCC_INTERPRETER_H_
-#define RCC_INTERPRETER_H_
+#ifndef INTERPRETER_INTERPRETER_H_
+#define INTERPRETER_INTERPRETER_H_
 
 #include <sstream>
 #include <string>
 
-#include "abstract_syntax_tree.h"
+#include "abstract_syntax/abstract_syntax.h"
 
-using cs160::abstract_syntax::IntegerExpr;
-using cs160::abstract_syntax::BinaryOperatorExpr;
-using cs160::abstract_syntax::AddExpr;
-using cs160::abstract_syntax::SubtractExpr;
-using cs160::abstract_syntax::MultiplyExpr;
-using cs160::abstract_syntax::DivideExpr;
-using cs160::abstract_syntax::AstVisitor;
+using cs160::abstract_syntax::version_1::IntegerExpr;
+using cs160::abstract_syntax::version_1::BinaryOperatorExpr;
+using cs160::abstract_syntax::version_1::AddExpr;
+using cs160::abstract_syntax::version_1::SubtractExpr;
+using cs160::abstract_syntax::version_1::MultiplyExpr;
+using cs160::abstract_syntax::version_1::DivideExpr;
+using cs160::abstract_syntax::version_1::AstVisitor;
 
 namespace cs160 {
-namespace abstract_syntax {
+namespace interpreter {
 
 class InterpretVisitor : public AstVisitor {
  public:
@@ -65,7 +65,6 @@ class InterpretVisitor : public AstVisitor {
   std::stringstream output_;
 };
 
-}  // namespace abstract_syntax
+}  // namespace interpreter
 }  // namespace cs160
-
-#endif  // ABSTRACT_SYNTAX_INTERPRET_VISITOR_H_
+#endif  // INTERPRETER_INTERPRETER_H_

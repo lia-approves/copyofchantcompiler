@@ -2,6 +2,8 @@
 #ifndef UTILITY_MEMORY_H_
 #define UTILITY_MEMORY_H_
 
+#include <memory>
+
 namespace cs160 {
 
 // this is missing from the C++11 library, so we implement it here
