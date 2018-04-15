@@ -25,7 +25,7 @@ private:
   int currentState;
   int startState;
   State getStateById(int id);
-  map<int, State> states;
+  std::map<int, State> states;
 
 }
 
