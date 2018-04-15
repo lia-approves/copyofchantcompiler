@@ -1,20 +1,21 @@
+#include "scanner/state.h"
 #include "scanner/acceptingState.h"
 
 namespace cs160 {
 namespace scanner {
 
 template<typename Token>
-AcceptingState::AcceptingState(int id, Token result) : State(id) {
+AcceptingState<Token>::AcceptingState(int id, Token result) : State(id) {
   token = result;
 }
 
 template<typename Token>
-virtual bool AcceptingState::isAccepting() {
+bool AcceptingState<Token>::isAccepting() {
   return true;
 }
 
 template<typename Token>
-virtual Token State::getToken() {
+Token State<Token>::getToken() {
     return token;
 }
 
