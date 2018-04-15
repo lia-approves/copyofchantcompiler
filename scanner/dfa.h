@@ -1,6 +1,7 @@
 #ifndef DFA_H_
 #define DFA_H_
 
+#include "scanner/state.h"
 #include <map>
 
 namespace cs160 {
@@ -14,19 +15,21 @@ public:
   explicit DFA(int startState);
   ~DFA(void);
 
-  void addState(State state);
+  void addState(State<Token> state);
   bool isAccepting();
   void reset();
-  State getCurrentState();
+  State<Token> getCurrentState();
   Token input(char c);
 
 private:
   int currentState;
   int startState;
-  State getStateById(int id);
-  map<int, State> states;
+  State<Token> getStateById(int id);
+  std::map<int, State<Token>> states;
+
+};
 
 }
+}
 
-}
-}
+#endif // DFA_H_

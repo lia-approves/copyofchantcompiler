@@ -2,17 +2,20 @@
 #include "scanner/state.h"
 #include <map>
 
+namespace cs160 {
+namespace scanner {
+
 template<typename Token>
 DFA<Token>::DFA(int startState) {
   this->startState = this->currentState = startState;
-  addState(new State(startState));
+  addState(new State<Token>(startState));
 }
 
 template<typename Token>
 DFA<Token>::~DFA(void) {}
 
 template<typename Token>
-void DFA<Token>::addState(State state) {
+void DFA<Token>::addState(State<Token> state) {
   states[state.getId()] = state;
 }
 
@@ -27,13 +30,16 @@ void DFA<Token>::reset() {
 }
 
 template<typename Token>
-State DFA<Token>::getCurrentState() {
+State<Token> DFA<Token>::getCurrentState() {
   return states[currentState];
 }
 
 template<typename Token>
 Token DFA<Token>::input(char c) {
   int nextStateId = states[currentState].nextState(c);
-  State nextState = states[nextStateId];
+  State<Token> nextState = states[nextStateId];
   return nextState.getToken();
+}
+
+}
 }
