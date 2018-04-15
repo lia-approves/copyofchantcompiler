@@ -1,5 +1,5 @@
 cc_library(
-  name = "scanner",
+  name = "stateMachine",
   copts = ["-Wall -g"],
   srcs = ["state.cc", "dfa.cc", "AcceptingState.cc"],
   hdrs = ["dfa.h", "state.h", "AcceptingState.h"],
