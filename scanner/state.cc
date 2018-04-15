@@ -32,7 +32,7 @@ virtual bool State::isAccepting() {
 }
 
 template<typename Token>
-Token State::getToken() {
+virtual Token State::getToken() {
   return NULL;
 }
 

@@ -17,7 +17,7 @@ public:
   int nextState(char input);
   int getId();
   virtual bool isAccepting();
-  Token getToken();
+  virtual Token getToken();
 
 private:
   int id;
