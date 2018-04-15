@@ -1,8 +1,8 @@
 cc_library(
   name = "scanner",
   copts = ["-Wall -g"],
-  srcs = ["state.cc", "dfa.cc", "acceptingState.cc"],
-  hdrs = ["dfa.h", "state.h", "acceptingState.h"],
+  srcs = ["state.cc", "dfa.cc", "AcceptingState.cc"],
+  hdrs = ["dfa.h", "state.h", "AcceptingState.h"],
   visibility = ["//public:__pkg__"],
 )
 

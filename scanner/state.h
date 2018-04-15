@@ -11,7 +11,6 @@ template<typename Token>
 class State {
 public:
   explicit State(int id);
-  explicit State(int id, Token result);
   ~State(void);
 
   void addTransition(char trigger, int nextStateId);

@@ -1,11 +1,11 @@
 #include "scanner/state.h"
-#include "scanner/acceptingState.h"
+#include "scanner/AcceptingState.h"
 
 namespace cs160 {
 namespace scanner {
 
 template<typename Token>
-AcceptingState<Token>::AcceptingState(int id, Token result) : State(id) {
+AcceptingState<Token>::AcceptingState(int id, Token result) : State<Token>(id) {
   token = result;
 }
 
@@ -16,7 +16,7 @@ bool AcceptingState<Token>::isAccepting() {
 
 template<typename Token>
 Token State<Token>::getToken() {
-    return token;
+    return this->token;
 }
 
 }
