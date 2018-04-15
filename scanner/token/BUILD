@@ -4,7 +4,7 @@ cc_library(
   copts = ["-Wall -g"],
   srcs = ["Token.cpp", "IntegerToken.cpp", "ArithmeticExpressionToken.cpp", "OpenParenthesisToken.cpp", "ClosedParenthesisToken.cpp"],
   hdrs = ["Token.h", "IntegerToken.h", "ArithmeticExpressionToken.h", "OpenParenthesisToken.h", "ClosedParenthesisToken.h"],
-  visibility = ["//public:__pkg__"],
+  visibility = ["//visibility:public"],
 )
 
 cc_test(
