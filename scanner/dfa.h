@@ -6,13 +6,12 @@
 namespace cs160 {
 namespace scanner {
 
-template<typename State>
 template<typename Token>
 
 class DFA {
 
 public:
-  explicit DFA(int startState, bool isFinal);
+  explicit DFA(int startState);
   ~DFA(void);
 
   void addState(State state);

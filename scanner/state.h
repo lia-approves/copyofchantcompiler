@@ -6,6 +6,8 @@
 namespace cs160 {
 namespace scanner {
 
+template<typename Token>
+
 class State {
 public:
   explicit State(int id);
@@ -13,6 +15,9 @@ public:
 
   void addTransition(char trigger, int nextStateId);
   int nextState(char input);
+  int getId();
+  virtual bool isAccepting();
+  Token getToken();
 
 private:
   int id;
