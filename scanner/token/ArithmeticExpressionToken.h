@@ -10,6 +10,7 @@
 #define ArithmeticExpressionToken_h
 
 #include <stdio.h>
+#include "Token.h"
 
 class ArithmeticExpressionToken: public Token{
     

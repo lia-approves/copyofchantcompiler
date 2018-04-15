@@ -1,21 +1,22 @@
 //
-//  ClosedParenthesisToken.cpp
+//  OpenParenthesisToken.cpp
 //  
 //
 //  Created by Maggie Schmit on 4/11/18.
 //
 //
 
-#include "ClosedParenthesisToken.h"
+#include "OpenParenthesisToken.h"
 
-ClosedParenthesisToken::ClosedParenthesisToken(){
+
+OpenParenthesisToken::OpenParenthesisToken(){
     //do nothing ~ the const string and char are already created
 }
 
-ClosedParenthesisToken::set_token(std::string str){
+void OpenParenthesisToken::set_token(std::string str){
     //do nothing ~ the const string and char are already created
 }
 
-ClosedParenthesisToken::get_token_char(){
+char OpenParenthesisToken::get_token_char(){
     return token_char;
 }

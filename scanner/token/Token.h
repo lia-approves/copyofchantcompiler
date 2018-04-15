@@ -11,17 +11,20 @@
 
 #include <string>
 
-public class Token{
+class Token{
 public:
     
-    Token(string str);
+    Token ();
+    Token(std::string str);
     
-    string get_token_string();
+    std::string get_token();
     
-    virtual void set_token(string str) = 0;
+    virtual void set_token(std::string str) = 0;
+    
+    void set_token_str(std::string str);
     
 private:
-    string token_str; //string representation of the token being represented
+    std::string token_str; //string representation of the token being represented
     
     
 

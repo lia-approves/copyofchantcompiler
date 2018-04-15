@@ -10,15 +10,15 @@
 #define ClosedParenthesisToken_h
 
 #include <stdio.h>
-
+#include "Token.h"
 
 class ClosedParenthesisToken : public Token{
     
 public:
     //cannot use the Token(string) constructor, or it will be bad
     ClosedParenthesisToken();
-    set_token(std::string str);
-    get_token_char();
+    void set_token(std::string str);
+    char get_token_char();
     
 private:
     const char token_char = ')';

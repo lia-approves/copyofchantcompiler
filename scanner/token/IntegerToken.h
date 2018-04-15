@@ -11,12 +11,12 @@
 
 #include <stdio.h>
 #include <string>
+#include "Token.h"
 
 class IntegerToken: public Token{
     
 public:
-    void set_token_string(string str);
-    string get_token_string();
+    void set_token(std::string str);
     int get_token_int();
     
 private:

@@ -9,19 +9,15 @@
 #include "IntegerToken.h"
 #include <sstream>
 
-void IntegerToken::set_token(string str){
+void IntegerToken::set_token(std::string str){
     
-    token_str = str;
+    set_token_str(str);
     
-    stringstream cast_to_int(str);
+    std::stringstream cast_to_int(str);
     
     cast_to_int >> token_int;
     
     
-}
-
-string IntegerToken::get_token_string(){
-    return token_str;
 }
 
 int IntegerToken::get_token_int(){

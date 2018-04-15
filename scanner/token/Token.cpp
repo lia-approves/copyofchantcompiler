@@ -11,7 +11,10 @@
 
 
     
-Token::Token(string str){token_str = str;}
+Token::Token(std::string str){token_str = str;}
+Token::Token(){};
     
-string Token::get_token_string(){ return token_str;}
+std::string Token::get_token(){ return token_str;}
+
+void Token::set_token_str(std::string str){ token_str = str;}
 
