@@ -4,9 +4,9 @@
 namespace cs160 {
 namespace scanner {
 
-DFA::DFA(int startState) {
-  this->startState = this->currentState = startState;
-  addState(State(startState));
+DFA::DFA(State start) {
+  this->startState = this->currentState = start.getId();
+  addState(start);
 }
 
 DFA::~DFA(void) {}
