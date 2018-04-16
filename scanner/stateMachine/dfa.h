@@ -22,20 +22,20 @@ public:
   ~DFA(void);
 
   void addState(State state);
-  bool isAccepting();
-  void reset();
-  State getCurrentState();
+  void reset() { currentState_ = startState_; }
+  State getCurrentState() const { return states_.at(currentState_); }
   Token input(char c);
+  bool isAccepting() const { return states_.at(currentState_).isAccepting(); }
 
   // add a transition from state 'stateId' to state 'destStateId' on character trigger
   // NOTE: you can refer to states that aren't registerd!  The DFA will simply create them for you
   void addTransition(int stateId, char trigger, int destStateId);
 
 private:
-  int currentState;
-  int startState;
-  State getStateById(int id);
-  std::map<int, State> states;
+  int currentState_;
+  int startState_;
+  State getStateById_(int id);
+  std::map<int, State> states_;
 
 };
 
