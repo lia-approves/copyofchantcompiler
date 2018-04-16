@@ -33,5 +33,9 @@ Token DFA::input(char c) {
   return nextState.getToken();
 }
 
+void DFA::addTransition(int stateId, char trigger, int destStateId) {
+  states[stateId].addTransition(trigger, destStateId);
+}
+
 }
 }

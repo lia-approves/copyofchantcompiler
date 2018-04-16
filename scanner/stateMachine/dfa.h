@@ -19,6 +19,9 @@ public:
   void reset();
   State getCurrentState();
   Token input(char c);
+  
+  // add a transition from state 'stateId' to state 'destStateId' on character trigger
+  void addTransition(int stateId, char trigger, int destStateId);
 
 private:
   int currentState;
