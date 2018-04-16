@@ -1,33 +1,130 @@
-#include "interpreter.h"
-#include "../abstract_syntax/abstract_syntax.h"
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sstream>
+#include <string>
+#include <time.h>
+
+#include "interpreter/interpreter.h"
+#include "abstract_syntax/abstract_syntax.h"
 #include "gtest/gtest.h"
 #include "utility/memory.h"
 
-using cs160::abstract_syntax::version_1::IntegerExpr;
-using cs160::abstract_syntax::version_1::AddExpr;
-using cs160::abstract_syntax::version_1::SubtractExpr;
-using cs160::abstract_syntax::version_1::MultiplyExpr;
-using cs160::abstract_syntax::version_1::DivideExpr;
+using cs160::abstract_syntax::backend::AstNode;
+using cs160::abstract_syntax::backend::BinaryOperatorExpr;
+using cs160::abstract_syntax::backend::IntegerExpr;
+using cs160::abstract_syntax::backend::AddExpr;
+using cs160::abstract_syntax::backend::SubtractExpr;
+using cs160::abstract_syntax::backend::MultiplyExpr;
+using cs160::abstract_syntax::backend::DivideExpr;
+
+using cs160::abstract_syntax::backend::AstVisitor;
 using cs160::interpreter::InterpretVisitor;
 
 using cs160::make_unique;
 
-// TEST(InterpreterMainTest, GetInterpreterMainTest) {
-//   EXPECT_EQ(cs160::rcc::InterpreterMain(), 42);
-// }
+std::unique_ptr<const AstNode> makeRandomAst();
+std::unique_ptr<const AstNode> makeRandomAst(const double probNodeIsBinOp);
+std::unique_ptr<const BinaryOperatorExpr> makeRandomBinOp(std::unique_ptr<const AstNode> lhs, std::unique_ptr<const AstNode> rhs, const double probNodeIsBinOp);
 
-TEST(InterpreterMainTest, InterpretInteger7) {
+TEST (InterpretMainTest, InterpretRandomAst) {
+ 
   InterpretVisitor interpreter_;
-  auto number = make_unique<IntegerExpr>(7);
-  number->Visit(&interpreter_);
-
-  EXPECT_EQ(interpreter_.GetOutput(), 7);
+  auto randomAst_ = makeRandomAst();
+  randomAst_->Visit(&interpreter_);
+  std::cout << std::endl;
+  std::cout << "Evaluated input: " << interpreter_.GetOutput();
+  
+  EXPECT_EQ(0, 0);
 }
 
-TEST(InterpreterMainTest, InterpretInteger0) {
-  InterpretVisitor interpreter_;
-  auto number = make_unique<IntegerExpr>(0);
-  number->Visit(&interpreter_);
+std::unique_ptr<const AstNode> makeRandomAst(){
+  const double probNodeIsBinOp = 0.2;
+  srand(time(NULL));
 
-  EXPECT_EQ(interpreter_.GetOutput(), 0);
+  int whichBinOp = rand() % 4;
+  switch(whichBinOp){
+    case 0:{
+      std::cout << "( + ";
+      auto lhs = makeRandomAst(probNodeIsBinOp);
+      std::cout << " ";
+      auto rhs = makeRandomAst(probNodeIsBinOp);
+      std:: cout << " )";
+      return std::move(make_unique<const AddExpr>(std::move(lhs), std::move(rhs)));
+    }
+    case 1:{
+      std::cout << "( - ";
+      auto lhs = makeRandomAst(probNodeIsBinOp);
+      std::cout << " ";
+      auto rhs = makeRandomAst(probNodeIsBinOp);
+      std:: cout << " )";
+      return std::move(make_unique<const SubtractExpr>(std::move(lhs), std::move(rhs)));
+    }
+    case 2:{
+      std::cout << "( * ";
+      auto lhs = makeRandomAst(probNodeIsBinOp);
+      std::cout << " ";
+      auto rhs = makeRandomAst(probNodeIsBinOp);
+      std:: cout << " )";
+      return std::move(make_unique<const MultiplyExpr>(std::move(lhs), std::move(rhs)));
+    }
+    default:{
+       std::cout << "( / ";
+      auto lhs = makeRandomAst(probNodeIsBinOp);
+      std::cout << " ";
+      auto rhs = makeRandomAst(probNodeIsBinOp);
+      std:: cout << " )";
+      return std::move(make_unique<const DivideExpr>(std::move(lhs), std::move(rhs)));
+    }
+  }
+}
+
+std::unique_ptr<const AstNode> makeRandomAst(const double probNodeIsBinOp){
+  double isIntExpr = (rand() % 100) / 100;
+
+  if(isIntExpr > probNodeIsBinOp){
+    int randomInt = rand() % 100;
+    std::cout << randomInt;
+    return std::move(make_unique<IntegerExpr>(randomInt));
+  }else{
+    return std::move(makeRandomBinOp(std::move(makeRandomAst(probNodeIsBinOp)), std::move(makeRandomAst(probNodeIsBinOp)), probNodeIsBinOp));
+  }
+}
+
+std::unique_ptr<const BinaryOperatorExpr> makeRandomBinOp(std::unique_ptr<const AstNode> lhs, std::unique_ptr<const AstNode> rhs, const double probNodeIsBinOp){
+  int whichBinOp = rand() % 4;
+  switch(whichBinOp){
+    case 0:{
+      std::cout << "( + ";
+      auto lhs = makeRandomAst(probNodeIsBinOp);
+      std::cout << " ";
+      auto rhs = makeRandomAst(probNodeIsBinOp);
+      std:: cout << " )";
+      return std::move(make_unique<const AddExpr>(std::move(lhs), std::move(rhs)));
+    }
+    case 1:{
+      std::cout << "( - ";
+      auto lhs = makeRandomAst(probNodeIsBinOp);
+      std::cout << " ";
+      auto rhs = makeRandomAst(probNodeIsBinOp);
+      std:: cout << " )";
+      return std::move(make_unique<const SubtractExpr>(std::move(lhs), std::move(rhs)));
+    }
+    case 2:{
+      std::cout << "( * ";
+      auto lhs = makeRandomAst(probNodeIsBinOp);
+      std::cout << " ";
+      auto rhs = makeRandomAst(probNodeIsBinOp);
+      std:: cout << " )";
+      return std::move(make_unique<const MultiplyExpr>(std::move(lhs), std::move(rhs)));
+    }
+    default:{
+       std::cout << "( / ";
+      auto lhs = makeRandomAst(probNodeIsBinOp);
+      std::cout << " ";
+      auto rhs = makeRandomAst(probNodeIsBinOp);
+      std:: cout << " )";
+      return std::move(make_unique<const DivideExpr>(std::move(lhs), std::move(rhs)));
+    }
+  }
 }
