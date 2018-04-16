@@ -15,8 +15,7 @@
 class Token{
 public:
 
-    Token ();
-    Token(std::string str);
+    Token(std::string str = "invalid");
 
     std::string get_token();
 

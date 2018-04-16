@@ -22,11 +22,11 @@ TEST(StateTests, Transition) {
   ASSERT_EQ(s.nextState('a'), 5);
 }
 
-// TEST(StateTests, DefaultToken) {
-//   State s;
-//   Token t;
-//   ASSERT_EQ()
-// }
+TEST(StateTests, DefaultToken) {
+  State s;
+  Token t;
+  ASSERT_EQ(s.getToken().get_token(), t.get_token());
+}
 
 } // namespace scanner
 } // namespace cs160

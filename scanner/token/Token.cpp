@@ -12,7 +12,6 @@
 
 
 Token::Token(std::string str){token_str = str;}
-Token::Token(){};
 
 std::string Token::get_token(){ return token_str;}
 
