@@ -15,7 +15,7 @@
 class Token{
 public:
     Token();
-    Token(std::string str);
+    explicit Token(std::string str);
 
     virtual std::string get_token();
 

@@ -15,8 +15,8 @@
 class ArithmeticExpressionToken: public Token{
     
 public:
-    ArithmeticExpressionToken(char tok);
-    ArithmeticExpressionToken(std::string tok);
+    explicit ArithmeticExpressionToken(char tok);
+    explicit ArithmeticExpressionToken(std::string tok);
     void set_token(std::string str);
     void set_token_char(char tok);
     char get_token_char();
