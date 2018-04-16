@@ -10,7 +10,6 @@
 #include <string>
 
 
-
 Token::Token(std::string str){token_str = str;}
 
 std::string Token::get_token(){ return token_str;}

@@ -12,7 +12,8 @@ int main() {
   cs160::scanner::State error;
   cs160::scanner::State test(1);
   cs160::scanner::DFA dfa(error);
-  IntegerToken token;
+  IntegerToken token("hi");
+  Token regulartoken("hi");
   cs160::scanner::AcceptingState(7, token);
   // dfa.addState(test);
   dfa.addTransition(error.getId(), 'a', test.getId());
