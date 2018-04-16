@@ -2,7 +2,8 @@
 #include "scanner/stateMachine/dfa.h"
 #include "scanner/stateMachine/state.h"
 
-using namespace cs160::scanner;
+namespace cs160 {
+namespace scanner {
 
 int main() {
   State error;
@@ -15,3 +16,6 @@ int main() {
   std::cout << "Next state: " << dfa.getCurrentState().getId() << std::endl;
 
 }
+
+} // namespace scanner
+} // namespace cs160

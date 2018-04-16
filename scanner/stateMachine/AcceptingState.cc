@@ -15,5 +15,5 @@ Token AcceptingState::getToken() {
     return this->token;
 }
 
-}
-}
+} // namespace scanner
+} // namespace cs160

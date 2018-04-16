@@ -34,7 +34,7 @@ private:
 };
 
 
-}
-}
+} // namespace scanner
+} // namespace cs160
 
 #endif // STATE_H_

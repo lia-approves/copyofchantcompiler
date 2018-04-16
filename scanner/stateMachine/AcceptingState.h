@@ -16,7 +16,7 @@ class AcceptingState: public State {
     Token token;
 };
 
-}
-}
+} // namespace scanner
+} // namespace cs160
 
 #endif // ACCEPTING_STATE_H_

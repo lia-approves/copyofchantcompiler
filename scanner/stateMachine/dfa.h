@@ -39,7 +39,7 @@ private:
 
 };
 
-}
-}
+} // namespace scanner
+} // namespace cs160
 
 #endif // DFA_H_

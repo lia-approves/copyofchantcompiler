@@ -1,9 +1,13 @@
 #include "gtest/gtest.h"
 #include "scanner/stateMachine/state.h"
 
-using namespace cs160::scanner;
+namespace cs160 {
+namespace scanner {
 
 TEST(StateTests, DefaultState) {
-  State s;
+  scanner::State s;
   ASSERT_EQ(s.getId(), -1);
 }
+
+} // namespace scanner
+} // namespace cs160

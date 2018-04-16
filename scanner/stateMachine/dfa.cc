@@ -45,5 +45,5 @@ void DFA::addTransition(int stateId, char trigger, int destStateId) {
   states[stateId].addTransition(trigger, destStateId);
 }
 
-}
-}
+} // namespace scanner
+} // namespace cs160

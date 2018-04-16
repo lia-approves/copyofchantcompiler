@@ -28,5 +28,5 @@ Token State::getToken() {
   return Token();
 }
 
-}
-}
+} // namespace scanner
+} // namespace cs160
