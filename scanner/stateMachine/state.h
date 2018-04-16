@@ -2,11 +2,10 @@
 #define STATE_H_
 
 #include <map>
+#include "scanner/token/Token.h"
 
 namespace cs160 {
 namespace scanner {
-
-template<typename Token>
 
 class State {
 public:

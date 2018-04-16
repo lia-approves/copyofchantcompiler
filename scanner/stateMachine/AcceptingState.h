@@ -6,8 +6,7 @@
 namespace cs160 {
 namespace scanner {
 
-template<typename Token>
-class AcceptingState: public State<Token> {
+class AcceptingState: public State {
   public:
     AcceptingState(int id, Token result);
     bool isAccepting();

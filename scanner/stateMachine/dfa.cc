@@ -5,39 +5,32 @@
 namespace cs160 {
 namespace scanner {
 
-template<typename Token>
-DFA<Token>::DFA(int startState) {
+DFA::DFA(int startState) {
   this->startState = this->currentState = startState;
-  addState(new State<Token>(startState));
+  addState(new State(startState));
 }
 
-template<typename Token>
-DFA<Token>::~DFA(void) {}
+DFA::~DFA(void) {}
 
-template<typename Token>
-void DFA<Token>::addState(State<Token> state) {
+void DFA::addState(State state) {
   states[state.getId()] = state;
 }
 
-template<typename Token>
-bool DFA<Token>::isAccepting() {
+bool DFA::isAccepting() {
   return states[currentState].isAccepting();
 }
 
-template<typename Token>
-void DFA<Token>::reset() {
+void DFA::reset() {
   currentState = startState;
 }
 
-template<typename Token>
-State<Token> DFA<Token>::getCurrentState() {
+State DFA::getCurrentState() {
   return states[currentState];
 }
 
-template<typename Token>
-Token DFA<Token>::input(char c) {
+Token DFA::input(char c) {
   int nextStateId = states[currentState].nextState(c);
-  State<Token> nextState = states[nextStateId];
+  State nextState = states[nextStateId];
   return nextState.getToken();
 }
 

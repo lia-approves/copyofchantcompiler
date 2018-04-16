@@ -3,6 +3,7 @@ cc_library(
   copts = ["-Wall -g"],
   srcs = ["state.cc", "dfa.cc", "AcceptingState.cc"],
   hdrs = ["dfa.h", "state.h", "AcceptingState.h"],
+  deps = ["//scanner/token"],
   visibility = ["//visibility:public"],
 )
 

@@ -4,18 +4,15 @@
 namespace cs160 {
 namespace scanner {
 
-template<typename Token>
-AcceptingState<Token>::AcceptingState(int id, Token result) : State<Token>(id) {
+AcceptingState::AcceptingState(int id, Token result) : State<Token>(id) {
   token = result;
 }
 
-template<typename Token>
-bool AcceptingState<Token>::isAccepting() {
+bool AcceptingState::isAccepting() {
   return true;
 }
 
-template<typename Token>
-Token State<Token>::getToken() {
+Token State::getToken() {
     return this->token;
 }
 
