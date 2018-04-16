@@ -17,5 +17,5 @@ int main() {
 
 }
 
-} // namespace scanner
-} // namespace cs160
+}  // namespace scanner
+}  // namespace cs160
