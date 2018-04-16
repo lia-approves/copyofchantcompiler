@@ -3,7 +3,8 @@
 //
 //
 //  Created by Maggie Schmit on 4/11/18.
-//
+//  Default token base class.
+//  Represents an INVALID token
 //
 
 #ifndef Token_h

@@ -4,6 +4,14 @@
 #include <map>
 #include "scanner/token/Token.h"
 
+/*
+  Every state must have a unique POSITIVE id.
+  It can also have transitions to other states, referred to by id.
+
+  "Error" states are denoted by negative ids.
+  Creating a state without providing an id causes it to be an error state by default
+*/
+
 namespace cs160 {
 namespace scanner {
 
