@@ -20,6 +20,7 @@ public:
 
 private:
   int id;
+  Token token; // ignore this unless you're dealing with an Accepting State
   std::map<char, int> transitions;
 
 };

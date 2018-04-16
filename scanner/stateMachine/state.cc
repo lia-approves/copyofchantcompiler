@@ -25,7 +25,7 @@ bool State::isAccepting() {
 }
 
 Token State::getToken() {
-  return NULL;
+  return Token();
 }
 
 }

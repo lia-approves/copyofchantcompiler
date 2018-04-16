@@ -4,7 +4,7 @@
 namespace cs160 {
 namespace scanner {
 
-AcceptingState::AcceptingState(int id, Token result) : State<Token>(id) {
+AcceptingState::AcceptingState(int id, Token result) : State(id) {
   token = result;
 }
 
