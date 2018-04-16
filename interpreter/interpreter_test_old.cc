@@ -93,12 +93,5 @@ TEST(InterpreterMultiplyTest, Interpret_neg_neg) {
   EXPECT_EQ(interpreter_.GetOutput(), 8);
 }
 
-TEST(InterpreterMultiplyTest, Interpret_neg_neg) {
-  InterpretVisitor interpreter_;
-  auto expr = make_unique<MultiplyExpr>((make_unique<IntegerExpr>(-4)),
-                                   make_unique<IntegerExpr>(-2));
-
-  expr->Visit(&interpreter_);
-
-  EXPECT_EQ(interpreter_.GetOutput(), 8);
-}
+// Add divide
+// Add subtract tests
