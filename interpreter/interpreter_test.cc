@@ -1,5 +1,5 @@
-#include "interpreter/interpreter.h"
-#include "abstract_syntax/abstract_syntax.h"
+#include "interpreter.h"
+#include "../abstract_syntax/abstract_syntax.h"
 #include "gtest/gtest.h"
 #include "utility/memory.h"
 
@@ -16,10 +16,18 @@ using cs160::make_unique;
 //   EXPECT_EQ(cs160::rcc::InterpreterMain(), 42);
 // }
 
-TEST(InterpreterMainTest, SimpleTest) {
+TEST(InterpreterMainTest, InterpretInteger7) {
   InterpretVisitor interpreter_;
   auto number = make_unique<IntegerExpr>(7);
   number->Visit(&interpreter_);
 
-  EXPECT_EQ(interpreter_.GetOutput(), "7");
+  EXPECT_EQ(interpreter_.GetOutput(), 7);
+}
+
+TEST(InterpreterMainTest, InterpretInteger0) {
+  InterpretVisitor interpreter_;
+  auto number = make_unique<IntegerExpr>(0);
+  number->Visit(&interpreter_);
+
+  EXPECT_EQ(interpreter_.GetOutput(), 0);
 }

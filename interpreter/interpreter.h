@@ -7,13 +7,13 @@
 
 #include "abstract_syntax/abstract_syntax.h"
 
-using cs160::abstract_syntax::version_1::IntegerExpr;
-using cs160::abstract_syntax::version_1::BinaryOperatorExpr;
-using cs160::abstract_syntax::version_1::AddExpr;
-using cs160::abstract_syntax::version_1::SubtractExpr;
-using cs160::abstract_syntax::version_1::MultiplyExpr;
-using cs160::abstract_syntax::version_1::DivideExpr;
-using cs160::abstract_syntax::version_1::AstVisitor;
+using cs160::abstract_syntax::backend::IntegerExpr;
+using cs160::abstract_syntax::backend::BinaryOperatorExpr;
+using cs160::abstract_syntax::backend::AddExpr;
+using cs160::abstract_syntax::backend::SubtractExpr;
+using cs160::abstract_syntax::backend::MultiplyExpr;
+using cs160::abstract_syntax::backend::DivideExpr;
+using cs160::abstract_syntax::backend::AstVisitor;
 
 namespace cs160 {
 namespace interpreter {
@@ -23,46 +23,23 @@ class InterpretVisitor : public AstVisitor {
   InterpretVisitor() {}
   ~InterpretVisitor() {}
 
-  const std::string GetOutput() const { return output_.str(); }
+  const int GetOutput() const;
 
-  void VisitIntegerExpr(const IntegerExpr& exp) { output_ << exp.value(); }
+  void VisitIntegerExpr(const IntegerExpr& exp);
 
   void VisitBinaryOperatorExpr(const BinaryOperatorExpr& exp) {}
 
-  void VisitAddExpr(const AddExpr& exp) {
-    output_ << "(+ ";
-    exp.lhs().Visit(const_cast<InterpretVisitor*>(this));
-    output_ << " ";
-    exp.rhs().Visit(const_cast<InterpretVisitor*>(this));
-    output_ << ")";
-  }
+  void VisitAddExpr(const AddExpr& exp);
 
-  void VisitSubtractExpr(const SubtractExpr& exp) {
-    output_ << "(- ";
-    exp.lhs().Visit(const_cast<InterpretVisitor*>(this));
-    output_ << " ";
-    exp.rhs().Visit(const_cast<InterpretVisitor*>(this));
-    output_ << ")";
-  }
+  void VisitSubtractExpr(const SubtractExpr& exp);
 
-  void VisitMultiplyExpr(const MultiplyExpr& exp) {
-    output_ << "(* ";
-    exp.lhs().Visit(const_cast<InterpretVisitor*>(this));
-    output_ << " ";
-    exp.rhs().Visit(const_cast<InterpretVisitor*>(this));
-    output_ << ")";
-  }
+  void VisitMultiplyExpr(const MultiplyExpr& exp);
 
-  void VisitDivideExpr(const DivideExpr& exp) {
-    output_ << "(/ ";
-    exp.lhs().Visit(const_cast<InterpretVisitor*>(this));
-    output_ << " ";
-    exp.rhs().Visit(const_cast<InterpretVisitor*>(this));
-    output_ << ")";
-  }
+  void VisitDivideExpr(const DivideExpr& exp);
 
  private:
   std::stringstream output_;
+  int output_int;
 };
 
 }  // namespace interpreter
