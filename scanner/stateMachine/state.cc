@@ -31,9 +31,5 @@ bool State::isAccepting() {
   return this->accepting;
 }
 
-Token State::getToken() {
-  return this->token;
-}
-
 } // namespace scanner
 } // namespace cs160

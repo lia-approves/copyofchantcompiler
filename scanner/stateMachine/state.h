@@ -27,7 +27,7 @@ public:
   int nextState(char input);
   int getId();
   bool isAccepting();
-  Token getToken();
+  Token getToken() const { return token; }
 
 private:
   int id;
