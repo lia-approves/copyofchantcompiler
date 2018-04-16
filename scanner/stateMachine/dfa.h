@@ -11,7 +11,7 @@ namespace scanner {
 class DFA {
 
 public:
-  explicit DFA(int startState);
+  explicit DFA(State start);
   ~DFA(void);
 
   void addState(State state);
