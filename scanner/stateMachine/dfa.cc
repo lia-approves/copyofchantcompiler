@@ -7,7 +7,7 @@ namespace scanner {
 
 DFA::DFA(int startState) {
   this->startState = this->currentState = startState;
-  addState(new State(startState));
+  addState(State(startState));
 }
 
 DFA::~DFA(void) {}
