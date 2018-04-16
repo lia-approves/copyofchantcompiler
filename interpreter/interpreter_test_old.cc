@@ -51,3 +51,43 @@ TEST(InterpreterAddTest, Interpret_neg44_0) {
 
   EXPECT_EQ(interpreter_.GetOutput(), -44);
 }
+
+TEST(InterpreterMultiplyTest, Interpret_pos_pos) {
+  InterpretVisitor interpreter_;
+  auto expr = make_unique<MultiplyExpr>((make_unique<IntegerExpr>(2)),
+                                   make_unique<IntegerExpr>(3));
+
+  expr->Visit(&interpreter_);
+
+  EXPECT_EQ(interpreter_.GetOutput(), 6);
+}
+
+TEST(InterpreterMultiplyTest, Interpret_pos_neg) {
+  InterpretVisitor interpreter_;
+  auto expr = make_unique<MultiplyExpr>((make_unique<IntegerExpr>(4)),
+                                   make_unique<IntegerExpr>(-9));
+
+  expr->Visit(&interpreter_);
+
+  EXPECT_EQ(interpreter_.GetOutput(), -36);
+}
+
+TEST(InterpreterMultiplyTest, Interpret_neg_pos) {
+  InterpretVisitor interpreter_;
+  auto expr = make_unique<MultiplyExpr>((make_unique<IntegerExpr>(-34)),
+                                   make_unique<IntegerExpr>(2));
+
+  expr->Visit(&interpreter_);
+
+  EXPECT_EQ(interpreter_.GetOutput(), -68);
+}
+
+TEST(InterpreterMultiplyTest, Interpret_neg_neg) {
+  InterpretVisitor interpreter_;
+  auto expr = make_unique<MultiplyExpr>((make_unique<IntegerExpr>(-4)),
+                                   make_unique<IntegerExpr>(-2));
+
+  expr->Visit(&interpreter_);
+
+  EXPECT_EQ(interpreter_.GetOutput(), 8);
+}

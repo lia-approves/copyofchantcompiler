@@ -30,51 +30,38 @@ const int InterpretVisitor::GetOutput() const{
 }
 
 void InterpretVisitor::VisitIntegerExpr(const IntegerExpr& exp){
-  output_ << exp.value();
   output_int = exp.value();
 }
 
 void InterpretVisitor::VisitAddExpr(const AddExpr& exp){
-  output_ << "(+ ";
   exp.lhs().Visit(this);
   int lhs = output_int;
-  output_ << " ";
   exp.rhs().Visit(this);
   int rhs = output_int;
-  output_ << ")";
   output_int = lhs + rhs;
 }
 
 void InterpretVisitor::VisitSubtractExpr(const SubtractExpr& exp){
-  output_ << "(- ";
   exp.lhs().Visit(this);
   int lhs = output_int;
-  output_ << " ";
   exp.rhs().Visit(this);
   int rhs = output_int;
-  output_ << ")";
   output_int = lhs - rhs;
 }
 
 void InterpretVisitor::VisitMultiplyExpr(const MultiplyExpr& exp){
-  output_ << "(* ";
   exp.lhs().Visit(this);
   int lhs = output_int;
-  output_ << " ";
   exp.rhs().Visit(this);
   int rhs = output_int;
-  output_ << ")";
   output_int = lhs * rhs;
 }
 
 void InterpretVisitor::VisitDivideExpr(const DivideExpr & exp){
-  output_ << "(/ ";
   exp.lhs().Visit(this);
   int lhs = output_int;
-  output_ << " ";
   exp.rhs().Visit(this);
   int rhs = output_int;
-  output_ << ")";
   if(rhs == 0){
     throw "ERROR: DIVISION BY ZERO";
   }

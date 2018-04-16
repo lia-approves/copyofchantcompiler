@@ -38,7 +38,6 @@ class InterpretVisitor : public AstVisitor {
   void VisitDivideExpr(const DivideExpr& exp);
 
  private:
-  std::stringstream output_;
   int output_int;
 };
 
