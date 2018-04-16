@@ -25,15 +25,16 @@ public:
 
   void addTransition(char trigger, int nextStateId);
   int nextState(char input);
-  int getId();
-  bool isAccepting();
-  Token getToken() const { return token; }
+  
+  int getId() const { return id_; }
+  bool isAccepting() const { return accepting_; }
+  Token getToken() const { return token_; }
 
 private:
-  int id;
-  bool accepting;
-  Token token; // defaults to Invalid Token
-  std::map<char, int> transitions;
+  int id_;
+  bool accepting_;
+  Token token_; // defaults to Invalid Token
+  std::map<char, int> transitions_;
 
 };
 
