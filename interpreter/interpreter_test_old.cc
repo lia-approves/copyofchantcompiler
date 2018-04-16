@@ -1,5 +1,6 @@
-#include "interpreter.h"
-#include "../abstract_syntax/abstract_syntax.h"
+// Copyright msg for cpplint
+#include "interpreter/interpreter.h"
+#include "abstract_syntax/abstract_syntax.h"
 #include "gtest/gtest.h"
 #include "utility/memory.h"
 
@@ -80,6 +81,16 @@ TEST(InterpreterMultiplyTest, Interpret_neg_pos) {
   expr->Visit(&interpreter_);
 
   EXPECT_EQ(interpreter_.GetOutput(), -68);
+}
+
+TEST(InterpreterMultiplyTest, Interpret_neg_neg) {
+  InterpretVisitor interpreter_;
+  auto expr = make_unique<MultiplyExpr>((make_unique<IntegerExpr>(-4)),
+                                   make_unique<IntegerExpr>(-2));
+
+  expr->Visit(&interpreter_);
+
+  EXPECT_EQ(interpreter_.GetOutput(), 8);
 }
 
 TEST(InterpreterMultiplyTest, Interpret_neg_neg) {

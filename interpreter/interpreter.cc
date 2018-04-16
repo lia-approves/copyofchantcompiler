@@ -1,9 +1,11 @@
-#include <iostream>
+// Copyright msg for cpplint
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#include <iostream>
 #include <sstream>
 #include <string>
-#include <time.h>
 
 #include "interpreter/interpreter.h"
 #include "abstract_syntax/abstract_syntax.h"
@@ -25,15 +27,15 @@ using cs160::make_unique;
 namespace cs160 {
 namespace interpreter {
 
-const int InterpretVisitor::GetOutput() const{
+const int InterpretVisitor::GetOutput() const {
   return output_int;
 }
 
-void InterpretVisitor::VisitIntegerExpr(const IntegerExpr& exp){
+void InterpretVisitor::VisitIntegerExpr(const IntegerExpr& exp) {
   output_int = exp.value();
 }
 
-void InterpretVisitor::VisitAddExpr(const AddExpr& exp){
+void InterpretVisitor::VisitAddExpr(const AddExpr& exp) {
   exp.lhs().Visit(this);
   int lhs = output_int;
   exp.rhs().Visit(this);
@@ -41,7 +43,7 @@ void InterpretVisitor::VisitAddExpr(const AddExpr& exp){
   output_int = lhs + rhs;
 }
 
-void InterpretVisitor::VisitSubtractExpr(const SubtractExpr& exp){
+void InterpretVisitor::VisitSubtractExpr(const SubtractExpr& exp) {
   exp.lhs().Visit(this);
   int lhs = output_int;
   exp.rhs().Visit(this);
@@ -49,7 +51,7 @@ void InterpretVisitor::VisitSubtractExpr(const SubtractExpr& exp){
   output_int = lhs - rhs;
 }
 
-void InterpretVisitor::VisitMultiplyExpr(const MultiplyExpr& exp){
+void InterpretVisitor::VisitMultiplyExpr(const MultiplyExpr& exp) {
   exp.lhs().Visit(this);
   int lhs = output_int;
   exp.rhs().Visit(this);
@@ -57,12 +59,12 @@ void InterpretVisitor::VisitMultiplyExpr(const MultiplyExpr& exp){
   output_int = lhs * rhs;
 }
 
-void InterpretVisitor::VisitDivideExpr(const DivideExpr & exp){
+void InterpretVisitor::VisitDivideExpr(const DivideExpr & exp) {
   exp.lhs().Visit(this);
   int lhs = output_int;
   exp.rhs().Visit(this);
   int rhs = output_int;
-  if(rhs == 0){
+  if (rhs == 0) {
     throw "ERROR: DIVISION BY ZERO";
   }
   output_int = lhs / rhs;

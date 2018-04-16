@@ -1,3 +1,4 @@
+// Copyright msg for cpplint
 
 #ifndef UTILITY_MEMORY_H_
 #define UTILITY_MEMORY_H_

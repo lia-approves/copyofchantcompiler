@@ -1,4 +1,4 @@
-
+// Copyright msg for cpplint
 #ifndef INTERPRETER_INTERPRETER_H_
 #define INTERPRETER_INTERPRETER_H_
 
