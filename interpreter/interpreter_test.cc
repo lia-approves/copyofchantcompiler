@@ -133,3 +133,16 @@ TEST(SubtractTest, Subtract_n23_9) {
 
   EXPECT_EQ(interpreter_.GetOutput(), -32);
 }
+
+TEST(ComplexTest, DifferenceOfAdditions) {
+  InterpretVisitor interpreter_;
+  auto left = make_unique<AddExpr>((make_unique<IntegerExpr>(2)),
+  make_unique<IntegerExpr>(4));
+  auto right = make_unique<AddExpr>((make_unique<IntegerExpr>(9)),
+  make_unique<IntegerExpr>(-5));
+  auto expr = make_unique<SubtractExpr>(std::move(left), std::move(right));
+
+  expr->Visit(&interpreter_);
+
+  EXPECT_EQ(interpreter_.GetOutput(), 2);
+}
