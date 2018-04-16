@@ -1,3 +1,10 @@
+/*
+  Deterministic Finite Automata class.
+
+  Declare with a start state.  You can add states and transitions any time
+  using the appropriately-named methods
+*/
+
 #ifndef DFA_H_
 #define DFA_H_
 
@@ -19,8 +26,9 @@ public:
   void reset();
   State getCurrentState();
   Token input(char c);
-  
+
   // add a transition from state 'stateId' to state 'destStateId' on character trigger
+  // NOTE: you can refer to states that aren't registerd!  The DFA will simply create them for you
   void addTransition(int stateId, char trigger, int destStateId);
 
 private:

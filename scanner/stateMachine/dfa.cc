@@ -29,11 +29,19 @@ State DFA::getCurrentState() {
 
 Token DFA::input(char c) {
   int nextStateId = states[currentState].nextState(c);
+  this->currentState = nextStateId;
   State nextState = states[nextStateId];
   return nextState.getToken();
 }
 
 void DFA::addTransition(int stateId, char trigger, int destStateId) {
+  // check that both states are registered in the DFA
+  if (states.count(stateId) == 0) {
+    states[stateId] = State(stateId);
+  }
+  if (states.count(destStateId) == 0) {
+    states[destStateId] = State(destStateId);
+  }
   states[stateId].addTransition(trigger, destStateId);
 }
 
