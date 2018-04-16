@@ -1,7 +1,6 @@
 #include <iostream>
 #include "scanner/stateMachine/dfa.h"
 #include "scanner/stateMachine/state.h"
-#include "scanner/stateMachine/AcceptingState.h"
 #include "scanner/token/IntegerToken.h"
 #include <string>
 
@@ -12,17 +11,9 @@ int main() {
   cs160::scanner::State error;
   cs160::scanner::State test(1);
   cs160::scanner::DFA dfa(error);
-  // Token regulartoken("hi");
-  // // dfa.addState(test);
-  // dfa.addTransition(error.getId(), 'a', test.getId());
-  // std::cout << "Starting state: " << dfa.getCurrentState().getId() << std::endl;
-  // dfa.input('a');
-  // std::cout << "Next state: " << dfa.getCurrentState().getId() << std::endl;
-  // Token res = dfa.input('4');
-  // std::cout << res.get_token() << std::endl;
 
   IntegerToken token("hi");
-  cs160::scanner::AcceptingState as(7, token);
+  cs160::scanner::State as(7, token);
   std::cout << "Accepting state token: " + as.getToken().get_token() << std::endl;
 
   dfa.addState(as);

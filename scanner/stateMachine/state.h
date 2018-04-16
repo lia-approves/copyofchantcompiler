@@ -10,6 +10,8 @@
 
   "Error" states are denoted by negative ids.
   Creating a state without providing an id causes it to be an error state by default
+
+  Provide a token in the constructor to create an Accepting State
 */
 
 namespace cs160 {
@@ -18,17 +20,19 @@ namespace scanner {
 class State {
 public:
   explicit State(int id = -1); // default id is -1, the error state
+  explicit State(int id, Token token); // for creating an accepting state
   ~State(void);
 
   void addTransition(char trigger, int nextStateId);
   int nextState(char input);
   int getId();
-  virtual bool isAccepting();
-  virtual Token getToken();
+  bool isAccepting();
+  Token getToken();
 
 private:
   int id;
-  Token token; // ignore this unless you're dealing with an Accepting State
+  bool accepting;
+  Token token; // defaults to Invalid Token
   std::map<char, int> transitions;
 
 };

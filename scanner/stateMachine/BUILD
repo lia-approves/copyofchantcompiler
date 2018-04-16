@@ -1,8 +1,8 @@
 cc_library(
   name = "stateMachine",
   copts = ["-Wall -g"],
-  srcs = ["state.cc", "dfa.cc", "AcceptingState.cc"],
-  hdrs = ["dfa.h", "state.h", "AcceptingState.h"],
+  srcs = ["state.cc", "dfa.cc"],
+  hdrs = ["dfa.h", "state.h"],
   deps = ["//scanner/token"],
   visibility = ["//visibility:public"],
 )

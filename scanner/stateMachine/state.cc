@@ -5,6 +5,13 @@ namespace scanner {
 
 State::State(int id) {
     this->id = id;
+    this->accepting = false;
+    this->token = Token();
+}
+State::State(int id, Token token) {
+    this->id = id;
+    this->accepting = true;
+    this->token = token;
 }
 State::~State(void) {}
 
@@ -21,11 +28,11 @@ int State::getId() {
 }
 
 bool State::isAccepting() {
-  return false;
+  return this->accepting;
 }
 
 Token State::getToken() {
-  return Token();
+  return this->token;
 }
 
 } // namespace scanner
