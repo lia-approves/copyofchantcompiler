@@ -6,7 +6,7 @@ namespace scanner {
 State::State(int id) {
     this->id_ = id;
     this->accepting_ = false;
-    this->token_ = Token();
+    this->token_ = InvalidToken();
 }
 State::State(int id, Token token) {
     this->id_ = id;

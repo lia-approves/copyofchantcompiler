@@ -3,6 +3,7 @@
 
 #include <map>
 #include "scanner/token/Token.h"
+#include "scanner/token/InvalidToken.h"
 
 /*
   Every state must have a unique POSITIVE id.
