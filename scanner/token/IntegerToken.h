@@ -21,7 +21,7 @@ public:
     int get_token_int();
 
 private:
-    int token_int;
+    int token_int_;
 
 
 };

@@ -11,10 +11,10 @@
 
 
 Token::Token(){ /*doesn't do anything, is necessary to have a default constructor in InvalidToken*/};
-Token::Token(std::string str){token_str = str;}
+Token::Token(std::string str){token_str_ = str;}
 
-std::string Token::get_token(){ return token_str;}
+std::string Token::get_token(){ return token_str_;}
 
-void Token::set_token_str(std::string str){ token_str = str;}
+void Token::set_token_str(std::string str){ token_str_ = str;}
 
-void Token::set_token(std::string str) {token_str = str;}
+void Token::set_token(std::string str) {token_str_ = str;}

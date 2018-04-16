@@ -23,7 +23,7 @@ public:
     
     
 private:
-    char token_char;
+    char token_char_;
 };
 
 #endif /* ArithmeticExpressionToken_hpp */

@@ -17,11 +17,11 @@ void IntegerToken::set_token(std::string str){
 
     std::stringstream cast_to_int(str);
 
-    cast_to_int >> token_int;
+    cast_to_int >> token_int_;
 
 
 }
 
 int IntegerToken::get_token_int(){
-    return token_int;
+    return token_int_;
 }

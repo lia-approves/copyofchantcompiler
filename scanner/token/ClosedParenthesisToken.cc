@@ -17,5 +17,5 @@ void ClosedParenthesisToken::set_token(std::string str){
 }
 
 char ClosedParenthesisToken::get_token_char(){
-    return token_char;
+    return token_char_;
 }

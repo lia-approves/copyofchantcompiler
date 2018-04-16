@@ -24,7 +24,7 @@ public:
     void set_token_str(std::string str);
 
 private:
-    std::string token_str; //string representation of the token being represented
+    std::string token_str_; //string representation of the token being represented
 
 
 
