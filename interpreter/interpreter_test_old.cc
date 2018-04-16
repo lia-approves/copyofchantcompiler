@@ -16,7 +16,7 @@ using cs160::make_unique;
 //   EXPECT_EQ(cs160::rcc::InterpreterMain(), 42);
 // }
 
-TEST(InterpreterMainTest, InterpretInteger7) {
+TEST(InterpreterIntegerTest, Interpret7) {
   InterpretVisitor interpreter_;
   auto number = make_unique<IntegerExpr>(7);
   number->Visit(&interpreter_);
@@ -24,10 +24,30 @@ TEST(InterpreterMainTest, InterpretInteger7) {
   EXPECT_EQ(interpreter_.GetOutput(), 7);
 }
 
-TEST(InterpreterMainTest, InterpretInteger0) {
+TEST(InterpreterIntegerTest, Interpret0) {
   InterpretVisitor interpreter_;
   auto number = make_unique<IntegerExpr>(0);
   number->Visit(&interpreter_);
 
   EXPECT_EQ(interpreter_.GetOutput(), 0);
+}
+
+TEST(InterpreterAddTest, Interpret_1_2) {
+  InterpretVisitor interpreter_;
+  auto expr = make_unique<AddExpr>((make_unique<IntegerExpr>(1)),
+                                   make_unique<IntegerExpr>(2));
+
+  expr->Visit(&interpreter_);
+
+  EXPECT_EQ(interpreter_.GetOutput(), 3);
+}
+
+TEST(InterpreterAddTest, Interpret_neg44_0) {
+  InterpretVisitor interpreter_;
+  auto expr = make_unique<AddExpr>((make_unique<IntegerExpr>(-44)),
+                                   make_unique<IntegerExpr>(0));
+
+  expr->Visit(&interpreter_);
+
+  EXPECT_EQ(interpreter_.GetOutput(), -44);
 }

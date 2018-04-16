@@ -12,7 +12,7 @@ cc_library(
 
 cc_test(
 	name = "interpreter_test",
-	srcs = ["interpreter_test.cc"],
+	srcs = ["interpreter_test_old.cc"],
 	deps = [
              "@gtest//:main",
              ":interpreter"
