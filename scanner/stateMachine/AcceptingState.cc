@@ -1,4 +1,3 @@
-#include "state.h"
 #include "AcceptingState.h"
 
 namespace cs160 {
@@ -12,7 +11,7 @@ bool AcceptingState::isAccepting() {
   return true;
 }
 
-Token State::getToken() {
+Token AcceptingState::getToken() {
     return this->token;
 }
 

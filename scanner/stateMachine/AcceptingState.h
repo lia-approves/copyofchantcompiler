@@ -10,6 +10,7 @@ class AcceptingState: public State {
   public:
     AcceptingState(int id, Token result);
     bool isAccepting();
+    Token getToken();
 
   private:
     Token token;

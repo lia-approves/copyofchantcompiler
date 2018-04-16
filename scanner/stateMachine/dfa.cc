@@ -1,5 +1,4 @@
 #include "dfa.h"
-#include "state.h"
 #include <map>
 
 namespace cs160 {

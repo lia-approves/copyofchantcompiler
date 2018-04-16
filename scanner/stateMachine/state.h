@@ -9,7 +9,7 @@ namespace scanner {
 
 class State {
 public:
-  explicit State(int id);
+  explicit State(int id = -1); // default id is -1, the error state
   ~State(void);
 
   void addTransition(char trigger, int nextStateId);
