@@ -9,8 +9,9 @@ cc_library(
 
 cc_test(
   name = "stateMachine_test",
-  deps = ["@gtest//:main", ":scanner"],
-  srcs = [],
+  copts = ["-Iexternal/gtest/googletest-release-1.8.0/googletest/include"],
+  deps = ["@gtest//:main", ":stateMachine"],
+  srcs = ["test/state_test.cc"],
   timeout = "short",
   size = "small",
 )
