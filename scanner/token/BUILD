@@ -2,9 +2,9 @@
 cc_library(
   name = "token",
   copts = ["-Wall -g"],
-  srcs = ["Token.cpp", "IntegerToken.cpp", "ArithmeticExpressionToken.cpp", "OpenParenthesisToken.cpp", "ClosedParenthesisToken.cpp"],
-  hdrs = ["Token.h", "IntegerToken.h", "ArithmeticExpressionToken.h", "OpenParenthesisToken.h", "ClosedParenthesisToken.h"],
-  visibility = ["//public:__pkg__"],
+  srcs = ["Token.cc", "IntegerToken.cc", "ArithmeticExpressionToken.cc", "OpenParenthesisToken.cc", "ClosedParenthesisToken.cc", "InvalidToken.cc"],
+  hdrs = ["Token.h", "IntegerToken.h", "ArithmeticExpressionToken.h", "OpenParenthesisToken.h", "ClosedParenthesisToken.h", "InvalidToken.h"],
+  visibility = ["//visibility:public"],
 )
 
 cc_test(

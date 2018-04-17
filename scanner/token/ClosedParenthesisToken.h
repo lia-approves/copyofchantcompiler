@@ -21,8 +21,8 @@ public:
     char get_token_char();
     
 private:
-    const char token_char = ')';
-    const std::string token_str = ")";
+    const char token_char_ = ')';
+    const std::string token_str_ = ")";
     
     
 };

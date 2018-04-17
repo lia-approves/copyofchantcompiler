@@ -18,5 +18,5 @@ void OpenParenthesisToken::set_token(std::string str){
 }
 
 char OpenParenthesisToken::get_token_char(){
-    return token_char;
+    return token_char_;
 }

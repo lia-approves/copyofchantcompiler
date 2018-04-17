@@ -11,7 +11,7 @@
 
 ArithmeticExpressionToken::ArithmeticExpressionToken(char tok){
     
-    token_char = tok;
+    token_char_ = tok;
     
     std::stringstream ss;
     ss << tok;
@@ -24,18 +24,18 @@ ArithmeticExpressionToken::ArithmeticExpressionToken(char tok){
 ArithmeticExpressionToken::ArithmeticExpressionToken(std::string tok){
     set_token_str(tok);
     
-    token_char = tok[0];
+    token_char_ = tok[0];
 }
 
 void ArithmeticExpressionToken::set_token(std::string tok){
     set_token_str(tok);
     
-    token_char = tok[0];
+    token_char_ = tok[0];
 }
 
 
 void ArithmeticExpressionToken::set_token_char(char tok){
-    token_char = tok;
+    token_char_ = tok;
     
     std::stringstream ss;
     ss << tok;
@@ -45,5 +45,5 @@ void ArithmeticExpressionToken::set_token_char(char tok){
 
 
 char ArithmeticExpressionToken::get_token_char(){
-    return token_char;
+    return token_char_;
 }
