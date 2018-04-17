@@ -14,4 +14,3 @@ cc_library(
     linkopts = [],
     visibility = ["//visibility:public"],
 )
-
