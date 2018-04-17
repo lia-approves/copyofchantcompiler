@@ -14,6 +14,7 @@
 
 namespace cs160 {
 namespace scanner {
+namespace statemachine {
 
 class DFA {
 
@@ -39,6 +40,7 @@ private:
 
 };
 
+} // namespace statemachine
 } // namespace scanner
 } // namespace cs160
 

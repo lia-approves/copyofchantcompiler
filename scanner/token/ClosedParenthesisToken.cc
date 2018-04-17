@@ -1,10 +1,13 @@
 //
 //  ClosedParenthesisToken.cpp
-//  
+//
 //
 //  Created by Maggie Schmit on 4/11/18.
 //
 //
+namespace cs160 {
+namespace scanner {
+namespace token {
 
 #include "ClosedParenthesisToken.h"
 
@@ -19,3 +22,7 @@ void ClosedParenthesisToken::set_token(std::string str){
 char ClosedParenthesisToken::get_token_char(){
     return token_char_;
 }
+
+} // namespace token
+} // namespace scanner
+} // namespace cs160

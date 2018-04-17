@@ -4,6 +4,9 @@
 #include "scanner/token/IntegerToken.h"
 #include <string>
 
+namespace cs160 {
+namespace scanner {
+
 int main() {
   std::string input = "1+2";
 
@@ -20,8 +23,6 @@ int main() {
 
   return 0;
 }
-<<<<<<< HEAD
-//test
-=======
 
->>>>>>> d2f382767b42609c90bfe2609cd00b39331990b6
+} // namespace scanner
+} // namespace cs160

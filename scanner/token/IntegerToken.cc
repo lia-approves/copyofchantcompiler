@@ -9,13 +9,19 @@
 #include "IntegerToken.h"
 #include <sstream>
 
+namespace cs160 {
+namespace scanner {
+namespace token {
+
+
 IntegerToken::IntegerToken(std::string str) : Token(str) {}
+
 IntegerToken::IntegerToken(int tok_integer) {
     std::string str_arg = std::to_string(tok_integer);
     set_token_str(str_arg);
-    
+
     token_int_ = tok_integer;
-    
+
 }
 
 void IntegerToken::set_token(std::string str){
@@ -32,3 +38,7 @@ void IntegerToken::set_token(std::string str){
 int IntegerToken::get_token_int(){
     return token_int_;
 }
+
+} // namespace token
+} // namespace scanner
+} // namespace cs160

@@ -17,16 +17,24 @@
 
 namespace cs160 {
 namespace scanner {
+namespace statemachine {
 
 class State {
 public:
-  explicit State(int id = -1); // default id is -1, the error state
-  explicit State(int id, Token token); // for creating an accepting state
+  //Constructors for creating states, default value is -1
+  //Otherwise initialize it with a Token
+  explicit State(int id = -1);
+  explicit State(int id, Token token);
+
+  //Destructor for State object
   ~State(void);
 
+  //Method for adding transition to a state, input is a character
+  //and where the state should go
   void addTransition(char trigger, int nextStateId);
   int nextState(char input);
-  
+
+  //Basic getters
   int getId() const { return id_; }
   bool isAccepting() const { return accepting_; }
   Token getToken() const { return token_; }
@@ -34,12 +42,13 @@ public:
 private:
   int id_;
   bool accepting_;
-  Token token_; // defaults to Invalid Token
+  Token token_;
   std::map<char, int> transitions_;
 
 };
 
 
+} // namespace statemachine
 } // namespace scanner
 } // namespace cs160
 

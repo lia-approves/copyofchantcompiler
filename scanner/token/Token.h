@@ -12,15 +12,20 @@
 
 #include <string>
 
+namespace cs160 {
+namespace scanner {
+namespace token {
+
 class Token{
 public:
+    //Constructors
+    //Note: default does not do anything
     Token();
     explicit Token(std::string str);
 
+    //Getters and setters
     virtual std::string get_token();
-
     virtual void set_token(std::string str);
-
     void set_token_str(std::string str);
 
 private:
@@ -29,4 +34,7 @@ private:
 
 
 };
+} // namespace token
+} // namespace scanner
+} // namespace cs160
 #endif /* Token_h  */
