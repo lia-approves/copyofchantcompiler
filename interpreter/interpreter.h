@@ -23,7 +23,9 @@ class InterpretVisitor : public AstVisitor {
   InterpretVisitor() {}
   ~InterpretVisitor() {}
 
-  const int GetOutput() const;
+  const int GetOutputInt() const;
+
+  const std::string GetOutputString() const;
 
   void VisitIntegerExpr(const IntegerExpr& exp);
 
@@ -39,6 +41,7 @@ class InterpretVisitor : public AstVisitor {
 
  private:
   int output_int;
+  std::stringstream output_string;
 };
 
 }  // namespace interpreter

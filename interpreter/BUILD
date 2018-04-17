@@ -20,3 +20,14 @@ cc_test(
 	timeout = "short",
 	size = "small",
 )
+
+cc_test(
+	name = "interpreter_test_randomAst",
+	srcs = ["interpreter_test_randomAst.cc"],
+	deps = [
+             "@gtest//:main",
+             ":interpreter"
+        ],
+	timeout = "short",
+	size = "small",
+)

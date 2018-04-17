@@ -22,7 +22,7 @@ TEST(IntegerTest, Interpret7) {
   auto number = make_unique<IntegerExpr>(7);
   number->Visit(&interpreter_);
 
-  EXPECT_EQ(interpreter_.GetOutput(), 7);
+  EXPECT_EQ(interpreter_.GetOutputInt(), 7);
 }
 
 TEST(IntegerTest, Interpret0) {
@@ -30,7 +30,7 @@ TEST(IntegerTest, Interpret0) {
   auto number = make_unique<IntegerExpr>(0);
   number->Visit(&interpreter_);
 
-  EXPECT_EQ(interpreter_.GetOutput(), 0);
+  EXPECT_EQ(interpreter_.GetOutputInt(), 0);
 }
 
 TEST(AddTest, Add_1_2) {
@@ -40,7 +40,7 @@ TEST(AddTest, Add_1_2) {
 
   expr->Visit(&interpreter_);
 
-  EXPECT_EQ(interpreter_.GetOutput(), 3);
+  EXPECT_EQ(interpreter_.GetOutputInt(), 3);
 }
 
 TEST(AddTest, Add_n44_0) {
@@ -50,7 +50,7 @@ TEST(AddTest, Add_n44_0) {
 
   expr->Visit(&interpreter_);
 
-  EXPECT_EQ(interpreter_.GetOutput(), -44);
+  EXPECT_EQ(interpreter_.GetOutputInt(), -44);
 }
 
 TEST(MultiplyTest, pos_pos) {
@@ -60,7 +60,7 @@ TEST(MultiplyTest, pos_pos) {
 
   expr->Visit(&interpreter_);
 
-  EXPECT_EQ(interpreter_.GetOutput(), 6);
+  EXPECT_EQ(interpreter_.GetOutputInt(), 6);
 }
 
 TEST(MultiplyTest, pos_neg) {
@@ -70,7 +70,7 @@ TEST(MultiplyTest, pos_neg) {
 
   expr->Visit(&interpreter_);
 
-  EXPECT_EQ(interpreter_.GetOutput(), -36);
+  EXPECT_EQ(interpreter_.GetOutputInt(), -36);
 }
 
 TEST(MultiplyTest, neg_pos) {
@@ -80,7 +80,7 @@ TEST(MultiplyTest, neg_pos) {
 
   expr->Visit(&interpreter_);
 
-  EXPECT_EQ(interpreter_.GetOutput(), -68);
+  EXPECT_EQ(interpreter_.GetOutputInt(), -68);
 }
 
 TEST(MultiplyTest, neg_neg) {
@@ -90,7 +90,7 @@ TEST(MultiplyTest, neg_neg) {
 
   expr->Visit(&interpreter_);
 
-  EXPECT_EQ(interpreter_.GetOutput(), 8);
+  EXPECT_EQ(interpreter_.GetOutputInt(), 8);
 }
 
 // Add divide
@@ -101,7 +101,7 @@ TEST(DivideTest, pos_pos) {
 
   expr->Visit(&interpreter_);
 
-  EXPECT_EQ(interpreter_.GetOutput(), 2);
+  EXPECT_EQ(interpreter_.GetOutputInt(), 2);
 }
 
 TEST(DivideTest, pos_pos_fraction) {
@@ -111,7 +111,7 @@ TEST(DivideTest, pos_pos_fraction) {
 
   expr->Visit(&interpreter_);
 
-  EXPECT_EQ(interpreter_.GetOutput(), 3);
+  EXPECT_EQ(interpreter_.GetOutputInt(), 3);
 }
 
 // Add subtract tests
@@ -122,7 +122,7 @@ TEST(SubtractTest, Subtract_422_90) {
 
   expr->Visit(&interpreter_);
 
-  EXPECT_EQ(interpreter_.GetOutput(), 332);
+  EXPECT_EQ(interpreter_.GetOutputInt(), 332);
 }
 TEST(SubtractTest, Subtract_n23_9) {
   InterpretVisitor interpreter_;
@@ -131,7 +131,7 @@ TEST(SubtractTest, Subtract_n23_9) {
 
   expr->Visit(&interpreter_);
 
-  EXPECT_EQ(interpreter_.GetOutput(), -32);
+  EXPECT_EQ(interpreter_.GetOutputInt(), -32);
 }
 
 TEST(ComplexTest, DifferenceOfAdditions) {
@@ -144,5 +144,5 @@ TEST(ComplexTest, DifferenceOfAdditions) {
 
   expr->Visit(&interpreter_);
 
-  EXPECT_EQ(interpreter_.GetOutput(), 2);
+  EXPECT_EQ(interpreter_.GetOutputInt(), 2);
 }
