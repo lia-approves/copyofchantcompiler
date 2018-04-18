@@ -11,47 +11,48 @@
 
 
 int main() {
-  cs160::scanner::statemachine::State error;
+    //error state is always the 0th state
+  cs160::scanner::statemachine::State error(0);
 
-  cs160::scanner::statemachine::State start(0);
-  cs160::scanner::statemachine::State intState(1);
-  cs160::scanner::statemachine::State opState(2);
-  cs160::scanner::statemachine::State openParenState(3);
-  cs160::scanner::statemachine::State closeParenState(4);
+  cs160::scanner::statemachine::State start(1);
+  cs160::scanner::statemachine::State intState(2);
+  cs160::scanner::statemachine::State opState(3);
+  cs160::scanner::statemachine::State openParenState(4);
+  cs160::scanner::statemachine::State closeParenState(5);
 
-  start.addTransition('0', 1);
-  start.addTransition('1', 1);
-  start.addTransition('2', 1);
-  start.addTransition('3', 1);
-  start.addTransition('4', 1);
-  start.addTransition('5', 1);
-  start.addTransition('6', 1);
-  start.addTransition('7', 1);
-  start.addTransition('8', 1);
-  start.addTransition('9', 1);
+  start.addTransition('0', 2);
+  start.addTransition('1', 2);
+  start.addTransition('2', 2);
+  start.addTransition('3', 2);
+  start.addTransition('4', 2);
+  start.addTransition('5', 2);
+  start.addTransition('6', 2);
+  start.addTransition('7', 2);
+  start.addTransition('8', 2);
+  start.addTransition('9', 2);
 
-  start.addTransition('+', 2);
-  start.addTransition('-', 2);
-  start.addTransition('/', 2);
-  start.addTransition('*', 2);
+  start.addTransition('+', 3);
+  start.addTransition('-', 3);
+  start.addTransition('/', 3);
+  start.addTransition('*', 3);
 
-  start.addTransition('(', 3);
+  start.addTransition('(', 4);
 
-  start.addTransition(')', 4);
+  start.addTransition(')', 5);
 
     
     start.set_token_output([](std::string str)->cs160::scanner::token::Token {return cs160::scanner::token::InvalidToken(str);});
     
-  intState.addTransition('0', 1);
-  intState.addTransition('1', 1);
-  intState.addTransition('2', 1);
-  intState.addTransition('3', 1);
-  intState.addTransition('4', 1);
-  intState.addTransition('5', 1);
-  intState.addTransition('6', 1);
-  intState.addTransition('7', 1);
-  intState.addTransition('8', 1);
-  intState.addTransition('9', 1);
+  intState.addTransition('0', 2);
+  intState.addTransition('1', 2);
+  intState.addTransition('2', 2);
+  intState.addTransition('3', 2);
+  intState.addTransition('4', 2);
+  intState.addTransition('5', 2);
+  intState.addTransition('6', 2);
+  intState.addTransition('7', 2);
+  intState.addTransition('8', 2);
+  intState.addTransition('9', 2);
     
     intState.set_token_output([](std::string str)->cs160::scanner::token::Token {return cs160::scanner::token::IntegerToken(str);});
     opState.set_token_output([](std::string str)->cs160::scanner::token::Token {return cs160::scanner::token::ArithmeticExpressionToken(str);});
