@@ -21,19 +21,57 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#ifndef ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_H_
-#define ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_H_
 
-#include "abstract_syntax/abstract_syntax_tree_v1.h"
-#include "abstract_syntax/abstract_syntax_tree_v2.h"
+#include "ArithmeticExpressionToken.h"
+#include <sstream>
+#include <string>
 
 namespace cs160 {
-namespace abstract_syntax {
+namespace scanner {
+namespace token {
 
-namespace frontend = version_1;
-namespace backend = version_1;
+// Constructor for simple input
+ArithmeticExpressionToken::ArithmeticExpressionToken(char tok){
 
-}  // namespace abstract_syntax
+    token_char_ = tok;
+
+    std::stringstream ss;
+    ss << tok;
+    std::string setter = "";
+    ss >> setter;
+
+    set_token_str(setter);
+}
+
+// Constructor for if input is more than single char
+ArithmeticExpressionToken::ArithmeticExpressionToken(std::string tok){
+    set_token_str(tok);
+
+    token_char_ = tok[0];
+}
+
+// Method to set the value of a token given a string
+void ArithmeticExpressionToken::set_token(std::string tok){
+    set_token_str(tok);
+
+    token_char_ = tok[0];
+}
+
+// Method to set value of a token given a char
+void ArithmeticExpressionToken::set_token_char(char tok){
+    token_char_ = tok;
+
+    std::stringstream ss;
+    ss << tok;
+    std::string setter;
+    set_token_str(setter);
+}
+
+// Getter
+char ArithmeticExpressionToken::get_token_char(){
+    return token_char_;
+}
+
+}  // namespace token
+}  // namespace scanner
 }  // namespace cs160
-
-#endif  // ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_H_

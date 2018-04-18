@@ -21,19 +21,31 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#ifndef ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_H_
-#define ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_H_
+#ifndef SCANNER_TOKEN_OPENPARENTHESISTOKEN_H
+#define SCANNER_TOKEN_OPENPARENTHESISTOKEN_H
 
-#include "abstract_syntax/abstract_syntax_tree_v1.h"
-#include "abstract_syntax/abstract_syntax_tree_v2.h"
+#include "Token.h"
+#include <stdio.h>
+#include <string>
 
 namespace cs160 {
-namespace abstract_syntax {
+namespace scanner {
+namespace token {
 
-namespace frontend = version_1;
-namespace backend = version_1;
+class OpenParenthesisToken : public Token{
 
-}  // namespace abstract_syntax
+  public:
+    // cannot use the Token(string) constructor, or it will be bad
+    OpenParenthesisToken();
+    void set_token(std::string str);
+    char get_token_char();
+
+  private:
+    const char token_char_ = '(';
+    const std::string token_str_ = "(";
+};
+}  // namespace token
+}  // namespace scanner
 }  // namespace cs160
 
-#endif  // ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_H_
+#endif // SCANNER_TOKEN_OPENPARENTHESISTOKEN_H

@@ -21,19 +21,35 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#ifndef ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_H_
-#define ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_H_
 
-#include "abstract_syntax/abstract_syntax_tree_v1.h"
-#include "abstract_syntax/abstract_syntax_tree_v2.h"
+#ifndef SCANNER_TOKEN_ARITHMETICEXPRESSIONTOKEN_H_
+#define SCANNER_TOKEN_ARITHMETICEXPRESSIONTOKEN_H_
+
+#include "Token.h"
+#include <stdio.h>
+#include <string>
 
 namespace cs160 {
-namespace abstract_syntax {
+namespace scanner {
+namespace token {
 
-namespace frontend = version_1;
-namespace backend = version_1;
+class ArithmeticExpressionToken: public Token{
 
-}  // namespace abstract_syntax
+  public:
+    // Constructors
+    explicit ArithmeticExpressionToken(char tok);
+    explicit ArithmeticExpressionToken(std::string tok);
+
+    // Getts and setters
+    void set_token(std::string str);
+    void set_token_char(char tok);
+    char get_token_char();
+
+  private:
+    char token_char_;
+};
+}  // namespace token
+}  // namespace scanner
 }  // namespace cs160
 
-#endif  // ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_H_
+#endif //SCANNER_TOKEN_ARITHMETICEXPRESSIONTOKEN_H_
