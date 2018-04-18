@@ -16,6 +16,7 @@ std::unique_ptr<ast::AstNode> Frontend::stringToAst(std::string input) {
 
 std::queue<scan::token::Token> Frontend::tokenizeString(std::string input) {
   std::queue<scan::token::Token> q;
+  q.push(IntegerToken("2"));
   return q;
 }
 
