@@ -12,7 +12,18 @@ cc_library(
 
 cc_test(
 	name = "interpreter_test",
-	srcs = ["interpreter_test_old.cc"],
+	srcs = ["interpreter_test.cc"],
+	deps = [
+             "@gtest//:main",
+             ":interpreter"
+        ],
+	timeout = "short",
+	size = "small",
+)
+
+cc_test(
+	name = "interpreter_test_randomAst",
+	srcs = ["interpreter_test_randomAst.cc"],
 	deps = [
              "@gtest//:main",
              ":interpreter"
