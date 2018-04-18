@@ -34,8 +34,13 @@ std::queue<scan::token::Token> Frontend::tokenizeString(std::string input) {
 }
 
 std::unique_ptr<ast::AstNode> Frontend::makeParseTree(std::queue<scan::token::Token> tokens) {
-  auto tree = std::unique_ptr<ast::AstNode>(new ast::IntegerExpr(2));
-  return tree;
+  auto two = cs160::make_unique<ast::IntegerExpr>(2);
+  auto one = cs160::make_unique<ast::IntegerExpr>(1);
+  auto three = cs160::make_unique<ast::IntegerExpr>(3);
+  auto add = make_unique<ast::AddExpr>(std::move(one), std::move(three));
+
+  auto root = make_unique<ast::MultiplyExpr>(std::move(two), std::move(add));
+  return root;
 }
 
 
