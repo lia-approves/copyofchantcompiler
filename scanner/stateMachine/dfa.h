@@ -36,6 +36,9 @@ SOFTWARE.
 #include "scanner/token/Token.h"
 #include <map>
 #include <iostream>
+#include <stack>
+#include <queue>
+
 
 namespace cs160 {
 namespace scanner {
@@ -65,6 +68,9 @@ class DFA {
     int startState_;
     State getStateById_(int id);
     std::map<int, State> states_;
+    std::stack<State> recently_visited_;    //used for rollback
+    std::queue<token::Token> scanner_output_;      //queue keeps track of all of the tokens found, gives this to the parser
+    
 };
 
 }  // namespace statemachine
