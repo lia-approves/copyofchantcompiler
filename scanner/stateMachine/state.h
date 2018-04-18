@@ -27,6 +27,7 @@ SOFTWARE.
 #include "scanner/token/Token.h"
 #include "scanner/token/InvalidToken.h"
 #include <map>
+#include <functional>
 
 /*
   Every state must have a unique POSITIVE id.
@@ -48,11 +49,11 @@ class State {
     // Otherwise initialize it with a Token
     explicit State(int id = -1);
     explicit State(int id, token::Token token);
-    
+
 
     // Destructor for State object
     ~State(void);
-    
+
     //set the output type for the state
     void set_token_output(std::function<token::Token(std::string)>func);
     //return the correct output type
