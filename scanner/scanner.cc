@@ -12,7 +12,6 @@
 
 int main() {
     //error state is always the 0th state
-  cs160::scanner::statemachine::State error(0);
 
   cs160::scanner::statemachine::State start(1);
   cs160::scanner::statemachine::State intState(2);

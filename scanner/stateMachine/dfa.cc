@@ -32,6 +32,9 @@ namespace statemachine {
 // Start DFA off with initial state
 // Intialize the intial state
 DFA::DFA(State start) {
+    
+    State error(0);
+    addState(error);
   this->startState_ = this->currentState_ = start.getId();
   addState(start);
 }
@@ -48,12 +51,13 @@ void DFA::input(char c) {
   lexeme_ = lexeme_ + c;
 
   if(states_[currentState_].isAccepting()){  //double check that this works later
-        while(!states_.empty()){
-            recently_visited_.pop();
-        }
+      stack_empty();
   }
   else if(currentState_ == 0){ //error state
         //call rollback here when its finished
+      //return after rollback
+      rollback();
+      return;
   }
 
   recently_visited_.push(states_[currentState_]);
@@ -61,16 +65,47 @@ void DFA::input(char c) {
   int nextStateId = states_[currentState_].nextState(c);
   this->currentState_ = nextStateId;
 }
+    
+void DFA::rollback(){
+    //pop from stack until we find accepting state
+    State s;
+    
+    while(!s.isAccepting() && !recently_visited_.empty()){
+        s = recently_visited_.top();
+        recently_visited_.pop();
+        position_--;
+    }
+    
+    if(recently_visited_.empty()){
+        token::InvalidToken t;
+        scanner_output_.push(t);
+    }else{
+        //it has to be accepting
+        token::Token t = s.get_token(lexeme_);
+        scanner_output_.push(t);
+    }
+    
+    //clear stack
+    stack_empty();
+    //lexeme = ""
+    lexeme_ = "";
+    
+}
+    
+    void DFA::stack_empty(){
+        while(!states_.empty()){
+            recently_visited_.pop();
+        }
+    }
 
 void DFA::input(std::string s) {
   lexeme_ = "";              //fresh lexeme
 
-  while(!states_.empty()){   //force stack to empty here for when scanning restarts due to rollback
-    recently_visited_.pop();
-  }
-
+    stack_empty();
+    
   for(; position_ < s.length(); position_++){ //pass chars one by one to input(char c)
     this->input(s.at(position_));
+      
   }
 }
 

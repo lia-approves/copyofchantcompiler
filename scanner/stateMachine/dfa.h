@@ -65,6 +65,9 @@ class DFA {
     void addTransition(int stateId, char trigger, int destStateId);
 
   private:
+    
+    void rollback();
+    void stack_empty();
     std::string lexeme_;
     int currentState_;
     int startState_;
