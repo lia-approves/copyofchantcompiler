@@ -17,8 +17,8 @@ Frontend::~Frontend(void) {}
 
 std::unique_ptr<ast::AstNode> Frontend::stringToAst(std::string input) {
   // return cs160::abstract_syntax::frontend::IntegerExpr node(2);
-  auto tree = std::unique_ptr<ast::AstNode>(new ast::IntegerExpr(2));
-  return tree;
+  auto tokenQueue = Frontend::tokenizeString(input);
+  return Frontend::makeParseTree(tokenQueue);
 }
 
 std::queue<scan::token::Token> Frontend::tokenizeString(std::string input) {
