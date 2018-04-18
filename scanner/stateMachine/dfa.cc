@@ -37,7 +37,7 @@ DFA::DFA(State start) {
 }
 
 DFA::~DFA(void) {}
-    
+
 
 void DFA::addState(State state) {
   states_[state.getId()] = state;
@@ -45,13 +45,27 @@ void DFA::addState(State state) {
 
 // Core function for DFA, lets us pass in the next input char to be processed and assign necessary states and transitions based on input
 void DFA::input(char c) {
+  lexeme_ = lexeme_ + c;
+
+  if(states_[currentState_].isAccepting()){  //double check that this works later
+        while(!states_.empty()){
+            recently_visited_.pop();
+        }
+  }
+
+  recently_visited_.push(states_[currentState_]);
+
   int nextStateId = states_[currentState_].nextState(c);
   this->currentState_ = nextStateId;
 }
 
 void DFA::input(std::string s) {
-  for(int i = 0; i < s.length(); i++){
-    this->input(s.at(i));
+  lexeme_ = "";
+
+  //might need to force stack to empty here for when scanning restarts due to rollback
+
+  for(; position_ < s.length(); position_++){
+    this->input(s.at(position_));
   }
 }
 

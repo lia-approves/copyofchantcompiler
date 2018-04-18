@@ -38,6 +38,7 @@ SOFTWARE.
 #include <iostream>
 #include <stack>
 #include <queue>
+#include <string>
 
 
 namespace cs160 {
@@ -49,7 +50,7 @@ class DFA {
   public:
     explicit DFA(State start);
     ~DFA(void);
-    
+
 
 
     void addState(State state);
@@ -64,13 +65,17 @@ class DFA {
     void addTransition(int stateId, char trigger, int destStateId);
 
   private:
+    std::string lexeme_;
     int currentState_;
     int startState_;
+
+    unsigned int position_ = 0;
+
     State getStateById_(int id);
     std::map<int, State> states_;
     std::stack<State> recently_visited_;    //used for rollback
     std::queue<token::Token> scanner_output_;      //queue keeps track of all of the tokens found, gives this to the parser
-    
+
 };
 
 }  // namespace statemachine
