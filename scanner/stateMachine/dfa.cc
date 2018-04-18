@@ -60,28 +60,34 @@ void DFA::input(char c) {
       return;
   }
 
+    int nextStateId = states_[currentState_].nextState(c);
+    currentState_ = nextStateId;
   recently_visited_.push(states_[currentState_]);
 
-  int nextStateId = states_[currentState_].nextState(c);
-  this->currentState_ = nextStateId;
+
 }
     
 void DFA::rollback(){
     //pop from stack until we find accepting state
     State s;
+    int counter = 0;
     
     while(!s.isAccepting() && !recently_visited_.empty()){
         s = recently_visited_.top();
         recently_visited_.pop();
         position_--;
+        counter++;
+    }
+    if(counter> 1){
+        lexeme_ = lexeme_.substr(0, counter-1);
     }
     
-    if(recently_visited_.empty()){
-        token::InvalidToken t;
+    if(s.isAccepting()){
+        token::Token t = s.get_token(lexeme_);
         scanner_output_.push(t);
     }else{
         //it has to be accepting
-        token::Token t = s.get_token(lexeme_);
+        token::InvalidToken t;
         scanner_output_.push(t);
     }
     
@@ -93,7 +99,7 @@ void DFA::rollback(){
 }
     
     void DFA::stack_empty(){
-        while(!states_.empty()){
+        while(!recently_visited_.empty()){
             recently_visited_.pop();
         }
     }
@@ -107,7 +113,15 @@ void DFA::input(std::string s) {
     this->input(s.at(position_));
       
   }
+    rollback();
 }
+    
+    void DFA::print_queue(){
+        while(!scanner_output_.empty()){
+            std::cout << scanner_output_.front().print() << std::endl;
+            scanner_output_.pop();
+        }
+    }
 
 // Transition function for DFA
 void DFA::addTransition(int stateId, char trigger, int destStateId) {

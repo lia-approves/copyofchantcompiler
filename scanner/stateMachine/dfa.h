@@ -63,6 +63,8 @@ class DFA {
     // add a transition from state 'stateId' to state 'destStateId' on character trigger
     // NOTE: you can refer to states that aren't registerd!  The DFA will simply create them for you
     void addTransition(int stateId, char trigger, int destStateId);
+    
+    void print_queue();
 
   private:
     

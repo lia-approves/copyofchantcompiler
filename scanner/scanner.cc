@@ -68,9 +68,11 @@ int main() {
   arithmeticDFA.addState(openParenState);
   arithmeticDFA.addState(closeParenState);
 
-  arithmeticDFA.input('2');
-  arithmeticDFA.input('+');
-  arithmeticDFA.input('7');
+  //arithmeticDFA.input('2');
+  //arithmeticDFA.input('+');
+  //arithmeticDFA.input('7');
+    arithmeticDFA.input("270897139487");
+    arithmeticDFA.print_queue();
     
 
   return 0;
