@@ -46,7 +46,6 @@ void DFA::addState(State state) {
 void DFA::input(char c) {
   int nextStateId = states_[currentState_].nextState(c);
   this->currentState_ = nextStateId;
-  std::cout << nextStateId;
 }
 
 // Transition function for DFA
@@ -60,6 +59,7 @@ void DFA::addTransition(int stateId, char trigger, int destStateId) {
   }
   states_[stateId].addTransition(trigger, destStateId);
 }
+
 
 }  // namespace statemachine
 }  // namespace scanner

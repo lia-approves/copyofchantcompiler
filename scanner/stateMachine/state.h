@@ -55,6 +55,7 @@ class State {
     // Method for adding transition to a state, input is a character
     // and where the state should go
     void addTransition(char trigger, int nextStateId);
+    void addTransition(char startChar, char endChar, int nextStateId);
     int nextState(char input);
 
     // Basic getters

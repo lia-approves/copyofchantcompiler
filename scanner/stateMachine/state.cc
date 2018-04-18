@@ -47,6 +47,16 @@ void State::addTransition(char trigger, int nextStateId) {
   transitions_[trigger] = nextStateId;
 }
 
+void State::addTransition(char startChar, char endChar, int nextStateId) {
+  int startASCII = (int) startChar;
+  int endASCII = (int) endChar;
+
+  for(int i = startASCII; i <= endASCII; i++){
+    char current = (char) i;
+    this->addTransition(i, nextStateId);
+  }
+}
+
 int State::nextState(char input) {
   return transitions_[input];
 }
