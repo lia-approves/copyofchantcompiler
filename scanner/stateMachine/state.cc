@@ -33,9 +33,9 @@ namespace statemachine {
 State::State(int id) {
     this->id_ = id;
     this->accepting_ = false;
-    this->token_ = InvalidToken();
+    this->token_ = token::InvalidToken();
 }
-State::State(int id, Token token) {
+    State::State(int id, token::Token token) {
     this->id_ = id;
     this->accepting_ = true;
     this->token_ = token;
