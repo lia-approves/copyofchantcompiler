@@ -1,7 +1,7 @@
 // Copyright msg for cpplint
 
-#ifndef INTERMEDIATE_REPRESENTATION_IR_H_
-#define INTERMEDIATE_REPRESENTATION_IR_H_
+#ifndef BACKEND_IR_H_
+#define BACKEND_IR_H_
 #include <iostream>
 #include <string>
 #include <vector>
@@ -58,4 +58,4 @@ class StatementNode {
 }  // namespace intermediate_representation
 }  // namespace cs160
 
-#endif  // INTERMEDIATE_REPRESENTATION_IR_H_
+#endif  // BACKEND_IR_H_
