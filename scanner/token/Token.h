@@ -32,10 +32,11 @@ namespace token {
 
 class Token{
   public:
-    // Constructors
+    // Constructors and destructors
     // Note: default does not do anything
     Token();
     explicit Token(std::string str);
+    virtual ~Token();
 
     // Getters and setters
     virtual std::string get_token();

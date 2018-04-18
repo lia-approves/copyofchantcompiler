@@ -22,7 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 #include "Token.h"
-#include <string>
 
 namespace cs160 {
 namespace scanner {
@@ -31,6 +30,10 @@ namespace token {
 Token::Token(){ /*doesn't do anything, is necessary to have a default constructor in InvalidToken*/};
 Token::Token(std::string str){
   token_str_ = str;
+}
+
+Token::~Token(){
+
 }
 
 // Basic getters and setters

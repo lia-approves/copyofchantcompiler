@@ -47,7 +47,7 @@ class State {
     // Constructors for creating states, default value is -1
     // Otherwise initialize it with a Token
     explicit State(int id = -1);
-    explicit State(int id, Token token);
+    explicit State(int id, token::Token token);
 
     // Destructor for State object
     ~State(void);
@@ -60,12 +60,12 @@ class State {
     // Basic getters
     int getId() const { return id_; }
     bool isAccepting() const { return accepting_; }
-    Token getToken() const { return token_; }
+    token::Token getToken() const { return token_; }
 
   private:
     int id_;
     bool accepting_;
-    Token token_;
+    token::Token token_;
     std::map<char, int> transitions_;
 };
 }  // namespace statemachine
