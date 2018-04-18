@@ -1,3 +1,5 @@
+// Copyright msg for cpplint
+
 #ifndef SMART_POINTER_PRIMER_SIMPLE_EXAMPLE_H_
 #define SMART_POINTER_PRIMER_SIMPLE_EXAMPLE_H_
 

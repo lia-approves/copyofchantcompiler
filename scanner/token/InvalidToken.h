@@ -21,19 +21,27 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#ifndef ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_H_
-#define ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_H_
+#ifndef SCANNER_TOKEN_INVALIDTOKEN_H
+#define SCANNER_TOKEN_INVALIDTOKEN_H
 
-#include "abstract_syntax/abstract_syntax_tree_v1.h"
-#include "abstract_syntax/abstract_syntax_tree_v2.h"
+#include "Token.h"
+#include <stdio.h>
+#include <string>
 
 namespace cs160 {
-namespace abstract_syntax {
+namespace scanner {
+namespace token {
 
-namespace frontend = version_1;
-namespace backend = version_1;
+class InvalidToken: public Token{
 
-}  // namespace abstract_syntax
+// Nothing much here, default constructor always used for invalid token
+// Generates a invalid token when called
+// Set token for setting a given token to invalid
+  public:
+    InvalidToken();
+    void set_token(std::string);
+};
+}  // namespace token
+}  // namespace scanner
 }  // namespace cs160
-
-#endif  // ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_H_
+#endif //SCANNER_TOKEN_INVALIDTOKEN_H

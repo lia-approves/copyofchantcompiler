@@ -21,19 +21,36 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#ifndef ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_H_
-#define ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_H_
-
-#include "abstract_syntax/abstract_syntax_tree_v1.h"
-#include "abstract_syntax/abstract_syntax_tree_v2.h"
+#include "IntegerToken.h"
+#include <sstream>
+#include <string>
 
 namespace cs160 {
-namespace abstract_syntax {
+namespace scanner {
+namespace token {
 
-namespace frontend = version_1;
-namespace backend = version_1;
+IntegerToken::IntegerToken(std::string str) : Token(str) {}
 
-}  // namespace abstract_syntax
+IntegerToken::IntegerToken(int tok_integer) {
+    std::string str_arg = std::to_string(tok_integer);
+    set_token_str(str_arg);
+
+    token_int_ = tok_integer;
+}
+
+void IntegerToken::set_token(std::string str){
+
+    set_token_str(str);
+
+    std::stringstream cast_to_int(str);
+
+    cast_to_int >> token_int_;
+}
+
+int IntegerToken::get_token_int(){
+    return token_int_;
+}
+
+}  // namespace token
+}  // namespace scanner
 }  // namespace cs160
-
-#endif  // ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_H_

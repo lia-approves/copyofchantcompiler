@@ -21,19 +21,35 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#ifndef ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_H_
-#define ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_H_
-
-#include "abstract_syntax/abstract_syntax_tree_v1.h"
-#include "abstract_syntax/abstract_syntax_tree_v2.h"
+#include "gtest/gtest.h"
+#include "scanner/stateMachine/state.h"
 
 namespace cs160 {
-namespace abstract_syntax {
+namespace scanner {
 
-namespace frontend = version_1;
-namespace backend = version_1;
+TEST(StateTests, DefaultState) {
+  State s;
+  ASSERT_EQ(s.getId(), -1);
+  ASSERT_EQ(s.isAccepting(), false);
+}
 
-}  // namespace abstract_syntax
-}  // namespace cs160
+TEST(StateTests, CustomStateId) {
+  State s(4);
+  ASSERT_EQ(s.getId(), 4);
+  ASSERT_EQ(s.isAccepting(), false);
+}
 
-#endif  // ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_H_
+TEST(StateTests, Transition) {
+  State s(3);
+  s.addTransition('a', 5);
+  ASSERT_EQ(s.nextState('a'), 5);
+}
+
+TEST(StateTests, DefaultToken) {
+  State s;
+  Token t;
+  ASSERT_EQ(s.getToken().get_token(), t.get_token());
+}
+
+} // namespace scanner
+} // namespace cs160

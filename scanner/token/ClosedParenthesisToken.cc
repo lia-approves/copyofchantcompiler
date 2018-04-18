@@ -21,19 +21,25 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#ifndef ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_H_
-#define ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_H_
-
-#include "abstract_syntax/abstract_syntax_tree_v1.h"
-#include "abstract_syntax/abstract_syntax_tree_v2.h"
-
 namespace cs160 {
-namespace abstract_syntax {
+namespace scanner {
+namespace token {
 
-namespace frontend = version_1;
-namespace backend = version_1;
+#include "ClosedParenthesisToken.h"
+#include <string>
 
-}  // namespace abstract_syntax
+ClosedParenthesisToken::ClosedParenthesisToken(){
+    // do nothing ~ the const string and char are already created
+}
+
+void ClosedParenthesisToken::set_token(std::string str){
+    // do nothing ~ the const string and char are already created
+}
+
+char ClosedParenthesisToken::get_token_char(){
+    return token_char_;
+}
+
+}  // namespace token
+}  // namespace scanner
 }  // namespace cs160
-
-#endif  // ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_H_
