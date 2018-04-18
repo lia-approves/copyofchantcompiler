@@ -21,12 +21,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+#include <sstream>
+#include <string>
 #include "gtest/gtest.h"
 #include "abstract_syntax/abstract_syntax_tree_v1.h"
 #include "abstract_syntax/print_visitor_v1.h"
 #include "utility/memory.h"
-#include <sstream>
-#include <string>
+
 
 using cs160::abstract_syntax::version_1::IntegerExpr;
 using cs160::abstract_syntax::version_1::AddExpr;
