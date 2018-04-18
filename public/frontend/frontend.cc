@@ -1,20 +1,27 @@
 #include "public/frontend/frontend.h"
-#include "utility/memory.h"
 
 namespace cs160 {
 namespace frontend {
 
+namespace ast = cs160::abstract_syntax::frontend;
+namespace scan = cs160::scanner;
+
 Frontend::~Frontend(void) {}
 
-std::unique_ptr<cs160::abstract_syntax::frontend::AstNode> stringToAst(std::string input) {
+std::unique_ptr<ast::AstNode> Frontend::stringToAst(std::string input) {
   // return cs160::abstract_syntax::frontend::IntegerExpr node(2);
-  auto tree = std::unique_ptr<cs160::abstract_syntax::frontend::AstNode>(new cs160::abstract_syntax::frontend::IntegerExpr(2));
+  auto tree = std::unique_ptr<ast::AstNode>(new ast::IntegerExpr(2));
   return tree;
 }
 
-std::queue<cs160::scanner::token::Token> tokenizeString(std::string input) {
-  std::queue<cs160::scanner::token::Token> q;
+std::queue<scan::token::Token> Frontend::tokenizeString(std::string input) {
+  std::queue<scan::token::Token> q;
   return q;
+}
+
+std::unique_ptr<ast::AstNode> Frontend::makeParseTree(std::queue<scan::token::Token> tokens) {
+  auto tree = std::unique_ptr<ast::AstNode>(new ast::IntegerExpr(2));
+  return tree;
 }
 
 
