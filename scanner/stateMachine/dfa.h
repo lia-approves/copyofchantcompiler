@@ -49,7 +49,7 @@ class DFA {
     void addState(State state);
     void reset() { currentState_ = startState_; }
     State getCurrentState() const { return states_.at(currentState_); }
-    token::Token input(char c);
+    void input(char c);
     bool isAccepting() const { return states_.at(currentState_).isAccepting(); }
 
     // add a transition from state 'stateId' to state 'destStateId' on character trigger

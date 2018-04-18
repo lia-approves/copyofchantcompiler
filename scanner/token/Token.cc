@@ -32,6 +32,10 @@ Token::Token(std::string str){
   token_str_ = str;
 }
 
+Token::~Token(){
+
+}
+
 // Basic getters and setters
 std::string Token::get_token(){
   return token_str_;

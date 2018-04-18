@@ -23,6 +23,7 @@ SOFTWARE.
 */
 #include "dfa.h"
 #include <map>
+#include <iostream>
 
 namespace cs160 {
 namespace scanner {
@@ -42,11 +43,10 @@ void DFA::addState(State state) {
 }
 
 // Core function for DFA, lets us pass in the next input char to be processed and assign necessary states and transitions based on input
-    token::Token DFA::input(char c) {
+void DFA::input(char c) {
   int nextStateId = states_[currentState_].nextState(c);
   this->currentState_ = nextStateId;
-  State nextState = states_[nextStateId];
-  return nextState.getToken();
+  std::cout << nextStateId;
 }
 
 // Transition function for DFA
