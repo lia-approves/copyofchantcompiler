@@ -62,6 +62,7 @@ class State {
     // and where the state should go
     void addTransition(char trigger, int nextStateId);
     void addTransition(char startChar, char endChar, int nextStateId);
+    void makeAccepting();
     int nextState(char input);
 
     // Basic getters

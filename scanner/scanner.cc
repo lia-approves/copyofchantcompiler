@@ -16,9 +16,13 @@ int main() {
 
   cs160::scanner::statemachine::State start(1);
   cs160::scanner::statemachine::State intState(2);
+    intState.makeAccepting();
   cs160::scanner::statemachine::State opState(3);
+    opState.makeAccepting();
   cs160::scanner::statemachine::State openParenState(4);
+    openParenState.makeAccepting();
   cs160::scanner::statemachine::State closeParenState(5);
+    closeParenState.makeAccepting();
 
   start.addTransition('0', 2);
   start.addTransition('1', 2);

@@ -58,6 +58,8 @@ void State::addTransition(char trigger, int nextStateId) {
   transitions_[trigger] = nextStateId;
 }
 
+    void State::makeAccepting(){ accepting_ = true; }
+    
 void State::addTransition(char startChar, char endChar, int nextStateId) {
   int startASCII = (int) startChar;
   int endASCII = (int) endChar;
