@@ -3,7 +3,7 @@
 namespace cs160 {
 namespace frontend {
 
-void Frontend::~Frontend(void) {}
+Frontend::~Frontend(void) {}
 
 void stringToAst() {}
 
