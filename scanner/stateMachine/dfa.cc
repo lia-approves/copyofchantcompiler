@@ -52,6 +52,9 @@ void DFA::input(char c) {
             recently_visited_.pop();
         }
   }
+  else if(currentState_ == 0){ //error state
+        //call rollback here when its finished
+  }
 
   recently_visited_.push(states_[currentState_]);
 
@@ -60,11 +63,13 @@ void DFA::input(char c) {
 }
 
 void DFA::input(std::string s) {
-  lexeme_ = "";
+  lexeme_ = "";              //fresh lexeme
 
-  //might need to force stack to empty here for when scanning restarts due to rollback
+  while(!states_.empty()){   //force stack to empty here for when scanning restarts due to rollback
+    recently_visited_.pop();
+  }
 
-  for(; position_ < s.length(); position_++){
+  for(; position_ < s.length(); position_++){ //pass chars one by one to input(char c)
     this->input(s.at(position_));
   }
 }
