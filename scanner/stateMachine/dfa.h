@@ -35,6 +35,7 @@ SOFTWARE.
 #include "state.h"
 #include "scanner/token/Token.h"
 #include <map>
+#include <iostream>
 
 namespace cs160 {
 namespace scanner {
@@ -50,6 +51,7 @@ class DFA {
     void reset() { currentState_ = startState_; }
     State getCurrentState() const { return states_.at(currentState_); }
     void input(char c);
+    void input(std::string s);
     bool isAccepting() const { return states_.at(currentState_).isAccepting(); }
 
     // add a transition from state 'stateId' to state 'destStateId' on character trigger

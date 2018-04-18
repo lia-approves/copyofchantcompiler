@@ -48,6 +48,12 @@ void DFA::input(char c) {
   this->currentState_ = nextStateId;
 }
 
+void DFA::input(std::string s) {
+  for(int i = 0; i < s.length(); i++){
+    this->input(s.at(i));
+  }
+}
+
 // Transition function for DFA
 void DFA::addTransition(int stateId, char trigger, int destStateId) {
   // check that both states are registered in the DFA
