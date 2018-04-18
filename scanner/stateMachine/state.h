@@ -48,9 +48,15 @@ class State {
     // Otherwise initialize it with a Token
     explicit State(int id = -1);
     explicit State(int id, token::Token token);
+    
 
     // Destructor for State object
     ~State(void);
+    
+    //set the output type for the state
+    void set_token_output(std::function<token::Token(std::string)>func);
+    //return the correct output type
+    token::Token get_token(std::string str);
 
     // Method for adding transition to a state, input is a character
     // and where the state should go
@@ -68,6 +74,7 @@ class State {
     bool accepting_;
     token::Token token_;
     std::map<char, int> transitions_;
+    std::function<token::Token(std::string)> createToken_;
 };
 }  // namespace statemachine
 }  // namespace scanner

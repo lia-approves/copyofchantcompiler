@@ -46,6 +46,8 @@ class DFA {
   public:
     explicit DFA(State start);
     ~DFA(void);
+    
+
 
     void addState(State state);
     void reset() { currentState_ = startState_; }

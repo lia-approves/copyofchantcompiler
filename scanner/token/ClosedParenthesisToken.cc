@@ -31,6 +31,10 @@ namespace token {
 ClosedParenthesisToken::ClosedParenthesisToken(){
     // do nothing ~ the const string and char are already created
 }
+ 
+    ClosedParenthesisToken::ClosedParenthesisToken(std::string str){
+        // do nothing ~ the const string and char are already created
+}
 
 void ClosedParenthesisToken::set_token(std::string str){
     // do nothing ~ the const string and char are already created

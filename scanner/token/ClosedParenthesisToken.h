@@ -37,6 +37,7 @@ class ClosedParenthesisToken : public Token{
     // Constructor
     // cannot use the Token(string) constructor, or it will be bad
     ClosedParenthesisToken();
+    ClosedParenthesisToken(std::string str);
 
     // Getter and Setters
     void set_token(std::string str);

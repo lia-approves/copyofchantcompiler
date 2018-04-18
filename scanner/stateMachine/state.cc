@@ -23,6 +23,7 @@ SOFTWARE.
 */
 #include "state.h"
 #include <string>
+#include <iostream>
 
 namespace cs160 {
 namespace scanner {
@@ -41,6 +42,16 @@ State::State(int id) {
     this->token_ = token;
 }
 State::~State(void) {}
+    
+void State::set_token_output(std::function<token::Token(std::string)> func){
+    createToken_ = func;
+}
+    
+token::Token State::get_token(std::string str){
+    
+    token::Token retval =  createToken_(str);
+    return retval;
+}
 
 // Methods for getting next state of a given state and for adding transitions to a new state
 void State::addTransition(char trigger, int nextStateId) {

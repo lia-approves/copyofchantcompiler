@@ -39,6 +39,7 @@ class InvalidToken: public Token{
 // Set token for setting a given token to invalid
   public:
     InvalidToken();
+    InvalidToken(std::string str);
     void set_token(std::string);
 };
 }  // namespace token

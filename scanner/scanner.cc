@@ -3,6 +3,9 @@
 #include "scanner/stateMachine/state.h"
 #include "scanner/token/Token.h"
 #include "scanner/token/IntegerToken.h"
+#include "scanner/token/ArithmeticExpressionToken.h"
+#include "scanner/token/OpenParenthesisToken.h"
+#include "scanner/token/ClosedParenthesisToken.h"
 #include <string>
 
 
@@ -36,6 +39,9 @@ int main() {
 
   start.addTransition(')', 4);
 
+    
+    start.set_token_output([](std::string str)->cs160::scanner::token::Token {return cs160::scanner::token::InvalidToken(str);});
+    
   intState.addTransition('0', 1);
   intState.addTransition('1', 1);
   intState.addTransition('2', 1);
@@ -46,6 +52,11 @@ int main() {
   intState.addTransition('7', 1);
   intState.addTransition('8', 1);
   intState.addTransition('9', 1);
+    
+    intState.set_token_output([](std::string str)->cs160::scanner::token::Token {return cs160::scanner::token::IntegerToken(str);});
+    opState.set_token_output([](std::string str)->cs160::scanner::token::Token {return cs160::scanner::token::ArithmeticExpressionToken(str);});
+    openParenState.set_token_output([](std::string str)->cs160::scanner::token::Token {return cs160::scanner::token::OpenParenthesisToken(str);});
+    closeParenState.set_token_output([](std::string str)->cs160::scanner::token::Token {return cs160::scanner::token::ClosedParenthesisToken(str);});
 
   cs160::scanner::statemachine::DFA arithmeticDFA(start);
   arithmeticDFA.addState(intState);
@@ -56,6 +67,7 @@ int main() {
   arithmeticDFA.input('2');
   arithmeticDFA.input('+');
   arithmeticDFA.input('7');
+    
 
   return 0;
 }

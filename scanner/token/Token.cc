@@ -48,6 +48,10 @@ void Token::set_token_str(std::string str){
 void Token::set_token(std::string str) {
   token_str_ = str;
 }
+    
+std::string Token::print(){
+    return token_str_;
+}
 
 }  // namespace token
 }  // namespace scanner

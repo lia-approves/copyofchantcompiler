@@ -37,6 +37,7 @@ DFA::DFA(State start) {
 }
 
 DFA::~DFA(void) {}
+    
 
 void DFA::addState(State state) {
   states_[state.getId()] = state;
