@@ -24,10 +24,18 @@ class Operand {
 
 class Instruction {
  public:
+  Instruction();
   enum Opcode { kAdd, kSubtract, kMultiply, kDivide };
+  Opcode GetOpcode() const { return op_; }
 
+ private:
+  Opcode op_;
     // FILL ME IN
 };
+
+Instruction::Instruction() {
+  op_ = kAdd;
+}
 
 class Program {
  public:
