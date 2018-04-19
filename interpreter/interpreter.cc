@@ -31,7 +31,7 @@ const int InterpretVisitor::GetOutputInt() const {
   return output_int;
 }
 
-const std::string InterpretVisitor::GetOutputString() const{
+const std::string InterpretVisitor::GetOutputString() const {
   return output_string.str();
 }
 

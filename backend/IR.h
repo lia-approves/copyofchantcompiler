@@ -15,19 +15,40 @@ class Program;
 class StatementNode;
 
 class Register {
-  // FILL ME IN
+ public:
+  Register() {
+    value_ = 1;
+  }
+  explicit Register(int v) {
+     value_ = std::move(v);
+  }
+  int GetValue() const { return value_; }
+ private:
+  int value_;
 };
 
 class Operand {
-  // FILL ME IN
+ public:
+  explicit Operand(int v) {
+     value_ = std::move(v);
+  }
+  int GetValue() const { return value_; }
+ private:
+  int value_;
 };
 
 class Instruction {
  public:
   enum Opcode { kAdd, kSubtract, kMultiply, kDivide };
+  explicit Instruction(Opcode o) {
+    op_ = std::move(o);
+  }
+  Opcode GetOpcode() const { return op_; }
 
-    // FILL ME IN
+ private:
+  Opcode op_;
 };
+
 
 class Program {
  public:
@@ -37,6 +58,7 @@ class Program {
 
 class StatementNode {
  public:
+  StatementNode() {}
   StatementNode(std::unique_ptr<Register> target,
                 std::unique_ptr<Instruction> instruction,
                 std::unique_ptr<Operand> operand1,
@@ -47,7 +69,14 @@ class StatementNode {
                   operand1_(std::move(operand1)),
                   operand2_(std::move(operand2)),
                   next_(std::move(next)) {}
+  Operand& GetOp1() { return *operand1_; }
+  Operand& GetOp2() { return *operand2_; }
+  Register& GetTarget() { return *target_; }
+  Instruction& GetInstruction() { return *instruction_; }
+  StatementNode& GetNext() { return *next_; }
+
  private:
+    Register r;
     std::unique_ptr<Register> target_;
     std::unique_ptr<Instruction> instruction_;
     std::unique_ptr<Operand> operand1_;
