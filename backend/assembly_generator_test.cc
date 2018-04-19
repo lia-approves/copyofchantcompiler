@@ -18,17 +18,7 @@ using cs160::intermediate_representation::StatementNode;
 using cs160::make_unique;
 
 TEST(Basics, CreateInstruction) {
-  // auto instr = make_unique<StatementNode>(
-  //   make_unique<Register>(),
-  //   make_unique<Instruction>(),
-  //   make_unique<Operand>(),
-  //   make_unique<Operand>(),
-  //   NULL);
-
   auto add_instr = make_unique<Instruction>(Instruction::kAdd);
-
-  // Instruction::Opcode addop = Instruction::kAdd;
-  // std::cout << typeid(add_instr->GetOpcode()).name();
   EXPECT_EQ(add_instr->GetOpcode(), Instruction::kAdd);
 }
 
@@ -44,19 +34,15 @@ TEST(Basics, CreateRegister) {
 
 // Working on this one
 TEST(Basics, CreateStatementNode) {
-  auto add_instr = make_unique<Instruction>(Instruction::kAdd);
-  auto op1 = make_unique<Operand>(3);
-  auto op2 = make_unique<Operand>(4);
-  auto reg = make_unique<Register>(5);
-  auto next = make_unique<StatementNode>();
-  auto statement = make_unique<StatementNode>(reg);
+  auto statement = make_unique<StatementNode>(
+    make_unique<Register>(5),
+    make_unique<Instruction>(Instruction::kAdd),
+    make_unique<Operand>(2),
+    make_unique<Operand>(3),
+    make_unique<StatementNode>());
 
-  EXPECT_EQ(2, 2);
+  EXPECT_EQ(statement->GetTarget().GetValue(), 5);
+  EXPECT_EQ(statement->GetInstruction().GetOpcode(), Instruction::kAdd);
+  EXPECT_EQ(statement->GetOp1().GetValue(), 2);
+  EXPECT_EQ(statement->GetOp2().GetValue(), 3);
 }
-// TEST(IntegerTest, Interpret7) {
-//   InterpretVisitor interpreter_;
-//   auto number = make_unique<IntegerExpr>(7);
-//   number->Visit(&interpreter_);
-//
-//   EXPECT_EQ(interpreter_.GetOutputInt(), 7);
-// }
