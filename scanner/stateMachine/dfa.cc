@@ -34,6 +34,8 @@ namespace statemachine {
 DFA::DFA(State start) {
     
     State error(0);
+    error.set_token_output([](std::string str)->cs160::scanner::token::Token {return cs160::scanner::token::InvalidToken(str);});
+
     addState(error);
   this->startState_ = this->currentState_ = start.getId();
   addState(start);
@@ -50,51 +52,59 @@ void DFA::addState(State state) {
 void DFA::input(char c) {
   lexeme_ = lexeme_ + c;
 
+    
+    int nextStateId = states_[currentState_].nextState(c);
+    currentState_ = nextStateId;
+    recently_visited_.push(states_[currentState_]);
+    
+
   if(states_[currentState_].isAccepting()){  //double check that this works later
       stack_empty();
+      recently_visited_.push(states_[currentState_]);
   }
-  else if(currentState_ == 0){ //error state
+  
+    if(currentState_ == 0){ //error state
         //call rollback here when its finished
       //return after rollback
+      std::cout << "rollback " << lexeme_ << std::endl;
       rollback();
       return;
   }
 
-    int nextStateId = states_[currentState_].nextState(c);
-    currentState_ = nextStateId;
-  recently_visited_.push(states_[currentState_]);
 
-
+  
 }
     
 void DFA::rollback(){
     //pop from stack until we find accepting state
     State s;
-    int counter = 0;
+    int init_pos = position_;
     
-    while(!s.isAccepting() && !recently_visited_.empty()){
+    while(!s.isAccepting() && !recently_visited_.empty()){  //ends when stack is empty OR top state is accepting
         s = recently_visited_.top();
         recently_visited_.pop();
-        position_--;
-        counter++;
-    }
-    if(counter> 1){
-        lexeme_ = lexeme_.substr(0, counter-1);
+        
+        if(!s.isAccepting()){
+            lexeme_ = lexeme_.substr(0, lexeme_.size()-1);
+            position_--;
+        }
     }
     
     if(s.isAccepting()){
         token::Token t = s.get_token(lexeme_);
         scanner_output_.push(t);
     }else{
-        //it has to be accepting
+        //stack empty
         token::InvalidToken t;
         scanner_output_.push(t);
+        position_ = init_pos;
     }
     
     //clear stack
     stack_empty();
-    //lexeme = ""
     lexeme_ = "";
+    
+    currentState_ = startState_;
     
 }
     
@@ -105,22 +115,33 @@ void DFA::rollback(){
     }
 
 void DFA::input(std::string s) {
-  lexeme_ = "";              //fresh lexeme
-
-    stack_empty();
+  lexeme_ = ""; //fresh lexeme
+  stack_empty(); //fresh stack
     
+    recently_visited_.push(states_[currentState_]);
   for(; position_ < s.length(); position_++){ //pass chars one by one to input(char c)
     this->input(s.at(position_));
-      
   }
-    rollback();
+    
+    if(!recently_visited_.empty()){
+        State st = recently_visited_.top();
+        token::Token t = st.get_token(lexeme_);
+        scanner_output_.push(t);
+    }else{
+        token::InvalidToken t;
+        scanner_output_.push(t);
+    }
+
+    
 }
     
     void DFA::print_queue(){
+        std::cout << "printing queue: " << std::endl;
         while(!scanner_output_.empty()){
             std::cout << scanner_output_.front().print() << std::endl;
             scanner_output_.pop();
         }
+        
     }
 
 // Transition function for DFA

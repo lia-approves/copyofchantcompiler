@@ -71,7 +71,7 @@ int main() {
   //arithmeticDFA.input('2');
   //arithmeticDFA.input('+');
   //arithmeticDFA.input('7');
-    arithmeticDFA.input("270897139487");
+    arithmeticDFA.input("12(a))2");
     arithmeticDFA.print_queue();
     
 
