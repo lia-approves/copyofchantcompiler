@@ -15,27 +15,37 @@ class Program;
 class StatementNode;
 
 class Register {
-  // FILL ME IN
+ public:
+  explicit Register(int v) {
+     value_ = std::move(v);
+  }
+  int GetValue() const { return value_; }
+ private:
+  int value_;
 };
 
 class Operand {
-  // FILL ME IN
+ public:
+  explicit Operand(int v) {
+     value_ = std::move(v);
+  }
+  int GetValue() const { return value_; }
+ private:
+  int value_;
 };
 
 class Instruction {
  public:
-  Instruction();
   enum Opcode { kAdd, kSubtract, kMultiply, kDivide };
+  explicit Instruction(Opcode o) {
+    op_ = std::move(o);
+  }
   Opcode GetOpcode() const { return op_; }
 
  private:
   Opcode op_;
-    // FILL ME IN
 };
 
-Instruction::Instruction() {
-  op_ = kAdd;
-}
 
 class Program {
  public:
@@ -45,6 +55,9 @@ class Program {
 
 class StatementNode {
  public:
+  StatementNode() {}
+  explicit StatementNode(std::unique_ptr<Register> target)
+                : target_(std::move(target)) {}
   StatementNode(std::unique_ptr<Register> target,
                 std::unique_ptr<Instruction> instruction,
                 std::unique_ptr<Operand> operand1,
