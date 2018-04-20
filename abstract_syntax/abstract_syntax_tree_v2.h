@@ -1,37 +1,3 @@
-/*
-MIT License
-
-Copyright (c) 2018, Team-Chant
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
-
-#ifndef ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_TREE_V2_H_
-#define ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_TREE_V2_H_
-
-#include "utility/memory.h"
-#include <string>
-#include <vector>
-
-namespace cs160 {
-namespace abstract_syntax {
-namespace version_2 {
 // This version of the abstract syntax has sequences of assignments, where for
 // each assignment the left-hand side is a variable and the right-hand side is
 // an arithmetic expression (which may contain variables itself). The grammar
@@ -50,6 +16,18 @@ namespace version_2 {
 // where ... means 'repeating', i.e., a program is a (possibly empty)
 // sequence of assignments followed by an arithmetic expression.
 
+#ifndef ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_TREE_V2_H_
+#define ABSTRACT_SYNTAX_ABSTRACT_SYNTAX_TREE_V2_H_
+
+#include <string>
+#include <vector>
+
+#include "utility/memory.h"
+
+namespace cs160 {
+namespace abstract_syntax {
+namespace version_2 {
+
 // Forward declarations of abstract syntax tree node types for use in the
 // abstract syntax tree visitor.
 class IntegerExpr;
@@ -58,8 +36,8 @@ class AddExpr;
 class SubtractExpr;
 class MultiplyExpr;
 class DivideExpr;
-class AssignmentExpr;
-class ProgramExpr;
+class Assignment;
+class Program;
 
 // The visitor abstract base class for visiting abstract syntax trees.
 class AstVisitor {
@@ -73,8 +51,8 @@ class AstVisitor {
   virtual void VisitSubtractExpr(const SubtractExpr& exp) = 0;
   virtual void VisitMultiplyExpr(const MultiplyExpr& exp) = 0;
   virtual void VisitDivideExpr(const DivideExpr& exp) = 0;
-  virtual void VisitAssignmentExpr(const AssignmentExpr& exp) = 0;
-  virtual void VisitProgramExpr(const ProgramExpr& exp) = 0;
+  virtual void VisitAssignment(const Assignment& assignment) = 0;
+  virtual void VisitProgram(const Program& program) = 0;
 };
 
 // The definition of the abstract syntax tree abstract base class.
@@ -174,13 +152,13 @@ class DivideExpr : public BinaryOperatorExpr {
 };
 
 // An assignment v := ae.
-class AssignmentExpr : public AstNode {
+class Assignment : public AstNode {
  public:
-  AssignmentExpr(std::unique_ptr<const VariableExpr> lhs,
-                 std::unique_ptr<const ArithmeticExpr> rhs)
+  Assignment(std::unique_ptr<const VariableExpr> lhs,
+             std::unique_ptr<const ArithmeticExpr> rhs)
       : lhs_(std::move(lhs)), rhs_(std::move(rhs)) {}
 
-  void Visit(AstVisitor* visitor) const { visitor->VisitAssignmentExpr(*this); }
+  void Visit(AstVisitor* visitor) const { visitor->VisitAssignment(*this); }
 
   const VariableExpr& lhs() const { return *lhs_; }
   const ArithmeticExpr& rhs() const { return *rhs_; }
@@ -193,23 +171,23 @@ class AssignmentExpr : public AstNode {
 
 // A program, consisting of a (possibly empty) sequence of assignments followed
 // by an arithmetic expression.
-class ProgramExpr : public AstNode {
+class Program : public AstNode {
  public:
-  ProgramExpr(std::vector<std::unique_ptr<const AssignmentExpr>> assignments,
-              std::unique_ptr<const ArithmeticExpr> arithmetic_exp)
+  Program(std::vector<std::unique_ptr<const Assignment>> assignments,
+          std::unique_ptr<const ArithmeticExpr> arithmetic_exp)
       : assignments_(std::move(assignments)),
         arithmetic_exp_(std::move(arithmetic_exp)) {}
 
-  void Visit(AstVisitor* visitor) const { visitor->VisitProgramExpr(*this); }
+  void Visit(AstVisitor* visitor) const { visitor->VisitProgram(*this); }
 
-  const std::vector<std::unique_ptr<const AssignmentExpr>>& assignments() {
+  const std::vector<std::unique_ptr<const Assignment>>& assignments() const {
     return assignments_;
   }
 
   const ArithmeticExpr& arithmetic_exp() const { return *arithmetic_exp_; }
 
  private:
-  std::vector<std::unique_ptr<const AssignmentExpr>> assignments_;
+  std::vector<std::unique_ptr<const Assignment>> assignments_;
   std::unique_ptr<const ArithmeticExpr> arithmetic_exp_;
 };
 
