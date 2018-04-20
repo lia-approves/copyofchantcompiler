@@ -42,13 +42,13 @@ State::State(int id) {
     this->token_ = token;
 }
 State::~State(void) {}
-    
+
 void State::set_token_output(std::function<token::Token(std::string)> func){
     createToken_ = func;
 }
-    
+
 token::Token State::get_token(std::string str){
-    
+
     token::Token retval =  createToken_(str);
     return retval;
 }
@@ -59,13 +59,12 @@ void State::addTransition(char trigger, int nextStateId) {
 }
 
     void State::makeAccepting(){ accepting_ = true; }
-    
+
 void State::addTransition(char startChar, char endChar, int nextStateId) {
   int startASCII = (int) startChar;
   int endASCII = (int) endChar;
 
   for(int i = startASCII; i <= endASCII; i++){
-    char current = (char) i;
     this->addTransition(i, nextStateId);
   }
 }
