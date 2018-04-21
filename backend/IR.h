@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "utility/memory.h"
+#include "../utility/memory.h"
 
 
 namespace cs160 {
@@ -13,8 +13,16 @@ namespace intermediate_representation {
 
 class Program;
 class StatementNode;
+class OperandBase {
+ public:
+   OperandBase() {}
+   virtual ~OperandBase() {}
+   virtual int GetValue() const { return 0; }
+   virtual std::string GetName() const { return "0"; }
+ private:
+};
 
-class Register {
+class Register : public OperandBase {
  public:
   Register() {
     value_ = 1;
@@ -23,16 +31,20 @@ class Register {
      value_ = std::move(v);
   }
   int GetValue() const { return value_; }
+  std::string GetName() const {return "t" + std::to_string(value_); }
  private:
   int value_;
 };
 
-class Operand {
+class Operand : public OperandBase{
  public:
   explicit Operand(int v) {
      value_ = std::move(v);
   }
+  ~Operand() {}
   int GetValue() const { return value_; }
+  std::string GetName() const { return std::to_string(value_); }
+
  private:
   int value_;
 };
@@ -44,7 +56,12 @@ class Instruction {
     op_ = std::move(o);
   }
   Opcode GetOpcode() const { return op_; }
-
+  std::string GetName() const {
+    if (op_ == kAdd) return "add";
+    if (op_ == kSubtract) return "subtract";
+    if (op_ == kMultiply) return "multiply";
+    if (op_ == kDivide) return "divide";
+  }
  private:
   Opcode op_;
 };
@@ -59,29 +76,29 @@ class Program {
 class StatementNode {
  public:
   StatementNode() {}
-  StatementNode(std::unique_ptr<Register> target,
-                std::unique_ptr<Instruction> instruction,
-                std::unique_ptr<Operand> operand1,
-                std::unique_ptr<Operand> operand2,
-                std::unique_ptr<StatementNode> next)
-                : target_(std::move(target)),
-                  instruction_(std::move(instruction)),
-                  operand1_(std::move(operand1)),
-                  operand2_(std::move(operand2)),
-                  next_(std::move(next)) {}
-  Operand& GetOp1() { return *operand1_; }
-  Operand& GetOp2() { return *operand2_; }
+  StatementNode(Register* target,
+                Instruction* instruction,
+                OperandBase* operand1,
+                OperandBase* operand2,
+                StatementNode* next)
+                : target_((target)),
+                  instruction_((instruction)),
+                  operand1_((operand1)),
+                  operand2_((operand2)),
+                  next_((next)) {}
+  OperandBase& GetOp1() { return *operand1_; }
+  OperandBase& GetOp2() { return *operand2_; }
   Register& GetTarget() { return *target_; }
   Instruction& GetInstruction() { return *instruction_; }
-  StatementNode& GetNext() { return *next_; }
+  StatementNode*& GetNext() { return next_; }
 
  private:
-    Register r;
-    std::unique_ptr<Register> target_;
-    std::unique_ptr<Instruction> instruction_;
-    std::unique_ptr<Operand> operand1_;
-    std::unique_ptr<Operand> operand2_;
-    std::unique_ptr<StatementNode> next_;
+
+    Register* target_;
+    Instruction* instruction_;
+    OperandBase* operand1_;
+    OperandBase* operand2_;
+    StatementNode* next_;
 };
 
 }  // namespace intermediate_representation
