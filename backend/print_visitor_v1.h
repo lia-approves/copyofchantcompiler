@@ -21,12 +21,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#ifndef ABSTRACT_SYNTAX_PRINT_VISITOR_V1_H_
-#define ABSTRACT_SYNTAX_PRINT_VISITOR_V1_H_
+#ifndef BACKEND_PRINT_VISITOR_V1_H_
+#define BACKEND_PRINT_VISITOR_V1_H_
 
-#include "../abstract_syntax/abstract_syntax_tree_v1.h"
 #include <sstream>
 #include <string>
+#include "../abstract_syntax/abstract_syntax_tree_v1.h"
+
 
 namespace cs160 {
 namespace abstract_syntax {
@@ -83,4 +84,4 @@ class PrintVisitor : public AstVisitor {
 }  // namespace abstract_syntax
 }  // namespace cs160
 
-#endif  // ABSTRACT_SYNTAX_PRINT_VISITOR_V1_H_
+#endif  // BACKEND_PRINT_VISITOR_V1_H_
