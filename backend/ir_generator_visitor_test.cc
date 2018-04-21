@@ -44,12 +44,20 @@ using cs160::make_unique;
 
 
   class IrGenVisitorTest : public ::testing::Test {
-  protected:
+   protected:
     IrGenVisitor printer_;
   };
 
   TEST_F(IrGenVisitorTest, Expr1IsVisited) {
-    auto expr = make_unique<AddExpr>(make_unique<IntegerExpr>(5), make_unique<SubtractExpr>(make_unique<MultiplyExpr>(make_unique<DivideExpr>(make_unique<IntegerExpr>(7), make_unique<IntegerExpr>(5)), make_unique<IntegerExpr>(9)), make_unique<IntegerExpr>(6)));
+    auto expr = make_unique<AddExpr>(
+      make_unique<IntegerExpr>(5),
+      make_unique<SubtractExpr>(
+        make_unique<MultiplyExpr>(
+          make_unique<DivideExpr>(
+            make_unique<IntegerExpr>(7),
+            make_unique<IntegerExpr>(5)),
+          make_unique<IntegerExpr>(9)),
+        make_unique<IntegerExpr>(6)));
     expr->Visit(&printer_);
 
     EXPECT_EQ(1, 1);

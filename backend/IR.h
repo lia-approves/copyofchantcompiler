@@ -15,10 +15,10 @@ class Program;
 class StatementNode;
 class OperandBase {
  public:
-   OperandBase() {}
-   virtual ~OperandBase() {}
-   virtual int GetValue() const { return 0; }
-   virtual std::string GetName() const { return "0"; }
+  OperandBase() {}
+  virtual ~OperandBase() {}
+  virtual int GetValue() const { return 0; }
+  virtual std::string GetName() const { return "0"; }
  private:
 };
 
@@ -93,7 +93,6 @@ class StatementNode {
   StatementNode*& GetNext() { return next_; }
 
  private:
-
     Register* target_;
     Instruction* instruction_;
     OperandBase* operand1_;
