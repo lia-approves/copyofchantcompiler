@@ -27,6 +27,7 @@ SOFTWARE.
 #include "scanner/token/Token.h"
 #include "scanner/token/InvalidToken.h"
 #include <map>
+#include <functional>
 
 /*
   Every state must have a unique POSITIVE id.
@@ -49,12 +50,20 @@ class State {
     explicit State(int id = -1);
     explicit State(int id, token::Token token);
 
+
     // Destructor for State object
     ~State(void);
+
+    //set the output type for the state
+    void set_token_output(std::function<token::Token(std::string)>func);
+    //return the correct output type
+    token::Token get_token(std::string str);
 
     // Method for adding transition to a state, input is a character
     // and where the state should go
     void addTransition(char trigger, int nextStateId);
+    void addTransition(char startChar, char endChar, int nextStateId);
+    void makeAccepting();
     int nextState(char input);
 
     // Basic getters
@@ -67,6 +76,7 @@ class State {
     bool accepting_;
     token::Token token_;
     std::map<char, int> transitions_;
+    std::function<token::Token(std::string)> createToken_;
 };
 }  // namespace statemachine
 }  // namespace scanner

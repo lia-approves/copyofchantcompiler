@@ -30,7 +30,14 @@ namespace token {
 
 OpenParenthesisToken::OpenParenthesisToken(){
     // do nothing ~ the const string and char are already created
+    set_token_str("(");
 }
+    
+    OpenParenthesisToken::OpenParenthesisToken(std::string str){
+    // do nothing ~ the const string and char are already created
+        set_token_str("(");
+}
+
 
 void OpenParenthesisToken::set_token(std::string str){
     // do nothing ~ the const string and char are already created

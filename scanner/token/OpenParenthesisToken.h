@@ -37,6 +37,7 @@ class OpenParenthesisToken : public Token{
   public:
     // cannot use the Token(string) constructor, or it will be bad
     OpenParenthesisToken();
+    OpenParenthesisToken(std::string str);
     void set_token(std::string str);
     char get_token_char();
 

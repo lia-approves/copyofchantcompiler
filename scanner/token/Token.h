@@ -42,6 +42,8 @@ class Token{
     virtual std::string get_token();
     virtual void set_token(std::string str);
     void set_token_str(std::string str);
+    
+    virtual std::string print();
 
   private:
     std::string token_str_; //string representation of the token being represented

@@ -35,6 +35,11 @@ SOFTWARE.
 #include "state.h"
 #include "scanner/token/Token.h"
 #include <map>
+#include <iostream>
+#include <stack>
+#include <queue>
+#include <string>
+
 
 namespace cs160 {
 namespace scanner {
@@ -46,21 +51,36 @@ class DFA {
     explicit DFA(State start);
     ~DFA(void);
 
+
+
     void addState(State state);
     void reset() { currentState_ = startState_; }
     State getCurrentState() const { return states_.at(currentState_); }
     void input(char c);
+    void input(std::string s);
     bool isAccepting() const { return states_.at(currentState_).isAccepting(); }
 
     // add a transition from state 'stateId' to state 'destStateId' on character trigger
     // NOTE: you can refer to states that aren't registerd!  The DFA will simply create them for you
     void addTransition(int stateId, char trigger, int destStateId);
+    
+    void print_queue();
 
   private:
+    
+    void rollback();
+    void stack_empty();
+    std::string lexeme_;
     int currentState_;
     int startState_;
+
+    unsigned int position_ = 0;
+
     State getStateById_(int id);
     std::map<int, State> states_;
+    std::stack<State> recently_visited_;    //used for rollback
+    std::queue<token::Token> scanner_output_;      //queue keeps track of all of the tokens found, gives this to the parser
+
 };
 
 }  // namespace statemachine
