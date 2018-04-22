@@ -45,7 +45,7 @@ using cs160::make_unique;
 
   class IrGenVisitorTest : public ::testing::Test {
    protected:
-    IrGenVisitor printer_;
+    IrGenVisitor irgen_visitor_;
   };
 
   TEST_F(IrGenVisitorTest, Expr1IsVisited) {
@@ -58,7 +58,7 @@ using cs160::make_unique;
             make_unique<IntegerExpr>(5)),
           make_unique<IntegerExpr>(9)),
         make_unique<IntegerExpr>(6)));
-    expr->Visit(&printer_);
+    expr->Visit(&irgen_visitor_);
 
     EXPECT_EQ(1, 1); //need to fix this test my gtest installation exploded somehow
   }
