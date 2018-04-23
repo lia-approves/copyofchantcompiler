@@ -30,9 +30,14 @@ namespace cs160 {
 namespace scanner {
 namespace token {
 
-IntegerToken::IntegerToken(std::string str) : Token(str) {}
+IntegerToken::IntegerToken(std::string str) : Token(str) {
+    type_ t = integerToken;
+    set_curr_type(t);
+}
 
 IntegerToken::IntegerToken(int tok_integer) {
+    type_ t = integerToken;
+    set_curr_type(t);
     std::string str_arg = std::to_string(tok_integer);
     set_token_str(str_arg);
 

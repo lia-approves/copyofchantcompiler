@@ -30,13 +30,15 @@ namespace scanner {
 namespace token {
 
 OpenParenthesisToken::OpenParenthesisToken() {
-    // do nothing ~ the const string and char are already created
     set_token_str("(");
+    type_ t = openParenthesisToken;
+    set_curr_type(t);
 }
 
 OpenParenthesisToken::OpenParenthesisToken(std::string str) {
-    // do nothing ~ the const string and char are already created
-        set_token_str("(");
+    set_token_str("(");
+    type_ t = openParenthesisToken;
+    set_curr_type(t);
 }
 
 

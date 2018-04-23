@@ -33,6 +33,8 @@ namespace token {
 // Constructor for simple input
 ArithmeticExpressionToken::ArithmeticExpressionToken(char tok) {
     token_char_ = tok;
+    type_ t = arithmeticExpressionToken;
+    set_curr_type(t);
 
     std::stringstream ss;
     ss << tok;
@@ -45,6 +47,9 @@ ArithmeticExpressionToken::ArithmeticExpressionToken(char tok) {
 // Constructor for if input is more than single char
 ArithmeticExpressionToken::ArithmeticExpressionToken(std::string tok) {
     set_token_str(tok);
+
+    type_ t = arithmeticExpressionToken;
+    set_curr_type(t);
 
     token_char_ = tok[0];
 }
