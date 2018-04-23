@@ -33,7 +33,7 @@ TEST(Basics, CreateRegister) {
 }
 
 // Working on this one
-TEST(Basics, CreateStatementNode) {
+/*TEST(Basics, CreateStatementNode) {
   auto statement = make_unique<StatementNode>(
     make_unique<Register>(5),
     make_unique<Instruction>(Instruction::kAdd),
@@ -45,4 +45,4 @@ TEST(Basics, CreateStatementNode) {
   EXPECT_EQ(statement->GetInstruction().GetOpcode(), Instruction::kAdd);
   EXPECT_EQ(statement->GetOp1().GetValue(), 2);
   EXPECT_EQ(statement->GetOp2().GetValue(), 3);
-}
+}*/
