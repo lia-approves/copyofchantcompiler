@@ -12,7 +12,14 @@ class Parser {
   public:
     explicit Parser(std::vector<scanner::token::Token> tokens);
     ~Parser(void);
-    Expression parse();
+    Expression parse() {
+      try {
+        return expression();
+      } catch (std::exception e) {
+        Expression empty;
+        return empty;
+      }
+    }
 
   private:
     std::vector<scanner::token::Token> tokens;
@@ -57,7 +64,7 @@ class Parser {
     }
     Expression primary() {
       // primary --> integer | (expression)
-      std::vector<std::string> possibleLiterals = {"0","1","2","3","4","5"};
+      std::vector<std::string> possibleLiterals = {"0","1","2","3","4","5","6","7","8"};
       if (match(possibleLiterals)) {
         Literal e(prev());
         return e;
