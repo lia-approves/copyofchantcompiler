@@ -11,11 +11,14 @@ TEST(ParserTest, InstantiateParser) {
   Parser p(tokens);
 }
 
-TEST(ParserTest, InstantiateBinaryExpression) {
+TEST(ExpressionTest, InstantiateExpressions) {
   Expression l;
   Expression r;
   token::Token t;
   BinaryExpr be(l, t, r);
+  UnaryExpr ue(t, l);
+  Group g(r);
+  Literal lit(t);
 }
 
 }  // namespace parser
