@@ -24,27 +24,83 @@ class Parser {
       // equality → comparison ( ( "!=" | "==" ) comparison )* ;
       // add --> mult ( ("-" | "+") mult )*
       Expression e = mult();
-      while (match("-", "+")) {
+      std::vector<std::string> tokenTypes = {"-", "+"};
+      while (match(tokenTypes)) {
         scanner::token::Token op = prev();
         Expression right = mult();
+        e = BinaryExpr(e, op, right);
       }
       return e;
     }
     Expression mult() {
-      Expression e;
+      // comparison → addition ( ( ">" | ">=" | "<" | "<=" ) addition )* ;
+      // mult --> unary ( ("/" | "*") unary )*
+      Expression e = unary();
+      std::vector<std::string> possibleTypes = {"/", "*"};
+      while (match(possibleTypes)) {
+        scanner::token::Token op = prev();
+        Expression right = unary();
+        e = BinaryExpr(e, op, right);
+      }
       return e;
+    }
+    Expression unary() {
+      // unary --> primary | "-" unary
+      std::vector<std::string> possibleTypes = {"-"};
+      if (match(possibleTypes)) {
+        scanner::token::Token op = prev();
+        Expression right = unary();
+        UnaryExpr ue(op, right);
+        return ue;
+      }
+      return primary();
+    }
+    Expression primary() {
+      // primary --> integer | (expression)
+      std::vector<std::string> possibleLiterals = {"0","1","2","3","4","5"};
+      if (match(possibleLiterals)) {
+        Literal e(prev());
+        return e;
+      }
+      std::vector<std::string> leftParen = {"("};
+      if (match(leftParen)) {
+        Expression e;
+        consume(")", "Expected ')' after expression.");
+        Group g(e);
+        return g;
+      }
     }
 
     // helpers
     scanner::token::Token next() {
-      if (current < tokens.size() - 1) current = current + 1;
+      if (!atEnd()) current = current + 1;
       return prev();
     }
     scanner::token::Token prev() {
       return tokens[current - 1];
     }
-    bool match(std::string left, std::string right) {
+    bool atEnd() {
+      return (current >= tokens.size() - 1);
+    }
+    scanner::token::Token getCurrent() {
+      return tokens[current];
+    }
+    bool match(std::vector<std::string> types) {
+      for (auto const& type: types) {
+        if (check(type)) {
+          next();
+          return true;
+        }
+      }
       return false;
+    }
+    bool check(std::string type) {
+      if (atEnd()) return false;
+      return getCurrent().get_token() == type;
+    }
+    scanner::token::Token consume(std::string until, std::string error) {
+      if (check(until)) return next();
+      throw error;
     }
 };
 
