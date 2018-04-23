@@ -11,5 +11,12 @@ TEST(ParserTest, InstantiateParser) {
   Parser p(tokens);
 }
 
+TEST(ParserTest, InstantiateBinaryExpression) {
+  Expression l;
+  Expression r;
+  token::Token t;
+  BinaryExpr be(l, t, r);
+}
+
 }  // namespace parser
 }  // namespace cs160
