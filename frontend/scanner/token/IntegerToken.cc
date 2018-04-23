@@ -25,7 +25,6 @@ SOFTWARE.
 #include <string>
 #include "frontend/scanner/token/IntegerToken.h"
 
-
 namespace cs160 {
 namespace frontend {
 
