@@ -22,20 +22,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef SCANNER_TOKEN_ARITHMETICEXPRESSIONTOKEN_H_
-#define SCANNER_TOKEN_ARITHMETICEXPRESSIONTOKEN_H_
+#ifndef FRONTEND_SCANNER_TOKEN_ARITHMETICEXPRESSIONTOKEN_H_
+#define FRONTEND_SCANNER_TOKEN_ARITHMETICEXPRESSIONTOKEN_H_
 
-#include "Token.h"
 #include <stdio.h>
 #include <string>
+#include "frontend/scanner/token/Token.h"
 
 namespace cs160 {
 namespace scanner {
 namespace token {
 
 class ArithmeticExpressionToken: public Token{
-
-  public:
+ public:
     // Constructors
     explicit ArithmeticExpressionToken(char tok);
     explicit ArithmeticExpressionToken(std::string tok);
@@ -45,11 +44,11 @@ class ArithmeticExpressionToken: public Token{
     void set_token_char(char tok);
     char get_token_char();
 
-  private:
+ private:
     char token_char_;
 };
 }  // namespace token
 }  // namespace scanner
 }  // namespace cs160
 
-#endif //SCANNER_TOKEN_ARITHMETICEXPRESSIONTOKEN_H_
+#endif  // FRONTEND_SCANNER_TOKEN_ARITHMETICEXPRESSIONTOKEN_H_

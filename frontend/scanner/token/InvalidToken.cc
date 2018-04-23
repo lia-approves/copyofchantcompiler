@@ -22,29 +22,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-
-#include "InvalidToken.h"
 #include <iostream>
+#include "frontend/scanner/token/InvalidToken.h"
+
 namespace cs160 {
 namespace scanner {
 namespace token {
 
 
-InvalidToken::InvalidToken(){
+InvalidToken::InvalidToken() {
     Token("Invalid Token");
     set_token("Invalid Token");
 }
 
-InvalidToken::InvalidToken(std::string){
+InvalidToken::InvalidToken(std::string) {
     Token("Invalid Token");
     set_token("Invalid Token");
 }
 
-void InvalidToken::set_token(std::string str){
+void InvalidToken::set_token(std::string str) {
     set_token_str("Invalid Token");
 }
-    
-    
 
 }  // namespace token
 }  // namespace scanner

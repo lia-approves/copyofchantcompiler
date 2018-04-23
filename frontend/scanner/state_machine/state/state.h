@@ -21,13 +21,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#ifndef SCANNER_STATEMACHINE_STATE_H_
-#define SCANNER_STATEMACHINE_STATE_H_
+#ifndef FRONTEND_SCANNER_STATE_MACHINE_STATE_STATE_H_
+#define FRONTEND_SCANNER_STATE_MACHINE_STATE_STATE_H_
 
-#include "frontend/scanner/token/Token.h"
-#include "frontend/scanner/token/InvalidToken.h"
 #include <map>
 #include <functional>
+#include <string>
+#include "frontend/scanner/token/Token.h"
+#include "frontend/scanner/token/InvalidToken.h"
 
 /*
   Every state must have a unique POSITIVE id.
@@ -44,7 +45,7 @@ namespace scanner {
 namespace statemachine {
 
 class State {
-  public:
+ public:
     // Constructors for creating states, default value is -1
     // Otherwise initialize it with a Token
     explicit State(int id = -1);
@@ -54,9 +55,9 @@ class State {
     // Destructor for State object
     ~State(void);
 
-    //set the output type for the state
+    // set the output type for the state
     void set_token_output(std::function<token::Token(std::string)>func);
-    //return the correct output type
+    // return the correct output type
     token::Token get_token(std::string str);
 
     // Method for adding transition to a state, input is a character
@@ -71,7 +72,7 @@ class State {
     bool isAccepting() const { return accepting_; }
     token::Token getToken() const { return token_; }
 
-  private:
+ private:
     int id_;
     bool accepting_;
     token::Token token_;
@@ -82,4 +83,4 @@ class State {
 }  // namespace scanner
 }  // namespace cs160
 
-#endif // SCANNER_STATEMACHINE_STATE_H_
+#endif  // FRONTEND_SCANNER_STATE_MACHINE_STATE_STATE_H_

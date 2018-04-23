@@ -21,28 +21,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#include "ClosedParenthesisToken.h"
+#include "frontend/scanner/token/ClosedParenthesisToken.h"
 namespace cs160 {
 namespace scanner {
 namespace token {
 
 
 
-ClosedParenthesisToken::ClosedParenthesisToken(){
+ClosedParenthesisToken::ClosedParenthesisToken() {
     // do nothing ~ the const string and char are already created
     set_token_str(")");
 }
- 
-    ClosedParenthesisToken::ClosedParenthesisToken(std::string str){
+
+ClosedParenthesisToken::ClosedParenthesisToken(std::string str) {
         // do nothing ~ the const string and char are already created
         set_token_str(")");
 }
 
-void ClosedParenthesisToken::set_token(std::string str){
+void ClosedParenthesisToken::set_token(std::string str) {
     // do nothing ~ the const string and char are already created
 }
 
-char ClosedParenthesisToken::get_token_char(){
+char ClosedParenthesisToken::get_token_char() {
     return token_char_;
 }
 

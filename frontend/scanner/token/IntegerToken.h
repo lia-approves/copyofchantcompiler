@@ -21,19 +21,20 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#ifndef SCANNER_TOKEN_INTEGERTOKEN_H_
-#define SCANNER_TOKEN_INTEGERTOKEN_H_
+#ifndef FRONTEND_SCANNER_TOKEN_INTEGERTOKEN_H_
+#define FRONTEND_SCANNER_TOKEN_INTEGERTOKEN_H_
 
-#include "Token.h"
 #include <stdio.h>
 #include <string>
+#include "frontend/scanner/token/Token.h"
+
 
 namespace cs160 {
 namespace scanner {
 namespace token {
 
-class IntegerToken: public Token{
-  public:
+class IntegerToken: public Token {
+ public:
     // Constructors
     explicit IntegerToken(std::string str);
     explicit IntegerToken(int tok_integer);
@@ -42,12 +43,11 @@ class IntegerToken: public Token{
     void set_token(std::string str);
     int get_token_int();
 
-  private:
+ private:
     int token_int_;
-
 };
 }  // namespace token
 }  // namespace scanner
 }  // namespace cs160
 
-#endif // SCANNER_TOKEN_INTEGERTOKEN_H_
+#endif  // FRONTEND_SCANNER_TOKEN_INTEGERTOKEN_H_
