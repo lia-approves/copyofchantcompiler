@@ -26,16 +26,15 @@ SOFTWARE.
 #include "frontend/scanner/state_machine/dfa/dfa.h"
 
 namespace cs160 {
-namespace scanner {
-namespace statemachine {
+namespace frontend {
 
 // Start DFA off with initial state
 // Intialize the intial state
 DFA::DFA(State start) {
     State error(0);
     error.set_token_output([](std::string str)->
-                           cs160::scanner::token::Token
-    {return cs160::scanner::token::InvalidToken(str);});
+                           cs160::frontend::Token
+    {return cs160::frontend::InvalidToken(str);});
 
     addState(error);
   this->startState_ = this->currentState_ = start.getId();
@@ -93,11 +92,11 @@ void DFA::rollback() {
     }
 
     if (s.isAccepting()) {
-        token::Token t = s.get_token(lexeme_);
+        Token t = s.get_token(lexeme_);
         scanner_output_.push(t);
     } else {
         // stack empty
-        token::InvalidToken t;
+        InvalidToken t;
         scanner_output_.push(t);
         position_ = init_pos;
     }
@@ -127,10 +126,10 @@ void DFA::input(std::string s) {
 
     if (!recently_visited_.empty()) {
         State st = recently_visited_.top();
-        token::Token t = st.get_token(lexeme_);
+        Token t = st.get_token(lexeme_);
         scanner_output_.push(t);
     } else {
-        token::InvalidToken t;
+        InvalidToken t;
         scanner_output_.push(t);
     }
 }
@@ -154,8 +153,5 @@ void DFA::addTransition(int stateId, char trigger, int destStateId) {
   }
   states_[stateId].addTransition(trigger, destStateId);
 }
-
-
-}  // namespace statemachine
-}  // namespace scanner
+}  // namespace frontend
 }  // namespace cs160

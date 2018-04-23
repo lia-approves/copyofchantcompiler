@@ -27,8 +27,7 @@ SOFTWARE.
 #include <string>
 
 namespace cs160 {
-namespace scanner {
-namespace token {
+namespace frontend {
 
 class Token{
  public:
@@ -48,7 +47,6 @@ class Token{
     std::string token_str_;
     // string representation of the token being represented
 };
-}  // namespace token
-}  // namespace scanner
+}  // namespace frontend
 }  // namespace cs160
 #endif  // FRONTEND_SCANNER_TOKEN_TOKEN_H_

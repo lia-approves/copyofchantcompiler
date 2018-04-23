@@ -27,8 +27,7 @@ SOFTWARE.
 #include "frontend/scanner/token/ArithmeticExpressionToken.h"
 
 namespace cs160 {
-namespace scanner {
-namespace token {
+namespace frontend {
 
 // Constructor for simple input
 ArithmeticExpressionToken::ArithmeticExpressionToken(char tok) {
@@ -70,7 +69,5 @@ void ArithmeticExpressionToken::set_token_char(char tok) {
 char ArithmeticExpressionToken::get_token_char() {
     return token_char_;
 }
-
-}  // namespace token
-}  // namespace scanner
+}  // namespace frontend
 }  // namespace cs160

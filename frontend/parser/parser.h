@@ -1,21 +1,21 @@
-#ifndef PARSER_H_
-#define PARSER_H_
+#ifndef FRONT_END_PARSER_PARSER_H_
+#define FRONT_END_PARSER_PARSER_H_
 
 #include <vector>
 #include "frontend/scanner/token/Token.h"
 #include "frontend/parser/expression.h"
 
 namespace cs160 {
-namespace parser {
+namespace frontend {
 
 class Parser {
   public:
-    explicit Parser(std::vector<scanner::token::Token> tokens);
+    explicit Parser(std::vector<Token> tokens);
     ~Parser(void);
     Expression parse();
 
   private:
-    std::vector<scanner::token::Token> tokens;
+    std::vector<Token> tokens;
     int current = 0;
 
     // CFG methods
@@ -25,7 +25,7 @@ class Parser {
       // add --> mult ( ("-" | "+") mult )*
       Expression e = mult();
       while (match("-", "+")) {
-        scanner::token::Token op = prev();
+        Token op = prev();
         Expression right = mult();
       }
       return e;
@@ -36,11 +36,11 @@ class Parser {
     }
 
     // helpers
-    scanner::token::Token next() {
+    Token next() {
       if (current < tokens.size() - 1) current = current + 1;
       return prev();
     }
-    scanner::token::Token prev() {
+    Token prev() {
       return tokens[current - 1];
     }
     bool match(std::string left, std::string right) {
@@ -48,7 +48,7 @@ class Parser {
     }
 };
 
+}  // namespace frontend
 }  // namespace cs160
-}  // namespace parser
 
 #endif

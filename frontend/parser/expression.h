@@ -1,10 +1,10 @@
-#ifndef EXPRESSION_H_
-#define EXPRESSION_H_
+#ifndef FRONT_END_PARSER_EXPRESSION_H_
+#define FRONT_END_PARSER_EXPRESSION_H_
 
 #include "frontend/scanner/token/Token.h"
 
 namespace cs160 {
-namespace parser {
+namespace frontend {
 
 class Expression {
 
@@ -12,18 +12,18 @@ class Expression {
 
 class BinaryExpr : public Expression {
   public:
-    explicit BinaryExpr(Expression left, scanner::token::Token op, Expression right)
-      : left_(left), right_(right), op_(op)  
+    explicit BinaryExpr(Expression left, Token op, Expression right)
+      : left_(left), right_(right), op_(op)
     {}
 
   private:
     const Expression left_;
     const Expression right_;
-    const scanner::token::Token op_;
+    const Token op_;
 
 };
 
-}  // namespace parser
+}  // namespace frontend
 }  // namespace cs160
 
 #endif

@@ -24,8 +24,7 @@ SOFTWARE.
 #include "frontend/scanner/token/Token.h"
 
 namespace cs160 {
-namespace scanner {
-namespace token {
+namespace frontend {
 
 Token::Token() {
     // doesn't do anything, is necessary
@@ -54,6 +53,5 @@ std::string Token::print() {
     return token_str_;
 }
 
-}  // namespace token
-}  // namespace scanner
+}  // namespace frontend
 }  // namespace cs160

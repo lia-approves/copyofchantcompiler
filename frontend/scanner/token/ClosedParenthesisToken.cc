@@ -23,10 +23,7 @@ SOFTWARE.
 */
 #include "frontend/scanner/token/ClosedParenthesisToken.h"
 namespace cs160 {
-namespace scanner {
-namespace token {
-
-
+namespace frontend {
 
 ClosedParenthesisToken::ClosedParenthesisToken() {
     // do nothing ~ the const string and char are already created
@@ -45,7 +42,5 @@ void ClosedParenthesisToken::set_token(std::string str) {
 char ClosedParenthesisToken::get_token_char() {
     return token_char_;
 }
-
-}  // namespace token
-}  // namespace scanner
+}  // namespace frontend
 }  // namespace cs160
