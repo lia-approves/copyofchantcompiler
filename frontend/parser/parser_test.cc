@@ -1,3 +1,4 @@
+#include "gtest/gtest.h"
 #include "frontend/parser/parser.h"
 
 namespace cs160 {
@@ -5,10 +6,10 @@ namespace parser {
 
 namespace token = cs160::scanner::token;
 
-Parser::Parser(std::queue<token::Token> tokens) {
-  this->tokens = tokens;
+TEST(ParserTest, InstantiateParser) {
+  std::queue<token::Token> tokens;
+  Parser p(tokens);
 }
-Parser::~Parser() {}
 
 
 }  // namespace parser
