@@ -5,7 +5,7 @@ namespace parser {
 
 namespace token = cs160::scanner::token;
 
-Parser::Parser(std::queue<token::Token> tokens) {
+Parser::Parser(std::vector<token::Token> tokens) {
   this->tokens = tokens;
 }
 Parser::~Parser() {}

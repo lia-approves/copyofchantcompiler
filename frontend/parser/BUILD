@@ -2,7 +2,7 @@ cc_library(
   name = "parser",
   copts = ["-Wall -g"],
   srcs = ["parser.cc"],
-  hdrs = ["parser.h"],
+  hdrs = ["parser.h", "expression.h"],
   deps = ["//frontend/scanner/token"],
   visibility = ["//visibility:public"],
 )

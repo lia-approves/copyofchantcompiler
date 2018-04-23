@@ -7,10 +7,9 @@ namespace parser {
 namespace token = cs160::scanner::token;
 
 TEST(ParserTest, InstantiateParser) {
-  std::queue<token::Token> tokens;
+  std::vector<token::Token> tokens;
   Parser p(tokens);
 }
-
 
 }  // namespace parser
 }  // namespace cs160
