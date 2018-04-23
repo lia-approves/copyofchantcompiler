@@ -29,6 +29,5 @@ namespace cs160 {
 namespace scanner {
 
 TEST(
-    
 }  // namespace scanner
 }  // namespace cs160

@@ -30,27 +30,27 @@ namespace frontend {
 
 IntegerToken::IntegerToken(std::string str) : Token(str) {
     type_ t = integerToken;
-    set_curr_type(t);
+    SetCurrType(t);
 }
 
 IntegerToken::IntegerToken(int tok_integer) {
     type_ t = integerToken;
-    set_curr_type(t);
+    SetCurrType(t);
     std::string str_arg = std::to_string(tok_integer);
-    set_token_str(str_arg);
+    SetTokenStr(str_arg);
 
     token_int_ = tok_integer;
 }
 
-void IntegerToken::set_token(std::string str) {
-    set_token_str(str);
+void IntegerToken::SetToken(std::string str) {
+    SetTokenStr(str);
 
     std::stringstream cast_to_int(str);
 
     cast_to_int >> token_int_;
 }
 
-int IntegerToken::get_token_int() {
+int IntegerToken::GetTokenInt() {
     return token_int_;
 }
 }  // namespace frontend

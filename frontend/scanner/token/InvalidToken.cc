@@ -30,20 +30,20 @@ namespace frontend {
 
 InvalidToken::InvalidToken() {
     Token("Invalid Token");
-    set_token("Invalid Token");
+    SetToken("Invalid Token");
     type_ t = invalidToken;
-    set_curr_type(t);
+    SetCurrType(t);
 }
 
 InvalidToken::InvalidToken(std::string) {
     Token("Invalid Token");
-    set_token("Invalid Token");
+    SetToken("Invalid Token");
     type_ t = invalidToken;
-    set_curr_type(t);
+    SetCurrType(t);
 }
 
-void InvalidToken::set_token(std::string str) {
-    set_token_str("Invalid Token");
+void InvalidToken::SetToken(std::string str) {
+    SetTokenStr("Invalid Token");
 }
 }  // namespace frontend
 }  // namespace cs160
