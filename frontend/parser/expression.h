@@ -9,32 +9,27 @@ namespace frontend {
 class Expression {
 
 };
-
 class BinaryExpr : public Expression {
   public:
-    explicit BinaryExpr(Expression left, scanner::token::Token op, Expression right)
+    explicit BinaryExpr(Expression left, cs160::frontend::Token op, Expression right)
       : left_(left), right_(right), op_(op)
     {}
 
   private:
     const Expression left_;
     const Expression right_;
-<<<<<<< HEAD
-    const Token op_;
-=======
-    const scanner::token::Token op_;
+    const cs160::frontend::Token op_;
 };
 
 class UnaryExpr : public Expression {
   public:
-    explicit UnaryExpr(scanner::token::Token op, Expression right)
+    explicit UnaryExpr(cs160::frontend::Token op, Expression right)
       : op_(op), right_(right) {}
 
   private:
-    const scanner::token::Token op_;
+    const cs160::frontend::Token op_;
     const Expression right_;
 };
->>>>>>> 0e087d935a17686d6987a6643d7191c54dba0493
 
 class Group : public Expression {
   public:
@@ -46,12 +41,11 @@ class Group : public Expression {
 
 class Literal : public Expression {
   public:
-    explicit Literal(scanner::token::Token lit) : lit_(lit) {}
+    explicit Literal(cs160::frontend::Token lit) : lit_(lit) {}
 
   private:
-    const scanner::token::Token lit_;
+    const cs160::frontend::Token lit_;
 };
-
 }  // namespace frontend
 }  // namespace cs160
 

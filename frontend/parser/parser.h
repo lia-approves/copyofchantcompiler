@@ -110,7 +110,6 @@ class Parser {
       throw error;
     }
 };
-
 }  // namespace frontend
 }  // namespace cs160
 
