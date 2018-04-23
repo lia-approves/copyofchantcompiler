@@ -26,18 +26,18 @@ namespace cs160 {
 namespace frontend {
 
 ClosedParenthesisToken::ClosedParenthesisToken() {
-    // do nothing ~ the const string and char are already created
     set_token_str(")");
+    type_ t = closedParenthesisToken;
+    set_curr_type(t);
 }
 
 ClosedParenthesisToken::ClosedParenthesisToken(std::string str) {
-        // do nothing ~ the const string and char are already created
-        set_token_str(")");
+    set_token_str(")");
+    type_ t = closedParenthesisToken;
+    set_curr_type(t);
 }
 
-void ClosedParenthesisToken::set_token(std::string str) {
-    // do nothing ~ the const string and char are already created
-}
+void ClosedParenthesisToken::set_token(std::string str) {}
 
 char ClosedParenthesisToken::get_token_char() {
     return token_char_;
