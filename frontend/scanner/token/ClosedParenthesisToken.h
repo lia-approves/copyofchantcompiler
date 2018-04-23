@@ -29,8 +29,7 @@ SOFTWARE.
 #include "Token.h"
 
 namespace cs160 {
-namespace scanner {
-namespace token {
+namespace frontend {
 
 class ClosedParenthesisToken : public Token{
  public:
@@ -47,9 +46,7 @@ class ClosedParenthesisToken : public Token{
     const char token_char_ = ')';
     const std::string token_str_ = ")";
 };
-
-}  // namespace token
-}  // namespace scanner
+}  // namespace frontend
 }  // namespace cs160
 
 #endif  // FRONTEND_SCANNER_TOKEN_CLOSEDPARENTHESISTOKEN_H_

@@ -24,8 +24,7 @@ SOFTWARE.
 #include "frontend/scanner/token/Token.h"
 
 namespace cs160 {
-namespace scanner {
-namespace token {
+namespace frontend {
 
 Token::Token() {
     type_ t = token;
@@ -54,6 +53,7 @@ std::string Token::print() {
     return token_str_;
 }
 
+
 void Token::set_curr_type(type_ t) {
     curr_type_ = t;
 }
@@ -62,6 +62,5 @@ type_ Token::get_curr_type() {
     return curr_type_;
 }
 
-}  // namespace token
-}  // namespace scanner
+}  // namespace frontend
 }  // namespace cs160

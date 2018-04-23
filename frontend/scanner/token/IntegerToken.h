@@ -30,8 +30,7 @@ SOFTWARE.
 
 
 namespace cs160 {
-namespace scanner {
-namespace token {
+namespace frontend {
 
 class IntegerToken: public Token {
  public:
@@ -46,8 +45,7 @@ class IntegerToken: public Token {
  private:
     int token_int_;
 };
-}  // namespace token
-}  // namespace scanner
+}  // namespace frontend
 }  // namespace cs160
 
 #endif  // FRONTEND_SCANNER_TOKEN_INTEGERTOKEN_H_

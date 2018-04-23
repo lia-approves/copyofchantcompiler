@@ -26,8 +26,7 @@ SOFTWARE.
 
 
 namespace cs160 {
-namespace scanner {
-namespace token {
+namespace frontend {
 
 OpenParenthesisToken::OpenParenthesisToken() {
     set_token_str("(");
@@ -49,6 +48,5 @@ void OpenParenthesisToken::set_token(std::string str) {
 char OpenParenthesisToken::get_token_char() {
     return token_char_;
 }
-}  // namespace token
-}  // namespace scanner
+}  // namespace frontend
 }  // namespace cs160

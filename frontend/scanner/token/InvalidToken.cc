@@ -26,9 +26,7 @@ SOFTWARE.
 #include "frontend/scanner/token/InvalidToken.h"
 
 namespace cs160 {
-namespace scanner {
-namespace token {
-
+namespace frontend {
 
 InvalidToken::InvalidToken() {
     Token("Invalid Token");
@@ -47,7 +45,5 @@ InvalidToken::InvalidToken(std::string) {
 void InvalidToken::set_token(std::string str) {
     set_token_str("Invalid Token");
 }
-
-}  // namespace token
-}  // namespace scanner
+}  // namespace frontend
 }  // namespace cs160
