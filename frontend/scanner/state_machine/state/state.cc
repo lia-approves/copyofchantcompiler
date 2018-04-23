@@ -43,28 +43,28 @@ State::State(int id) {
 }
 State::~State(void) {}
 
-void State::set_token_output(std::function<token::Token(std::string)> func){
+void State::set_token_output(std::function<token::Token(std::string)> func) {
     createToken_ = func;
 }
 
-token::Token State::get_token(std::string str){
-
+token::Token State::get_token(std::string str) {
     token::Token retval =  createToken_(str);
     return retval;
 }
 
-// Methods for getting next state of a given state and for adding transitions to a new state
+// Methods for getting next state of a given
+// state and for adding transitions to a new state
 void State::addTransition(char trigger, int nextStateId) {
   transitions_[trigger] = nextStateId;
 }
 
-    void State::makeAccepting(){ accepting_ = true; }
+    void State::makeAccepting() { accepting_ = true; }
 
 void State::addTransition(char startChar, char endChar, int nextStateId) {
-  int startASCII = (int) startChar;
-  int endASCII = (int) endChar;
+  int startASCII = static_cast<int> startChar;
+  int endASCII = static_cast<int> endChar;
 
-  for(int i = startASCII; i <= endASCII; i++){
+  for (int i = startASCII; i <= endASCII; i++) {
     this->addTransition(i, nextStateId);
   }
 }

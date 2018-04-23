@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#include "IntegerToken.h"
+#include "frontend/scanner/token/IntegerToken.h"
 #include <sstream>
 #include <string>
 
@@ -38,8 +38,7 @@ IntegerToken::IntegerToken(int tok_integer) {
     token_int_ = tok_integer;
 }
 
-void IntegerToken::set_token(std::string str){
-
+void IntegerToken::set_token(std::string str) {
     set_token_str(str);
 
     std::stringstream cast_to_int(str);
@@ -47,7 +46,7 @@ void IntegerToken::set_token(std::string str){
     cast_to_int >> token_int_;
 }
 
-int IntegerToken::get_token_int(){
+int IntegerToken::get_token_int() {
     return token_int_;
 }
 

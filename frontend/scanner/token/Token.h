@@ -21,8 +21,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#ifndef SCANNER_TOKEN_TOKEN_H
-#define SCANNER_TOKEN_TOKEN_H
+#ifndef FRONTEND_SCANNER_TOKEN_TOKEN_H_
+#define FRONTEND_SCANNER_TOKEN_TOKEN_H_
 
 #include <string>
 
@@ -31,7 +31,7 @@ namespace scanner {
 namespace token {
 
 class Token{
-  public:
+ public:
     // Constructors and destructors
     // Note: default does not do anything
     Token();
@@ -42,13 +42,13 @@ class Token{
     virtual std::string get_token();
     virtual void set_token(std::string str);
     void set_token_str(std::string str);
-    
     virtual std::string print();
 
-  private:
-    std::string token_str_; //string representation of the token being represented
+ private:
+    std::string token_str_;
+    // string representation of the token being represented
 };
 }  // namespace token
 }  // namespace scanner
 }  // namespace cs160
-#endif // SCANNER_TOKEN_TOKEN_H
+#endif  // FRONTEND_SCANNER_TOKEN_TOKEN_H_

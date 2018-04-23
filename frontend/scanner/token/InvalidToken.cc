@@ -23,28 +23,27 @@ SOFTWARE.
 */
 
 
-#include "InvalidToken.h"
+#include "frontend/scanner/token/InvalidToken.h"
 #include <iostream>
 namespace cs160 {
 namespace scanner {
 namespace token {
 
 
-InvalidToken::InvalidToken(){
+InvalidToken::InvalidToken() {
     Token("Invalid Token");
     set_token("Invalid Token");
 }
 
-InvalidToken::InvalidToken(std::string){
+InvalidToken::InvalidToken(std::string) {
     Token("Invalid Token");
     set_token("Invalid Token");
 }
 
-void InvalidToken::set_token(std::string str){
+void InvalidToken::set_token(std::string str) {
     set_token_str("Invalid Token");
 }
-    
-    
+
 
 }  // namespace token
 }  // namespace scanner

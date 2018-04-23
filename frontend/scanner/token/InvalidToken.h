@@ -21,8 +21,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#ifndef SCANNER_TOKEN_INVALIDTOKEN_H
-#define SCANNER_TOKEN_INVALIDTOKEN_H
+#ifndef FRONTEND_SCANNER_TOKEN_INVALIDTOKEN_H_
+#define FRONTEND_SCANNER_TOKEN_INVALIDTOKEN_H_
 
 #include "Token.h"
 #include <stdio.h>
@@ -33,16 +33,15 @@ namespace scanner {
 namespace token {
 
 class InvalidToken: public Token{
-
 // Nothing much here, default constructor always used for invalid token
 // Generates a invalid token when called
 // Set token for setting a given token to invalid
-  public:
+ public:
     InvalidToken();
-    InvalidToken(std::string str);
+    explicit InvalidToken(std::string str);
     void set_token(std::string);
 };
 }  // namespace token
 }  // namespace scanner
 }  // namespace cs160
-#endif //SCANNER_TOKEN_INVALIDTOKEN_H
+#endif  // FRONTEND_SCANNER_TOKEN_INVALIDTOKEN_H_

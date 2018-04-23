@@ -51,5 +51,5 @@ TEST(StateTests, DefaultToken) {
   ASSERT_EQ(s.getToken().get_token(), t.get_token());
 }
 
-} // namespace scanner
-} // namespace cs160
+}  // namespace scanner
+}  // namespace cs160

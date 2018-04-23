@@ -29,16 +29,17 @@ SOFTWARE.
   using the appropriately-named methods
 */
 
-#ifndef SCANNER_STATEMACHINE_DFA_H_
-#define SCANNER_STATEMACHINE_DFA_H_
+#ifndef FRONTEND_SCANNER_STATE_MACHINE_DFA_DFA_H_
+#define FRONTEND_SCANNER_STATE_MACHINE_DFA_DFA_H_
 
-#include "frontend/scanner/state_machine/state/state.h"
-#include "frontend/scanner/token/Token.h"
 #include <map>
 #include <iostream>
 #include <stack>
 #include <queue>
 #include <string>
+#include "frontend/scanner/state_machine/state/state.h"
+#include "frontend/scanner/token/Token.h"
+
 
 
 namespace cs160 {
@@ -46,8 +47,7 @@ namespace scanner {
 namespace statemachine {
 
 class DFA {
-
-  public:
+ public:
     explicit DFA(State start);
     ~DFA(void);
 
@@ -60,14 +60,15 @@ class DFA {
     void input(std::string s);
     bool isAccepting() const { return states_.at(currentState_).isAccepting(); }
 
-    // add a transition from state 'stateId' to state 'destStateId' on character trigger
-    // NOTE: you can refer to states that aren't registerd!  The DFA will simply create them for you
+    // add a transition from state 'stateId' to state
+    // 'destStateId' on character trigger
+    // NOTE: you can refer to states that aren't registerd!
+    // The DFA will simply create them for you
     void addTransition(int stateId, char trigger, int destStateId);
 
     void print_queue();
 
-  private:
-
+ private:
     void rollback();
     void stack_empty();
     std::string lexeme_;
@@ -78,13 +79,13 @@ class DFA {
 
     State getStateById_(int id);
     std::map<int, State> states_;
-    std::stack<State> recently_visited_;    //used for rollback
-    std::queue<token::Token> scanner_output_;      //queue keeps track of all of the tokens found, gives this to the parser
-
+    std::stack<State> recently_visited_;    // used for rollback
+    std::queue<token::Token> scanner_output_;
+    // queue keeps track of all of the tokens found, gives this to the parser
 };
 
 }  // namespace statemachine
 }  // namespace scanner
 }  // namespace cs160
 
-#endif // SCANNER_STATEMACHINE_DFA_H_
+#endif  // FRONTEND_SCANNER_STATE_MACHINE_DFA_DFA_H_
