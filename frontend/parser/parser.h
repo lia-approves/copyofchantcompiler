@@ -1,16 +1,16 @@
-#ifndef PARSER_H_
-#define PARSER_H_
+#ifndef FRONT_END_PARSER_PARSER_H_
+#define FRONT_END_PARSER_PARSER_H_
 
 #include <vector>
 #include "frontend/scanner/token/Token.h"
 #include "frontend/parser/expression.h"
 
 namespace cs160 {
-namespace parser {
+namespace frontend {
 
 class Parser {
   public:
-    explicit Parser(std::vector<scanner::token::Token> tokens);
+    explicit Parser(std::vector<Token> tokens);
     ~Parser(void);
     Expression parse() {
       try {
@@ -22,7 +22,7 @@ class Parser {
     }
 
   private:
-    std::vector<scanner::token::Token> tokens;
+    std::vector<Token> tokens;
     int current = 0;
 
     // CFG methods
@@ -33,7 +33,7 @@ class Parser {
       Expression e = mult();
       std::vector<std::string> tokenTypes = {"-", "+"};
       while (match(tokenTypes)) {
-        scanner::token::Token op = prev();
+        cs160::frontend::Token op = prev();
         Expression right = mult();
         e = BinaryExpr(e, op, right);
       }
@@ -45,7 +45,7 @@ class Parser {
       Expression e = unary();
       std::vector<std::string> possibleTypes = {"/", "*"};
       while (match(possibleTypes)) {
-        scanner::token::Token op = prev();
+        cs160::frontend::Token op = prev();
         Expression right = unary();
         e = BinaryExpr(e, op, right);
       }
@@ -55,7 +55,7 @@ class Parser {
       // unary --> primary | "-" unary
       std::vector<std::string> possibleTypes = {"-"};
       if (match(possibleTypes)) {
-        scanner::token::Token op = prev();
+        cs160::frontend::Token op = prev();
         Expression right = unary();
         UnaryExpr ue(op, right);
         return ue;
@@ -79,17 +79,17 @@ class Parser {
     }
 
     // helpers
-    scanner::token::Token next() {
+    cs160::frontend::Token next() {
       if (!atEnd()) current = current + 1;
       return prev();
     }
-    scanner::token::Token prev() {
+    Token prev() {
       return tokens[current - 1];
     }
     bool atEnd() {
       return (current >= tokens.size() - 1);
     }
-    scanner::token::Token getCurrent() {
+    cs160::frontend::Token getCurrent() {
       return tokens[current];
     }
     bool match(std::vector<std::string> types) {
@@ -105,13 +105,12 @@ class Parser {
       if (atEnd()) return false;
       return getCurrent().get_token() == type;
     }
-    scanner::token::Token consume(std::string until, std::string error) {
+    cs160::frontend::Token consume(std::string until, std::string error) {
       if (check(until)) return next();
       throw error;
     }
 };
-
+}  // namespace frontend
 }  // namespace cs160
-}  // namespace parser
 
 #endif

@@ -8,7 +8,6 @@ namespace cs160 {
 namespace frontend {
 
 namespace ast = cs160::abstract_syntax::frontend;
-namespace scan = cs160::scanner;
 
 Frontend::~Frontend(void) {}
 
@@ -20,24 +19,23 @@ std::unique_ptr<ast::AstNode> Frontend::stringToAst(std::string input) {
   return Frontend::makeParseTree(tokenQueue);
 }
 
-std::queue<scan::token::Token> Frontend::tokenizeString(std::string input) {
-  std::queue<scan::token::Token> q;
-  q.push(scan::token::IntegerToken("2"));
-  q.push(scan::token::ArithmeticExpressionToken("*"));
-  q.push(scan::token::OpenParenthesisToken());
-  q.push(scan::token::IntegerToken("1"));
-  q.push(scan::token::ArithmeticExpressionToken("+"));
-  q.push(scan::token::IntegerToken("3"));
-  q.push(scan::token::ClosedParenthesisToken());
+std::queue<Token> Frontend::tokenizeString(std::string input) {
+  std::queue<Token> q;
+  q.push(IntegerToken("2"));
+  q.push(ArithmeticExpressionToken("*"));
+  q.push(OpenParenthesisToken());
+  q.push(IntegerToken("1"));
+  q.push(ArithmeticExpressionToken("+"));
+  q.push(IntegerToken("3"));
+  q.push(ClosedParenthesisToken());
   return q;
 }
 
-std::unique_ptr<ast::AstNode> Frontend::makeParseTree(std::queue<scan::token::Token> tokens) {
+std::unique_ptr<ast::AstNode> Frontend::makeParseTree(std::queue<Token> tokens) {
   auto two = cs160::make_unique<ast::IntegerExpr>(2);
   auto one = cs160::make_unique<ast::IntegerExpr>(1);
   auto three = cs160::make_unique<ast::IntegerExpr>(3);
   auto add = make_unique<ast::AddExpr>(std::move(one), std::move(three));
-
   auto root = make_unique<ast::MultiplyExpr>(std::move(two), std::move(add));
   return root;
 }

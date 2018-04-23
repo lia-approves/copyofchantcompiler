@@ -26,8 +26,7 @@ SOFTWARE.
 #include "frontend/scanner/token/IntegerToken.h"
 
 namespace cs160 {
-namespace scanner {
-namespace token {
+namespace frontend {
 
 IntegerToken::IntegerToken(std::string str) : Token(str) {}
 
@@ -49,7 +48,5 @@ void IntegerToken::set_token(std::string str) {
 int IntegerToken::get_token_int() {
     return token_int_;
 }
-
-}  // namespace token
-}  // namespace scanner
+}  // namespace frontend
 }  // namespace cs160

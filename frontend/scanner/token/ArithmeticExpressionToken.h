@@ -30,8 +30,7 @@ SOFTWARE.
 #include "frontend/scanner/token/Token.h"
 
 namespace cs160 {
-namespace scanner {
-namespace token {
+namespace frontend {
 
 class ArithmeticExpressionToken: public Token{
  public:
@@ -47,8 +46,7 @@ class ArithmeticExpressionToken: public Token{
  private:
     char token_char_;
 };
-}  // namespace token
-}  // namespace scanner
+}  // namespace frontend
 }  // namespace cs160
 
 #endif  // FRONTEND_SCANNER_TOKEN_ARITHMETICEXPRESSIONTOKEN_H_

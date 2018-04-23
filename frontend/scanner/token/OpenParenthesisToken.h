@@ -28,11 +28,8 @@ SOFTWARE.
 #include <string>
 #include "frontend/scanner/token/Token.h"
 
-
 namespace cs160 {
-namespace scanner {
-namespace token {
-
+namespace frontend {
 class OpenParenthesisToken : public Token{
  public:
     // cannot use the Token(string) constructor, or it will be bad
@@ -45,8 +42,7 @@ class OpenParenthesisToken : public Token{
     const char token_char_ = '(';
     const std::string token_str_ = "(";
 };
-}  // namespace token
-}  // namespace scanner
+}  // namespace frontend
 }  // namespace cs160
 
 #endif  // FRONTEND_SCANNER_TOKEN_OPENPARENTHESISTOKEN_H_

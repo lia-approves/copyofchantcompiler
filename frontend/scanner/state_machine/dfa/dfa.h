@@ -42,8 +42,7 @@ SOFTWARE.
 
 
 namespace cs160 {
-namespace scanner {
-namespace statemachine {
+namespace frontend {
 
 class DFA {
  public:
@@ -79,12 +78,10 @@ class DFA {
     State getStateById_(int id);
     std::map<int, State> states_;
     std::stack<State> recently_visited_;    // used for rollback
-    std::queue<token::Token> scanner_output_;
+    std::queue<Token> scanner_output_;
     // queue keeps track of all of the tokens found, gives this to the parser
 };
-
-}  // namespace statemachine
-}  // namespace scanner
+}  // namespace frontend
 }  // namespace cs160
 
 #endif  // FRONTEND_SCANNER_STATE_MACHINE_DFA_DFA_H_

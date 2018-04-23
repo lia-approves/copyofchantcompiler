@@ -29,8 +29,7 @@ SOFTWARE.
 #include <string>
 
 namespace cs160 {
-namespace scanner {
-namespace token {
+namespace frontend {
 
 class InvalidToken: public Token{
 // Nothing much here, default constructor always used for invalid token
@@ -41,7 +40,6 @@ class InvalidToken: public Token{
     explicit InvalidToken(std::string str);
     void set_token(std::string);
 };
-}  // namespace token
-}  // namespace scanner
+}  // namespace frontend
 }  // namespace cs160
 #endif  // FRONTEND_SCANNER_TOKEN_INVALIDTOKEN_H_

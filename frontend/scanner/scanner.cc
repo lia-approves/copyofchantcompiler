@@ -13,14 +13,14 @@
 int main() {
     //error state is always the 0th state
 
-  cs160::scanner::statemachine::State start(1);
-  cs160::scanner::statemachine::State intState(2);
+  cs160::frontend::State start(1);
+  cs160::frontend::State intState(2);
     intState.makeAccepting();
-  cs160::scanner::statemachine::State opState(3);
+  cs160::frontend::State opState(3);
     opState.makeAccepting();
-  cs160::scanner::statemachine::State openParenState(4);
+  cs160::frontend::State openParenState(4);
     openParenState.makeAccepting();
-  cs160::scanner::statemachine::State closeParenState(5);
+  cs160::frontend::State closeParenState(5);
     closeParenState.makeAccepting();
 
   start.addTransition('0', 2);
@@ -44,7 +44,7 @@ int main() {
   start.addTransition(')', 5);
 
 
-    start.set_token_output([](std::string str)->cs160::scanner::token::Token {return cs160::scanner::token::InvalidToken(str);});
+    start.set_token_output([](std::string str)->cs160::frontend::Token {return cs160::frontend::InvalidToken(str);});
 
   intState.addTransition('0', 2);
   intState.addTransition('1', 2);
@@ -57,12 +57,12 @@ int main() {
   intState.addTransition('8', 2);
   intState.addTransition('9', 2);
 
-    intState.set_token_output([](std::string str)->cs160::scanner::token::Token {return cs160::scanner::token::IntegerToken(str);});
-    opState.set_token_output([](std::string str)->cs160::scanner::token::Token {return cs160::scanner::token::ArithmeticExpressionToken(str);});
-    openParenState.set_token_output([](std::string str)->cs160::scanner::token::Token {return cs160::scanner::token::OpenParenthesisToken(str);});
-    closeParenState.set_token_output([](std::string str)->cs160::scanner::token::Token {return cs160::scanner::token::ClosedParenthesisToken(str);});
+    intState.set_token_output([](std::string str)->cs160::frontend::Token {return cs160::frontend::IntegerToken(str);});
+    opState.set_token_output([](std::string str)->cs160::frontend::Token {return cs160::frontend::ArithmeticExpressionToken(str);});
+    openParenState.set_token_output([](std::string str)->cs160::frontend::Token {return cs160::frontend::OpenParenthesisToken(str);});
+    closeParenState.set_token_output([](std::string str)->cs160::frontend::Token {return cs160::frontend::ClosedParenthesisToken(str);});
 
-  cs160::scanner::statemachine::DFA arithmeticDFA(start);
+  cs160::frontend::DFA arithmeticDFA(start);
   arithmeticDFA.addState(intState);
   arithmeticDFA.addState(opState);
   arithmeticDFA.addState(openParenState);
@@ -71,9 +71,8 @@ int main() {
   //arithmeticDFA.input('2');
   //arithmeticDFA.input('+');
   //arithmeticDFA.input('7');
-    arithmeticDFA.input("12(a))2");
-    arithmeticDFA.print_queue();
-
+  arithmeticDFA.input("12(a))2");
+  arithmeticDFA.print_queue();
 
   return 0;
 }

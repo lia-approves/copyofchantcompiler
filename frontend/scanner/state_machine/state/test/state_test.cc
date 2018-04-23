@@ -25,7 +25,7 @@ SOFTWARE.
 #include "scanner/state_machine/state/state.h"
 
 namespace cs160 {
-namespace scanner {
+namespace frontend {
 
 TEST(StateTests, DefaultState) {
   State s;
@@ -51,5 +51,5 @@ TEST(StateTests, DefaultToken) {
   ASSERT_EQ(s.getToken().get_token(), t.get_token());
 }
 
-}  // namespace scanner
+}  // namespace frontend
 }  // namespace cs160

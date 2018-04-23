@@ -2,9 +2,9 @@
 #include "frontend/parser/parser.h"
 
 namespace cs160 {
-namespace parser {
+namespace frontend {
 
-namespace token = cs160::scanner::token;
+namespace token = cs160::frontend;
 
 TEST(ParserTest, InstantiateParser) {
   std::vector<token::Token> tokens;
@@ -21,5 +21,5 @@ TEST(ExpressionTest, InstantiateExpressions) {
   Literal lit(t);
 }
 
-}  // namespace parser
+}  // namespace frontend
 }  // namespace cs160

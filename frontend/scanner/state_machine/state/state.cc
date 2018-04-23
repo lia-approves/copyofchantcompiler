@@ -27,34 +27,33 @@ SOFTWARE.
 
 
 namespace cs160 {
-namespace scanner {
-namespace statemachine {
+namespace frontend {
 
 // Basic state object, contains the ID, a flag to see if it's
 // accepting and the default token of invalid
 State::State(int id) {
     this->id_ = id;
     this->accepting_ = false;
-    this->token_ = token::InvalidToken();
+    this->token_ = InvalidToken();
 }
-    State::State(int id, token::Token token) {
+    State::State(int id, Token token) {
     this->id_ = id;
     this->accepting_ = true;
     this->token_ = token;
 }
 State::~State(void) {}
 
-void State::set_token_output(std::function<token::Token(std::string)> func) {
+void State::set_token_output(std::function<Token(std::string)> func) {
     createToken_ = func;
 }
 
-token::Token State::get_token(std::string str) {
-    token::Token retval =  createToken_(str);
+Token State::get_token(std::string str) {
+    Token retval =  createToken_(str);
     return retval;
 }
 
 // Methods for getting next state of a given
-    // state and for adding transitions to a new state
+// state and for adding transitions to a new state
 void State::addTransition(char trigger, int nextStateId) {
   transitions_[trigger] = nextStateId;
 }
@@ -73,7 +72,5 @@ void State::addTransition(char startChar, char endChar, int nextStateId) {
 int State::nextState(char input) {
   return transitions_[input];
 }
-
-}  // namespace statemachine
-}  // namespace scanner
+}  // namespace frontend
 }  // namespace cs160

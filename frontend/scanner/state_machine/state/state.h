@@ -41,24 +41,23 @@ SOFTWARE.
 */
 
 namespace cs160 {
-namespace scanner {
-namespace statemachine {
+namespace frontend {
 
 class State {
  public:
     // Constructors for creating states, default value is -1
     // Otherwise initialize it with a Token
     explicit State(int id = -1);
-    explicit State(int id, token::Token token);
+    explicit State(int id, Token token);
 
 
     // Destructor for State object
     ~State(void);
 
     // set the output type for the state
-    void set_token_output(std::function<token::Token(std::string)>func);
+    void set_token_output(std::function<Token(std::string)>func);
     // return the correct output type
-    token::Token get_token(std::string str);
+    Token get_token(std::string str);
 
     // Method for adding transition to a state, input is a character
     // and where the state should go
@@ -70,17 +69,16 @@ class State {
     // Basic getters
     int getId() const { return id_; }
     bool isAccepting() const { return accepting_; }
-    token::Token getToken() const { return token_; }
+    Token getToken() const { return token_; }
 
  private:
     int id_;
     bool accepting_;
-    token::Token token_;
+    Token token_;
     std::map<char, int> transitions_;
-    std::function<token::Token(std::string)> createToken_;
+    std::function<Token(std::string)> createToken_;
 };
-}  // namespace statemachine
-}  // namespace scanner
+}  // namespace frontend
 }  // namespace cs160
 
 #endif  // FRONTEND_SCANNER_STATE_MACHINE_STATE_STATE_H_
