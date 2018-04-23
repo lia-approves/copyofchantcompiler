@@ -24,8 +24,7 @@ class Frontend {
       makeParseTree(std::queue<Token> tokens); // create parse tree from token sequence
 
 };
-
-}
-}
+}  //namespace frontend
+}  //namespace cs160
 
 #endif // FRONTEND_H_

@@ -32,7 +32,7 @@ namespace frontend {
 // Intialize the intial state
 DFA::DFA(State start) {
     State error(0);
-    error.set_token_output([](std::string str)->
+    error.setTokenOutput([](std::string str)->
                            cs160::frontend::Token
     {return cs160::frontend::InvalidToken(str);});
 
@@ -92,7 +92,7 @@ void DFA::rollback() {
     }
 
     if (s.isAccepting()) {
-        Token t = s.get_token(lexeme_);
+        Token t = s.getToken(lexeme_);
         scanner_output_.push(t);
     } else {
         // stack empty
@@ -126,7 +126,7 @@ void DFA::input(std::string s) {
 
     if (!recently_visited_.empty()) {
         State st = recently_visited_.top();
-        Token t = st.get_token(lexeme_);
+        Token t = st.getToken(lexeme_);
         scanner_output_.push(t);
     } else {
         InvalidToken t;
@@ -134,7 +134,7 @@ void DFA::input(std::string s) {
     }
 }
 
-    void DFA::print_queue() {
+    void DFA::printQueue() {
         std::cout << "printing queue: " << std::endl;
         while (!scanner_output_.empty()) {
             std::cout << scanner_output_.front().print() << std::endl;

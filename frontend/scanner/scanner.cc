@@ -40,11 +40,9 @@ int main() {
   start.addTransition('*', 3);
 
   start.addTransition('(', 4);
-
   start.addTransition(')', 5);
 
-
-    start.set_token_output([](std::string str)->cs160::frontend::Token {return cs160::frontend::InvalidToken(str);});
+    start.setTokenOutput([](std::string str)->cs160::frontend::Token {return cs160::frontend::InvalidToken(str);});
 
   intState.addTransition('0', 2);
   intState.addTransition('1', 2);
@@ -57,10 +55,10 @@ int main() {
   intState.addTransition('8', 2);
   intState.addTransition('9', 2);
 
-    intState.set_token_output([](std::string str)->cs160::frontend::Token {return cs160::frontend::IntegerToken(str);});
-    opState.set_token_output([](std::string str)->cs160::frontend::Token {return cs160::frontend::ArithmeticExpressionToken(str);});
-    openParenState.set_token_output([](std::string str)->cs160::frontend::Token {return cs160::frontend::OpenParenthesisToken(str);});
-    closeParenState.set_token_output([](std::string str)->cs160::frontend::Token {return cs160::frontend::ClosedParenthesisToken(str);});
+    intState.setTokenOutput([](std::string str)->cs160::frontend::Token {return cs160::frontend::IntegerToken(str);});
+    opState.setTokenOutput([](std::string str)->cs160::frontend::Token {return cs160::frontend::ArithmeticExpressionToken(str);});
+    openParenState.setTokenOutput([](std::string str)->cs160::frontend::Token {return cs160::frontend::OpenParenthesisToken(str);});
+    closeParenState.setTokenOutput([](std::string str)->cs160::frontend::Token {return cs160::frontend::ClosedParenthesisToken(str);});
 
   cs160::frontend::DFA arithmeticDFA(start);
   arithmeticDFA.addState(intState);
@@ -72,7 +70,7 @@ int main() {
   //arithmeticDFA.input('+');
   //arithmeticDFA.input('7');
   arithmeticDFA.input("12(a))2");
-  arithmeticDFA.print_queue();
+  arithmeticDFA.printQueue();
 
   return 0;
 }
