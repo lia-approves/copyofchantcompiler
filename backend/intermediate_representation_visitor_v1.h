@@ -18,7 +18,13 @@ namespace backend {
   class IrGenVisitor : public AstVisitor {
   public:
     IrGenVisitor() {}
-    ~IrGenVisitor() {}
+    ~IrGenVisitor() {
+      while (head_ != nullptr) {
+        StatementNode* next = head_->GetNext();
+        delete head_;
+        head_ = next;
+      }
+    }
 
     void VisitIntegerExpr(const IntegerExpr& exp) {
       stack_.push_back(new Constant(exp.value()));

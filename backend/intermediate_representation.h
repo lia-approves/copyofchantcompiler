@@ -67,6 +67,12 @@ namespace backend {
       operand1_((operand1)),
       operand2_((operand2)),
       next_((next)) {}
+    StatementNode() {
+      delete target_;
+      delete instruction_;
+      delete operand1_;
+      delete operand2_;
+    }
     Operand& GetOp1() { return *operand1_; }
     Operand& GetOp2() { return *operand2_; }
     Register& GetTarget() { return *target_; }
