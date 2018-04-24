@@ -1,7 +1,7 @@
 // Copyright(c) 2018, Team Chant
 
-#ifndef BACKEND_INTERMEDIATE_REPRESENTATION_VISITOR_V1_H_
-#define BACKEND_INTERMEDIATE_REPRESENTATION_VISITOR_V1_H_
+#ifndef BACKEND_IR_GENERATOR_AST_VISITOR_V1_H_
+#define BACKEND_IR_GENERATOR_AST_VISITOR_V1_H_
 
 #include <sstream>
 #include <string>
@@ -135,4 +135,4 @@ namespace backend {
 }  // namespace backend
 }  // namespace cs160
 
-#endif  // BACKEND_INTERMEDIATE_REPRESENTATION_VISITOR_V1_H_
+#endif  // BACKEND_IR_GENERATOR_AST_VISITOR_V1_H_
