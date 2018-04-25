@@ -137,7 +137,7 @@ void DFA::input(std::string s) {
     void DFA::printQueue() {
         std::cout << "printing queue: " << std::endl;
         while (!scanner_output_.empty()) {
-            std::cout << scanner_output_.front().print() << std::endl;
+            std::cout << scanner_output_.front().Print() << std::endl;
             scanner_output_.pop();
         }
     }
