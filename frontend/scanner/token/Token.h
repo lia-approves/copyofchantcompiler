@@ -43,7 +43,7 @@ class Token{
     virtual ~Token();
 
     // Getters and setters
-    virtual std::string get_token();
+    virtual std::string get_token() const;
     virtual void set_token(std::string str);
     void set_token_str(std::string str);
     virtual std::string print();
