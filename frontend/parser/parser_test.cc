@@ -1,10 +1,12 @@
+// Copyright (c) 2018, Team-Chant
+
 #define GTEST_COUT std::cerr << "[          ] [ INFO ]"
 
+#include <iostream>
 #include "gtest/gtest.h"
 #include "frontend/parser/parser.h"
 #include "frontend/scanner/token/IntegerToken.h"
 #include "frontend/scanner/token/ArithmeticExpressionToken.h"
-#include <iostream>
 
 namespace cs160 {
 namespace frontend {
