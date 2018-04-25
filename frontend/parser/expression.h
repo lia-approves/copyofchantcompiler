@@ -13,7 +13,7 @@ namespace frontend {
 
 class Expression {
  public:
-  virtual std::string toString() const {
+  virtual std::string ToString() const {
     return "empty expression";
   }
 };
@@ -24,8 +24,8 @@ class BinaryExpr : public Expression {
     std::shared_ptr<Expression> left,
     cs160::frontend::Token op,
     std::shared_ptr<Expression> right) : left_(left), right_(right), op_(op) {}
-  std::string toString() const {
-    return "("+left_->toString()+op_.get_token()+right_->toString()+")";
+  std::string ToString() const {
+    return "("+left_->ToString()+op_.get_token()+right_->ToString()+")";
   }
 
  private:
@@ -39,8 +39,8 @@ class UnaryExpr : public Expression {
   explicit UnaryExpr(
     cs160::frontend::Token op,
     std::shared_ptr<Expression> right) : op_(op), right_(right) {}
-    std::string toString() const {
-      return "("+op_.get_token()+right_->toString()+")";
+    std::string ToString() const {
+      return "("+op_.get_token()+right_->ToString()+")";
     }
 
  private:
@@ -52,8 +52,8 @@ class Group : public Expression {
  public:
   explicit Group(
     std::shared_ptr<Expression> enclosed) : enclosed_(enclosed) {}
-    std::string toString() const {
-      return "("+enclosed_->toString()+")";
+    std::string ToString() const {
+      return "("+enclosed_->ToString()+")";
     }
 
  private:
@@ -63,7 +63,7 @@ class Group : public Expression {
 class Literal : public Expression {
  public:
   explicit Literal(cs160::frontend::Token lit) : lit_(lit) {}
-  std::string toString() const {
+  std::string ToString() const {
     return lit_.get_token();
   }
 

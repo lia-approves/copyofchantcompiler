@@ -22,8 +22,8 @@ TEST(ParserTest, ParseSingleInteger) {
   IntegerToken one("1");
   std::vector<Token> t = {one};
   Parser p(t);
-  auto e = p.parse();
-  ASSERT_EQ(e->toString(), "1");
+  auto e = p.Parse();
+  ASSERT_EQ(e->ToString(), "1");
 }
 
 TEST(ParserTest, SimpleAddition) {
@@ -32,8 +32,8 @@ TEST(ParserTest, SimpleAddition) {
   ArithmeticExpressionToken plus("+");
   std::vector<Token> t = {one, plus, two};
   Parser p(t);
-  auto e = p.parse();
-  ASSERT_EQ(e->toString(), "(1+2)");
+  auto e = p.Parse();
+  ASSERT_EQ(e->ToString(), "(1+2)");
 }
 
 TEST(ParserTest, SimpleSubtraction) {
@@ -42,8 +42,8 @@ TEST(ParserTest, SimpleSubtraction) {
   ArithmeticExpressionToken minus("-");
   std::vector<Token> t = {one, minus, two};
   Parser p(t);
-  auto e = p.parse();
-  ASSERT_EQ(e->toString(), "(1-2)");
+  auto e = p.Parse();
+  ASSERT_EQ(e->ToString(), "(1-2)");
 }
 
 TEST(ParserTest, SimpleMultiplication) {
@@ -52,8 +52,8 @@ TEST(ParserTest, SimpleMultiplication) {
   ArithmeticExpressionToken times("*");
   std::vector<Token> t = {one, times, two};
   Parser p(t);
-  auto e = p.parse();
-  ASSERT_EQ(e->toString(), "(1*2)");
+  auto e = p.Parse();
+  ASSERT_EQ(e->ToString(), "(1*2)");
 }
 
 TEST(ParserTest, SimpleDivision) {
@@ -62,8 +62,8 @@ TEST(ParserTest, SimpleDivision) {
   ArithmeticExpressionToken dividedBy("/");
   std::vector<Token> t = {one, dividedBy, two};
   Parser p(t);
-  auto e = p.parse();
-  ASSERT_EQ(e->toString(), "(1/2)");
+  auto e = p.Parse();
+  ASSERT_EQ(e->ToString(), "(1/2)");
 }
 
 TEST(ParserTest, MultPrecedenceOverAdd) {
@@ -74,9 +74,9 @@ TEST(ParserTest, MultPrecedenceOverAdd) {
   ArithmeticExpressionToken times("*");
   std::vector<Token> t = {one, plus, two, times, three};
   Parser p(t);
-  auto e = p.parse();
+  auto e = p.Parse();
   // std::cout << e->toString() << std::endl;
-  ASSERT_EQ(e->toString(), "(1+(2*3))");
+  ASSERT_EQ(e->ToString(), "(1+(2*3))");
 }
 
 TEST(ParserTest, ParenthesesOverrideOperatorPrecedence) {
@@ -89,9 +89,9 @@ TEST(ParserTest, ParenthesesOverrideOperatorPrecedence) {
   ClosedParenthesisToken closeParen(")");
   std::vector<Token> t = {openParen, one, plus, two, closeParen, times, three};
   Parser p(t);
-  auto e = p.parse();
+  auto e = p.Parse();
   // std::cout << e->toString() << std::endl;
-  ASSERT_EQ(e->toString(), "(((1+2))*3)");
+  ASSERT_EQ(e->ToString(), "(((1+2))*3)");
 }
 
 TEST(ExpressionTest, InstantiateExpressions) {
