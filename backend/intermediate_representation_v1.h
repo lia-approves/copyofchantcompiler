@@ -1,7 +1,7 @@
 // Copyright(c) 2018, Team Chant
 
-#ifndef BACKEND_INTERMEDIATE_REPRESENTATION_H_
-#define BACKEND_INTERMEDIATE_REPRESENTATION_H_
+#ifndef BACKEND_INTERMEDIATE_REPRESENTATION_V1_H_
+#define BACKEND_INTERMEDIATE_REPRESENTATION_V1_H_
 #include <iostream>
 #include <string>
 #include <vector>
@@ -10,40 +10,40 @@
 namespace cs160 {
 namespace backend {
 
-  class Operand {
-  public:
+class Operand {
+ public:
     Operand() {}
     virtual ~Operand() {}
     virtual int GetValue() = 0;
     virtual std::string GetName() = 0;
-  private:
-  };
+ private:
+};
 
-  class Register : public Operand {
-  public:
-    Register(int v) { value_ = (v); }
-    ~Register() {}
-    int GetValue() { return value_; }
-    std::string GetName() { return "t" + std::to_string(value_); }
-  private:
-    int value_;
-  };
+class Register : public Operand {
+ public:
+  explicit Register(int v) { value_ = (v); }
+  ~Register() {}
+  int GetValue() { return value_; }
+  std::string GetName() { return "t" + std::to_string(value_); }
+ private:
+  int value_;
+};
 
-  class Constant : public Operand {
-  public:
-    Constant(int v) { value_ = (v); }
-    ~Constant() {}
-    int GetValue() { return value_; }
-    std::string GetName() { return std::to_string(value_); }
-  private:
-    int value_;
-  };
+class Constant : public Operand {
+ public:
+  explicit Constant(int v) { value_ = (v); }
+  ~Constant() {}
+  int GetValue() { return value_; }
+  std::string GetName() { return std::to_string(value_); }
+ private:
+  int value_;
+};
 
-  class Instruction {
-  public:
+class Instruction {
+ public:
     enum Opcode { kAdd, kSubtract, kMultiply, kDivide };
-    Instruction(Opcode o) { op_ = (o); }
-    ~Instruction() {};
+    explicit Instruction(Opcode o) { op_ = (o); }
+    ~Instruction() {}
     Opcode GetOpcode() const { return op_; }
     std::string GetName() {
       if (op_ == kAdd) return "add";
@@ -51,12 +51,12 @@ namespace backend {
       if (op_ == kMultiply) return "multiply";
       if (op_ == kDivide) return "divide";
     }
-  private:
-    Opcode op_;
-  };
+ private:
+  Opcode op_;
+};
 
-  class StatementNode {
-  public:
+class StatementNode {
+ public:
     StatementNode(Register* target,
       Instruction* instruction,
       Operand* operand1,
@@ -78,15 +78,16 @@ namespace backend {
     Register& GetTarget() { return *target_; }
     Instruction& GetInstruction() { return *instruction_; }
     StatementNode*& GetNext() { return next_; }
-  private:
+
+ private:
     Register * target_;
     Instruction* instruction_;
     Operand* operand1_;
     Operand* operand2_;
     StatementNode* next_;
-  };
+};
 
 }  // namespace backend
 }  // namespace cs160
 
-#endif  // BACKEND_INTERMEDIATE_REPRESENTATION_H_
+#endif  // BACKEND_INTERMEDIATE_REPRESENTATION_V1_H_
