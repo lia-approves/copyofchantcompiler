@@ -9,8 +9,6 @@
 
         .text
 main:
-        mov     $4, %rax                # this will print whatever we put in rax
-
         mov     $format, %rdi           # set 1st parameter (format)
         mov     %rax, %rsi              # set 2nd parameter (current_number)
         xor     %rax, %rax              # because printf is varargs
