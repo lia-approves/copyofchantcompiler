@@ -48,7 +48,6 @@ class Parser {
        return e;
     }
     std::shared_ptr<Expression> MultRule() {
-       // comparison → AddRuleition ( ( ">" | ">=" | "<" | "<=" ) AddRuleition )* ;
        // MultRule --> UnaryRule ( ("/" | "*") UnaryRule )*
        // std::cout << "MultRule" << std::endl;
        std::shared_ptr<Expression> e = UnaryRule();
