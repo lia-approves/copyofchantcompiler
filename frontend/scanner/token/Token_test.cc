@@ -93,9 +93,24 @@ TEST(IntgerTokenTest, IntegerTokenString) {
 }
 
 // OpenParenthesisToken tests
+TEST(OpenParenthesisTest, OpenParen) {
+    OpenParenthesisToken t1;
+    ASSERT_EQ("(", t1.GetToken());
+    t1.SetToken("hello");
+    ASSERT_EQ("(", t1.GetToken());
+    OpenParenthesisToken t2("hello");
+    ASSERT_EQ("(", t2.GetToken());
+}
 
 // Closed Parenthesis Token Tests
-
+TEST(ClosedParenthesisTest, ClosedParen) {
+  ClosedParenthesisToken t1;
+  ASSERT_EQ(")", t1.GetToken());
+  t1.SetToken("hello");
+  ASSERT_EQ(")", t1.GetToken());
+  ClosedParenthesisToken t2("hello");
+  ASSERT_EQ(")", t2.GetToken());
+}
 
 }  // namespace frontend
 }  // namespace cs160
