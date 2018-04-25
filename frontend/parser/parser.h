@@ -1,7 +1,31 @@
-#ifndef FRONT_END_PARSER_PARSER_H_
-#define FRONT_END_PARSER_PARSER_H_
+/*
+ MIT License
+
+ Copyright (c) 2018, Team-Chant
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+ */
+#ifndef FRONTEND_PARSER_PARSER_H_
+#define FRONTEND_PARSER_PARSER_H_
 
 #include <vector>
+#include <string>
 #include "frontend/scanner/token/Token.h"
 #include "frontend/parser/expression.h"
 
@@ -9,7 +33,7 @@ namespace cs160 {
 namespace frontend {
 
 class Parser {
-  public:
+ public:
     explicit Parser(std::vector<Token> tokens);
     ~Parser(void);
     Expression parse() {
@@ -21,7 +45,7 @@ class Parser {
       }
     }
 
-  private:
+ private:
     std::vector<Token> tokens;
     int current = 0;
 
@@ -64,7 +88,8 @@ class Parser {
     }
     Expression primary() {
       // primary --> integer | (expression)
-      std::vector<std::string> possibleLiterals = {"0","1","2","3","4","5","6","7","8"};
+      std::vector<std::string> possibleLiterals =
+       {"0", "1", "2", "3", "4", "5", "6", "7", "8"};
       if (match(possibleLiterals)) {
         Literal e(prev());
         return e;
@@ -93,7 +118,7 @@ class Parser {
       return tokens[current];
     }
     bool match(std::vector<std::string> types) {
-      for (auto const& type: types) {
+      for (auto const& type : types) {
         if (check(type)) {
           next();
           return true;
@@ -103,7 +128,7 @@ class Parser {
     }
     bool check(std::string type) {
       if (atEnd()) return false;
-      return getCurrent().get_token() == type;
+      return getCurrent().GetToken() == type;
     }
     cs160::frontend::Token consume(std::string until, std::string error) {
       if (check(until)) return next();
@@ -113,4 +138,4 @@ class Parser {
 }  // namespace frontend
 }  // namespace cs160
 
-#endif
+#endif  // FRONTEND_PARSER_PARSER_H_
