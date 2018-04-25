@@ -49,8 +49,6 @@ class DFA {
     explicit DFA(State start);
     ~DFA(void);
 
-
-
     void addState(State state);
     void reset() { currentState_ = startState_; }
     State getCurrentState() const { return states_.at(currentState_); }
@@ -63,8 +61,7 @@ class DFA {
     // NOTE: you can refer to states that aren't
     // registerd!  The DFA will simply create them for you
     void addTransition(int stateId, char trigger, int destStateId);
-
-    void print_queue();
+    void printQueue();
 
  private:
     void rollback();

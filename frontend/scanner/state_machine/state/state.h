@@ -55,9 +55,9 @@ class State {
     ~State(void);
 
     // set the output type for the state
-    void set_token_output(std::function<Token(std::string)>func);
+    void setTokenOutput(std::function<Token(std::string)>func);
     // return the correct output type
-    Token get_token(std::string str);
+    Token getToken(std::string str);
 
     // Method for adding transition to a state, input is a character
     // and where the state should go

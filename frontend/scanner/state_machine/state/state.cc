@@ -43,11 +43,11 @@ State::State(int id) {
 }
 State::~State(void) {}
 
-void State::set_token_output(std::function<Token(std::string)> func) {
+void State::setTokenOutput(std::function<Token(std::string)> func) {
     createToken_ = func;
 }
 
-Token State::get_token(std::string str) {
+Token State::getToken(std::string str) {
     Token retval =  createToken_(str);
     return retval;
 }

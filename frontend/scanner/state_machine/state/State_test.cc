@@ -48,7 +48,7 @@ TEST(StateTests, Transition) {
 TEST(StateTests, DefaultToken) {
   State s;
   Token t;
-  ASSERT_EQ(s.getToken().get_token(), t.get_token());
+  ASSERT_EQ(s.getToken().getToken(), t.getToken());
 }
 
 }  // namespace frontend

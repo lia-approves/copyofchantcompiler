@@ -31,11 +31,15 @@ namespace frontend {
 InvalidToken::InvalidToken() {
     Token("Invalid Token");
     set_token("Invalid Token");
+    type_ t = invalidToken;
+    set_curr_type(t);
 }
 
 InvalidToken::InvalidToken(std::string) {
     Token("Invalid Token");
     set_token("Invalid Token");
+    type_ t = invalidToken;
+    set_curr_type(t);
 }
 
 void InvalidToken::set_token(std::string str) {

@@ -3,9 +3,7 @@
 namespace cs160 {
 namespace frontend {
 
-namespace token = cs160::frontend;
-
-Parser::Parser(std::vector<token::Token> tokens) {
+Parser::Parser(std::vector<Token> tokens) {
   this->tokens = tokens;
 }
 Parser::~Parser() {}

@@ -29,6 +29,11 @@ SOFTWARE.
 namespace cs160 {
 namespace frontend {
 
+    enum type_{ token, integerToken,
+        invalidToken,
+        openParenthesisToken,
+        closedParenthesisToken,
+        arithmeticExpressionToken};
 class Token{
  public:
     // Constructors and destructors
@@ -42,9 +47,13 @@ class Token{
     virtual void set_token(std::string str);
     void set_token_str(std::string str);
     virtual std::string print();
+    virtual void set_curr_type(type_ t);
+    virtual type_ get_curr_type();
 
  private:
     std::string token_str_;
+    type_ curr_type_  = static_cast<type_>(0);
+
     // string representation of the token being represented
 };
 }  // namespace frontend

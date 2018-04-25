@@ -27,8 +27,8 @@ namespace cs160 {
 namespace frontend {
 
 Token::Token() {
-    // doesn't do anything, is necessary
-    // to have a default constructor in InvalidToken
+    type_ t = token;
+    set_curr_type(t);
 }
 Token::Token(std::string str) {
   token_str_ = str;
@@ -51,6 +51,15 @@ void Token::set_token(std::string str) {
 
 std::string Token::print() {
     return token_str_;
+}
+
+
+void Token::set_curr_type(type_ t) {
+    curr_type_ = t;
+}
+
+type_ Token::get_curr_type() {
+    return curr_type_;
 }
 
 }  // namespace frontend
