@@ -27,12 +27,15 @@ namespace cs160 {
 namespace frontend {
 
 Token::Token() {
-    type_ t = token;
+    token_str_ = "";
+    type_ t = token_;
     SetCurrType(t);
 }
 
 Token::Token(std::string str) {
   token_str_ = str;
+  type_ t = token_;
+  SetCurrType(t);
 }
 
 Token::~Token() { }

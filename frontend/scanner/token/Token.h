@@ -29,7 +29,7 @@ SOFTWARE.
 namespace cs160 {
 namespace frontend {
 
-    enum type_{ token, integerToken,
+    enum type_{ token_, integerToken,
         invalidToken,
         openParenthesisToken,
         closedParenthesisToken,

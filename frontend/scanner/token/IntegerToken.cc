@@ -29,8 +29,21 @@ namespace cs160 {
 namespace frontend {
 
 IntegerToken::IntegerToken(std::string str) : Token(str) {
+  // first, check that the string is a number
+  for (int i=0; i < str.size(); i++) {
+    char curr_char = str.at(i);
+    if (!std::isdigit(curr_char)) {
+      // curr_char is not a number
+      // throw exception
+      throw "1";
+      return;
+    }
+  }
+
+
     type_ t = integerToken;
     SetCurrType(t);
+    SetToken(str);
 }
 
 IntegerToken::IntegerToken(int tok_integer) {
