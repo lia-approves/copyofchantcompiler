@@ -27,38 +27,42 @@ namespace cs160 {
 namespace frontend {
 
 Token::Token() {
-    type_ t = token;
-    set_curr_type(t);
+    token_str_ = "";
+    type_ t = token_;
+    SetCurrType(t);
 }
+
 Token::Token(std::string str) {
   token_str_ = str;
+  type_ t = token_;
+  SetCurrType(t);
 }
 
 Token::~Token() { }
 
 // Basic getters and setters
-std::string Token::get_token() const {
+std::string Token::GetToken() const {
   return token_str_;
 }
 
-void Token::set_token_str(std::string str) {
+void Token::SetTokenStr(std::string str) {
   token_str_ = str;
 }
 
-void Token::set_token(std::string str) {
+void Token::SetToken(std::string str) {
   token_str_ = str;
 }
 
-std::string Token::print() {
+std::string Token::Print() {
     return token_str_;
 }
 
 
-void Token::set_curr_type(type_ t) {
+void Token::SetCurrType(type_ t) {
     curr_type_ = t;
 }
 
-type_ Token::get_curr_type() {
+type_ Token::GetCurrType() {
     return curr_type_;
 }
 

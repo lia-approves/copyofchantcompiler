@@ -39,8 +39,8 @@ class IntegerToken: public Token {
     explicit IntegerToken(int tok_integer);
 
     // Getters and Setters
-    void set_token(std::string str);
-    int get_token_int();
+    void SetToken(std::string str);
+    int GetTokenInt();
 
  private:
     int token_int_;

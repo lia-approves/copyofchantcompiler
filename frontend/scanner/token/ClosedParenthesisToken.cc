@@ -26,20 +26,20 @@ namespace cs160 {
 namespace frontend {
 
 ClosedParenthesisToken::ClosedParenthesisToken() {
-    set_token_str(")");
+    SetTokenStr(")");
     type_ t = closedParenthesisToken;
-    set_curr_type(t);
+    SetCurrType(t);
 }
 
 ClosedParenthesisToken::ClosedParenthesisToken(std::string str) {
-    set_token_str(")");
+    SetTokenStr(")");
     type_ t = closedParenthesisToken;
-    set_curr_type(t);
+    SetCurrType(t);
 }
 
-void ClosedParenthesisToken::set_token(std::string str) {}
+void ClosedParenthesisToken::SetToken(std::string str) {}
 
-char ClosedParenthesisToken::get_token_char() {
+char ClosedParenthesisToken::GetTokenChar() {
     return token_char_;
 }
 }  // namespace frontend

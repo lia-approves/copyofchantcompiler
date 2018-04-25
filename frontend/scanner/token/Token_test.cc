@@ -24,9 +24,93 @@
 
 #include "gtest/gtest.h"
 #include "frontend/scanner/token/Token.h"
+#include "frontend/scanner/token/InvalidToken.h"
+#include "frontend/scanner/token/IntegerToken.h"
+#include "frontend/scanner/token/OpenParenthesisToken.h"
+#include "frontend/scanner/token/ClosedParenthesisToken.h"
 
 namespace cs160 {
-namespace scanner {
+namespace frontend {
+// Enum Tests
+TEST(TokenTest, TokenBasicEnum) {
+  Token t;
+  ASSERT_EQ(token_, t.GetCurrType());
+}
 
-}  // namespace scanner
+TEST(InvalidTokenTest, InvalidTokenEnum) {
+  InvalidToken t;
+  ASSERT_EQ(invalidToken, t.GetCurrType());
+}
+
+TEST(IntegerTokenTest, IntegerTokenEnum) {
+  IntegerToken t(1);
+  ASSERT_EQ(integerToken, t.GetCurrType());
+}
+
+TEST(OpenParenthesisTokenTest, OpenTokenEnum) {
+  OpenParenthesisToken t;
+  ASSERT_EQ(openParenthesisToken, t.GetCurrType());
+}
+
+TEST(ClosedParenthesisTest, IntegerTokenEnum) {
+  ClosedParenthesisToken t;
+  ASSERT_EQ(closedParenthesisToken, t.GetCurrType());
+}
+
+// Token Tests
+TEST(EmptyTokenStringTest, TokenEmptyString) {
+  Token t;
+  ASSERT_EQ("", t.GetToken());
+}
+
+TEST(TokenStringTest, TokenString) {
+  Token t("hello");
+  ASSERT_EQ("hello", t.GetToken());
+  t.SetTokenStr("hi");
+  ASSERT_EQ("hi", t.GetToken());
+}
+
+// Invalid tests
+TEST(InvalidStringTest, InvalidTokenString) {
+  InvalidToken t1;
+  ASSERT_EQ("Invalid Token", t1.GetToken());
+  t1.SetToken("hello");
+  ASSERT_EQ("Invalid Token", t1.GetToken());
+  InvalidToken t2("hello");
+  ASSERT_EQ("Invalid Token", t2.GetToken());
+}
+
+// Integer tests
+TEST(IntgerTokenTest, IntegerTokenString) {
+  IntegerToken t1("1");
+  ASSERT_EQ("1", t1.GetToken());
+  ASSERT_EQ(1, t1.GetTokenInt());
+  IntegerToken t2(2);
+  ASSERT_EQ(2, t2.GetTokenInt());
+  ASSERT_EQ("2", t2.GetToken());
+  // test if strings that are not numbers
+  // are inputted
+}
+
+// OpenParenthesisToken tests
+TEST(OpenParenthesisTest, OpenParen) {
+    OpenParenthesisToken t1;
+    ASSERT_EQ("(", t1.GetToken());
+    t1.SetToken("hello");
+    ASSERT_EQ("(", t1.GetToken());
+    OpenParenthesisToken t2("hello");
+    ASSERT_EQ("(", t2.GetToken());
+}
+
+// Closed Parenthesis Token Tests
+TEST(ClosedParenthesisTest, ClosedParen) {
+  ClosedParenthesisToken t1;
+  ASSERT_EQ(")", t1.GetToken());
+  t1.SetToken("hello");
+  ASSERT_EQ(")", t1.GetToken());
+  ClosedParenthesisToken t2("hello");
+  ASSERT_EQ(")", t2.GetToken());
+}
+
+}  // namespace frontend
 }  // namespace cs160

@@ -29,28 +29,41 @@ namespace cs160 {
 namespace frontend {
 
 IntegerToken::IntegerToken(std::string str) : Token(str) {
+  // first, check that the string is a number
+  for (int i=0; i < str.size(); i++) {
+    char curr_char = str.at(i);
+    if (!std::isdigit(curr_char)) {
+      // curr_char is not a number
+      // throw exception
+      throw "1";
+      return;
+    }
+  }
+
+
     type_ t = integerToken;
-    set_curr_type(t);
+    SetCurrType(t);
+    SetToken(str);
 }
 
 IntegerToken::IntegerToken(int tok_integer) {
     type_ t = integerToken;
-    set_curr_type(t);
+    SetCurrType(t);
     std::string str_arg = std::to_string(tok_integer);
-    set_token_str(str_arg);
+    SetTokenStr(str_arg);
 
     token_int_ = tok_integer;
 }
 
-void IntegerToken::set_token(std::string str) {
-    set_token_str(str);
+void IntegerToken::SetToken(std::string str) {
+    SetTokenStr(str);
 
     std::stringstream cast_to_int(str);
 
     cast_to_int >> token_int_;
 }
 
-int IntegerToken::get_token_int() {
+int IntegerToken::GetTokenInt() {
     return token_int_;
 }
 }  // namespace frontend

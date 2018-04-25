@@ -39,9 +39,9 @@ class ArithmeticExpressionToken: public Token{
     explicit ArithmeticExpressionToken(std::string tok);
 
     // Getts and setters
-    void set_token(std::string str);
-    void set_token_char(char tok);
-    char get_token_char();
+    void SetToken(std::string str);
+    void SetTokenChar(char tok);
+    char GetTokenChar();
 
  private:
     char token_char_;

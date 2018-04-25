@@ -29,23 +29,23 @@ namespace cs160 {
 namespace frontend {
 
 OpenParenthesisToken::OpenParenthesisToken() {
-    set_token_str("(");
+    SetTokenStr("(");
     type_ t = openParenthesisToken;
-    set_curr_type(t);
+    SetCurrType(t);
 }
 
 OpenParenthesisToken::OpenParenthesisToken(std::string str) {
-    set_token_str("(");
+    SetTokenStr("(");
     type_ t = openParenthesisToken;
-    set_curr_type(t);
+    SetCurrType(t);
 }
 
 
-void OpenParenthesisToken::set_token(std::string str) {
+void OpenParenthesisToken::SetToken(std::string str) {
     // do nothing ~ the const string and char are already created
 }
 
-char OpenParenthesisToken::get_token_char() {
+char OpenParenthesisToken::GetTokenChar() {
     return token_char_;
 }
 }  // namespace frontend
