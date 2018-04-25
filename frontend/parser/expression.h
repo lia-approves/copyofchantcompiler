@@ -25,7 +25,7 @@ class BinaryExpr : public Expression {
     cs160::frontend::Token op,
     std::shared_ptr<Expression> right) : left_(left), right_(right), op_(op) {}
   std::string ToString() const {
-    return "("+left_->ToString()+op_.get_token()+right_->ToString()+")";
+    return "("+left_->ToString()+op_.GetToken()+right_->ToString()+")";
   }
 
  private:
@@ -40,7 +40,7 @@ class UnaryExpr : public Expression {
     cs160::frontend::Token op,
     std::shared_ptr<Expression> right) : op_(op), right_(right) {}
     std::string ToString() const {
-      return "("+op_.get_token()+right_->ToString()+")";
+      return "("+op_.GetToken()+right_->ToString()+")";
     }
 
  private:
@@ -64,7 +64,7 @@ class Literal : public Expression {
  public:
   explicit Literal(cs160::frontend::Token lit) : lit_(lit) {}
   std::string ToString() const {
-    return lit_.get_token();
+    return lit_.GetToken();
   }
 
  private:

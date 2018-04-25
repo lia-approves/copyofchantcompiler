@@ -41,7 +41,7 @@ Token::Token(std::string str) {
 Token::~Token() { }
 
 // Basic getters and setters
-std::string Token::GetToken() {
+std::string Token::GetToken() const {
   return token_str_;
 }
 

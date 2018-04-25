@@ -122,8 +122,8 @@ class Parser {
     }
     bool Check(std::string type) {
        if (AtEnd()) return false;
-       // std::cout << "(against " << GetCurrent().get_token() << ")";
-       return GetCurrent().get_token() == type;
+       // std::cout << "(against " << GetCurrent().GetToken() << ")";
+       return GetCurrent().GetToken() == type;
     }
     cs160::frontend::Token Consume(std::string until, std::string error) {
        if (Check(until)) return Next();
