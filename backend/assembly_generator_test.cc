@@ -1,6 +1,6 @@
 // Copyright msg for cpplint
 #include "abstract_syntax/abstract_syntax.h"
-#include "backend/IR.h"
+#include "backend/intermediate_representation.h"
 #include "gtest/gtest.h"
 #include "utility/memory.h"
 
@@ -10,10 +10,10 @@ using cs160::abstract_syntax::version_1::SubtractExpr;
 using cs160::abstract_syntax::version_1::MultiplyExpr;
 using cs160::abstract_syntax::version_1::DivideExpr;
 
-using cs160::intermediate_representation::Instruction;
-using cs160::intermediate_representation::Operand;
-using cs160::intermediate_representation::Register;
-using cs160::intermediate_representation::StatementNode;
+using cs160::backend::Instruction;
+using cs160::backend::Operand;
+using cs160::backend::Register;
+using cs160::backend::StatementNode;
 
 using cs160::make_unique;
 
