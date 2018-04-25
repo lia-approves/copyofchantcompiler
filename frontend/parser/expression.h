@@ -57,7 +57,7 @@ class Literal : public Expression {
   public:
     explicit Literal(cs160::frontend::Token lit) : lit_(lit) {}
   std::string toString() const {
-    return "("+lit_.get_token()+")";
+    return lit_.get_token();
   }
 
   private:
