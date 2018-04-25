@@ -7,6 +7,8 @@
 #include "frontend/parser/parser.h"
 #include "frontend/scanner/token/IntegerToken.h"
 #include "frontend/scanner/token/ArithmeticExpressionToken.h"
+#include "frontend/scanner/token/OpenParenthesisToken.h"
+#include "frontend/scanner/token/ClosedParenthesisToken.h"
 
 namespace cs160 {
 namespace frontend {
@@ -75,6 +77,21 @@ TEST(ParserTest, MultPrecedenceOverAdd) {
   auto e = p.parse();
   // std::cout << e->toString() << std::endl;
   ASSERT_EQ(e->toString(), "(1+(2*3))");
+}
+
+TEST(ParserTest, ParenthesesOverrideOperatorPrecedence) {
+  IntegerToken one("1");
+  IntegerToken two("2");
+  IntegerToken three("3");
+  ArithmeticExpressionToken plus("+");
+  ArithmeticExpressionToken times("*");
+  OpenParenthesisToken openParen("(");
+  ClosedParenthesisToken closeParen(")");
+  std::vector<Token> t = {openParen, one, plus, two, closeParen, times, three};
+  Parser p(t);
+  auto e = p.parse();
+  // std::cout << e->toString() << std::endl;
+  ASSERT_EQ(e->toString(), "(((1+2))*3)");
 }
 
 TEST(ExpressionTest, InstantiateExpressions) {
