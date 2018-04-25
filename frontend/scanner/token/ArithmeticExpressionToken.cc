@@ -33,45 +33,45 @@ namespace frontend {
 ArithmeticExpressionToken::ArithmeticExpressionToken(char tok) {
     token_char_ = tok;
     type_ t = arithmeticExpressionToken;
-    set_curr_type(t);
+    SetCurrType(t);
 
     std::stringstream ss;
     ss << tok;
     std::string setter = "";
     ss >> setter;
 
-    set_token_str(setter);
+    SetTokenStr(setter);
 }
 
 // Constructor for if input is more than single char
 ArithmeticExpressionToken::ArithmeticExpressionToken(std::string tok) {
-    set_token_str(tok);
+    SetTokenStr(tok);
 
     type_ t = arithmeticExpressionToken;
-    set_curr_type(t);
+    SetCurrType(t);
 
     token_char_ = tok[0];
 }
 
 // Method to set the value of a token given a string
-void ArithmeticExpressionToken::set_token(std::string tok) {
-    set_token_str(tok);
+void ArithmeticExpressionToken::SetToken(std::string tok) {
+    SetTokenStr(tok);
 
     token_char_ = tok[0];
 }
 
 // Method to set value of a token given a char
-void ArithmeticExpressionToken::set_token_char(char tok) {
+void ArithmeticExpressionToken::SetTokenChar(char tok) {
     token_char_ = tok;
 
     std::stringstream ss;
     ss << tok;
     std::string setter;
-    set_token_str(setter);
+    SetTokenStr(setter);
 }
 
 // Getter
-char ArithmeticExpressionToken::get_token_char() {
+char ArithmeticExpressionToken::GetTokenChar() {
     return token_char_;
 }
 }  // namespace frontend

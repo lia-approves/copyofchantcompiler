@@ -38,7 +38,7 @@ class InvalidToken: public Token{
  public:
     InvalidToken();
     explicit InvalidToken(std::string str);
-    void set_token(std::string);
+    void SetToken(std::string);
 };
 }  // namespace frontend
 }  // namespace cs160

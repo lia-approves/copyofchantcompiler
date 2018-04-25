@@ -39,8 +39,8 @@ class ClosedParenthesisToken : public Token{
     explicit ClosedParenthesisToken(std::string str);
 
     // Getter and Setters
-    void set_token(std::string str);
-    char get_token_char();
+    void SetToken(std::string str);
+    char GetTokenChar();
 
  private:
     const char token_char_ = ')';
