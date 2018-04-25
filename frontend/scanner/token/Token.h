@@ -29,7 +29,7 @@ SOFTWARE.
 namespace cs160 {
 namespace frontend {
 
-    enum type_{ token_, integerToken,
+    enum token_type_{ token_, integerToken,
         invalidToken,
         openParenthesisToken,
         closedParenthesisToken,
@@ -47,12 +47,12 @@ class Token{
     virtual void SetToken(std::string str);
     void SetTokenStr(std::string str);
     virtual std::string Print();
-    virtual void SetCurrType(type_ t);
-    virtual type_ GetCurrType();
+    virtual void SetCurrType(token_type_ t);
+    virtual token_type_ GetCurrType();
 
  private:
     std::string token_str_;
-    type_ curr_type_  = static_cast<type_>(0);
+    token_type_ curr_token_type_  = static_cast<token_type_>(0);
 
     // string representation of the token being represented
 };

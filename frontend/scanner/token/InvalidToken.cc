@@ -31,14 +31,14 @@ namespace frontend {
 InvalidToken::InvalidToken() {
     Token("Invalid Token");
     SetToken("Invalid Token");
-    type_ t = invalidToken;
+    token_type_ t = invalidToken;
     SetCurrType(t);
 }
 
 InvalidToken::InvalidToken(std::string) {
     Token("Invalid Token");
     SetToken("Invalid Token");
-    type_ t = invalidToken;
+    token_type_ t = invalidToken;
     SetCurrType(t);
 }
 

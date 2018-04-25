@@ -30,13 +30,13 @@ namespace frontend {
 
 OpenParenthesisToken::OpenParenthesisToken() {
     SetTokenStr("(");
-    type_ t = openParenthesisToken;
+    token_type_ t = openParenthesisToken;
     SetCurrType(t);
 }
 
 OpenParenthesisToken::OpenParenthesisToken(std::string str) {
     SetTokenStr("(");
-    type_ t = openParenthesisToken;
+    token_type_ t = openParenthesisToken;
     SetCurrType(t);
 }
 

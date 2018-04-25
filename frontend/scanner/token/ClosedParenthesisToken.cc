@@ -27,13 +27,13 @@ namespace frontend {
 
 ClosedParenthesisToken::ClosedParenthesisToken() {
     SetTokenStr(")");
-    type_ t = closedParenthesisToken;
+    token_type_ t = closedParenthesisToken;
     SetCurrType(t);
 }
 
 ClosedParenthesisToken::ClosedParenthesisToken(std::string str) {
     SetTokenStr(")");
-    type_ t = closedParenthesisToken;
+    token_type_ t = closedParenthesisToken;
     SetCurrType(t);
 }
 

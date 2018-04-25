@@ -41,13 +41,13 @@ IntegerToken::IntegerToken(std::string str) : Token(str) {
   }
 
 
-    type_ t = integerToken;
+    token_type_ t = integerToken;
     SetCurrType(t);
     SetToken(str);
 }
 
 IntegerToken::IntegerToken(int tok_integer) {
-    type_ t = integerToken;
+    token_type_ t = integerToken;
     SetCurrType(t);
     std::string str_arg = std::to_string(tok_integer);
     SetTokenStr(str_arg);

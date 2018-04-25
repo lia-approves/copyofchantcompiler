@@ -32,7 +32,7 @@ namespace frontend {
 // Constructor for simple input
 ArithmeticExpressionToken::ArithmeticExpressionToken(char tok) {
     token_char_ = tok;
-    type_ t = arithmeticExpressionToken;
+    token_type_ t = arithmeticExpressionToken;
     SetCurrType(t);
 
     std::stringstream ss;
@@ -47,7 +47,7 @@ ArithmeticExpressionToken::ArithmeticExpressionToken(char tok) {
 ArithmeticExpressionToken::ArithmeticExpressionToken(std::string tok) {
     SetTokenStr(tok);
 
-    type_ t = arithmeticExpressionToken;
+    token_type_ t = arithmeticExpressionToken;
     SetCurrType(t);
 
     token_char_ = tok[0];

@@ -28,13 +28,13 @@ namespace frontend {
 
 Token::Token() {
     token_str_ = "";
-    type_ t = token_;
+    token_type_ t = token_;
     SetCurrType(t);
 }
 
 Token::Token(std::string str) {
   token_str_ = str;
-  type_ t = token_;
+  token_type_ t = token_;
   SetCurrType(t);
 }
 
@@ -58,12 +58,12 @@ std::string Token::Print() {
 }
 
 
-void Token::SetCurrType(type_ t) {
-    curr_type_ = t;
+void Token::SetCurrType(token_type_ t) {
+    curr_token_type_ = t;
 }
 
-type_ Token::GetCurrType() {
-    return curr_type_;
+token_type_ Token::GetCurrType() {
+    return curr_token_type_;
 }
 
 }  // namespace frontend
