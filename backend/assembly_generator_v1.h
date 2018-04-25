@@ -14,7 +14,6 @@ using std::string;
 using cs160::backend::StatementNode;
 using cs160::backend::Instruction;
 
-
 class AsmProgram {
  public:
   AsmProgram() {}
@@ -50,11 +49,10 @@ void AsmProgram::GenerateASM(StatementNode* node) {
   case Instruction::kDivide:
     asm_sstring_ << "div %ax, %bx" << endl;
     break;
-    asm_sstring_ << "push %bx" << endl;
-
   default:
     break;
   }
+  asm_sstring_ << "push %bx" << endl << endl;
 }
 
 #endif  // BACKEND_ASSEMBLY_GENERATOR_V1_H_
