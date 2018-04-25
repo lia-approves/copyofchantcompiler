@@ -36,7 +36,8 @@ class AsmProgram {
     asm_sstring_ << "  ret" << endl;
 
     asm_sstring_ << "format:" << endl;
-    asm_sstring_ << "  .asciz  \"%20ld\n\"" << endl;
+    asm_sstring_ << "  .asciz  \"%20ld\\n\"" << endl;
+    asm_sstring_ << endl;
   }
   string GetASM() { return asm_sstring_.str(); }
 
@@ -47,25 +48,25 @@ class AsmProgram {
 void AsmProgram::GenerateASM(StatementNode* node) {
   node->GetOp1().PushToAsmSS(asm_sstring_);
   node->GetOp2().PushToAsmSS(asm_sstring_);
-  asm_sstring_ << "pop %ax" << endl;
-  asm_sstring_ << "pop %bx" << endl;
+  asm_sstring_ << "pop %rax" << endl;
+  asm_sstring_ << "pop %rbx" << endl;
   switch (node->GetInstruction().GetOpcode()) {
   case Instruction::kAdd:
-    asm_sstring_ << "add %ax, %bx" << endl;
+    asm_sstring_ << "add %rax, %rbx" << endl;
     break;
   case Instruction::kSubtract:
-    asm_sstring_ << "sub %ax, %bx" << endl;
+    asm_sstring_ << "sub %rax, %rbx" << endl;
     break;
   case Instruction::kMultiply:
-    asm_sstring_ << "mul %ax, %bx" << endl;
+    asm_sstring_ << "mul %rax, %rbx" << endl;
     break;
   case Instruction::kDivide:
-    asm_sstring_ << "div %ax, %bx" << endl;
+    asm_sstring_ << "div %rax, %rbx" << endl;
     break;
   default:
     break;
   }
-  asm_sstring_ << "push %bx" << endl << endl;
+  asm_sstring_ << "push %rbx" << endl << endl;
 }
 
 #endif  // BACKEND_ASSEMBLY_GENERATOR_V1_H_
