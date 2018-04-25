@@ -20,10 +20,23 @@ class AsmProgram {
   ~AsmProgram() {}
   void GenerateASM(StatementNode* node);
   void IrToAsm(StatementNode* head) {
+    asm_sstring_ << ".global main" << endl;
+    asm_sstring_ << ".text" << endl;
+    asm_sstring_ << "main:" << endl;
   while (head != nullptr) {
       GenerateASM(head);
       head = head->GetNext();
     }
+    asm_sstring_ << "pop %rax" << endl;
+    asm_sstring_ << "mov     $format, %rdi" << endl;
+    asm_sstring_ << "mov     %rax, %rsi" << endl;
+    asm_sstring_ << "xor     %rax, %rax" << endl;
+    asm_sstring_ << "call    printf" << endl;
+
+    asm_sstring_ << "  ret" << endl;
+
+    asm_sstring_ << "format:" << endl;
+    asm_sstring_ << "  .asciz  \"%20ld\n\"" << endl;
   }
   string GetASM() { return asm_sstring_.str(); }
 
