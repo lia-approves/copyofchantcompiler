@@ -6,18 +6,24 @@
 #include <sstream>
 #include <string>
 #include <vector>
-
 #include "abstract_syntax/abstract_syntax_tree_v1.h"
 #include "backend/intermediate_representation_v1.h"
 #include "utility/memory.h"
-using namespace cs160::abstract_syntax::version_1;
 
+using cs160::abstract_syntax::version_1::IntegerExpr;
+using cs160::abstract_syntax::version_1::BinaryOperatorExpr;
+using cs160::abstract_syntax::version_1::AddExpr;
+using cs160::abstract_syntax::version_1::SubtractExpr;
+using cs160::abstract_syntax::version_1::MultiplyExpr;
+using cs160::abstract_syntax::version_1::DivideExpr;
+using cs160::abstract_syntax::version_1::AstNode;
+using cs160::abstract_syntax::version_1::AstVisitor;
 
 namespace cs160 {
 namespace backend {
 
-  class IrGenVisitor : public AstVisitor {
-  public:
+class IrGenVisitor : public AstVisitor {
+ public:
     IrGenVisitor() {}
     ~IrGenVisitor() {
       while (head_ != nullptr) {
@@ -50,6 +56,7 @@ namespace backend {
       stack_.push_back(new Register(register_number_));
       register_number_++;
     }
+
     void VisitSubtractExpr(const SubtractExpr& exp) {
       exp.lhs().Visit(this);
       exp.rhs().Visit(this);
@@ -114,6 +121,7 @@ namespace backend {
       tail_->GetNext() = newtail;
       tail_ = tail_->GetNext();
     }
+
     void PrintIR() {
       StatementNode* itor = head_;
       while (itor != nullptr) {
@@ -126,12 +134,12 @@ namespace backend {
       }
     }
 
-  private:
+ private:
     StatementNode * head_ = nullptr;
     StatementNode* tail_ = nullptr;
     std::vector<Operand*> stack_;
     int register_number_ = 1;
-  };
+};
 
 }  // namespace backend
 }  // namespace cs160
