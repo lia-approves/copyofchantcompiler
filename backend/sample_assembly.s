@@ -1,5 +1,7 @@
+
+# ---------------------------------------------------------------------------$# A 64-bit Linux application that writes the first 90 Fibonacci numbers.  It
 # needs to be linked with a C library.
-#
+# http://cs.lmu.edu/~ray/notes/gasexamples/
 # Assemble and Link:
 #     gcc fib.s
 # ---------------------------------------------------------------------------$
@@ -7,11 +9,8 @@
 
         .text
 main:
-        mov     $1, %ecx               # ecx will countdown to 0
         xor     %rax, %rax              # rax will hold the current number
-        xor     %rbx, %rbx              # rbx will hold the next number
-        inc     %rbx                    # rbx is originally 1
-        add     $4, %rax                # whatever we put in rax will be printed!
+        add     $4, %rax                # this will print whatever we put in rax
 
         mov     $format, %rdi           # set 1st parameter (format)
         mov     %rax, %rsi              # set 2nd parameter (current_number)
