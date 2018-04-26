@@ -35,7 +35,7 @@ SOFTWARE.
 #include <map>
 #include <iostream>
 #include <stack>
-#include <queue>
+#include <vector>
 #include <string>
 #include "frontend/scanner/state_machine/state/state.h"
 #include "frontend/scanner/token/Token.h"
@@ -75,7 +75,7 @@ class DFA {
     State getStateById_(int id);
     std::map<int, State> states_;
     std::stack<State> recently_visited_;    // used for rollback
-    std::queue<Token> scanner_output_;
+    std::vector<Token> scanner_output_;
     // queue keeps track of all of the tokens found, gives this to the parser
 };
 }  // namespace frontend

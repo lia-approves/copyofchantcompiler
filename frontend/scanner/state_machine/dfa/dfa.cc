@@ -93,11 +93,11 @@ void DFA::rollback() {
 
     if (s.isAccepting()) {
         Token t = s.getToken(lexeme_);
-        scanner_output_.push(t);
+        scanner_output_.push_back(t);
     } else {
         // stack empty
         InvalidToken t;
-        scanner_output_.push(t);
+        scanner_output_.push_back(t);
         position_ = init_pos;
     }
 
@@ -127,10 +127,10 @@ void DFA::input(std::string s) {
     if (!recently_visited_.empty()) {
         State st = recently_visited_.top();
         Token t = st.getToken(lexeme_);
-        scanner_output_.push(t);
+        scanner_output_.push_back(t);
     } else {
         InvalidToken t;
-        scanner_output_.push(t);
+        scanner_output_.push_back(t);
     }
 }
 
@@ -138,7 +138,7 @@ void DFA::input(std::string s) {
         std::cout << "printing queue: " << std::endl;
         while (!scanner_output_.empty()) {
             std::cout << scanner_output_.front().Print() << std::endl;
-            scanner_output_.pop();
+            scanner_output_.erase(scanner_output_.begin());
         }
     }
 

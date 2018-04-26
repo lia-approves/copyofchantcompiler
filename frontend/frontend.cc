@@ -36,7 +36,7 @@ std::queue<Token> Frontend::tokenizeString(std::string input) {
   q.push(ClosedParenthesisToken());
   return q;
 }
-
+/*
 std::unique_ptr<ast::AstNode> Frontend::makeParseTree
 (std::queue<Token> tokens) {
   auto two = cs160::make_unique<ast::IntegerExpr>(2);
@@ -45,6 +45,9 @@ std::unique_ptr<ast::AstNode> Frontend::makeParseTree
   auto add = make_unique<ast::AddExpr>(std::move(one), std::move(three));
   auto root = make_unique<ast::MultiplyExpr>(std::move(two), std::move(add));
   return root;
+
 }
+*/
+
 }  // namespace frontend
 }  // namespace cs160
