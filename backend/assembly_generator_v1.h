@@ -20,32 +20,33 @@ class AsmProgram {
  public:
   AsmProgram() {}
   ~AsmProgram() {}
-  void GenerateASM(StatementNode* node);
-  void IrToAsm(StatementNode* head) {
-    asm_sstring_ << ".global main" << endl;
-    asm_sstring_ << ".text" << endl;
-    asm_sstring_ << "main:" << endl;
-  while (head != nullptr) {
-      GenerateASM(head);
-      head = head->GetNext();
-    }
-    asm_sstring_ << "pop %rax" << endl;
-    asm_sstring_ << "mov     $format, %rdi" << endl;
-    asm_sstring_ << "mov     %rax, %rsi" << endl;
-    asm_sstring_ << "xor     %rax, %rax" << endl;
-    asm_sstring_ << "call    printf" << endl;
-
-    asm_sstring_ << "  ret" << endl;
-
-    asm_sstring_ << "format:" << endl;
-    asm_sstring_ << "  .asciz  \"%0ld\\n\"" << endl;
-    asm_sstring_ << endl;
-  }
-  string GetASM() { return asm_sstring_.str(); }
-
+  void IrToAsm(StatementNode* head);
+  string GetASMString() { return asm_sstring_.str(); }
  private:
+  void GenerateASM(StatementNode* node);
   stringstream asm_sstring_;
 };
+
+void AsmProgram::IrToAsm(StatementNode* head) {
+  asm_sstring_ << ".global main" << endl;
+  asm_sstring_ << ".text" << endl;
+  asm_sstring_ << "main:" << endl;
+  while (head != nullptr) {
+    GenerateASM(head);
+    head = head->GetNext();
+  }
+  asm_sstring_ << "pop %rax" << endl;
+  asm_sstring_ << "mov     $format, %rdi" << endl;
+  asm_sstring_ << "mov     %rax, %rsi" << endl;
+  asm_sstring_ << "xor     %rax, %rax" << endl;
+  asm_sstring_ << "call    printf" << endl;
+
+  asm_sstring_ << "  ret" << endl;
+
+  asm_sstring_ << "format:" << endl;
+  asm_sstring_ << "  .asciz  \"%0ld\\n\"" << endl;
+  asm_sstring_ << endl;
+}
 
 void AsmProgram::GenerateASM(StatementNode* node) {
   node->GetOp1().PushToAsmSS(asm_sstring_);
