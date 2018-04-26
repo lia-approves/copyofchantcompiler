@@ -62,6 +62,7 @@ class DFA {
     // registerd!  The DFA will simply create them for you
     void addTransition(int stateId, char trigger, int destStateId);
     void printQueue();
+    std::vector<Token> GetOutput();
 
  private:
     void rollback();

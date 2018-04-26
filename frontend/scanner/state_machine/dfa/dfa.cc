@@ -153,5 +153,9 @@ void DFA::addTransition(int stateId, char trigger, int destStateId) {
   }
   states_[stateId].addTransition(trigger, destStateId);
 }
+
+std::vector<Token> DFA::GetOutput() {
+  return scanner_output_;
+}
 }  // namespace frontend
 }  // namespace cs160
