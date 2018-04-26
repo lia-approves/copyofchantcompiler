@@ -13,6 +13,8 @@ using std::endl;
 using std::string;
 using cs160::backend::StatementNode;
 using cs160::backend::Instruction;
+namespace cs160 {
+namespace backend {
 
 class AsmProgram {
  public:
@@ -36,7 +38,7 @@ class AsmProgram {
     asm_sstring_ << "  ret" << endl;
 
     asm_sstring_ << "format:" << endl;
-    asm_sstring_ << "  .asciz  \"%20ld\\n\"" << endl;
+    asm_sstring_ << "  .asciz  \"%0ld\\n\"" << endl;
     asm_sstring_ << endl;
   }
   string GetASM() { return asm_sstring_.str(); }
@@ -58,15 +60,17 @@ void AsmProgram::GenerateASM(StatementNode* node) {
     asm_sstring_ << "sub %rax, %rbx" << endl;
     break;
   case Instruction::kMultiply:
-    asm_sstring_ << "mul %rax, %rbx" << endl;
+    asm_sstring_ << "imul %rax, %rbx" << endl;
     break;
   case Instruction::kDivide:
-    asm_sstring_ << "div %rax, %rbx" << endl;
+    asm_sstring_ << "idiv %rax, %rbx" << endl;
     break;
   default:
     break;
   }
   asm_sstring_ << "push %rbx" << endl << endl;
 }
+}  // namespace backend
+}  // namespace cs160
 
 #endif  // BACKEND_ASSEMBLY_GENERATOR_V1_H_
