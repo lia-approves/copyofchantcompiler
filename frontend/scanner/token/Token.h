@@ -33,7 +33,10 @@ namespace frontend {
         invalidToken,
         openParenthesisToken,
         closedParenthesisToken,
-        arithmeticExpressionToken};
+        plusToken,
+        minusToken,
+        divideToken,
+        multToken};
 class Token{
  public:
     // Constructors and destructors
