@@ -56,11 +56,25 @@ ArithmeticExpressionToken::ArithmeticExpressionToken(char tok) {
 // Constructor for if input is more than single char
 ArithmeticExpressionToken::ArithmeticExpressionToken(std::string tok) {
     SetTokenStr(tok);
-
-    token_type_ t = invalidToken;
-    SetCurrType(t);
-
     token_char_ = tok[0];
+    if (tok.length() == 1) {
+      switch (token_char_) {
+        case '+': SetCurrType(plusToken);
+          break;
+        case '-': SetCurrType(minusToken);
+          break;
+        case '/': SetCurrType(divideToken);
+          break;
+        case '*': SetCurrType(multToken);
+          break;
+        default: SetCurrType(invalidToken);
+          break;
+      }
+    } else {
+      SetCurrType(invalidToken);
+    }
+
+
 }
 
 // Method to set the value of a token given a string

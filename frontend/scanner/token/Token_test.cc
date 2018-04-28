@@ -121,9 +121,9 @@ TEST(TokenTypes, IntegerTokenType) {
 }
 
 TEST(TokenTypes, ArithmeticTokenTypes) {
-  ArithmeticExpressionToken plus("+");
-  ArithmeticExpressionToken minus("-");
-  ArithmeticExpressionToken mult("*");
+  ArithmeticExpressionToken plus('+');
+  ArithmeticExpressionToken minus('-');
+  ArithmeticExpressionToken mult('*');
   ArithmeticExpressionToken divide("/");
   ASSERT_EQ(plus.GetCurrType(), plusToken);
   ASSERT_EQ(minus.GetCurrType(), minusToken);
