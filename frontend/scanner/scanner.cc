@@ -18,8 +18,10 @@
 
 
 int main() {
-    // error state is always the 0th state
 
+
+  // declare all states with IDs = {1, 2, ..., n}, and make accepting if applicable
+  // error state is always state 0
   cs160::frontend::State start(1);
   cs160::frontend::State intState(2);
     intState.makeAccepting();
@@ -30,16 +32,29 @@ int main() {
   cs160::frontend::State closeParenState(5);
     closeParenState.makeAccepting();
 
-  start.addTransition('0', 2);
-  start.addTransition('1', 2);
-  start.addTransition('2', 2);
-  start.addTransition('3', 2);
-  start.addTransition('4', 2);
-  start.addTransition('5', 2);
-  start.addTransition('6', 2);
-  start.addTransition('7', 2);
-  start.addTransition('8', 2);
-  start.addTransition('9', 2);
+  // set token type that each state outputs
+  start.setTokenOutput([](std::string str)->
+  cs160::frontend::Token
+  {return cs160::frontend::InvalidToken(str);});
+
+  intState.setTokenOutput([](std::string str)->
+  cs160::frontend::Token
+  {return cs160::frontend::IntegerToken(str);});
+
+  opState.setTokenOutput([](std::string str)->
+  cs160::frontend::Token
+  {return cs160::frontend::ArithmeticExpressionToken(str);});
+
+  openParenState.setTokenOutput([](std::string str)->
+  cs160::frontend::Token
+  {return cs160::frontend::OpenParenthesisToken(str);});
+
+  closeParenState.setTokenOutput([](std::string str)->
+  cs160::frontend::Token
+  {return cs160::frontend::ClosedParenthesisToken(str);});
+
+  //add all transitions for each state (if any)
+  start.addTransition('0', '9', 2);
 
   start.addTransition('+', 3);
   start.addTransition('-', 3);
@@ -49,44 +64,17 @@ int main() {
   start.addTransition('(', 4);
   start.addTransition(')', 5);
 
-    start.setTokenOutput([](std::string str)->
-    cs160::frontend::Token
-    x{return cs160::frontend::InvalidToken(str);});
+  intState.addTransition('0', '9', 2);
 
-  intState.addTransition('0', 2);
-  intState.addTransition('1', 2);
-  intState.addTransition('2', 2);
-  intState.addTransition('3', 2);
-  intState.addTransition('4', 2);
-  intState.addTransition('5', 2);
-  intState.addTransition('6', 2);
-  intState.addTransition('7', 2);
-  intState.addTransition('8', 2);
-  intState.addTransition('9', 2);
-
-    intState.setTokenOutput([](std::string str)->
-    cs160::frontend::Token
-    {return cs160::frontend::IntegerToken(str);});
-    opState.setTokenOutput([](std::string str)->
-    cs160::frontend::Token
-    {return cs160::frontend::ArithmeticExpressionToken(str);});
-    openParenState.setTokenOutput([](std::string str)->
-    cs160::frontend::Token
-    {return cs160::frontend::OpenParenthesisToken(str);});
-    closeParenState.setTokenOutput([](std::string str)->
-    cs160::frontend::Token
-    {return cs160::frontend::ClosedParenthesisToken(str);});
-
+  //finally, add all states to dfa
   cs160::frontend::DFA arithmeticDFA(start);
   arithmeticDFA.addState(intState);
   arithmeticDFA.addState(opState);
   arithmeticDFA.addState(openParenState);
   arithmeticDFA.addState(closeParenState);
 
-  // arithmeticDFA.input('2');
-  // arithmeticDFA.input('+');
-  // arithmeticDFA.input('7');
-  arithmeticDFA.input("12(a))2");
+  //then provide the input string and print the resulting queue of tokens
+  arithmeticDFA.input("(6*(2+7))*4");
   arithmeticDFA.printQueue();
 
   return 0;
