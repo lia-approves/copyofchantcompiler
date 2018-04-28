@@ -51,7 +51,7 @@ int main() {
 
     start.setTokenOutput([](std::string str)->
     cs160::frontend::Token
-    x{return cs160::frontend::InvalidToken(str);});
+    {return cs160::frontend::InvalidToken(str);});
 
   intState.addTransition('0', 2);
   intState.addTransition('1', 2);
