@@ -95,13 +95,13 @@ TEST(ParserTest, ParenthesesOverrideOperatorPrecedence) {
 }
 
 TEST(ExpressionTest, InstantiateExpressions) {
-  auto l = std::shared_ptr<Expression>(new Expression);
-  auto r = std::shared_ptr<Expression>(new Expression);
+  auto l = std::unique_ptr<Expression>(new Expression);
+  auto r = std::unique_ptr<Expression>(new Expression);
   Token t;
-  BinaryExpr be(l, t, r);
-  UnaryExpr ue(t, l);
-  Group g(r);
-  Literal lit(t);
+  BinaryExpr be(std::move(l), t, std::move(r));
+  UnaryExpr ue(t, std::move(l));
+  Group g(std::move(r));
+  Literal lit(std::move(t));
 }
 
 }  // namespace frontend

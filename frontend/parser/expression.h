@@ -21,16 +21,16 @@ class Expression {
 class BinaryExpr : public Expression {
  public:
   explicit BinaryExpr(
-    std::shared_ptr<Expression> left,
+    std::unique_ptr<Expression> left,
     cs160::frontend::Token op,
-    std::shared_ptr<Expression> right) : left_(left), right_(right), op_(op) {}
+    std::unique_ptr<Expression> right) : left_(std::move(left)), right_(std::move(right)), op_(op) {}
   std::string ToString() const {
     return "("+left_->ToString()+op_.GetToken()+right_->ToString()+")";
   }
 
  private:
-  const std::shared_ptr<Expression> left_;
-  const std::shared_ptr<Expression> right_;
+  const std::unique_ptr<Expression> left_;
+  const std::unique_ptr<Expression> right_;
   const cs160::frontend::Token op_;
 };
 
@@ -38,26 +38,26 @@ class UnaryExpr : public Expression {
  public:
   explicit UnaryExpr(
     cs160::frontend::Token op,
-    std::shared_ptr<Expression> right) : op_(op), right_(right) {}
+    std::unique_ptr<Expression> right) : op_(op), right_(std::move(right)) {}
     std::string ToString() const {
       return "("+op_.GetToken()+right_->ToString()+")";
     }
 
  private:
   const cs160::frontend::Token op_;
-  const std::shared_ptr<Expression> right_;
+  const std::unique_ptr<Expression> right_;
 };
 
 class Group : public Expression {
  public:
   explicit Group(
-    std::shared_ptr<Expression> enclosed) : enclosed_(enclosed) {}
+    std::unique_ptr<Expression> enclosed) : enclosed_(std::move(enclosed)) {}
     std::string ToString() const {
       return "("+enclosed_->ToString()+")";
     }
 
  private:
-  const std::shared_ptr<Expression> enclosed_;
+  const std::unique_ptr<Expression> enclosed_;
 };
 
 class Literal : public Expression {

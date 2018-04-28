@@ -9,6 +9,7 @@
 #include <memory>
 #include "frontend/scanner/token/Token.h"
 #include "frontend/parser/expression.h"
+// #include "abstract_syntax/abstract_syntax.h"
 #include "utility/memory.h"
 
 namespace cs160 {
@@ -18,12 +19,12 @@ class Parser {
  public:
     explicit Parser(std::vector<Token> tokens);
     ~Parser(void);
-    std::shared_ptr<Expression> Parse() {
+    std::unique_ptr<Expression> Parse() {
        try {
           return ExpressionRule();
        } catch (std::exception e) {
           std::cerr << e.what() << std::endl;
-          return std::shared_ptr<Expression>(new Expression);
+          return std::unique_ptr<Expression>(new Expression);
        }
      }
 
@@ -32,61 +33,61 @@ class Parser {
     int current = 0;
 
     // CFG methods
-    std::shared_ptr<Expression> ExpressionRule() { return AddRule(); }
-    std::shared_ptr<Expression> AddRule() {
+    std::unique_ptr<Expression> ExpressionRule() { return AddRule(); }
+    std::unique_ptr<Expression> AddRule() {
        // std::cout << "AddRule" << std::endl;
        // equality → comparison ( ( "!=" | "==" ) comparison )* ;
        // AddRule --> MultRule ( ("-" | "+") MultRule )*
-       std::shared_ptr<Expression> e = MultRule();
+       std::unique_ptr<Expression> e = MultRule();
        std::vector<token_type_> tokenTypes = {plusToken, minusToken};
        while (Match(tokenTypes)) {
           cs160::frontend::Token op = Prev();
-          std::shared_ptr<Expression> right = MultRule();
-          e = std::shared_ptr<Expression>(new BinaryExpr(e, op, right));
+          std::unique_ptr<Expression> right = MultRule();
+          e = std::unique_ptr<Expression>(new BinaryExpr(std::move(e), op, std::move(right)));
        }
        // std::cout << "AddRule is done" << std::endl;
        return e;
     }
-    std::shared_ptr<Expression> MultRule() {
+    std::unique_ptr<Expression> MultRule() {
        // MultRule --> UnaryRule ( ("/" | "*") UnaryRule )*
        // std::cout << "MultRule" << std::endl;
-       std::shared_ptr<Expression> e = UnaryRule();
+       std::unique_ptr<Expression> e = UnaryRule();
        std::vector<token_type_> possibleTypes = {divideToken, multToken};
        while (Match(possibleTypes)) {
           cs160::frontend::Token op = Prev();
-          std::shared_ptr<Expression> right = UnaryRule();
-          e = std::shared_ptr<Expression>(new BinaryExpr(e, op, right));
+          std::unique_ptr<Expression> right = UnaryRule();
+          e = std::unique_ptr<Expression>(new BinaryExpr(std::move(e), op, std::move(right)));
        }
        // std::cout << "MultRule is done" << std::endl;
        return e;
     }
-    std::shared_ptr<Expression> UnaryRule() {
+    std::unique_ptr<Expression> UnaryRule() {
        // UnaryRule --> PrimaryRule | "-" UnaryRule
        // std::cout << "UnaryRule" << std::endl;
        std::vector<token_type_> possibleTypes = {minusToken};
        if (Match(possibleTypes)) {
           cs160::frontend::Token op = Prev();
-          std::shared_ptr<Expression> right = UnaryRule();
+          std::unique_ptr<Expression> right = UnaryRule();
           // std::cout << "UnaryRule is done" << std::endl;
-          return std::shared_ptr<Expression>(new UnaryExpr(op, right));
+          return std::unique_ptr<Expression>(new UnaryExpr(op, std::move(right)));
        }
        // std::cout << "UnaryRule is done" << std::endl;
        return PrimaryRule();
     }
-    std::shared_ptr<Expression> PrimaryRule() {
+    std::unique_ptr<Expression> PrimaryRule() {
        // PrimaryRule --> integer | (ExpressionRule)
        // std::cout << "PrimaryRule" << std::endl;
        std::vector<token_type_> possibleTypes = {integerToken};
        if (Match(possibleTypes)) {
           // std::cout << "PrimaryRule is done" << std::endl;
-          return std::shared_ptr<Expression>(new Literal(Prev()));
+          return std::unique_ptr<Expression>(new Literal(Prev()));
        }
        std::vector<token_type_> leftParen = {openParenthesisToken};
        if (Match(leftParen)) {
-          std::shared_ptr<Expression> e = ExpressionRule();
+          std::unique_ptr<Expression> e = ExpressionRule();
           Consume(closedParenthesisToken, "Expected ')' after ExpressionRule.");
           // std::cout << "PrimaryRule is done" << std::endl;
-          return std::shared_ptr<Expression>(new Group(e));
+          return std::unique_ptr<Expression>(new Group(std::move(e)));
        }
        throw "PrimaryRule production failed";
        // std::cout << "uh oh" << std::endl;
