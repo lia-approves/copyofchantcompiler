@@ -112,5 +112,12 @@ TEST(ClosedParenthesisTest, ClosedParen) {
   ASSERT_EQ(")", t2.GetToken());
 }
 
+// Test that integer tokens have the correct type
+TEST(TokenTypes, IntegerTokenType) {
+  IntegerToken one("1");
+  token_type_ integer = integerToken;
+  ASSERT_EQ(one.GetCurrType(), integer);
+}
+
 }  // namespace frontend
 }  // namespace cs160
