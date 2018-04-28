@@ -38,7 +38,7 @@ class Parser {
        // equality → comparison ( ( "!=" | "==" ) comparison )* ;
        // AddRule --> MultRule ( ("-" | "+") MultRule )*
        std::shared_ptr<Expression> e = MultRule();
-       std::vector<std::string> tokenTypes = {"-", "+"};
+       std::vector<token_type_> tokenTypes = {plusToken, minusToken};
        while (Match(tokenTypes)) {
           cs160::frontend::Token op = Prev();
           std::shared_ptr<Expression> right = MultRule();
@@ -51,7 +51,7 @@ class Parser {
        // MultRule --> UnaryRule ( ("/" | "*") UnaryRule )*
        // std::cout << "MultRule" << std::endl;
        std::shared_ptr<Expression> e = UnaryRule();
-       std::vector<std::string> possibleTypes = {"/", "*"};
+       std::vector<token_type_> possibleTypes = {divideToken, multToken};
        while (Match(possibleTypes)) {
           cs160::frontend::Token op = Prev();
           std::shared_ptr<Expression> right = UnaryRule();
@@ -63,7 +63,7 @@ class Parser {
     std::shared_ptr<Expression> UnaryRule() {
        // UnaryRule --> PrimaryRule | "-" UnaryRule
        // std::cout << "UnaryRule" << std::endl;
-       std::vector<std::string> possibleTypes = {"-"};
+       std::vector<token_type_> possibleTypes = {minusToken};
        if (Match(possibleTypes)) {
           cs160::frontend::Token op = Prev();
           std::shared_ptr<Expression> right = UnaryRule();
@@ -76,16 +76,15 @@ class Parser {
     std::shared_ptr<Expression> PrimaryRule() {
        // PrimaryRule --> integer | (ExpressionRule)
        // std::cout << "PrimaryRule" << std::endl;
-       std::vector<std::string> possibleLiterals =
-        {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
-       if (Match(possibleLiterals)) {
+       std::vector<token_type_> possibleTypes = {integerToken};
+       if (Match(possibleTypes)) {
           // std::cout << "PrimaryRule is done" << std::endl;
           return std::shared_ptr<Expression>(new Literal(Prev()));
        }
-       std::vector<std::string> leftParen = {"("};
+       std::vector<token_type_> leftParen = {openParenthesisToken};
        if (Match(leftParen)) {
           std::shared_ptr<Expression> e = ExpressionRule();
-          Consume(")", "Expected ')' after ExpressionRule.");
+          Consume(closedParenthesisToken, "Expected ')' after ExpressionRule.");
           // std::cout << "PrimaryRule is done" << std::endl;
           return std::shared_ptr<Expression>(new Group(e));
        }
@@ -107,7 +106,7 @@ class Parser {
     cs160::frontend::Token GetCurrent() {
        return tokens[current];
     }
-    bool Match(std::vector<std::string> types) {
+    bool Match(std::vector<token_type_> types) {
        for (auto const& type : types) {
           // std::cout << "Checking " << type;
           if (Check(type)) {
@@ -119,12 +118,12 @@ class Parser {
        }
        return false;
     }
-    bool Check(std::string type) {
+    bool Check(token_type_ type) {
        if (AtEnd()) return false;
        // std::cout << "(against " << GetCurrent().GetToken() << ")";
-       return GetCurrent().GetToken() == type;
+       return GetCurrent().GetCurrType() == type;
     }
-    cs160::frontend::Token Consume(std::string until, std::string error) {
+    cs160::frontend::Token Consume(token_type_ until, std::string error) {
        if (Check(until)) return Next();
        throw error;
     }
