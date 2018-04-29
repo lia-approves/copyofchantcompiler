@@ -6,7 +6,7 @@ namespace cs160 {
 namespace frontend {
 
 Parser::Parser(std::vector<std::shared_ptr<Token>> tokens) {
-  this->tokens = tokens;
+  this->tokens_ = tokens;
 }
 Parser::~Parser() {}
 }  // namespace frontend

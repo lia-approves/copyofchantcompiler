@@ -28,8 +28,8 @@ class Parser {
      }
 
  private:
-    std::vector<std::shared_ptr<Token>> tokens;
-    int current = 0;
+    std::vector<std::shared_ptr<Token>> tokens_;
+    int current_ = 0;
 
     // CFG methods
     std::unique_ptr<abstract_syntax::frontend::AstNode> ExpressionRule() { return AddRule(); }
@@ -127,17 +127,17 @@ class Parser {
 
     // helpers
     std::shared_ptr<Token> Next() {
-       if (!AtEnd()) current = current + 1;
+       if (!AtEnd()) current_ = current_ + 1;
        return Prev();
     }
     std::shared_ptr<Token> Prev() {
-       return tokens[current - 1];
+       return tokens_[current_ - 1];
     }
     bool AtEnd() {
-       return (current > tokens.size() - 1);
+       return (current_ > tokens_.size() - 1);
     }
     std::shared_ptr<Token> GetCurrent() {
-       return tokens[current];
+       return tokens_[current_];
     }
     bool Match(std::vector<token_type_> types) {
        for (auto const& type : types) {
