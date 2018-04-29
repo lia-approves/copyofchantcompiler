@@ -42,34 +42,34 @@ class Parser {
 
     // helpers
     std::shared_ptr<Token> Next() {
-       if (!AtEnd()) current_ = current_ + 1;
-       return Prev();
+      if (!AtEnd()) current_ = current_ + 1;
+      return Prev();
     }
     std::shared_ptr<Token> Prev() {
-       return tokens_[current_ - 1];
+      return tokens_[current_ - 1];
     }
     bool AtEnd() {
-       return (current_ > tokens_.size() - 1);
+      return (current_ > tokens_.size() - 1);
     }
     std::shared_ptr<Token> GetCurrent() {
-       return tokens_[current_];
+      return tokens_[current_];
     }
     bool Match(std::vector<token_type_> types) {
-       for (auto const& type : types) {
-          if (Check(type)) {
-             Next();
-             return true;
-          }
-       }
-       return false;
+      for (auto const& type : types) {
+        if (Check(type)) {
+          Next();
+          return true;
+        }
+      }
+      return false;
     }
     bool Check(token_type_ type) {
-       if (AtEnd()) return false;
-       return GetCurrent()->GetCurrType() == type;
+      if (AtEnd()) return false;
+      return GetCurrent()->GetCurrType() == type;
     }
     std::shared_ptr<Token> Consume(token_type_ until, std::string error) {
-       if (Check(until)) return Next();
-       throw error;
+      if (Check(until)) return Next();
+      throw error;
     }
 };
 }  // namespace frontend

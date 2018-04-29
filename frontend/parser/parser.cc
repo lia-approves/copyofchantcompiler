@@ -61,29 +61,32 @@ unique_ptr<AstNode> Parser::MultRule() {
 
 // UnaryRule --> PrimaryRule | "-" UnaryRule
 unique_ptr<AstNode> Parser::UnaryRule() {
-   std::vector<token_type_> possibleTypes = {minusToken};
-   if (Match(possibleTypes)) {
-      shared_ptr<Token> op = Prev();
-      unique_ptr<AstNode> right = UnaryRule();
-      unique_ptr<AstNode> zero(new IntegerExpr(0));
-      return unique_ptr<AstNode>(new SubtractExpr(move(zero), move(right)));
-   }
-   return PrimaryRule();
+  std::vector<token_type_> possibleTypes = {minusToken};
+  if (Match(possibleTypes)) {  // Try to consume a minus sign
+    shared_ptr<Token> op = Prev();
+    unique_ptr<AstNode> right = UnaryRule();  // Consume the next unary
+    unique_ptr<AstNode> zero(new IntegerExpr(0));
+    // Return 0 - NextUnary
+    return unique_ptr<AstNode>(new SubtractExpr(move(zero), move(right)));
+  }
+  return PrimaryRule();
 }
 
 // PrimaryRule --> integer | (ExpressionRule)
 unique_ptr<AstNode> Parser::PrimaryRule() {
-   std::vector<token_type_> possibleTypes = {integerToken};
-   if (Match(possibleTypes)) {
-      return unique_ptr<AstNode>(new IntegerExpr(Prev()->GetTokenInt()));
-   }
-   std::vector<token_type_> leftParen = {openParenthesisToken};
-   if (Match(leftParen)) {
-      unique_ptr<AstNode> e = ExpressionRule();
-      Consume(closedParenthesisToken, "Expected ')' after ExpressionRule.");
-      return e;
-   }
-   throw "PrimaryRule production failed";
+  // Return literal, if possible
+  std::vector<token_type_> possibleTypes = {integerToken};
+  if (Match(possibleTypes)) {
+    return unique_ptr<AstNode>(new IntegerExpr(Prev()->GetTokenInt()));
+  }
+  // Return parenthetical group, if possible
+  std::vector<token_type_> leftParen = {openParenthesisToken};
+  if (Match(leftParen)) {
+    unique_ptr<AstNode> e = ExpressionRule();
+    Consume(closedParenthesisToken, "Expected ')' after ExpressionRule.");
+    return e;
+  }
+  throw "PrimaryRule production failed";
 }
 
 
