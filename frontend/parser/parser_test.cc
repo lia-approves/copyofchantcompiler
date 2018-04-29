@@ -131,7 +131,8 @@ TEST_F(ParserTest, ParenthesesOverrideOperatorPrecedence) {
   std::shared_ptr<Token> plus(new ArithmeticExpressionToken("+"));
   std::shared_ptr<Token> openParen(new OpenParenthesisToken("("));
   std::shared_ptr<Token> closeParen(new ClosedParenthesisToken(")"));
-  std::vector<std::shared_ptr<Token>> t = {openParen, one, plus, two, closeParen, times, three};
+  std::vector<std::shared_ptr<Token>> t =
+    {openParen, one, plus, two, closeParen, times, three};
   Parser p(t);
   auto e = p.Parse();
   e->Visit(&printer_);
