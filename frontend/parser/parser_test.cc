@@ -123,43 +123,21 @@ TEST_F(ParserTest, MultPrecedenceOverAdd) {
   ASSERT_EQ(printer_.GetOutput(), "(+ 1 (* 2 3))");
 }
 
-// TEST(ParserTest, MultPrecedenceOverAdd) {
-//   IntegerToken one("1");
-//   IntegerToken two("2");
-//   IntegerToken three("3");
-//   ArithmeticExpressionToken plus("+");
-//   ArithmeticExpressionToken times("*");
-//   std::vector<Token> t = {one, plus, two, times, three};
-//   Parser p(t);
-//   auto e = p.Parse();
-//   // std::cout << e->toString() << std::endl;
-//   ASSERT_EQ(e->ToString(), "(1+(2*3))");
-// }
-//
-// TEST(ParserTest, ParenthesesOverrideOperatorPrecedence) {
-//   IntegerToken one("1");
-//   IntegerToken two("2");
-//   IntegerToken three("3");
-//   ArithmeticExpressionToken plus("+");
-//   ArithmeticExpressionToken times("*");
-//   OpenParenthesisToken openParen("(");
-//   ClosedParenthesisToken closeParen(")");
-//   std::vector<Token> t = {openParen, one, plus, two, closeParen, times, three};
-//   Parser p(t);
-//   auto e = p.Parse();
-//   // std::cout << e->toString() << std::endl;
-//   ASSERT_EQ(e->ToString(), "(((1+2))*3)");
-// }
-//
-// TEST(ExpressionTest, InstantiateExpressions) {
-//   auto l = std::unique_ptr<Expression>(new Expression);
-//   auto r = std::unique_ptr<Expression>(new Expression);
-//   Token t;
-//   BinaryExpr be(std::move(l), t, std::move(r));
-//   UnaryExpr ue(t, std::move(l));
-//   Group g(std::move(r));
-//   Literal lit(std::move(t));
-// }
+TEST_F(ParserTest, ParenthesesOverrideOperatorPrecedence) {
+  std::shared_ptr<Token> one(new IntegerToken("1"));
+  std::shared_ptr<Token> two(new IntegerToken("2"));
+  std::shared_ptr<Token> three(new IntegerToken("3"));
+  std::shared_ptr<Token> times(new ArithmeticExpressionToken("*"));
+  std::shared_ptr<Token> plus(new ArithmeticExpressionToken("+"));
+  std::shared_ptr<Token> openParen(new OpenParenthesisToken("("));
+  std::shared_ptr<Token> closeParen(new ClosedParenthesisToken(")"));
+  std::vector<std::shared_ptr<Token>> t = {openParen, one, plus, two, closeParen, times, three};
+  Parser p(t);
+  auto e = p.Parse();
+  e->Visit(&printer_);
+  // std::cout << "mpoa: " << printer_.GetOutput() << std::endl;
+  ASSERT_EQ(printer_.GetOutput(), "(* (+ 1 2) 3)");
+}
 
 }  // namespace frontend
 }  // namespace cs160
