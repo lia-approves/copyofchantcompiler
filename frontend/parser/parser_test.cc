@@ -85,6 +85,15 @@ TEST_F(ParserTest, SimpleSubtraction) {
   ASSERT_EQ(printer_.GetOutput(), "(- 1 2)");
 }
 
+TEST_F(ParserTest, SimpleError) {
+  std::shared_ptr<Token> one(new IntegerToken("1"));
+  std::shared_ptr<Token> two(new IntegerToken("2"));
+  std::shared_ptr<Token> minus(new ArithmeticExpressionToken("-"));
+  std::vector<std::shared_ptr<Token>> t = {one, minus};
+  Parser p(t);
+  ASSERT_THROW(p.Parse(), std::logic_error);
+}
+
 TEST_F(ParserTest, SimpleMultiplication) {
   std::shared_ptr<Token> one(new IntegerToken("1"));
   std::shared_ptr<Token> two(new IntegerToken("2"));
