@@ -1,6 +1,7 @@
 // Copyright (c) 2018, Team-Chant
 
 #include <utility>
+#include <stdexcept>
 #include "frontend/parser/parser.h"
 
 using cs160::abstract_syntax::frontend::AstNode;
@@ -35,7 +36,8 @@ unique_ptr<AstNode> Parser::AddRule() {
     } else if (op->GetCurrType() == minusToken) {
       e = unique_ptr<AstNode>(new SubtractExpr(move(e), move(right)));
     } else {
-      throw "wtf";  // This should never happen.
+      // This should never happen.
+      throw std::runtime_error("unexpected token: "+op->GetToken());
     }
   }
   return e;
@@ -54,7 +56,8 @@ unique_ptr<AstNode> Parser::MultRule() {
     } else if (op->GetCurrType() == divideToken) {
       e = unique_ptr<AstNode>(new DivideExpr(move(e), move(right)));
     } else {
-      throw "wtf";  // This should never happen.
+      // This should never happen.
+      throw std::runtime_error("unexpected token: "+op->GetToken());
     }
   }
   return e;
@@ -87,7 +90,7 @@ unique_ptr<AstNode> Parser::PrimaryRule() {
     Consume(closedParenthesisToken, "Expected ')' after ExpressionRule.");
     return e;
   }
-  throw "PrimaryRule production failed";
+  throw std::logic_error("primary rule failed");
 }
 
 

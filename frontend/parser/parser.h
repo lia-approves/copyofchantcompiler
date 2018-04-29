@@ -19,13 +19,8 @@ class Parser {
     explicit Parser(std::vector<std::shared_ptr<Token>> tokens);
     ~Parser(void);
     std::unique_ptr<abstract_syntax::frontend::AstNode> Parse() {
-       try {
-          return ExpressionRule();
-       } catch (std::exception e) {
-          std::cerr << e.what() << std::endl;
-       }
-       throw "failed to parse";
-     }
+      return ExpressionRule();
+    }
 
  private:
     std::vector<std::shared_ptr<Token>> tokens_;
