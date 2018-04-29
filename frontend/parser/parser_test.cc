@@ -46,36 +46,42 @@ TEST_F(ParserTest, SimpleAddition) {
   ASSERT_EQ(printer_.GetOutput(), "(+ 1 2)");
 }
 
-// TEST(ParserTest, SimpleAddition) {
-//   IntegerToken one("1");
-//   IntegerToken two("2");
-//   ArithmeticExpressionToken plus("+");
-//   std::vector<Token> t = {one, plus, two};
-//   Parser p(t);
-//   auto e = p.Parse();
-//   ASSERT_EQ(e->ToString(), "(1+2)");
-// }
-//
-// TEST(ParserTest, SimpleSubtraction) {
-//   IntegerToken one("1");
-//   IntegerToken two("2");
-//   ArithmeticExpressionToken minus("-");
-//   std::vector<Token> t = {one, minus, two};
-//   Parser p(t);
-//   auto e = p.Parse();
-//   ASSERT_EQ(e->ToString(), "(1-2)");
-// }
-//
-// TEST(ParserTest, SimpleMultiplication) {
-//   IntegerToken one("1");
-//   IntegerToken two("2");
-//   ArithmeticExpressionToken times("*");
-//   std::vector<Token> t = {one, times, two};
-//   Parser p(t);
-//   auto e = p.Parse();
-//   ASSERT_EQ(e->ToString(), "(1*2)");
-// }
-//
+TEST_F(ParserTest, SimpleSubtraction) {
+  std::shared_ptr<Token> one(new IntegerToken("1"));
+  std::shared_ptr<Token> two(new IntegerToken("2"));
+  std::shared_ptr<Token> minus(new ArithmeticExpressionToken("-"));
+  std::vector<std::shared_ptr<Token>> t = {one, minus, two};
+  Parser p(t);
+  auto e = p.Parse();
+  e->Visit(&printer_);
+  // std::cout << printer_.GetOutput() << std::endl;
+  ASSERT_EQ(printer_.GetOutput(), "(- 1 2)");
+}
+
+TEST_F(ParserTest, SimpleMultiplication) {
+  std::shared_ptr<Token> one(new IntegerToken("1"));
+  std::shared_ptr<Token> two(new IntegerToken("2"));
+  std::shared_ptr<Token> times(new ArithmeticExpressionToken("*"));
+  std::vector<std::shared_ptr<Token>> t = {one, times, two};
+  Parser p(t);
+  auto e = p.Parse();
+  e->Visit(&printer_);
+  // std::cout << printer_.GetOutput() << std::endl;
+  ASSERT_EQ(printer_.GetOutput(), "(* 1 2)");
+}
+
+TEST_F(ParserTest, SimpleDivision) {
+  std::shared_ptr<Token> one(new IntegerToken("1"));
+  std::shared_ptr<Token> two(new IntegerToken("2"));
+  std::shared_ptr<Token> divide(new ArithmeticExpressionToken("/"));
+  std::vector<std::shared_ptr<Token>> t = {one, divide, two};
+  Parser p(t);
+  auto e = p.Parse();
+  e->Visit(&printer_);
+  // std::cout << printer_.GetOutput() << std::endl;
+  ASSERT_EQ(printer_.GetOutput(), "(/ 1 2)");
+}
+
 // TEST(ParserTest, SimpleDivision) {
 //   IntegerToken one("1");
 //   IntegerToken two("2");

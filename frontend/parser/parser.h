@@ -79,7 +79,7 @@ class Parser {
               );
           } else if (op->GetCurrType() == divideToken) {
             e = std::unique_ptr<abstract_syntax::frontend::AstNode>
-              (new abstract_syntax::frontend::MultiplyExpr
+              (new abstract_syntax::frontend::DivideExpr
                 (std::move(e), std::move(right))
               );
           } else {
