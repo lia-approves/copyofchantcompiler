@@ -52,6 +52,9 @@ class Token{
     virtual std::string Print();
     virtual void SetCurrType(token_type_ t);
     virtual token_type_ GetCurrType();
+    virtual int GetTokenInt() {
+      throw "not an integer token";
+    }
 
  private:
     std::string token_str_;
