@@ -46,6 +46,20 @@ TEST_F(ParserTest, SimpleAddition) {
   ASSERT_EQ(printer_.GetOutput(), "(+ 1 2)");
 }
 
+TEST_F(ParserTest, NegativeNumbers) {
+  std::shared_ptr<Token> one(new IntegerToken("1"));
+  std::shared_ptr<Token> two(new IntegerToken("2"));
+  std::shared_ptr<Token> minus1(new ArithmeticExpressionToken("-"));
+  std::shared_ptr<Token> plus(new ArithmeticExpressionToken("+"));
+  std::shared_ptr<Token> minus2(new ArithmeticExpressionToken("-"));
+  std::vector<std::shared_ptr<Token>> t = {minus1, one, plus, minus2, two};
+  Parser p(t);
+  auto e = p.Parse();
+  e->Visit(&printer_);
+  std::cout << printer_.GetOutput() << std::endl;
+  ASSERT_EQ(printer_.GetOutput(), "(+ (- 0 1) (- 0 2))");
+}
+
 TEST_F(ParserTest, SimpleSubtraction) {
   std::shared_ptr<Token> one(new IntegerToken("1"));
   std::shared_ptr<Token> two(new IntegerToken("2"));
@@ -82,16 +96,6 @@ TEST_F(ParserTest, SimpleDivision) {
   ASSERT_EQ(printer_.GetOutput(), "(/ 1 2)");
 }
 
-// TEST(ParserTest, SimpleDivision) {
-//   IntegerToken one("1");
-//   IntegerToken two("2");
-//   ArithmeticExpressionToken dividedBy("/");
-//   std::vector<Token> t = {one, dividedBy, two};
-//   Parser p(t);
-//   auto e = p.Parse();
-//   ASSERT_EQ(e->ToString(), "(1/2)");
-// }
-//
 // TEST(ParserTest, MultPrecedenceOverAdd) {
 //   IntegerToken one("1");
 //   IntegerToken two("2");
