@@ -44,7 +44,7 @@ class Parser {
        while (Match(possibleTypes)) {
           std::shared_ptr<Token> op = Prev();
           std::unique_ptr<abstract_syntax::frontend::AstNode> right =
-            UnaryRule();
+            MultRule();
           if (op->GetCurrType() == plusToken) {
             e = std::unique_ptr<abstract_syntax::frontend::AstNode>
               (new abstract_syntax::frontend::AddExpr

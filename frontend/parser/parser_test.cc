@@ -119,8 +119,8 @@ TEST_F(ParserTest, MultPrecedenceOverAdd) {
   Parser p(t);
   auto e = p.Parse();
   e->Visit(&printer_);
-  std::cout << "mpoa: " << printer_.GetOutput() << std::endl;
-  // ASSERT_EQ(printer_.GetOutput(), "(/ 1 2)");
+  // std::cout << "mpoa: " << printer_.GetOutput() << std::endl;
+  ASSERT_EQ(printer_.GetOutput(), "(+ 1 (* 2 3))");
 }
 
 // TEST(ParserTest, MultPrecedenceOverAdd) {
