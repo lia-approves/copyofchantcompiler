@@ -17,7 +17,7 @@ namespace frontend {
 
 class Parser {
  public:
-    explicit Parser(std::vector<Token> tokens);
+    explicit Parser(std::vector<std::shared_ptr<Token>> tokens);
     ~Parser(void);
     std::unique_ptr<abstract_syntax::frontend::AstNode> Parse() {
        try {
@@ -25,10 +25,11 @@ class Parser {
        } catch (std::exception e) {
           std::cerr << e.what() << std::endl;
        }
+       throw "failed to parse";
      }
 
  private:
-    std::vector<Token> tokens;
+    std::vector<std::shared_ptr<Token>> tokens;
     int current = 0;
 
     // CFG methods
@@ -41,15 +42,15 @@ class Parser {
         MultRule();
        std::vector<token_type_> possibleTypes = {plusToken, minusToken};
        while (Match(possibleTypes)) {
-          cs160::frontend::Token op = Prev();
+          std::shared_ptr<Token> op = Prev();
           std::unique_ptr<abstract_syntax::frontend::AstNode> right =
             UnaryRule();
-          if (op.GetCurrType() == plusToken) {
+          if (op->GetCurrType() == plusToken) {
             e = std::unique_ptr<abstract_syntax::frontend::AstNode>
               (new abstract_syntax::frontend::AddExpr
                 (std::move(e), std::move(right))
               );
-          } else if (op.GetCurrType() == minusToken) {
+          } else if (op->GetCurrType() == minusToken) {
             e = std::unique_ptr<abstract_syntax::frontend::AstNode>
               (new abstract_syntax::frontend::SubtractExpr
                 (std::move(e), std::move(right))
@@ -68,15 +69,15 @@ class Parser {
         UnaryRule();
        std::vector<token_type_> possibleTypes = {divideToken, multToken};
        while (Match(possibleTypes)) {
-          cs160::frontend::Token op = Prev();
+          std::shared_ptr<Token> op = Prev();
           std::unique_ptr<abstract_syntax::frontend::AstNode> right =
             UnaryRule();
-          if (op.GetCurrType() == multToken) {
+          if (op->GetCurrType() == multToken) {
             e = std::unique_ptr<abstract_syntax::frontend::AstNode>
               (new abstract_syntax::frontend::MultiplyExpr
                 (std::move(e), std::move(right))
               );
-          } else if (op.GetCurrType() == divideToken) {
+          } else if (op->GetCurrType() == divideToken) {
             e = std::unique_ptr<abstract_syntax::frontend::AstNode>
               (new abstract_syntax::frontend::MultiplyExpr
                 (std::move(e), std::move(right))
@@ -93,7 +94,7 @@ class Parser {
        // std::cout << "UnaryRule" << std::endl;
        std::vector<token_type_> possibleTypes = {minusToken};
        if (Match(possibleTypes)) {
-          cs160::frontend::Token op = Prev();
+          std::shared_ptr<Token> op = Prev();
           std::unique_ptr<abstract_syntax::frontend::AstNode> right
             = UnaryRule();
           std::unique_ptr<abstract_syntax::frontend::AstNode>
@@ -111,7 +112,8 @@ class Parser {
        std::vector<token_type_> possibleTypes = {integerToken};
        if (Match(possibleTypes)) {
           // std::cout << "PrimaryRule is done" << std::endl;
-          return std::unique_ptr<abstract_syntax::frontend::AstNode>(new abstract_syntax::frontend::IntegerExpr(Prev().GetTokenInt()));
+          return std::unique_ptr<abstract_syntax::frontend::AstNode>(
+            new abstract_syntax::frontend::IntegerExpr(Prev()->GetTokenInt()));
        }
        std::vector<token_type_> leftParen = {openParenthesisToken};
        if (Match(leftParen)) {
@@ -125,17 +127,17 @@ class Parser {
     }
 
     // helpers
-    cs160::frontend::Token Next() {
+    std::shared_ptr<Token> Next() {
        if (!AtEnd()) current = current + 1;
        return Prev();
     }
-    Token Prev() {
+    std::shared_ptr<Token> Prev() {
        return tokens[current - 1];
     }
     bool AtEnd() {
        return (current > tokens.size() - 1);
     }
-    cs160::frontend::Token GetCurrent() {
+    std::shared_ptr<Token> GetCurrent() {
        return tokens[current];
     }
     bool Match(std::vector<token_type_> types) {
@@ -153,9 +155,9 @@ class Parser {
     bool Check(token_type_ type) {
        if (AtEnd()) return false;
        // std::cout << "(against " << GetCurrent().GetToken() << ")";
-       return GetCurrent().GetCurrType() == type;
+       return GetCurrent()->GetCurrType() == type;
     }
-    cs160::frontend::Token Consume(token_type_ until, std::string error) {
+    std::shared_ptr<Token> Consume(token_type_ until, std::string error) {
        if (Check(until)) return Next();
        throw error;
     }
