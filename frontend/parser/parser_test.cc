@@ -34,6 +34,18 @@ TEST_F(ParserTest, ParseSingleInteger) {
   ASSERT_EQ(printer_.GetOutput(), "1");
 }
 
+TEST_F(ParserTest, SimpleAddition) {
+  std::shared_ptr<Token> one(new IntegerToken("1"));
+  std::shared_ptr<Token> two(new IntegerToken("2"));
+  std::shared_ptr<Token> plus(new ArithmeticExpressionToken("+"));
+  std::vector<std::shared_ptr<Token>> t = {one, plus, two};
+  Parser p(t);
+  auto e = p.Parse();
+  e->Visit(&printer_);
+  std::cout << printer_.GetOutput() << std::endl;
+  //ASSERT_EQ(printer_.GetOutput(), "1+");
+}
+
 // TEST(ParserTest, SimpleAddition) {
 //   IntegerToken one("1");
 //   IntegerToken two("2");
