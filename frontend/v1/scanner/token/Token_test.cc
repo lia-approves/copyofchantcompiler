@@ -23,11 +23,12 @@
  */
 
 #include "gtest/gtest.h"
-#include "frontend/scanner/token/Token.h"
-#include "frontend/scanner/token/InvalidToken.h"
-#include "frontend/scanner/token/IntegerToken.h"
-#include "frontend/scanner/token/OpenParenthesisToken.h"
-#include "frontend/scanner/token/ClosedParenthesisToken.h"
+#include "frontend/v1/scanner/token/Token.h"
+#include "frontend/v1/scanner/token/InvalidToken.h"
+#include "frontend/v1/scanner/token/IntegerToken.h"
+#include "frontend/v1/scanner/token/OpenParenthesisToken.h"
+#include "frontend/v1/scanner/token/ClosedParenthesisToken.h"
+#include "frontend/v1/scanner/token/ArithmeticExpressionToken.h"
 
 namespace cs160 {
 namespace frontend {
@@ -117,6 +118,17 @@ TEST(TokenTypes, IntegerTokenType) {
   IntegerToken one("1");
   token_type_ integer = integerToken;
   ASSERT_EQ(one.GetCurrType(), integer);
+}
+
+TEST(TokenTypes, ArithmeticTokenTypes) {
+  ArithmeticExpressionToken plus('+');
+  ArithmeticExpressionToken minus('-');
+  ArithmeticExpressionToken mult('*');
+  ArithmeticExpressionToken divide("/");
+  ASSERT_EQ(plus.GetCurrType(), plusToken);
+  ASSERT_EQ(minus.GetCurrType(), minusToken);
+  ASSERT_EQ(mult.GetCurrType(), multToken);
+  ASSERT_EQ(divide.GetCurrType(), divideToken);
 }
 
 }  // namespace frontend

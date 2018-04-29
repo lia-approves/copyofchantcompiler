@@ -24,7 +24,7 @@ SOFTWARE.
 
 #include <sstream>
 #include <string>
-#include "frontend/scanner/token/ArithmeticExpressionToken.h"
+#include "frontend/v1/scanner/token/ArithmeticExpressionToken.h"
 
 namespace cs160 {
 namespace frontend {
@@ -32,8 +32,18 @@ namespace frontend {
 // Constructor for simple input
 ArithmeticExpressionToken::ArithmeticExpressionToken(char tok) {
     token_char_ = tok;
-    token_type_ t = arithmeticExpressionToken;
-    SetCurrType(t);
+    switch (tok) {
+      case '+': SetCurrType(plusToken);
+        break;
+      case '-': SetCurrType(minusToken);
+        break;
+      case '/': SetCurrType(divideToken);
+        break;
+      case '*': SetCurrType(multToken);
+        break;
+      default: SetCurrType(invalidToken);
+        break;
+    }
 
     std::stringstream ss;
     ss << tok;
@@ -46,11 +56,25 @@ ArithmeticExpressionToken::ArithmeticExpressionToken(char tok) {
 // Constructor for if input is more than single char
 ArithmeticExpressionToken::ArithmeticExpressionToken(std::string tok) {
     SetTokenStr(tok);
-
-    token_type_ t = arithmeticExpressionToken;
-    SetCurrType(t);
-
     token_char_ = tok[0];
+    if (tok.length() == 1) {
+      switch (token_char_) {
+        case '+': SetCurrType(plusToken);
+          break;
+        case '-': SetCurrType(minusToken);
+          break;
+        case '/': SetCurrType(divideToken);
+          break;
+        case '*': SetCurrType(multToken);
+          break;
+        default: SetCurrType(invalidToken);
+          break;
+      }
+    } else {
+      SetCurrType(invalidToken);
+    }
+
+
 }
 
 // Method to set the value of a token given a string

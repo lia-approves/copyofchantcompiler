@@ -23,7 +23,7 @@ SOFTWARE.
 */
 
 #include <iostream>
-#include "frontend/scanner/token/InvalidToken.h"
+#include "frontend/v1/scanner/token/InvalidToken.h"
 
 namespace cs160 {
 namespace frontend {

@@ -21,50 +21,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#include <sstream>
+#ifndef FRONTEND_SCANNER_TOKEN_OPENPARENTHESISTOKEN_H_
+#define FRONTEND_SCANNER_TOKEN_OPENPARENTHESISTOKEN_H_
+
+#include <stdio.h>
 #include <string>
-#include "frontend/scanner/token/IntegerToken.h"
+#include "frontend/v1/scanner/token/Token.h"
 
 namespace cs160 {
 namespace frontend {
+class OpenParenthesisToken : public Token{
+ public:
+    // cannot use the Token(string) constructor, or it will be bad
+    OpenParenthesisToken();
+    explicit OpenParenthesisToken(std::string str);
+    void SetToken(std::string str);
+    char GetTokenChar();
 
-IntegerToken::IntegerToken(std::string str) : Token(str) {
-  // first, check that the string is a number
-  for (int i=0; i < str.size(); i++) {
-    char curr_char = str.at(i);
-    if (!std::isdigit(curr_char)) {
-      // curr_char is not a number
-      // throw exception
-      throw "1";
-      return;
-    }
-  }
-
-
-    token_type_ t = integerToken;
-    SetCurrType(t);
-    SetToken(str);
-}
-
-IntegerToken::IntegerToken(int tok_integer) {
-    token_type_ t = integerToken;
-    SetCurrType(t);
-    std::string str_arg = std::to_string(tok_integer);
-    SetTokenStr(str_arg);
-
-    token_int_ = tok_integer;
-}
-
-void IntegerToken::SetToken(std::string str) {
-    SetTokenStr(str);
-
-    std::stringstream cast_to_int(str);
-
-    cast_to_int >> token_int_;
-}
-
-int IntegerToken::GetTokenInt() {
-    return token_int_;
-}
+ private:
+    const char token_char_ = '(';
+    const std::string token_str_ = "(";
+};
 }  // namespace frontend
 }  // namespace cs160
+
+#endif  // FRONTEND_SCANNER_TOKEN_OPENPARENTHESISTOKEN_H_

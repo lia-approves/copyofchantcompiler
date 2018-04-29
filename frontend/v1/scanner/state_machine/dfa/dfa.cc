@@ -23,7 +23,7 @@ SOFTWARE.
 */
 #include <map>
 #include <iostream>
-#include "frontend/scanner/state_machine/dfa/dfa.h"
+#include "frontend/v1/scanner/state_machine/dfa/dfa.h"
 
 namespace cs160 {
 namespace frontend {

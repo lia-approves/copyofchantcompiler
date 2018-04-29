@@ -21,41 +21,32 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#ifndef FRONTEND_SCANNER_TOKEN_TOKEN_H_
-#define FRONTEND_SCANNER_TOKEN_TOKEN_H_
-
 #include <string>
+#include "frontend/v1/scanner/token/OpenParenthesisToken.h"
+
 
 namespace cs160 {
 namespace frontend {
 
-    enum token_type_{ token_, integerToken,
-        invalidToken,
-        openParenthesisToken,
-        closedParenthesisToken,
-        arithmeticExpressionToken};
-class Token{
- public:
-    // Constructors and destructors
-    // Note: default does not do anything
-    Token();
-    explicit Token(std::string str);
-    virtual ~Token();
+OpenParenthesisToken::OpenParenthesisToken() {
+    SetTokenStr("(");
+    token_type_ t = openParenthesisToken;
+    SetCurrType(t);
+}
 
-    // Getters and setters
-    virtual std::string GetToken() const;
-    virtual void SetToken(std::string str);
-    void SetTokenStr(std::string str);
-    virtual std::string Print();
-    virtual void SetCurrType(token_type_ t);
-    virtual token_type_ GetCurrType();
+OpenParenthesisToken::OpenParenthesisToken(std::string str) {
+    SetTokenStr("(");
+    token_type_ t = openParenthesisToken;
+    SetCurrType(t);
+}
 
- private:
-    std::string token_str_;
-    token_type_ curr_token_type_  = static_cast<token_type_>(0);
 
-    // string representation of the token being represented
-};
+void OpenParenthesisToken::SetToken(std::string str) {
+    // do nothing ~ the const string and char are already created
+}
+
+char OpenParenthesisToken::GetTokenChar() {
+    return token_char_;
+}
 }  // namespace frontend
 }  // namespace cs160
-#endif  // FRONTEND_SCANNER_TOKEN_TOKEN_H_

@@ -15,37 +15,56 @@ copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#ifndef FRONTEND_SCANNER_TOKEN_INTEGERTOKEN_H_
-#define FRONTEND_SCANNER_TOKEN_INTEGERTOKEN_H_
-
-#include <stdio.h>
-#include <string>
-#include "frontend/scanner/token/Token.h"
-
+#include "frontend/v1/scanner/token/Token.h"
 
 namespace cs160 {
 namespace frontend {
 
-class IntegerToken: public Token {
- public:
-    // Constructors
-    explicit IntegerToken(std::string str);
-    explicit IntegerToken(int tok_integer);
+Token::Token() {
+    token_str_ = "";
+    token_type_ t = token_;
+    SetCurrType(t);
+}
 
-    // Getters and Setters
-    void SetToken(std::string str);
-    int GetTokenInt();
+Token::Token(std::string str) {
+  token_str_ = str;
+  token_type_ t = token_;
+  SetCurrType(t);
+}
 
- private:
-    int token_int_;
-};
+Token::~Token() { }
+
+// Basic getters and setters
+std::string Token::GetToken() const {
+  return token_str_;
+}
+
+void Token::SetTokenStr(std::string str) {
+  token_str_ = str;
+}
+
+void Token::SetToken(std::string str) {
+  token_str_ = str;
+}
+
+std::string Token::Print() {
+    return token_str_;
+}
+
+
+void Token::SetCurrType(token_type_ t) {
+    curr_token_type_ = t;
+}
+
+token_type_ Token::GetCurrType() {
+    return curr_token_type_;
+}
+
 }  // namespace frontend
 }  // namespace cs160
-
-#endif  // FRONTEND_SCANNER_TOKEN_INTEGERTOKEN_H_
