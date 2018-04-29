@@ -42,8 +42,8 @@ TEST_F(ParserTest, SimpleAddition) {
   Parser p(t);
   auto e = p.Parse();
   e->Visit(&printer_);
-  std::cout << printer_.GetOutput() << std::endl;
-  //ASSERT_EQ(printer_.GetOutput(), "1+");
+  // std::cout << printer_.GetOutput() << std::endl;
+  ASSERT_EQ(printer_.GetOutput(), "(+ 1 2)");
 }
 
 // TEST(ParserTest, SimpleAddition) {
