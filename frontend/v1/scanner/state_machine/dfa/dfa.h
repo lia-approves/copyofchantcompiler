@@ -29,14 +29,15 @@ SOFTWARE.
   using the appropriately-named methods
 */
 
-#ifndef FRONTEND_SCANNER_STATE_MACHINE_DFA_DFA_H_
-#define FRONTEND_SCANNER_STATE_MACHINE_DFA_DFA_H_
+#ifndef FRONTEND_V1_SCANNER_STATE_MACHINE_DFA_DFA_H_
+#define FRONTEND_V1_SCANNER_STATE_MACHINE_DFA_DFA_H_
 
 #include <map>
 #include <iostream>
 #include <stack>
 #include <vector>
 #include <string>
+#include <memory>
 #include "frontend/v1/scanner/state_machine/state/state.h"
 #include "frontend/v1/scanner/token/Token.h"
 
@@ -62,7 +63,7 @@ class DFA {
     // registerd!  The DFA will simply create them for you
     void addTransition(int stateId, char trigger, int destStateId);
     void printQueue();
-    std::vector<Token> GetOutput();
+    std::vector<std::shared_ptr<Token>> GetOutput();
 
  private:
     void rollback();
@@ -76,10 +77,10 @@ class DFA {
     State getStateById_(int id);
     std::map<int, State> states_;
     std::stack<State> recently_visited_;    // used for rollback
-    std::vector<Token> scanner_output_;
+    std::vector<std::shared_ptr<Token>> scanner_output_;
     // queue keeps track of all of the tokens found, gives this to the parser
 };
 }  // namespace frontend
 }  // namespace cs160
 
-#endif  // FRONTEND_SCANNER_STATE_MACHINE_DFA_DFA_H_
+#endif  // FRONTEND_V1_SCANNER_STATE_MACHINE_DFA_DFA_H_

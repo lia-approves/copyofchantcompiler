@@ -1,7 +1,7 @@
 // Copyright (c) 2018, Team-Chant
 
-#ifndef FRONTEND_PARSER_PARSER_H_
-#define FRONTEND_PARSER_PARSER_H_
+#ifndef FRONTEND_V1_PARSER_PARSER_H_
+#define FRONTEND_V1_PARSER_PARSER_H_
 
 #include <vector>
 #include <iostream>
@@ -70,4 +70,4 @@ class Parser {
 }  // namespace frontend
 }  // namespace cs160
 
-#endif  // FRONTEND_PARSER_PARSER_H_
+#endif  // FRONTEND_V1_PARSER_PARSER_H_

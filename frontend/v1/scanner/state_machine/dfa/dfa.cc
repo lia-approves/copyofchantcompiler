@@ -93,11 +93,11 @@ void DFA::rollback() {
 
     if (s.isAccepting()) {
         Token t = s.getToken(lexeme_);
-        scanner_output_.push_back(t);
+        scanner_output_.push_back(std::make_shared<Token>(t));
     } else {
         // stack empty
         InvalidToken t;
-        scanner_output_.push_back(t);
+        scanner_output_.push_back(std::make_shared<Token>(t));
         position_ = init_pos;
     }
 
@@ -127,17 +127,17 @@ void DFA::input(std::string s) {
     if (!recently_visited_.empty()) {
         State st = recently_visited_.top();
         Token t = st.getToken(lexeme_);
-        scanner_output_.push_back(t);
+        scanner_output_.push_back(std::make_shared<Token>(t));
     } else {
         InvalidToken t;
-        scanner_output_.push_back(t);
+        scanner_output_.push_back(std::make_shared<Token>(t));
     }
 }
 
     void DFA::printQueue() {
         std::cout << "printing queue: " << std::endl;
         while (!scanner_output_.empty()) {
-            std::cout << scanner_output_.front().Print() << std::endl;
+            std::cout << scanner_output_.front()->Print() << std::endl;
             scanner_output_.erase(scanner_output_.begin());
         }
     }
@@ -154,7 +154,7 @@ void DFA::addTransition(int stateId, char trigger, int destStateId) {
   states_[stateId].addTransition(trigger, destStateId);
 }
 
-std::vector<Token> DFA::GetOutput() {
+std::vector<std::shared_ptr<Token>> DFA::GetOutput() {
   return scanner_output_;
 }
 }  // namespace frontend
