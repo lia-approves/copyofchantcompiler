@@ -3,11 +3,11 @@
 #include <fstream>
 #include <string>
 #include "abstract_syntax/abstract_syntax.h"
-#include "backend/intermediate_representation_v1.h"
+#include "backend/ir_v1.h"
 #include "gtest/gtest.h"
 #include "utility/memory.h"
-#include "backend/assembly_generator_v1.h"
-#include "backend/ir_generator_ast_visitor_v1.h"
+#include "backend/asm_generator_v1.h"
+#include "backend/lowerer_v1.h"
 
 
 using cs160::abstract_syntax::version_1::IntegerExpr;

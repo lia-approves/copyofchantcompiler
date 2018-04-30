@@ -7,7 +7,7 @@
 #include <vector>
 #include <sstream>
 #include "utility/memory.h"
-#include "backend/intermediate_representation_v1.h"
+#include "backend/ir_v1.h"
 
 using std::endl;
 using std::string;
