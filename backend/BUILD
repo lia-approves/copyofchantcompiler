@@ -1,7 +1,7 @@
 cc_library(
 	name = "intermediate_representation",
 	copts = ["-Wall -g"],
-	hdrs = ["IR.h","ir_generator_visitor.h","print_visitor_v1.h"],
+	hdrs = ["assembly_generator_v1.h", "intermediate_representation_v1.h"],
 	deps = [
              "//abstract_syntax",
              "//utility"

@@ -13,5 +13,6 @@ cc_library(
              "-Iexternal/gtest/googletest-release-1.8.0/googletest"],
 
     linkopts = [],
+#    linkopts = ["-pthread", "-lgtest", "-lgtest_main"],
     visibility = ["//visibility:public"],
 )

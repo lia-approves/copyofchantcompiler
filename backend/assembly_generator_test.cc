@@ -22,10 +22,10 @@ TEST(Basics, CreateInstruction) {
   EXPECT_EQ(add_instr->GetOpcode(), Instruction::kAdd);
 }
 
-TEST(Basics, CreateOperand) {
-  auto operand = make_unique<Operand>(3);
-  EXPECT_EQ(operand->GetValue(), 3);
-}
+// TEST(Basics, CreateOperand) {
+//   auto operand = make_unique<Operand>(3);
+//   EXPECT_EQ(operand->GetValue(), 3);
+// }
 
 TEST(Basics, CreateRegister) {
   auto reg = make_unique<Register>(5);
