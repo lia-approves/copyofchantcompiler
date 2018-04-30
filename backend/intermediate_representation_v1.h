@@ -2,10 +2,15 @@
 
 #ifndef BACKEND_INTERMEDIATE_REPRESENTATION_V1_H_
 #define BACKEND_INTERMEDIATE_REPRESENTATION_V1_H_
+
 #include <iostream>
 #include <string>
 #include <vector>
+#include <sstream>
 #include "utility/memory.h"
+
+using std::stringstream;
+using std::endl;
 
 namespace cs160 {
 namespace backend {
@@ -16,6 +21,7 @@ class Operand {
     virtual ~Operand() {}
     virtual int GetValue() = 0;
     virtual std::string GetName() = 0;
+    virtual void PushToAsmSS(stringstream& ss) = 0;
  private:
 };
 
@@ -25,6 +31,9 @@ class Register : public Operand {
   ~Register() {}
   int GetValue() { return value_; }
   std::string GetName() { return "t" + std::to_string(value_); }
+  void PushToAsmSS(stringstream& ss) {
+  // There is nothing to push because it's a register
+  }
  private:
   int value_;
 };
@@ -35,6 +44,9 @@ class Constant : public Operand {
   ~Constant() {}
   int GetValue() { return value_; }
   std::string GetName() { return std::to_string(value_); }
+  void PushToAsmSS(stringstream& ss) {
+    ss << "push $" << value_ << endl;
+  }
  private:
   int value_;
 };

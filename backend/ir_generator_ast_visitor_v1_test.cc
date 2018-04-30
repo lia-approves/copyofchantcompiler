@@ -60,6 +60,6 @@ using cs160::make_unique;
           make_unique<IntegerExpr>(9)),
         make_unique<IntegerExpr>(6)));
     expr->Visit(&irgen_visitor_);
-
-    EXPECT_EQ(1, 1); //need to fix this test my gtest installation exploded somehow
+    EXPECT_EQ(1, 1);  // need to fix this test
+                      // my gtest installation exploded somehow
   }

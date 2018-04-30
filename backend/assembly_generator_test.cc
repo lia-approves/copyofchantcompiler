@@ -1,6 +1,6 @@
 // Copyright msg for cpplint
 #include "abstract_syntax/abstract_syntax.h"
-#include "backend/intermediate_representation.h"
+#include "backend/intermediate_representation_v1.h"
 #include "gtest/gtest.h"
 #include "utility/memory.h"
 
