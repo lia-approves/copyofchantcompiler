@@ -9,3 +9,4 @@ team-chant-compiler.vcxproj.filters
 debug/
 Debug/team-chant-compiler.vcxprojResolveAssemblyReference.cache
 Debug/team-chant-compiler.log
+gtest.BUILD
