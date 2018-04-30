@@ -1,6 +1,6 @@
 // Copyright msg for cpplint
-#ifndef BACKEND_ASSEMBLY_GENERATOR_V1_H_
-#define BACKEND_ASSEMBLY_GENERATOR_V1_H_
+#ifndef BACKEND_ASM_GENERATOR_V1_H_
+#define BACKEND_ASM_GENERATOR_V1_H_
 
 #include <iostream>
 #include <string>
@@ -74,4 +74,4 @@ void AsmProgram::GenerateASM(StatementNode* node) {
 }  // namespace backend
 }  // namespace cs160
 
-#endif  // BACKEND_ASSEMBLY_GENERATOR_V1_H_
+#endif  // BACKEND_ASM_GENERATOR_V1_H_

@@ -1,7 +1,7 @@
 // Copyright(c) 2018, Team Chant
 
-#ifndef BACKEND_IR_GENERATOR_AST_VISITOR_V1_H_
-#define BACKEND_IR_GENERATOR_AST_VISITOR_V1_H_
+#ifndef BACKEND_LOWERER_V1_H_
+#define BACKEND_LOWERER_V1_H_
 
 #include <sstream>
 #include <string>
@@ -144,4 +144,4 @@ class IrGenVisitor : public AstVisitor {
 }  // namespace backend
 }  // namespace cs160
 
-#endif  // BACKEND_IR_GENERATOR_AST_VISITOR_V1_H_
+#endif  // BACKEND_LOWERER_V1_H_
