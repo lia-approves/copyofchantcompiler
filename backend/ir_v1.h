@@ -1,7 +1,7 @@
 // Copyright(c) 2018, Team Chant
 
-#ifndef BACKEND_INTERMEDIATE_REPRESENTATION_V1_H_
-#define BACKEND_INTERMEDIATE_REPRESENTATION_V1_H_
+#ifndef BACKEND_IR_V1_H_
+#define BACKEND_IR_V1_H_
 
 #include <iostream>
 #include <string>
@@ -102,4 +102,4 @@ class StatementNode {
 }  // namespace backend
 }  // namespace cs160
 
-#endif  // BACKEND_INTERMEDIATE_REPRESENTATION_V1_H_
+#endif  // BACKEND_IR_V1_H_
