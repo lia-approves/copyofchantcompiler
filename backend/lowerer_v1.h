@@ -1,13 +1,13 @@
 // Copyright(c) 2018, Team Chant
 
-#ifndef BACKEND_IR_GENERATOR_AST_VISITOR_V1_H_
-#define BACKEND_IR_GENERATOR_AST_VISITOR_V1_H_
+#ifndef BACKEND_LOWERER_V1_H_
+#define BACKEND_LOWERER_V1_H_
 
 #include <sstream>
 #include <string>
 #include <vector>
 #include "abstract_syntax/abstract_syntax_tree_v1.h"
-#include "backend/intermediate_representation_v1.h"
+#include "backend/ir_v1.h"
 #include "utility/memory.h"
 
 using cs160::abstract_syntax::version_1::IntegerExpr;
@@ -144,4 +144,4 @@ class IrGenVisitor : public AstVisitor {
 }  // namespace backend
 }  // namespace cs160
 
-#endif  // BACKEND_IR_GENERATOR_AST_VISITOR_V1_H_
+#endif  // BACKEND_LOWERER_V1_H_
