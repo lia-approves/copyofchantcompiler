@@ -25,12 +25,7 @@ using cs160::backend::IrGenVisitor;
 
 using cs160::make_unique;
 
-TEST(Basics, CreateInstruction) {
-  auto add_instr = make_unique<Instruction>(Instruction::kAdd);
-  EXPECT_EQ(add_instr->GetOpcode(), Instruction::kAdd);
-}
-
-TEST(ExecuteASM, SimpleIR) {
+TEST(ExecuteASM, Add) {
   auto expr = make_unique<AddExpr>(
     make_unique<IntegerExpr>(10),
     make_unique<IntegerExpr>(2));
@@ -41,14 +36,69 @@ TEST(ExecuteASM, SimpleIR) {
   testasm.IrToAsm(irGen.GetIR());
 
   std::ofstream test_output_file;
-  test_output_file.open("backend/testfile.s");
+  test_output_file.open("testfile.s");
   test_output_file << testasm.GetASMString();
+  test_output_file.close();
   system("gcc testfile.s && ./a.out > test_output.txt");
 
   std::ifstream output_file;
   output_file.open("test_output.txt");
   std::string output;
   output_file >> output;
+  output_file.close();
+  system("rm testfile.s test_output.txt");
 
   EXPECT_EQ("12", output);
+}
+
+TEST(ExecuteASM, Subtract) {
+  auto expr = make_unique<SubtractExpr>(
+    make_unique<IntegerExpr>(10),
+    make_unique<IntegerExpr>(2));
+  IrGenVisitor irGen;
+  expr->Visit(&irGen);
+
+  AsmProgram testasm;
+  testasm.IrToAsm(irGen.GetIR());
+
+  std::ofstream test_output_file;
+  test_output_file.open("testfile.s");
+  test_output_file << testasm.GetASMString();
+  test_output_file.close();
+  system("gcc testfile.s && ./a.out > test_output.txt");
+
+  std::ifstream output_file;
+  output_file.open("test_output.txt");
+  std::string output;
+  output_file >> output;
+  output_file.close();
+  system("rm testfile.s test_output.txt");
+
+  EXPECT_EQ("8", output);
+}
+
+TEST(ExecuteASM, Multiply) {
+  auto expr = make_unique<MultiplyExpr>(
+    make_unique<IntegerExpr>(10),
+    make_unique<IntegerExpr>(2));
+  IrGenVisitor irGen;
+  expr->Visit(&irGen);
+
+  AsmProgram testasm;
+  testasm.IrToAsm(irGen.GetIR());
+
+  std::ofstream test_output_file;
+  test_output_file.open("testfile.s");
+  test_output_file << testasm.GetASMString();
+  test_output_file.close();
+  system("gcc testfile.s && ./a.out > test_output.txt");
+
+  std::ifstream output_file;
+  output_file.open("test_output.txt");
+  std::string output;
+  output_file >> output;
+  output_file.close();
+  system("rm testfile.s test_output.txt");
+
+  EXPECT_EQ("20", output);
 }
