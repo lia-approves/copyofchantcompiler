@@ -25,9 +25,8 @@ SOFTWARE.
 #include <string>
 #include "gtest/gtest.h"
 #include "abstract_syntax/abstract_syntax_tree_v1.h"
-#include "backend/print_visitor_v1.h"
 #include "utility/memory.h"
-#include "backend/ir_generator_visitor.h"
+#include "backend/ir_generator_ast_visitor_v1.h"
 
 
 using cs160::abstract_syntax::version_1::IntegerExpr;
@@ -35,11 +34,9 @@ using cs160::abstract_syntax::version_1::AddExpr;
 using cs160::abstract_syntax::version_1::SubtractExpr;
 using cs160::abstract_syntax::version_1::MultiplyExpr;
 using cs160::abstract_syntax::version_1::DivideExpr;
-using cs160::abstract_syntax::version_1::PrintVisitor;
-using cs160::abstract_syntax::version_1::IrGenVisitor;
-using cs160::abstract_syntax::version_1::Operand;
-using cs160::intermediate_representation::OperandBase;
-using cs160::abstract_syntax::version_1::Register;
+
+
+using cs160::backend::IrGenVisitor;
 using cs160::make_unique;
 
 

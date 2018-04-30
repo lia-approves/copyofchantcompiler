@@ -1,7 +1,7 @@
 cc_library(
 	name = "intermediate_representation",
 	copts = ["-Wall -g"],
-	hdrs = ["IR.h","ir_generator_visitor.h","print_visitor_v1.h"],
+	hdrs = ["intermediate_representation_v1.h","ir_generator_ast_visitor_v1.h"],
 	deps = [
              "//abstract_syntax",
              "//utility"
@@ -32,7 +32,7 @@ cc_test(
 )
 cc_test(
 	name = "ir_generator_visitor_test",
-	srcs = ["ir_generator_visitor_test.cc"],
+	srcs = ["ir_generator_ast_visitor_v1_test.cc"],
 	deps = [
              "@gtest//:main",
              ":intermediate_representation"
