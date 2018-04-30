@@ -21,32 +21,50 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
-#ifndef FRONTEND_SCANNER_TOKEN_ARITHMETICEXPRESSIONTOKEN_H_
-#define FRONTEND_SCANNER_TOKEN_ARITHMETICEXPRESSIONTOKEN_H_
-
-#include <stdio.h>
+#include <sstream>
 #include <string>
-#include "frontend/scanner/token/Token.h"
+#include "frontend/v1/scanner/token/IntegerToken.h"
 
 namespace cs160 {
 namespace frontend {
 
-class ArithmeticExpressionToken: public Token{
- public:
-    // Constructors
-    explicit ArithmeticExpressionToken(char tok);
-    explicit ArithmeticExpressionToken(std::string tok);
+IntegerToken::IntegerToken(std::string str) : Token(str) {
+  // first, check that the string is a number
+  for (int i=0; i < str.size(); i++) {
+    char curr_char = str.at(i);
+    if (!std::isdigit(curr_char)) {
+      // curr_char is not a number
+      // throw exception
+      throw "1";
+      return;
+    }
+  }
 
-    // Getts and setters
-    void SetToken(std::string str);
-    void SetTokenChar(char tok);
-    char GetTokenChar();
 
- private:
-    char token_char_;
-};
+    token_type_ t = integerToken;
+    SetCurrType(t);
+    SetToken(str);
+}
+
+IntegerToken::IntegerToken(int tok_integer) {
+    token_type_ t = integerToken;
+    SetCurrType(t);
+    std::string str_arg = std::to_string(tok_integer);
+    SetTokenStr(str_arg);
+
+    token_int_ = tok_integer;
+}
+
+void IntegerToken::SetToken(std::string str) {
+    SetTokenStr(str);
+
+    std::stringstream cast_to_int(str);
+
+    cast_to_int >> token_int_;
+}
+
+int IntegerToken::GetTokenInt() {
+    return token_int_;
+}
 }  // namespace frontend
 }  // namespace cs160
-
-#endif  // FRONTEND_SCANNER_TOKEN_ARITHMETICEXPRESSIONTOKEN_H_

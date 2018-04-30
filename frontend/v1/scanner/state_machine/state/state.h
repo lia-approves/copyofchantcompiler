@@ -27,8 +27,8 @@ SOFTWARE.
 #include <map>
 #include <functional>
 #include <string>
-#include "frontend/scanner/token/Token.h"
-#include "frontend/scanner/token/InvalidToken.h"
+#include "frontend/v1/scanner/token/Token.h"
+#include "frontend/v1/scanner/token/InvalidToken.h"
 
 /*
   Every state must have a unique POSITIVE id.

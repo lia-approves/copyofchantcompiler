@@ -6,13 +6,13 @@
 
 #include <iostream>
 #include <string>
-#include "frontend/scanner/state_machine/dfa/dfa.h"
-#include "frontend/scanner/state_machine/state/state.h"
-#include "frontend/scanner/token/Token.h"
-#include "frontend/scanner/token/IntegerToken.h"
-#include "frontend/scanner/token/ArithmeticExpressionToken.h"
-#include "frontend/scanner/token/OpenParenthesisToken.h"
-#include "frontend/scanner/token/ClosedParenthesisToken.h"
+#include "frontend/v1/scanner/state_machine/dfa/dfa.h"
+#include "frontend/v1/scanner/state_machine/state/state.h"
+#include "frontend/v1/scanner/token/Token.h"
+#include "frontend/v1/scanner/token/IntegerToken.h"
+#include "frontend/v1/scanner/token/ArithmeticExpressionToken.h"
+#include "frontend/v1/scanner/token/OpenParenthesisToken.h"
+#include "frontend/v1/scanner/token/ClosedParenthesisToken.h"
 
 
 

@@ -3,7 +3,7 @@ cc_library(
   copts = ["-Wall -g"],
   srcs = ["state/state.cc", "dfa/dfa.cc"],
   hdrs = ["dfa/dfa.h", "state/state.h"],
-  deps = ["//frontend/scanner/token"],
+  deps = ["//frontend/v1/scanner/token"],
   visibility = ["//visibility:public"],
 )
 

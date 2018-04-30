@@ -7,7 +7,7 @@
 #include <iostream>
 #include <string>
 #include <memory>
-#include "frontend/scanner/token/Token.h"
+#include "frontend/v1/scanner/token/Token.h"
 #include "abstract_syntax/abstract_syntax.h"
 #include "utility/memory.h"
 

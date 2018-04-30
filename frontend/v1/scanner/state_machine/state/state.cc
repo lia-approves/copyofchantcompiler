@@ -23,7 +23,7 @@ SOFTWARE.
 */
 #include <string>
 #include <iostream>
-#include "frontend/scanner/state_machine/state/state.h"
+#include "frontend/v1/scanner/state_machine/state/state.h"
 
 
 namespace cs160 {

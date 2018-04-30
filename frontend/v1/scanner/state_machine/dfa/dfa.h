@@ -37,8 +37,8 @@ SOFTWARE.
 #include <stack>
 #include <vector>
 #include <string>
-#include "frontend/scanner/state_machine/state/state.h"
-#include "frontend/scanner/token/Token.h"
+#include "frontend/v1/scanner/state_machine/state/state.h"
+#include "frontend/v1/scanner/token/Token.h"
 
 
 namespace cs160 {

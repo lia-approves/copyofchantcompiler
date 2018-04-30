@@ -2,5 +2,5 @@ cc_binary(
     name = "scanner",
     copts = ["-Wall -g"],
     srcs = ["scanner.cc"],
-    deps = ["//frontend/scanner/state_machine", "//frontend/scanner/token"],
+    deps = ["//frontend/v1/scanner/state_machine", "//frontend/v1/scanner/token"],
 )

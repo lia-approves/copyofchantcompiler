@@ -21,31 +21,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#ifndef FRONTEND_SCANNER_TOKEN_INTEGERTOKEN_H_
-#define FRONTEND_SCANNER_TOKEN_INTEGERTOKEN_H_
+#ifndef FRONTEND_SCANNER_TOKEN_OPENPARENTHESISTOKEN_H_
+#define FRONTEND_SCANNER_TOKEN_OPENPARENTHESISTOKEN_H_
 
 #include <stdio.h>
 #include <string>
-#include "frontend/scanner/token/Token.h"
-
+#include "frontend/v1/scanner/token/Token.h"
 
 namespace cs160 {
 namespace frontend {
-
-class IntegerToken: public Token {
+class OpenParenthesisToken : public Token{
  public:
-    // Constructors
-    explicit IntegerToken(std::string str);
-    explicit IntegerToken(int tok_integer);
-
-    // Getters and Setters
+    // cannot use the Token(string) constructor, or it will be bad
+    OpenParenthesisToken();
+    explicit OpenParenthesisToken(std::string str);
     void SetToken(std::string str);
-    int GetTokenInt();
+    char GetTokenChar();
 
  private:
-    int token_int_;
+    const char token_char_ = '(';
+    const std::string token_str_ = "(";
 };
 }  // namespace frontend
 }  // namespace cs160
 
-#endif  // FRONTEND_SCANNER_TOKEN_INTEGERTOKEN_H_
+#endif  // FRONTEND_SCANNER_TOKEN_OPENPARENTHESISTOKEN_H_

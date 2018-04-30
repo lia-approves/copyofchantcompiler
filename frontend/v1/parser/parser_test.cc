@@ -4,12 +4,12 @@
 
 #include <iostream>
 #include "gtest/gtest.h"
-#include "frontend/parser/parser.h"
-#include "frontend/scanner/token/IntegerToken.h"
-#include "frontend/scanner/token/ArithmeticExpressionToken.h"
-#include "frontend/scanner/token/OpenParenthesisToken.h"
+#include "frontend/v1/parser/parser.h"
+#include "frontend/v1/scanner/token/IntegerToken.h"
+#include "frontend/v1/scanner/token/ArithmeticExpressionToken.h"
+#include "frontend/v1/scanner/token/OpenParenthesisToken.h"
 #include "abstract_syntax/print_visitor_v1.h"
-#include "frontend/scanner/token/ClosedParenthesisToken.h"
+#include "frontend/v1/scanner/token/ClosedParenthesisToken.h"
 
 namespace cs160 {
 namespace frontend {

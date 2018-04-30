@@ -24,7 +24,7 @@ SOFTWARE.
 
 #include <sstream>
 #include <string>
-#include "frontend/scanner/token/ArithmeticExpressionToken.h"
+#include "frontend/v1/scanner/token/ArithmeticExpressionToken.h"
 
 namespace cs160 {
 namespace frontend {

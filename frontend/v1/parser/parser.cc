@@ -2,7 +2,7 @@
 
 #include <utility>
 #include <stdexcept>
-#include "frontend/parser/parser.h"
+#include "frontend/v1/parser/parser.h"
 
 using cs160::abstract_syntax::frontend::AstNode;
 using cs160::abstract_syntax::frontend::IntegerExpr;
