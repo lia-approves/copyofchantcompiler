@@ -4,7 +4,8 @@
  Copyright (c) 2018, Team-Chant
  */
 #include <string>
-#include "frontend/v1/parser.h"
+#include "frontend/frontend.h"
+#include "frontend/v1/parser/parser.h"
 #include "frontend/v1/scanner/state_machine/dfa/dfa.h"
 
 namespace cs160 {
@@ -23,8 +24,8 @@ std::unique_ptr<ast::AstNode> Frontend::stringToAst(std::string input) {
 }
 
 
-
-std::queue<std::shared_ptr<Token>> Frontend::tokenizeString(std::string input) {
+std::vector<std::shared_ptr<Token>>
+  Frontend::tokenizeString(std::string input) {
   DFA dfa = makeDFA();
   dfa.input(input);
   return dfa.GetOutput();
@@ -42,7 +43,7 @@ std::unique_ptr<ast::AstNode> Frontend::makeParseTree
 }*/
 
 
-DFA makeDFA() {
+DFA Frontend::makeDFA() {
   cs160::frontend::State start(1);
   cs160::frontend::State intState(2);
     intState.makeAccepting();
