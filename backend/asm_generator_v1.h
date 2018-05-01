@@ -51,7 +51,7 @@ void AsmProgram::IrToAsm(StatementNode* head) {
 void AsmProgram::GenerateASM(StatementNode* node) {
   node->GetOp1().PushToAsmSS(asm_sstring_);
   node->GetOp2().PushToAsmSS(asm_sstring_);
-  
+
   switch (node->GetInstruction().GetOpcode()) {
   case Instruction::kAdd:
     asm_sstring_ << "pop %rax" << endl;
@@ -81,7 +81,6 @@ void AsmProgram::GenerateASM(StatementNode* node) {
   default:
     break;
   }
-  
 }
 }  // namespace backend
 }  // namespace cs160

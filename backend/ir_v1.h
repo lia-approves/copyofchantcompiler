@@ -79,7 +79,7 @@ class StatementNode {
       operand1_((operand1)),
       operand2_((operand2)),
       next_((next)) {}
-    StatementNode() {
+    ~StatementNode() {
       delete target_;
       delete instruction_;
       delete operand1_;
