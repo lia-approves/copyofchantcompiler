@@ -107,6 +107,33 @@ TEST(IRtoASM, Multiply) {
   EXPECT_EQ("6", output);
 }
 
+TEST(IRtoASM, Divide) {
+  StatementNode *expr = new StatementNode(
+    new Register(3),
+    new Instruction(Instruction::kDivide),
+    new Constant(30),
+    new Constant(5),
+    nullptr);
+
+  AsmProgram testasm;
+  testasm.IrToAsm(expr);
+
+  std::ofstream test_output_file;
+  test_output_file.open("testfile.s");
+  test_output_file << testasm.GetASMString();
+  test_output_file.close();
+  system("gcc testfile.s && ./a.out > test_output.txt");
+
+  std::ifstream output_file;
+  output_file.open("test_output.txt");
+  std::string output;
+  output_file >> output;
+  output_file.close();
+  system("rm testfile.s test_output.txt");
+
+  EXPECT_EQ("6", output);
+}
+
 TEST(IRtoASM, Complex) {
   // ((3+2) * 2) - 4 = 6
   StatementNode *expr3 = new StatementNode(

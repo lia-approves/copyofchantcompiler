@@ -103,3 +103,30 @@ TEST(ExecuteASM, Multiply) {
 
   EXPECT_EQ("20", output);
 }
+
+
+TEST(ExecuteASM, Divide) {
+  auto expr = make_unique<DivideExpr>(
+    make_unique<IntegerExpr>(10),
+    make_unique<IntegerExpr>(2));
+  IrGenVisitor irGen;
+  expr->Visit(&irGen);
+
+  AsmProgram testasm;
+  testasm.IrToAsm(irGen.GetIR());
+
+  std::ofstream test_output_file;
+  test_output_file.open("testfile.s");
+  test_output_file << testasm.GetASMString();
+  test_output_file.close();
+  system("gcc testfile.s && ./a.out > test_output.txt");
+
+  std::ifstream output_file;
+  output_file.open("test_output.txt");
+  std::string output;
+  output_file >> output;
+  output_file.close();
+  system("rm testfile.s test_output.txt");
+
+  EXPECT_EQ("5", output);
+}
