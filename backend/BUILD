@@ -10,8 +10,20 @@ cc_library(
 )
 
 cc_test(
-	name = "assembly_test",
+	name = "asm_generator_test",
 	srcs = ["asm_generator_test.cc"],
+	deps = [
+             "@gtest//:main",
+             ":intermediate_representation"
+        ],
+	timeout = "short",
+	size = "small",
+)
+
+
+cc_test(
+	name = "integration_test",
+	srcs = ["integration_test.cc"],
 	deps = [
              "@gtest//:main",
              ":intermediate_representation"
