@@ -12,6 +12,7 @@
 #include "frontend/v1/scanner/token/OpenParenthesisToken.h"
 #include "frontend/v1/scanner/token/ClosedParenthesisToken.h"
 #include "frontend/v1/scanner/state_machine/dfa/dfa.h"
+#include "frontend/v1/parser/parser.h"
 #include "utility/memory.h"
 
 namespace cs160 {

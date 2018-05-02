@@ -21,10 +21,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#ifndef FRONTEND_SCANNER_TOKEN_TOKEN_H_
-#define FRONTEND_SCANNER_TOKEN_TOKEN_H_
+#ifndef FRONTEND_V1_SCANNER_TOKEN_TOKEN_H_
+#define FRONTEND_V1_SCANNER_TOKEN_TOKEN_H_
 
 #include <string>
+#include <stdexcept>
 
 namespace cs160 {
 namespace frontend {
@@ -53,7 +54,7 @@ class Token{
     virtual void SetCurrType(token_type_ t);
     virtual token_type_ GetCurrType();
     virtual int GetTokenInt() {
-      throw "not an integer token";
+      throw std::logic_error("not an integer");
     }
 
  private:
@@ -64,4 +65,4 @@ class Token{
 };
 }  // namespace frontend
 }  // namespace cs160
-#endif  // FRONTEND_SCANNER_TOKEN_TOKEN_H_
+#endif  // FRONTEND_V1_SCANNER_TOKEN_TOKEN_H_

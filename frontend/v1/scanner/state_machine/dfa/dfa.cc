@@ -33,8 +33,9 @@ namespace frontend {
 DFA::DFA(State start) {
     State error(0);
     error.setTokenOutput([](std::string str)->
-                           cs160::frontend::Token
-    {return cs160::frontend::InvalidToken(str);});
+                           std::shared_ptr<cs160::frontend::Token>
+    {return std::shared_ptr<cs160::frontend::Token>
+      (new cs160::frontend::InvalidToken(str));});
 
     addState(error);
   this->startState_ = this->currentState_ = start.getId();
@@ -69,7 +70,6 @@ void DFA::input(char c) {
     if (currentState_ == 0) {  // error state
         // call rollback here when its finished
       // return after rollback
-      std::cout << "rollback " << lexeme_ << std::endl;
       rollback();
       return;
   }
@@ -92,12 +92,12 @@ void DFA::rollback() {
     }
 
     if (s.isAccepting()) {
-        Token t = s.getToken(lexeme_);
-        scanner_output_.push_back(std::make_shared<Token>(t));
+        std::shared_ptr<Token> t = s.getToken(lexeme_);
+        scanner_output_.push_back(t);
     } else {
         // stack empty
-        InvalidToken t;
-        scanner_output_.push_back(std::make_shared<Token>(t));
+        std::shared_ptr<Token> t(new InvalidToken);
+        scanner_output_.push_back(t);
         position_ = init_pos;
     }
 
@@ -126,19 +126,18 @@ void DFA::input(std::string s) {
 
     if (!recently_visited_.empty()) {
         State st = recently_visited_.top();
-        Token t = st.getToken(lexeme_);
-        scanner_output_.push_back(std::make_shared<Token>(t));
+        std::shared_ptr<Token> t = st.getToken(lexeme_);
+        scanner_output_.push_back(t);
     } else {
-        InvalidToken t;
-        scanner_output_.push_back(std::make_shared<Token>(t));
+        std::shared_ptr<Token> t (new InvalidToken);
+        scanner_output_.push_back(t);
     }
 }
 
     void DFA::printQueue() {
-        std::cout << "printing queue: " << std::endl;
-        while (!scanner_output_.empty()) {
-            std::cout << scanner_output_.front()->Print() << std::endl;
-            scanner_output_.erase(scanner_output_.begin());
+        std::cout << "printing vector: " << std::endl;
+        for (int i=0; i < scanner_output_.size(); i++) {
+          std::cout << scanner_output_.at(i)->Print() << std::endl;
         }
     }
 
