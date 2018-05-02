@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <stdexcept>
+#include <iostream>
 #include "frontend/v1/parser/parser.h"
 
 using cs160::abstract_syntax::frontend::AstNode;
@@ -24,6 +25,7 @@ Parser::~Parser() {}
 
 // AddRule --> MultRule ( ("-" | "+") MultRule )*
 unique_ptr<AstNode> Parser::AddRule() {
+  std::cout << "in add rule" << std::endl;
   unique_ptr<AstNode> e = MultRule();  // Consume first expression
   std::vector<token_type_> possibleTypes = {plusToken, minusToken};
   while (Match(possibleTypes)) {
@@ -46,6 +48,7 @@ unique_ptr<AstNode> Parser::AddRule() {
 // MultRule --> UnaryRule ( ("/" | "*") UnaryRule )*
 // Same as AddRule() but with unaries
 unique_ptr<AstNode> Parser::MultRule() {
+  std::cout << "in mult rule" << std::endl;
   unique_ptr<AstNode> e = UnaryRule();
   std::vector<token_type_> possibleTypes = {divideToken, multToken};
   while (Match(possibleTypes)) {
@@ -65,6 +68,7 @@ unique_ptr<AstNode> Parser::MultRule() {
 
 // UnaryRule --> PrimaryRule | "-" UnaryRule
 unique_ptr<AstNode> Parser::UnaryRule() {
+  std::cout << "in unary" << std::endl;
   std::vector<token_type_> possibleTypes = {minusToken};
   if (Match(possibleTypes)) {  // Try to consume a minus sign
     shared_ptr<Token> op = Prev();
@@ -78,9 +82,11 @@ unique_ptr<AstNode> Parser::UnaryRule() {
 
 // PrimaryRule --> integer | (ExpressionRule)
 unique_ptr<AstNode> Parser::PrimaryRule() {
+  std::cout << "in primary" << std::endl;
   // Return literal, if possible
   std::vector<token_type_> possibleTypes = {integerToken};
   if (Match(possibleTypes)) {
+    std::cout << "in first if statement" << std::endl;
     return unique_ptr<AstNode>(new IntegerExpr(Prev()->GetTokenInt()));
   }
   // Return parenthetical group, if possible
