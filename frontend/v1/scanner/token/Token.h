@@ -25,6 +25,7 @@ SOFTWARE.
 #define FRONTEND_V1_SCANNER_TOKEN_TOKEN_H_
 
 #include <string>
+#include <stdexcept>
 
 namespace cs160 {
 namespace frontend {
@@ -53,7 +54,7 @@ class Token{
     virtual void SetCurrType(token_type_ t);
     virtual token_type_ GetCurrType();
     virtual int GetTokenInt() {
-      throw "not an integer token";
+      throw std::logic_error("not an integer");
     }
 
  private:

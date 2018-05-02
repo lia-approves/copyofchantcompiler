@@ -39,6 +39,7 @@ unique_ptr<AstNode> Parser::AddRule() {
       e = unique_ptr<AstNode>(new SubtractExpr(move(e), move(right)));
     } else {
       // This should never happen.
+      std::cout << "THROWING 1\n";
       throw std::runtime_error("unexpected token: "+op->GetToken());
     }
   }
@@ -60,6 +61,7 @@ unique_ptr<AstNode> Parser::MultRule() {
       e = unique_ptr<AstNode>(new DivideExpr(move(e), move(right)));
     } else {
       // This should never happen.
+      std::cout << "THROWING 2\n";
       throw std::runtime_error("unexpected token: "+op->GetToken());
     }
   }
@@ -87,6 +89,7 @@ unique_ptr<AstNode> Parser::PrimaryRule() {
   std::vector<token_type_> possibleTypes = {integerToken};
   if (Match(possibleTypes)) {
     std::cout << "in first if statement" << std::endl;
+    // std::cout << "int: " << Prev()->GetTokenIn() << std::endl;
     return unique_ptr<AstNode>(new IntegerExpr(Prev()->GetTokenInt()));
   }
   // Return parenthetical group, if possible
@@ -96,7 +99,9 @@ unique_ptr<AstNode> Parser::PrimaryRule() {
     Consume(closedParenthesisToken, "Expected ')' after ExpressionRule.");
     return e;
   }
-  throw std::logic_error("primary rule failed");
+
+  std::cout << "THROWING 3\n";
+ std::logic_error("primary rule failed");
 }
 
 
