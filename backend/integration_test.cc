@@ -26,16 +26,94 @@ using cs160::backend::IrGenVisitor;
 
 using cs160::make_unique;
 
-TEST(IRtoASM, Add) {
-  StatementNode *expr = new StatementNode(
-    new Register(3),
-    new Instruction(Instruction::kAdd),
-    new Constant(3),
-    new Constant(2),
-    nullptr);
+TEST(ExecuteASM, Add) {
+  auto expr = make_unique<AddExpr>(
+    make_unique<IntegerExpr>(10),
+    make_unique<IntegerExpr>(2));
+  IrGenVisitor irGen;
+  expr->Visit(&irGen);
 
   AsmProgram testasm;
-  testasm.IrToAsm(expr);
+  testasm.IrToAsm(irGen.GetIR());
+
+  std::ofstream test_output_file;
+  test_output_file.open("testfile.s");
+  test_output_file << testasm.GetASMString();
+  test_output_file.close();
+  system("gcc testfile.s && ./a.out > test_output.txt");
+
+  std::ifstream output_file;
+  output_file.open("test_output.txt");
+  std::string output;
+  output_file >> output;
+  output_file.close();
+  system("rm testfile.s test_output.txt");
+
+  EXPECT_EQ("12", output);
+}
+
+TEST(ExecuteASM, Subtract) {
+  auto expr = make_unique<SubtractExpr>(
+    make_unique<IntegerExpr>(10),
+    make_unique<IntegerExpr>(2));
+  IrGenVisitor irGen;
+  expr->Visit(&irGen);
+
+  AsmProgram testasm;
+  testasm.IrToAsm(irGen.GetIR());
+
+  std::ofstream test_output_file;
+  test_output_file.open("testfile.s");
+  test_output_file << testasm.GetASMString();
+  test_output_file.close();
+  system("gcc testfile.s && ./a.out > test_output.txt");
+
+  std::ifstream output_file;
+  output_file.open("test_output.txt");
+  std::string output;
+  output_file >> output;
+  output_file.close();
+  system("rm testfile.s test_output.txt");
+
+  EXPECT_EQ("8", output);
+}
+
+TEST(ExecuteASM, Multiply) {
+  auto expr = make_unique<MultiplyExpr>(
+    make_unique<IntegerExpr>(10),
+    make_unique<IntegerExpr>(2));
+  IrGenVisitor irGen;
+  expr->Visit(&irGen);
+
+  AsmProgram testasm;
+  testasm.IrToAsm(irGen.GetIR());
+
+  std::ofstream test_output_file;
+  test_output_file.open("testfile.s");
+  test_output_file << testasm.GetASMString();
+  test_output_file.close();
+  system("gcc testfile.s && ./a.out > test_output.txt");
+
+  std::ifstream output_file;
+  output_file.open("test_output.txt");
+  std::string output;
+  output_file >> output;
+  output_file.close();
+  system("rm testfile.s test_output.txt");
+
+  EXPECT_EQ("20", output);
+}
+
+
+TEST(ExecuteASM, Divide) {
+  auto expr = make_unique<DivideExpr>(
+    make_unique<IntegerExpr>(10),
+    make_unique<IntegerExpr>(2));
+  IrGenVisitor irGen;
+  expr->Visit(&irGen);
+
+  AsmProgram testasm;
+  testasm.IrToAsm(irGen.GetIR());
 
   std::ofstream test_output_file;
   test_output_file.open("testfile.s");
@@ -51,125 +129,4 @@ TEST(IRtoASM, Add) {
   system("rm testfile.s test_output.txt");
 
   EXPECT_EQ("5", output);
-}
-
-TEST(IRtoASM, Subtract) {
-  StatementNode *expr = new StatementNode(
-    new Register(3),
-    new Instruction(Instruction::kSubtract),
-    new Constant(3),
-    new Constant(2),
-    nullptr);
-
-  AsmProgram testasm;
-  testasm.IrToAsm(expr);
-
-  std::ofstream test_output_file;
-  test_output_file.open("testfile.s");
-  test_output_file << testasm.GetASMString();
-  test_output_file.close();
-  system("gcc testfile.s && ./a.out > test_output.txt");
-
-  std::ifstream output_file;
-  output_file.open("test_output.txt");
-  std::string output;
-  output_file >> output;
-  output_file.close();
-  system("rm testfile.s test_output.txt");
-
-  EXPECT_EQ("1", output);
-}
-
-TEST(IRtoASM, Multiply) {
-  StatementNode *expr = new StatementNode(
-    new Register(3),
-    new Instruction(Instruction::kMultiply),
-    new Constant(3),
-    new Constant(2),
-    nullptr);
-
-  AsmProgram testasm;
-  testasm.IrToAsm(expr);
-
-  std::ofstream test_output_file;
-  test_output_file.open("testfile.s");
-  test_output_file << testasm.GetASMString();
-  test_output_file.close();
-  system("gcc testfile.s && ./a.out > test_output.txt");
-
-  std::ifstream output_file;
-  output_file.open("test_output.txt");
-  std::string output;
-  output_file >> output;
-  output_file.close();
-  system("rm testfile.s test_output.txt");
-
-  EXPECT_EQ("6", output);
-}
-
-TEST(IRtoASM, Divide) {
-  StatementNode *expr = new StatementNode(
-    new Register(3),
-    new Instruction(Instruction::kDivide),
-    new Constant(30),
-    new Constant(5),
-    nullptr);
-
-  AsmProgram testasm;
-  testasm.IrToAsm(expr);
-
-  std::ofstream test_output_file;
-  test_output_file.open("testfile.s");
-  test_output_file << testasm.GetASMString();
-  test_output_file.close();
-  system("gcc testfile.s && ./a.out > test_output.txt");
-
-  std::ifstream output_file;
-  output_file.open("test_output.txt");
-  std::string output;
-  output_file >> output;
-  output_file.close();
-  system("rm testfile.s test_output.txt");
-
-  EXPECT_EQ("6", output);
-}
-
-TEST(IRtoASM, Complex) {
-  // ((3+2) * 2) - 4 = 6
-  StatementNode *expr3 = new StatementNode(
-    new Register(3),
-    new Instruction(Instruction::kSubtract),
-    new Register(3),
-    new Constant(4),
-    nullptr);
-  StatementNode *expr2 = new StatementNode(
-    new Register(3),
-    new Instruction(Instruction::kMultiply),
-    new Constant(2),
-    new Register(2),
-    expr3);
-  StatementNode *expr1 = new StatementNode(
-    new Register(3),
-    new Instruction(Instruction::kAdd),
-    new Constant(3),
-    new Constant(2),
-    expr2);
-
-  AsmProgram testasm;
-  testasm.IrToAsm(expr1);
-
-  std::ofstream test_output_file;
-  test_output_file.open("testfile.s");
-  test_output_file << testasm.GetASMString();
-  test_output_file.close();
-  system("gcc testfile.s && ./a.out > test_output.txt");
-
-  std::ifstream output_file;
-  output_file.open("test_output.txt");
-  std::string output;
-  output_file >> output;
-  output_file.close();
-  system("rm testfile.s test_output.txt");
-
-  EXPECT_EQ("6", output);
 }

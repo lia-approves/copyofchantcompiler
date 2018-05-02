@@ -30,7 +30,7 @@ class AsmProgram {
 void AsmProgram::IrToAsm(StatementNode* head) {
   asm_sstring_ << ".global main" << endl;
   asm_sstring_ << ".text" << endl;
-  asm_sstring_ << "main:" << endl;
+  asm_sstring_ << "main:" << endl << endl;
   while (head != nullptr) {
     GenerateASM(head);
     head = head->GetNext();
@@ -51,25 +51,36 @@ void AsmProgram::IrToAsm(StatementNode* head) {
 void AsmProgram::GenerateASM(StatementNode* node) {
   node->GetOp1().PushToAsmSS(asm_sstring_);
   node->GetOp2().PushToAsmSS(asm_sstring_);
-  asm_sstring_ << "pop %rax" << endl;
-  asm_sstring_ << "pop %rbx" << endl;
+
   switch (node->GetInstruction().GetOpcode()) {
   case Instruction::kAdd:
+    asm_sstring_ << "pop %rax" << endl;
+    asm_sstring_ << "pop %rbx" << endl;
     asm_sstring_ << "add %rax, %rbx" << endl;
+    asm_sstring_ << "push %rbx" << endl << endl;
     break;
   case Instruction::kSubtract:
+    asm_sstring_ << "pop %rax" << endl;
+    asm_sstring_ << "pop %rbx" << endl;
     asm_sstring_ << "sub %rax, %rbx" << endl;
+    asm_sstring_ << "push %rbx" << endl << endl;
     break;
   case Instruction::kMultiply:
+    asm_sstring_ << "pop %rax" << endl;
+    asm_sstring_ << "pop %rbx" << endl;
     asm_sstring_ << "imul %rax, %rbx" << endl;
+    asm_sstring_ << "push %rbx" << endl << endl;
     break;
   case Instruction::kDivide:
-    asm_sstring_ << "idiv %rax, %rbx" << endl;
+    asm_sstring_ << "pop %rbx" << endl;
+    asm_sstring_ << "pop %rax" << endl;
+    asm_sstring_ << "mov $0, %rdx" << endl;
+    asm_sstring_ << "idiv %rbx" << endl;
+    asm_sstring_ << "push %rax" << endl << endl;
     break;
   default:
     break;
   }
-  asm_sstring_ << "push %rbx" << endl << endl;
 }
 }  // namespace backend
 }  // namespace cs160
