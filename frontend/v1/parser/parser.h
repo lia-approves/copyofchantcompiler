@@ -25,7 +25,6 @@ class Parser {
         std::cout << "ERROR: " << e.what() << std::endl;
         return nullptr;
       }
-
     }
 
  private:

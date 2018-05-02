@@ -101,7 +101,7 @@ unique_ptr<AstNode> Parser::PrimaryRule() {
   }
 
   std::cout << "THROWING 3\n";
- std::logic_error("primary rule failed");
+  std::logic_error("primary rule failed");
 }
 
 

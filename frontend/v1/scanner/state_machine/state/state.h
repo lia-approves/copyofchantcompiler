@@ -21,12 +21,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#ifndef FRONTEND_SCANNER_STATE_MACHINE_STATE_STATE_H_
-#define FRONTEND_SCANNER_STATE_MACHINE_STATE_STATE_H_
+#ifndef FRONTEND_V1_SCANNER_STATE_MACHINE_STATE_STATE_H_
+#define FRONTEND_V1_SCANNER_STATE_MACHINE_STATE_STATE_H_
 
 #include <map>
 #include <functional>
 #include <string>
+#include <memory>
 #include "frontend/v1/scanner/token/Token.h"
 #include "frontend/v1/scanner/token/InvalidToken.h"
 
@@ -55,9 +56,9 @@ class State {
     ~State(void);
 
     // set the output type for the state
-    void setTokenOutput(std::function<Token(std::string)>func);
+    void setTokenOutput(std::function<std::shared_ptr<Token>(std::string)>func);
     // return the correct output type
-    Token getToken(std::string str);
+    std::shared_ptr<Token> getToken(std::string str);
 
     // Method for adding transition to a state, input is a character
     // and where the state should go
@@ -76,9 +77,9 @@ class State {
     bool accepting_;
     Token token_;
     std::map<char, int> transitions_;
-    std::function<Token(std::string)> createToken_;
+    std::function<std::shared_ptr<Token>(std::string)> createToken_;
 };
 }  // namespace frontend
 }  // namespace cs160
 
-#endif  // FRONTEND_SCANNER_STATE_MACHINE_STATE_STATE_H_
+#endif  // FRONTEND_V1_SCANNER_STATE_MACHINE_STATE_STATE_H_

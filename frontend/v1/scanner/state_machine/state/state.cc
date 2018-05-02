@@ -43,12 +43,13 @@ State::State(int id) {
 }
 State::~State(void) {}
 
-void State::setTokenOutput(std::function<Token(std::string)> func) {
+void State::setTokenOutput
+  (std::function<std::shared_ptr<Token>(std::string)> func) {
     createToken_ = func;
 }
 
-Token State::getToken(std::string str) {
-    Token retval =  createToken_(str);
+std::shared_ptr<Token> State::getToken(std::string str) {
+    std::shared_ptr<Token> retval =  createToken_(str);
     return retval;
 }
 

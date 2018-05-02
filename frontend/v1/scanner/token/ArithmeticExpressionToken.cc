@@ -73,8 +73,6 @@ ArithmeticExpressionToken::ArithmeticExpressionToken(std::string tok) {
     } else {
       SetCurrType(invalidToken);
     }
-
-
 }
 
 // Method to set the value of a token given a string

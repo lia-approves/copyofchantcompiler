@@ -84,8 +84,9 @@ DFA Frontend::makeDFA() {
   start.addTransition(')', 5);
 
     start.setTokenOutput([](std::string str)->
-    cs160::frontend::Token
-    {return cs160::frontend::InvalidToken(str);});
+    std::shared_ptr<cs160::frontend::Token>
+    {return std::shared_ptr<cs160::frontend::Token>
+      (new cs160::frontend::InvalidToken(str));});
 
   intState.addTransition('0', 2);
   intState.addTransition('1', 2);
@@ -99,17 +100,24 @@ DFA Frontend::makeDFA() {
   intState.addTransition('9', 2);
 
     intState.setTokenOutput([](std::string str)->
-    cs160::frontend::Token
-    {return cs160::frontend::IntegerToken(str);});
+    std::shared_ptr<cs160::frontend::Token>
+    {return std::shared_ptr<cs160::frontend::Token>
+      (new cs160::frontend::IntegerToken(str));});
+
     opState.setTokenOutput([](std::string str)->
-    cs160::frontend::Token
-    {return cs160::frontend::ArithmeticExpressionToken(str);});
+    std::shared_ptr<cs160::frontend::Token>
+    {return std::shared_ptr<cs160::frontend::Token>
+      (new cs160::frontend::ArithmeticExpressionToken(str));});
+
     openParenState.setTokenOutput([](std::string str)->
-    cs160::frontend::Token
-    {return cs160::frontend::OpenParenthesisToken(str);});
+    std::shared_ptr<cs160::frontend::Token>
+    {return std::shared_ptr<cs160::frontend::Token>
+      (new cs160::frontend::OpenParenthesisToken(str));});
+
     closeParenState.setTokenOutput([](std::string str)->
-    cs160::frontend::Token
-    {return cs160::frontend::ClosedParenthesisToken(str);});
+    std::shared_ptr<cs160::frontend::Token>
+    {return std::shared_ptr<cs160::frontend::Token>
+      (new cs160::frontend::ClosedParenthesisToken(str));});
 
   cs160::frontend::DFA arithmeticDFA(start);
   arithmeticDFA.addState(intState);
