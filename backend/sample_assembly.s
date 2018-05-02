@@ -1,18 +1,21 @@
-# run on Linux with
-# gcc -c add.s && ld add.o && ./a.out
 
-      .global _start
+# ---------------------------------------------------------------------------$# A 64-bit Linux application that writes the first 90 Fibonacci numbers.  It
+# needs to be linked with a C library.
+# http://cs.lmu.edu/~ray/notes/gasexamples/
+# Assemble and Link:
+#     gcc fib.s
+# ---------------------------------------------------------------------------$
+        .global main
 
-      .text
-_start:
-      push    $3
-      push    $2
-      pop     %ax
-      pop     %bx
-      add     %ax, %bx
-      pop     %ax
+        .text
+main:
+        mov     $format, %rdi           # set 1st parameter (format)
+        mov     %rax, %rsi              # set 2nd parameter (current_number)
+        xor     %rax, %rax              # because printf is varargs
 
-      # exit(0)
-      mov     $60, %rax               # system call 60 is exit
-      xor     %rdi, %rdi              # we want return code 0
-      syscall                         # invoke operating system to exit
+        call    printf                  # printf(format, current_number)
+
+        ret
+
+format:
+        .asciz  "%20ld\n"
