@@ -32,8 +32,8 @@ namespace cs160 {
         ~Register() {}
         int GetValue() { return value_; }
         std::string GetName() { return "t" + std::to_string(value_); }
-        void PushToAsmSS(stringstream& ss) { // function for asm generator
-          // There is nothing to push because it's a register
+        void PushToAsmSS(stringstream& ss) {  // function for asm generator
+                                              // There is nothing to push because it's a register
         }
       private:
         int value_;
@@ -44,8 +44,8 @@ namespace cs160 {
         ~Variable() {}
         int GetValue() { return 0; } //dummy return
         std::string GetName() { return name_; }
-        void PushToAsmSS(stringstream& ss) { // function for asm generator
-                                             // There is nothing to push because it's a register
+        void PushToAsmSS(stringstream& ss) {  // function for asm generator
+                                              // There is nothing to push because it's a variable
         }
       private:
         std::string name_;
@@ -64,7 +64,7 @@ namespace cs160 {
         int value_;
       };
 
-      class Operator { //
+      class Operator { // assign, add multiply, etc
       public:
         enum Opcode { kAdd, kSubtract, kMultiply, kDivide, kAssign };
         explicit Operator(Opcode o) { op_ = (o); }
@@ -88,8 +88,8 @@ namespace cs160 {
         Opcode op_;
       };
 
-      class StatementNode {
-      public:
+      class StatementNode { // this is our quadruple form of the ir
+      public:               // the last field is the next statement pointer
         StatementNode(Operand* target,
           Operator* instruction,
           Operand* operand1,
@@ -118,7 +118,6 @@ namespace cs160 {
         Operand& GetTarget() { return *target_; }
         Operator& GetInstruction() { return *operator_; }
         StatementNode*& GetNext() { return next_; }
-
       private:
         Operand * target_;
         Operator* operator_;
