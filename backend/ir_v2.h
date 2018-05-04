@@ -50,10 +50,10 @@ namespace cs160 {
         int GetValue() { return 0; } //dummy return
         std::string GetName() { return name_; }
         void PushToAsmSS(stringstream& ss) {  // function for asm generator
-          ss << "push (" << name_<<")" << endl;// There is nothing to push because it's a variable
+          ss << "push (" << name_ << ")" << endl;// There is nothing to push because it's a variable
         }
         void PopToAsmSS(stringstream& ss, string register_) {  // function for asm generator
-          ss << "pop (" << GetName() << ")"<<endl;                                                    // There is nothing to push because it's a register
+          ss << "pop (" << GetName() << ")" << endl;                                                    // There is nothing to push because it's a register
         }
       private:
         std::string name_;
@@ -121,7 +121,7 @@ namespace cs160 {
           if (target_ != nullptr) std::cout << target_->GetName();
           std::cout << " = ";
           if (operand1_ != nullptr) std::cout << GetOp1()->GetName() << " ";
-           std::cout << GetInstruction()->GetName() << " ";
+          std::cout << GetInstruction()->GetName() << " ";
           if (operand2_ != nullptr) std::cout << GetOp2()->GetName() << " ";
         }
         Operand*& GetOp1() { return operand1_; }
