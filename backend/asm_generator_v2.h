@@ -1,18 +1,17 @@
 // Copyright msg for cpplint
-#ifndef BACKEND_ASM_GENERATOR_V1_H_
-#define BACKEND_ASM_GENERATOR_V1_H_
+#ifndef BACKEND_ASM_GENERATOR_V2_H_
+#define BACKEND_ASM_GENERATOR_V2_H_
 
 #include <iostream>
 #include <string>
 #include <vector>
 #include <sstream>
 #include "utility/memory.h"
-#include "backend/ir_v1.h"
+#include "backend/ir_v2.h"
 
 using std::endl;
 using std::string;
-using cs160::backend::StatementNode;
-using cs160::backend::Instruction;
+using cs160::backend::ir::StatementNode;
 namespace cs160 {
   namespace backend {
 
@@ -25,6 +24,7 @@ namespace cs160 {
     private:
       void GenerateASM(StatementNode* node);
       stringstream asm_sstring_;
+      stringstream asm_sstring_variables_;
     };
 
     void AsmProgram::IrToAsm(StatementNode* head) {
@@ -46,43 +46,59 @@ namespace cs160 {
       asm_sstring_ << "format:" << endl;
       asm_sstring_ << "  .asciz  \"%0ld\\n\"" << endl;
       asm_sstring_ << endl;
+      asm_sstring_ << ".data" << endl;
+      asm_sstring_ << asm_sstring_variables_.str();
     }
 
     void AsmProgram::GenerateASM(StatementNode* node) {
-      node->GetOp1().PushToAsmSS(asm_sstring_);
-      node->GetOp2().PushToAsmSS(asm_sstring_);
+      if (node->GetOp1() != nullptr) node->GetOp1()->PushToAsmSS(asm_sstring_);
+      if (node->GetOp2() != nullptr) node->GetOp2()->PushToAsmSS(asm_sstring_);
 
-      switch (node->GetInstruction().GetOpcode()) {
-      case Instruction::kAdd:
+      switch (node->GetInstruction()->GetOpcode()) {
+      case Operator::kAdd:
         asm_sstring_ << "pop %rax" << endl;
         asm_sstring_ << "pop %rbx" << endl;
         asm_sstring_ << "add %rax, %rbx" << endl;
         asm_sstring_ << "push %rbx" << endl << endl;
         break;
-      case Instruction::kSubtract:
+      case Operator::kSubtract:
         asm_sstring_ << "pop %rax" << endl;
         asm_sstring_ << "pop %rbx" << endl;
         asm_sstring_ << "sub %rax, %rbx" << endl;
         asm_sstring_ << "push %rbx" << endl << endl;
         break;
-      case Instruction::kMultiply:
+      case Operator::kMultiply:
         asm_sstring_ << "pop %rax" << endl;
         asm_sstring_ << "pop %rbx" << endl;
         asm_sstring_ << "imul %rax, %rbx" << endl;
         asm_sstring_ << "push %rbx" << endl << endl;
         break;
-      case Instruction::kDivide:
+      case Operator::kDivide:
         asm_sstring_ << "pop %rbx" << endl;
         asm_sstring_ << "pop %rax" << endl;
         asm_sstring_ << "mov $0, %rdx" << endl;
         asm_sstring_ << "idiv %rbx" << endl;
         asm_sstring_ << "push %rax" << endl << endl;
         break;
+      case Operator::kAssign:
+        if (asm_sstring_variables_.str().find(node->GetTarget()->GetName())==std::string::npos) {
+          asm_sstring_variables_ << node->GetTarget()->GetName() << ":" << endl;
+          asm_sstring_variables_ << "  .quad  0" << endl;
+        }
+        else {
+          // do not add same definition of variable if its already there
+        }
+        asm_sstring_ << "pop (" << node->GetTarget()->GetName() << ")" << endl;
+        break;
       default:
         break;
+
       }
+      
     }
+
+
   }  // namespace backend
 }  // namespace cs160
 
-#endif  // BACKEND_ASM_GENERATOR_V1_H_
+#endif  // BACKEND_ASM_GENERATOR_V2_H_

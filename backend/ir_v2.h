@@ -11,6 +11,7 @@
 
 using std::stringstream;
 using std::endl;
+using std::string;
 
 namespace cs160 {
   namespace backend {
@@ -23,6 +24,7 @@ namespace cs160 {
         virtual int GetValue() = 0;
         virtual std::string GetName() = 0;
         virtual void PushToAsmSS(stringstream& ss) = 0; // function for asm generator
+        virtual void PopToAsmSS(stringstream& ss, string register_) = 0;
       private:
       };
 
@@ -35,6 +37,9 @@ namespace cs160 {
         void PushToAsmSS(stringstream& ss) {  // function for asm generator
                                               // There is nothing to push because it's a register
         }
+        void PopToAsmSS(stringstream& ss, string register_) {  // function for asm generator
+          ss << "pop " << register_ << endl;              // There is nothing to push because it's a register
+        }
       private:
         int value_;
       };
@@ -45,7 +50,10 @@ namespace cs160 {
         int GetValue() { return 0; } //dummy return
         std::string GetName() { return name_; }
         void PushToAsmSS(stringstream& ss) {  // function for asm generator
-                                              // There is nothing to push because it's a variable
+          ss << "push (" << name_<<")" << endl;// There is nothing to push because it's a variable
+        }
+        void PopToAsmSS(stringstream& ss, string register_) {  // function for asm generator
+          ss << "pop (" << GetName() << ")"<<endl;                                                    // There is nothing to push because it's a register
         }
       private:
         std::string name_;
@@ -59,6 +67,9 @@ namespace cs160 {
         std::string GetName() { return std::to_string(value_); }
         void PushToAsmSS(stringstream& ss) { // function for asm generator
           ss << "push $" << value_ << endl;
+        }
+        void PopToAsmSS(stringstream& ss, string register_) {  // function for asm generator
+          ss << "pop " << register_ << endl;                                                     // There is nothing to push because it's a register
         }
       private:
         int value_;
@@ -109,14 +120,14 @@ namespace cs160 {
         void Print() {
           if (target_ != nullptr) std::cout << target_->GetName();
           std::cout << " = ";
-          if (operand1_ != nullptr) std::cout << GetOp1().GetName() << " ";
-          if (operator_ != nullptr && operator_->GetOpcode() != Operator::kAssign) std::cout << GetInstruction().GetSymbol() << " ";
-          if (operand2_ != nullptr) std::cout << GetOp2().GetName() << " ";
+          if (operand1_ != nullptr) std::cout << GetOp1()->GetName() << " ";
+           std::cout << GetInstruction()->GetName() << " ";
+          if (operand2_ != nullptr) std::cout << GetOp2()->GetName() << " ";
         }
-        Operand& GetOp1() { return *operand1_; }
-        Operand& GetOp2() { return *operand2_; }
-        Operand& GetTarget() { return *target_; }
-        Operator& GetInstruction() { return *operator_; }
+        Operand*& GetOp1() { return operand1_; }
+        Operand*& GetOp2() { return operand2_; }
+        Operand*& GetTarget() { return target_; }
+        Operator*& GetInstruction() { return operator_; }
         StatementNode*& GetNext() { return next_; }
       private:
         Operand * target_;
