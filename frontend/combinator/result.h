@@ -27,6 +27,7 @@ class Result {
     }
     return value_;
   }
+  const bool success() { return success_; }
 
  private:
   T value_;
