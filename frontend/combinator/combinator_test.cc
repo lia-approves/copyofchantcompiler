@@ -5,7 +5,7 @@ namespace cs160 {
 namespace frontend {
 
 TEST(CombinatorTest, InstantiateResult) {
-  Result<int> r("sample error");
+  Result<int> r(false, "sample error");
 }
 
 }  // namespace frontend

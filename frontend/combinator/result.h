@@ -4,6 +4,7 @@
 #define FRONTEND_COMBINATOR_RESULT_H
 
 #include <string>
+#include <stdexcept>
 
 namespace cs160 {
 namespace frontend {
@@ -11,7 +12,14 @@ namespace frontend {
 template<typename T>
 class Result {
  public:
-  explicit Result(std::string errorMessage) : error_(errorMessage) {}
+  explicit Result(bool success, std::string errorMessage)
+  : error_(errorMessage), success_(false) {
+    if (success) {
+      throw std::logic_error("fail constructor should not be used for success");
+    }
+  }
+  explicit Result(T value)
+    : value_(value), error_("no error"), success_(true) {}
 
  private:
   T value_;
