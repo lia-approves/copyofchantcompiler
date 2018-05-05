@@ -26,7 +26,7 @@ using cs160::backend::IrGenVisitor;
 
 using cs160::make_unique;
 
-TEST(IRtoASM, Add) {
+TEST(IRv1, Add) {
   StatementNode *expr = new StatementNode(
     new Register(3),
     new Instruction(Instruction::kAdd),
@@ -35,7 +35,7 @@ TEST(IRtoASM, Add) {
     nullptr);
 
   AsmProgram testasm;
-  testasm.IrToAsm(expr);
+  testasm.IRv1(expr);
 
   std::ofstream test_output_file;
   test_output_file.open("testfile.s");
@@ -53,7 +53,7 @@ TEST(IRtoASM, Add) {
   EXPECT_EQ("5", output);
 }
 
-TEST(IRtoASM, Subtract) {
+TEST(IRv1, Subtract) {
   StatementNode *expr = new StatementNode(
     new Register(3),
     new Instruction(Instruction::kSubtract),
@@ -62,7 +62,7 @@ TEST(IRtoASM, Subtract) {
     nullptr);
 
   AsmProgram testasm;
-  testasm.IrToAsm(expr);
+  testasm.IRv1(expr);
 
   std::ofstream test_output_file;
   test_output_file.open("testfile.s");
@@ -80,7 +80,7 @@ TEST(IRtoASM, Subtract) {
   EXPECT_EQ("1", output);
 }
 
-TEST(IRtoASM, Multiply) {
+TEST(IRv1, Multiply) {
   StatementNode *expr = new StatementNode(
     new Register(3),
     new Instruction(Instruction::kMultiply),
@@ -89,7 +89,7 @@ TEST(IRtoASM, Multiply) {
     nullptr);
 
   AsmProgram testasm;
-  testasm.IrToAsm(expr);
+  testasm.IRv1(expr);
 
   std::ofstream test_output_file;
   test_output_file.open("testfile.s");
@@ -107,7 +107,7 @@ TEST(IRtoASM, Multiply) {
   EXPECT_EQ("6", output);
 }
 
-TEST(IRtoASM, Divide) {
+TEST(IRv1, Divide) {
   StatementNode *expr = new StatementNode(
     new Register(3),
     new Instruction(Instruction::kDivide),
@@ -116,7 +116,7 @@ TEST(IRtoASM, Divide) {
     nullptr);
 
   AsmProgram testasm;
-  testasm.IrToAsm(expr);
+  testasm.IRv1(expr);
 
   std::ofstream test_output_file;
   test_output_file.open("testfile.s");
@@ -134,7 +134,7 @@ TEST(IRtoASM, Divide) {
   EXPECT_EQ("6", output);
 }
 
-TEST(IRtoASM, Complex) {
+TEST(IRv1, Complex) {
   // ((3+2) * 2) - 4 = 6
   StatementNode *expr3 = new StatementNode(
     new Register(3),
@@ -156,7 +156,51 @@ TEST(IRtoASM, Complex) {
     expr2);
 
   AsmProgram testasm;
-  testasm.IrToAsm(expr1);
+  testasm.IRv1(expr1);
+
+  std::ofstream test_output_file;
+  test_output_file.open("testfile.s");
+  test_output_file << testasm.GetASMString();
+  test_output_file.close();
+  system("gcc testfile.s && ./a.out > test_output.txt");
+
+  std::ifstream output_file;
+  output_file.open("test_output.txt");
+  std::string output;
+  output_file >> output;
+  output_file.close();
+  system("rm testfile.s test_output.txt");
+
+  EXPECT_EQ("6", output);
+}
+
+TEST(IRv2, AssignVariables) {
+  // a = 2;
+  // b = 3;
+  // a + b;
+
+
+  StatementNode *expr3 = new StatementNode(
+    new Register(3),
+    new Instruction(Instruction::kSubtract),
+    new Register(3),
+    new Constant(4),
+    nullptr);
+  StatementNode *expr2 = new StatementNode(
+    new Register(3),
+    new Instruction(Instruction::kMultiply),
+    new Constant(2),
+    new Register(2),
+    expr3);
+  StatementNode *expr1 = new StatementNode(
+    new Register(3),
+    new Instruction(Instruction::kAdd),
+    new Constant(3),
+    new Constant(2),
+    expr2);
+
+  AsmProgram testasm;
+  testasm.IRv1(expr1);
 
   std::ofstream test_output_file;
   test_output_file.open("testfile.s");

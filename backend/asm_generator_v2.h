@@ -11,7 +11,7 @@
 
 using std::endl;
 using std::string;
-using cs160::backend::ir::StatementNode;
+using cs160::backend::StatementNode;
 namespace cs160 {
 namespace backend {
 
@@ -81,10 +81,7 @@ void AsmProgram::GenerateASM(StatementNode* node) {
     asm_sstring_ << "push %rax" << endl << endl;
     break;
   case Operator::kAssign:
-    auto check_var = asm_sstring_variables_
-      .str()
-      .find(node->GetTarget()->GetName());
-    if (check_var == std::string::npos) {
+    if (asm_sstring_variables_.str().find(node->GetTarget()->GetName()) == std::string::npos) {
       asm_sstring_variables_ << node->GetTarget()->GetName() << ":" << endl;
       asm_sstring_variables_ << "  .quad  0" << endl;
     } else {

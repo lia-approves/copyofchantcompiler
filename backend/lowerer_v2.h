@@ -20,12 +20,12 @@ using cs160::abstract_syntax::version_2::AstVisitor;
 using cs160::abstract_syntax::version_2::VariableExpr;
 using cs160::abstract_syntax::version_2::Assignment;
 using cs160::abstract_syntax::version_2::Program;
-using cs160::backend::ir::StatementNode;
-using cs160::backend::ir::Constant;
-using cs160::backend::ir::Operator;
-using cs160::backend::ir::Register;
-using cs160::backend::ir::Operand;
-using cs160::backend::ir::Variable;
+using cs160::backend::StatementNode;
+using cs160::backend::Constant;
+using cs160::backend::Operator;
+using cs160::backend::Register;
+using cs160::backend::Operand;
+using cs160::backend::Variable;
 
 
 namespace cs160 {
