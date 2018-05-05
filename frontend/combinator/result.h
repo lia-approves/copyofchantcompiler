@@ -7,6 +7,8 @@ namespace cs160 {
 namespace frontend {
 
 class Result {
+public:
+  explicit Result() {}
 
 };
 
