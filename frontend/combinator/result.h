@@ -29,6 +29,7 @@ class Result {
     return value_;
   }
   const bool success() { return success_; }
+  const std::string error() { return error_; }
   const State state() {
     if (!success_) {
       throw std::logic_error("can't access state of failed result");

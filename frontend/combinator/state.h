@@ -19,7 +19,7 @@ class State {
   }
   bool atEnd() {
     try {
-      input_.at(position_+1);
+      input_.at(position_);
       return false;
     } catch (const std::out_of_range& oor) {
       return true;
