@@ -4,10 +4,10 @@
 namespace cs160 {
 namespace frontend {
 
-  TEST(CombinatorTest, InstantiateResult) {
-    Result r;
-  }
+TEST(CombinatorTest, InstantiateResult) {
+  Result<int> r("sample error");
+}
 
-}
-}
+}  // namespace frontend
+}  // namespace cs160
 
