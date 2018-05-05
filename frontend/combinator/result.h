@@ -19,7 +19,14 @@ class Result {
     }
   }
   explicit Result(T value)
-    : value_(value), error_("no error"), success_(true) {}
+  : value_(value), error_("no error"), success_(true) {}
+
+  const T value() {
+    if (!success_) {
+      throw std::logic_error("can't access value of failed result");
+    }
+    return value_;
+  }
 
  private:
   T value_;
