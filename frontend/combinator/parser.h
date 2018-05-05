@@ -17,7 +17,7 @@ std::function<Result<char>(State)> literal(char c) {
     char next = state.advance();
 
     if (next == c) {
-      return Result<char>(c);
+      return Result<char>(c, state);
     } else {
       std::string err = "no match for character: ";
       err += c;

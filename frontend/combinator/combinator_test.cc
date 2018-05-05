@@ -6,7 +6,8 @@ namespace frontend {
 
 TEST(CombinatorTest, InstantiateResult) {
   Result<int> fail(false, "sample error");
-  Result<int> success(1);
+  State stub("stub");
+  Result<int> success(1, stub);
   ASSERT_EQ(success.value(), 1);
   ASSERT_THROW(fail.value(), std::logic_error);
   ASSERT_THROW(new Result<int>(true, "hi"), std::logic_error);
