@@ -33,8 +33,7 @@ TEST(CombinatorTest, ParseLiteral) {
 
 TEST(CombinatorTest, ParseOr) {
   std::shared_ptr<State> s(new State("hi"));
-  auto parser =
-    Or<std::string>(Literal('a'), Literal('h'));
+  auto parser = Or<std::string>(Literal('a'), Literal('h'));
   auto successResult = parser(s);
   ASSERT_EQ(successResult.success(), true);
   ASSERT_EQ(successResult.value(), "h");
@@ -45,8 +44,14 @@ TEST(CombinatorTest, ParseOr) {
 
 TEST(CombinatorTest, ParseAnd) {
   std::shared_ptr<State> s(new State("hi"));
-  auto parser =
-    And<std::string>(Literal('h'), Literal('i'));
+  auto failParse = And<std::string>(Literal('h'), Literal('a'));
+  auto parse = And<std::string>(Literal('h'), Literal('i'));
+  auto fail = failParse(s);
+  auto result = parse(s);
+  ASSERT_EQ(fail.success(), false);
+  ASSERT_EQ(result.success(), true);
+  ASSERT_EQ(result.value()[0], "h");
+  ASSERT_EQ(result.value()[1], "i");
 }
 
 }  // namespace frontend
