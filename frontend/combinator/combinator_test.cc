@@ -19,8 +19,8 @@ TEST(CombinatorTest, InstantiateState) {
 
 TEST(CombinatorTest, ParseLiteral) {
   State s("hi");
-  auto parseH = literal('h');
-  auto parseI = literal('i');
+  auto parseH = Literal('h');
+  auto parseI = Literal('i');
   auto resultH = parseH(s);
   auto resultI = parseI(s);
   ASSERT_EQ(resultH.success(), true);
@@ -29,6 +29,18 @@ TEST(CombinatorTest, ParseLiteral) {
   auto successfulResultI = parseI(resultH.state());
   ASSERT_EQ(successfulResultI.success(), true);
   ASSERT_EQ(successfulResultI.value(), "i");
+}
+
+TEST(CombinatorTest, ParseOr) {
+  State s("hi");
+  auto parser = Or(Literal('a'), Literal('h'));
+  auto successResult = parser(s);
+  ASSERT_EQ(successResult.success(), true);
+  ASSERT_EQ(successResult.value(), "h");
+
+  State nextState = successResult.state();
+  auto failResult = parser(nextState);
+  ASSERT_EQ(failResult.success(), false);
 }
 
 }  // namespace frontend
