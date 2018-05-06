@@ -3,6 +3,7 @@
 #ifndef FRONTEND_COMBINATOR_PARSER_H_
 #define FRONTEND_COMBINATOR_PARSER_H_
 
+#include <array>
 #include "frontend/combinator/result.h"
 #include "frontend/combinator/state.h"
 #include "utility/memory.h"
@@ -33,8 +34,8 @@ Parser<std::string> Literal(char c) {
   };
 }
 
-template<class A, class B, class R>
-Parser<R> Or(Parser<A> parseA, Parser<B> parseB) {
+template<class T>
+Parser<T> Or(Parser<T> parseA, Parser<T> parseB) {
   // Note: we don't need to rewind the input here.  Since at most ONE parser
   // will successfully run, the input parsers will can rewind for us
   return [parseA, parseB](std::shared_ptr<State> state) {
@@ -46,24 +47,30 @@ Parser<R> Or(Parser<A> parseA, Parser<B> parseB) {
     if (resultB.success()) {
       return resultB;
     }
-    return Result<R>(false, "no match for A or B");
+    return Result<T>(false, "no match for A or B");
   };
 }
 
-// template<class A, class B, class R>
-// Parser<R> And(Parser<A> parseA, Parser<B> parseB) {
-//   return [parseA, parseB](std::shared_ptr<State> state) {
-//     // Save position so we can reset later.
-//     int oldPosition = state->position();
-//     auto resultA = parseA(state);
-//     if (!resultA.success()) {
-//       state->position(oldPosition);
-//       return Result<R>
-//     }
-//     auto
-//
-//   }
-// }
+template<class T>
+Parser<std::array<T, 2>> And(Parser<T> parseA, Parser<T> parseB) {
+  return [parseA, parseB](std::shared_ptr<State> state) {
+    // Save position so we can reset later.
+    int oldPosition = state->position();
+    auto resultA = parseA(state);
+    if (!resultA.success()) {
+      state->setPosition(oldPosition);
+      return Result<std::array<T, 2>>(false, "no match for A and B");
+    }
+    auto resultB = parseB(state);
+    if (!resultB.success()) {
+      state->setPosition(oldPosition);
+      return Result<std::array<T, 2>>(false, "no match for A and B");
+    }
+    std::array<T, 2> res{{ resultA.value(), resultB.value() }};
+    return Result<std::array<T, 2>>(res);
+
+  };
+}
 
 
 }  // namespace frontend

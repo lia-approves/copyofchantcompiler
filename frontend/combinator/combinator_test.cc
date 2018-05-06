@@ -34,13 +34,19 @@ TEST(CombinatorTest, ParseLiteral) {
 TEST(CombinatorTest, ParseOr) {
   std::shared_ptr<State> s(new State("hi"));
   auto parser =
-    Or<std::string, std::string, std::string>(Literal('a'), Literal('h'));
+    Or<std::string>(Literal('a'), Literal('h'));
   auto successResult = parser(s);
   ASSERT_EQ(successResult.success(), true);
   ASSERT_EQ(successResult.value(), "h");
 
   auto failResult = parser(s);
   ASSERT_EQ(failResult.success(), false);
+}
+
+TEST(CombinatorTest, ParseAnd) {
+  std::shared_ptr<State> s(new State("hi"));
+  auto parser =
+    And<std::string>(Literal('h'), Literal('i'));
 }
 
 }  // namespace frontend
