@@ -1,3 +1,4 @@
+// Copyright for cpplint
 // This version of the abstract syntax has sequences of assignments, where for
 // each assignment the left-hand side is a variable and the right-hand side is
 // an arithmetic expression (which may contain variables itself). The grammar

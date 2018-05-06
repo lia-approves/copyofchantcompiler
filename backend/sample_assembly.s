@@ -5,17 +5,35 @@
 # Assemble and Link:
 #     gcc fib.s
 # ---------------------------------------------------------------------------$
-        .global main
+.global main
 
-        .text
+.text
+
 main:
-        mov     $format, %rdi           # set 1st parameter (format)
-        mov     %rax, %rsi              # set 2nd parameter (current_number)
-        xor     %rax, %rax              # because printf is varargs
 
-        call    printf                  # printf(format, current_number)
+push $3
+movq $11, (a)
+push (a)
+pop %rax
+pop %rbx
+call fun
+add %rax, %rbx
+push %rbx
 
-        ret
+pop %rax
+mov     $format, %rdi
+mov     %rax, %rsi
+xor     %rax, %rax
+call    printf
+  ret
+
+fun:
+  add $3, %rbx
+  ret
 
 format:
-        .asciz  "%20ld\n"
+  .asciz  "%0ld\n"
+
+.data
+a:
+  .quad  0
