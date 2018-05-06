@@ -33,7 +33,8 @@ TEST(CombinatorTest, ParseLiteral) {
 
 TEST(CombinatorTest, ParseOr) {
   std::shared_ptr<State> s(new State("hi"));
-  auto parser = Or(Literal('a'), Literal('h'));
+  auto parser =
+    Or<std::string, std::string, std::string>(Literal('a'), Literal('h'));
   auto successResult = parser(s);
   ASSERT_EQ(successResult.success(), true);
   ASSERT_EQ(successResult.value(), "h");

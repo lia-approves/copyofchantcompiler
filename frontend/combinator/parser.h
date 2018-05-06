@@ -12,9 +12,10 @@ namespace frontend {
 
 // Represents a 'parse function': a function which takes a state and returns
 // a result.  Just an alias for convenience; this type does not ever change.
-using Parser = std::function<Result<std::string>(std::shared_ptr<State>)>;
+template<class T>
+using Parser = std::function<Result<T>(std::shared_ptr<State>)>;
 
-Parser Literal(char c) {
+Parser<std::string> Literal(char c) {
   return [c](std::shared_ptr<State> state) {
     if (state->atEnd()) {
       return Result<std::string>(false, "end of file");
@@ -32,7 +33,8 @@ Parser Literal(char c) {
   };
 }
 
-Parser Or(Parser parseA, Parser parseB) {
+template<class A, class B, class R>
+Parser<R> Or(Parser<A> parseA, Parser<B> parseB) {
   // Note: we don't need to rewind the input here.  Since at most ONE parser
   // will successfully run, the input parsers will can rewind for us
   return [parseA, parseB](std::shared_ptr<State> state) {
@@ -47,6 +49,19 @@ Parser Or(Parser parseA, Parser parseB) {
     return Result<std::string>(false, "no match for A or B");
   };
 }
+//
+// Parser And(Parser parseA, Parser parseB) {
+//   return [parseA, parseB](std::shared_ptr<State> state) {
+//     // Save position so we can reset later.
+//     int oldPosition = state->position();
+//     auto resultA = parseA(state);
+//     if (!resultA.success()) {
+//       state->position(oldPosition);
+//     }
+//     auto
+//
+//   }
+// }
 
 
 }  // namespace frontend
