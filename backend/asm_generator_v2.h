@@ -81,7 +81,9 @@ void AsmProgram::GenerateASM(StatementNode* node) {
     asm_sstring_ << "push %rax" << endl << endl;
     break;
   case Operator::kAssign:
-    if (asm_sstring_variables_.str().find(node->GetTarget()->GetName()) == std::string::npos) {
+    if (asm_sstring_variables_
+      .str()
+      .find(node->GetTarget()->GetName()) == std::string::npos) {
       asm_sstring_variables_ << node->GetTarget()->GetName() << ":" << endl;
       asm_sstring_variables_ << "  .quad  0" << endl;
     } else {
