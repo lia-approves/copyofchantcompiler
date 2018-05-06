@@ -54,6 +54,16 @@ TEST(CombinatorTest, ParseAnd) {
   ASSERT_EQ(result.value()[1], "i");
 }
 
+TEST(CombinatorTest, Apply) {
+  std::shared_ptr<State> s(new State("12"));
+  std::function<int(std::string)> toInt = [](std::string in) {
+    return std::stoi(in);
+  };
+  auto parseInt = Apply<std::string, int>(Literal('1'), toInt);
+  auto result = parseInt(s);
+  ASSERT_EQ(result.value(), 1);
+}
+
 }  // namespace frontend
 }  // namespace cs160
 

@@ -16,6 +16,17 @@ namespace frontend {
 template<class T>
 using Parser = std::function<Result<T>(std::shared_ptr<State>)>;
 
+template<class I, class O>
+Parser<O> Apply(Parser<I> parse, std::function<O(I)> f) {
+  return [parse, f](std::shared_ptr<State> state) {
+    auto result = parse(state);
+    if (!result.success()) {
+      return Result<O>(false, "failed to parse");
+    }
+    return Result<O>(f(result.value()));
+  };
+}
+
 Parser<std::string> Literal(char c) {
   return [c](std::shared_ptr<State> state) {
     if (state->atEnd()) {
