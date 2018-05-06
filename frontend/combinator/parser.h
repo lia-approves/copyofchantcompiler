@@ -4,6 +4,7 @@
 #define FRONTEND_COMBINATOR_PARSER_H_
 
 #include <array>
+#include <vector>
 #include "frontend/combinator/result.h"
 #include "frontend/combinator/state.h"
 #include "utility/memory.h"
@@ -89,6 +90,22 @@ Parser<std::array<T, 2>> And(Parser<T> parseA, Parser<T> parseB) {
   };
 }
 
+// Returns a function which runs a parser 0 or more times, returning all results
+template<class T>
+Parser<std::vector<T>> Star(Parser<T> parse) {
+  return [parse](std::shared_ptr<State> state) {
+    std::vector<T> results;
+    auto currentResult = parse(state);  // Parse first element before the loop
+    while (currentResult.success()) {
+      results.push_back(currentResult.value());
+      currentResult = parse(state);
+    }
+    if (results.size() == 0) {
+      return Result<std::vector<T>>(false, "no matches at all");
+    }
+    return Result<std::vector<T>>(results);
+  };
+}
 
 }  // namespace frontend
 }  // namespace cs160

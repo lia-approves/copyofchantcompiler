@@ -64,6 +64,17 @@ TEST(CombinatorTest, Apply) {
   ASSERT_EQ(result.value(), 1);
 }
 
+TEST(CombinatorTest, Star) {
+  std::shared_ptr<State> s(new State("1112"));
+  auto parseOnes = Star<std::string>(Literal('1'));
+  auto result = parseOnes(s);
+  ASSERT_EQ(result.success(), true);
+  ASSERT_EQ(result.value().size(), 3);
+  ASSERT_EQ(result.value()[0], result.value()[1]);
+  ASSERT_EQ(result.value()[2], result.value()[1]);
+  ASSERT_EQ(result.value()[0], "1");
+}
+
 }  // namespace frontend
 }  // namespace cs160
 
