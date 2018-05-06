@@ -46,17 +46,19 @@ Parser<R> Or(Parser<A> parseA, Parser<B> parseB) {
     if (resultB.success()) {
       return resultB;
     }
-    return Result<std::string>(false, "no match for A or B");
+    return Result<R>(false, "no match for A or B");
   };
 }
-//
-// Parser And(Parser parseA, Parser parseB) {
+
+// template<class A, class B, class R>
+// Parser<R> And(Parser<A> parseA, Parser<B> parseB) {
 //   return [parseA, parseB](std::shared_ptr<State> state) {
 //     // Save position so we can reset later.
 //     int oldPosition = state->position();
 //     auto resultA = parseA(state);
 //     if (!resultA.success()) {
 //       state->position(oldPosition);
+//       return Result<R>
 //     }
 //     auto
 //
