@@ -16,6 +16,8 @@ namespace frontend {
 template<class T>
 using Parser = std::function<Result<T>(std::shared_ptr<State>)>;
 
+//  Returns a function which:
+//  runs the parser, then runs f on the result, then returns the final result
 template<class I, class O>
 Parser<O> Apply(Parser<I> parse, std::function<O(I)> f) {
   return [parse, f](std::shared_ptr<State> state) {
@@ -27,6 +29,7 @@ Parser<O> Apply(Parser<I> parse, std::function<O(I)> f) {
   };
 }
 
+// Return a function which parses a single literal
 Parser<std::string> Literal(char c) {
   return [c](std::shared_ptr<State> state) {
     if (state->atEnd()) {
@@ -45,6 +48,8 @@ Parser<std::string> Literal(char c) {
   };
 }
 
+// Return a function which runs 1 parser, then the next.  That function returns
+// the first successful result (or failure)
 template<class T>
 Parser<T> Or(Parser<T> parseA, Parser<T> parseB) {
   // Note: we don't need to rewind the input here.  Since at most ONE parser
@@ -62,6 +67,8 @@ Parser<T> Or(Parser<T> parseA, Parser<T> parseB) {
   };
 }
 
+//  Returns a function which runs 2 parsers, and returns an array of their
+//  results.  If either fails, it returns failure
 template<class T>
 Parser<std::array<T, 2>> And(Parser<T> parseA, Parser<T> parseB) {
   return [parseA, parseB](std::shared_ptr<State> state) {
@@ -79,7 +86,6 @@ Parser<std::array<T, 2>> And(Parser<T> parseA, Parser<T> parseB) {
     }
     std::array<T, 2> res{{ resultA.value(), resultB.value() }};
     return Result<std::array<T, 2>>(res);
-
   };
 }
 
