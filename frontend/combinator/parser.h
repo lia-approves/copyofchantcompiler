@@ -9,22 +9,27 @@
 namespace cs160 {
 namespace frontend {
 
-std::function<Result<char>(State)> literal(char c) {
+std::function<Result<std::string>(State)> literal(char c) {
   return [c](State state) {
     if (state.atEnd()) {
-      return Result<char>(false, "end of file");
+      return Result<std::string>(false, "end of file");
     }
     char next = state.advance();
 
     if (next == c) {
-      return Result<char>(c, state);
+      return Result<std::string>(std::string(1, c), state);
     } else {
       std::string err = "no match for character: ";
       err += c;
-      return Result<char>(false, err);
+      return Result<std::string>(false, err);
     }
   };
 }
+
+// std::function<Result<R>(State)>
+// or(std::function<A(State)> parseA, std::function<A(State)> parseB) {
+//
+// }
 
 
 }  // namespace frontend

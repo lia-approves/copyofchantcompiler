@@ -25,10 +25,10 @@ TEST(CombinatorTest, ParseLiteral) {
   auto resultI = parseI(s);
   ASSERT_EQ(resultH.success(), true);
   ASSERT_EQ(resultI.success(), false);
-  ASSERT_EQ(resultH.value(), 'h');
+  ASSERT_EQ(resultH.value(), "h");
   auto successfulResultI = parseI(resultH.state());
   ASSERT_EQ(successfulResultI.success(), true);
-  ASSERT_EQ(successfulResultI.value(), 'i');
+  ASSERT_EQ(successfulResultI.value(), "i");
 }
 
 }  // namespace frontend
