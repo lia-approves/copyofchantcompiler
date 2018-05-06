@@ -12,12 +12,13 @@ namespace frontend {
 class State {
  public:
   State(std::string input) : input_(input), position_(0) {}
-  const int position() { return position_; }
-  char advance() {
+  void advance() {
     position_++;
-    return input_.at(position_ - 1);
   }
-  bool atEnd() {
+  char readChar() const {
+    return input_.at(position_);
+  }
+  bool atEnd() const {
     try {
       input_.at(position_);
       return false;
@@ -25,6 +26,8 @@ class State {
       return true;
     }
   }
+  int position() const { return position_; }
+  void setPosition(int p) { position_ = p; }
 
  private:
   std::string input_;

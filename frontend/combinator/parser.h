@@ -5,23 +5,25 @@
 
 #include "frontend/combinator/result.h"
 #include "frontend/combinator/state.h"
+#include "utility/memory.h"
 
 namespace cs160 {
 namespace frontend {
 
 // Represents a 'parse function': a function which takes a state and returns
 // a result.  Just an alias for convenience; this type does not ever change.
-using Parser = std::function<Result<std::string>(State)>;
+using Parser = std::function<Result<std::string>(std::shared_ptr<State>)>;
 
 Parser Literal(char c) {
-  return [c](State state) {
-    if (state.atEnd()) {
+  return [c](std::shared_ptr<State> state) {
+    if (state->atEnd()) {
       return Result<std::string>(false, "end of file");
     }
-    char next = state.advance();
+    char next = state->readChar();
 
     if (next == c) {
-      return Result<std::string>(std::string(1, c), state);
+      state->advance();
+      return Result<std::string>(std::string(1, c));
     } else {
       std::string err = "no match for character: ";
       err += c;
@@ -31,7 +33,9 @@ Parser Literal(char c) {
 }
 
 Parser Or(Parser parseA, Parser parseB) {
-  return [parseA, parseB](State state) {
+  // Note: we don't need to rewind the input here.  Since at most ONE parser
+  // will successfully run, the input parsers will can rewind for us
+  return [parseA, parseB](std::shared_ptr<State> state) {
     auto resultA = parseA(state);
     if (resultA.success()) {
       return resultA;

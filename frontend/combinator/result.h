@@ -14,13 +14,13 @@ template<typename T>
 class Result {
  public:
   explicit Result(bool success, std::string errorMessage)
-  : error_(errorMessage), success_(false), state_(State("stub")) {
+  : error_(errorMessage), success_(false) {
     if (success) {
       throw std::logic_error("fail constructor should not be used for success");
     }
   }
-  explicit Result(T value, State state)
-  : value_(value), error_("no error"), success_(true), state_(state) {}
+  explicit Result(T value)
+  : value_(value), error_("no error"), success_(true) {}
 
   const T value() {
     if (!success_) {
@@ -30,18 +30,11 @@ class Result {
   }
   const bool success() { return success_; }
   const std::string error() { return error_; }
-  const State state() {
-    if (!success_) {
-      throw std::logic_error("can't access state of failed result");
-    }
-    return state_;
-  }
 
  private:
   T value_;
   std::string error_;
   bool success_;
-  State state_;
 };
 
 }  // namespace frontend
