@@ -9,7 +9,11 @@
 namespace cs160 {
 namespace frontend {
 
-std::function<Result<std::string>(State)> literal(char c) {
+/* Represents a 'parse function': a function which takes a state and returns
+   a result.  Just an alias for convenience; this type does not ever change   */
+using Parser = std::function<Result<std::string>(State)>;
+
+Parser literal(char c) {
   return [c](State state) {
     if (state.atEnd()) {
       return Result<std::string>(false, "end of file");
@@ -25,7 +29,7 @@ std::function<Result<std::string>(State)> literal(char c) {
     }
   };
 }
-
+//
 // std::function<Result<R>(State)>
 // or(std::function<A(State)> parseA, std::function<A(State)> parseB) {
 //
