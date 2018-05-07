@@ -388,7 +388,7 @@ namespace cs160 {
 
         int statementNum = 1;
         while (itor != nullptr) {
-          itor->Print(statementNum++);
+          itor->Print();
           itor = itor->GetNext();
           std::cout << endl;
         }

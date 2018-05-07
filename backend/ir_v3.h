@@ -179,11 +179,11 @@ namespace cs160 {
             std::cout << " = ";
             if (operand1_ != nullptr) std::cout << GetOp1()->GetName() << " ";
             std::cout << GetInstruction()->GetSymbol() << " ";
-            if (operand2_ !- nullptr) std::cout << GetOp2()->GetName():
+            if (operand2_ != nullptr) std::cout << GetOp2()->GetName();
             break;
 
           case Operator::kAssign:
-            if (target_ != nullptr) std::cout << target->GetName();
+            if (target_ != nullptr) std::cout << target_->GetName();
             std::cout << " = ";
             if (operand2_ != nullptr) std::cout << GetOp2()->GetName();
             break;
@@ -191,27 +191,27 @@ namespace cs160 {
           case Operator::kLessThan:
           case Operator::kLessThanEqualTo:
           case Operator::kGreaterThan:
-          case Operator::kGreaterThanEquatlTo:
+          case Operator::kGreaterThanEqualTo:
           case Operator::kEqualTo:
           case Operator::kLogicalAnd:
           case Operator::kLogicalOr:
             std::cout << "if (";
             if (operand1_ != nullptr) std::cout << GetOp1()->GetName() << " ";
             std::cout << GetInstruction()->GetSymbol() << " ";
-            if (operand2_ != nullptr) std::cout << GetOp2()->GetName() << " ";
+            if (operand2_ != nullptr) std::cout << GetOp2()->GetName() << "";
             std::cout << ") goto S";
-            if (target_ != nullptr) std::cout << target_->GetName() << ":";
+            if (target_ != nullptr) std::cout << target_->GetValue() << ":";
             break;
 
           case Operator::kLogicalNot:
             std::cout << "if (!";
             if (operand2_ != nullptr) std::cout << GetOp2()->GetName();
             std::cout << ") goto S";
-            if (target_ != nullptr) std::cout << target_->GetName() << ":";
+            if (target_ != nullptr) std::cout << target_->GetValue() << ":";
             break;
 
           case Operator::kGoto:
-            if (target_ != nullptr) std::cout << "goto S" << target_->GetName() << ":";
+            if (target_ != nullptr) std::cout << "goto S" << target_->GetValue() << ":";
             break;
           }
         }
