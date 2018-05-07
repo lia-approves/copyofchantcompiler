@@ -249,9 +249,51 @@ namespace cs160 {
           nullptr);
         AddToEnd(newtail);
       }
-      void VisitLogicalAndExpr(const LogicalAndExpr& exp) {}
-      void VisitLogicalOrExpr(const LogicalOrExpr& exp) {}
-      void VisitLogicalNotExpr(const LogicalNotExpr& exp) {}
+      void VisitLogicalAndExpr(const LogicalAndExpr& exp) {
+
+        exp.lhs().Visit(this);
+        StatementNode *newtail = new StatementNode(
+          new Label(labelNum_++),
+          new Label(labelNum_ + 2),
+          new Operator(Operator::kGoto),
+          nullptr,
+          nullptr,
+          nullptr);
+        AddToEnd(newtail);
+        exp.rhs().Visit(this);
+        newtail = new StatementNode(
+          new Label(labelNum_),
+          new Label(labelNum_ + 2),
+          new Operator(Operator::kGoto),
+          nullptr,
+          nullptr,
+          nullptr);
+
+
+      }
+      void VisitLogicalOrExpr(const LogicalOrExpr& exp) {
+        exp.lhs().Visit(this);
+        StatementNode *newtail = new StatementNode(
+          new Label(labelNum_++),
+          new Label(labelNum_ + 2),
+          new Operator(Operator::kGoto),
+          nullptr,
+          nullptr,
+          nullptr);
+        AddToEnd(newtail);
+        exp.rhs().Visit(this);
+        newtail = new StatementNode(
+          new Label(labelNum_),
+          new Label(labelNum_ + 2),
+          new Operator(Operator::kGoto),
+          nullptr,
+          nullptr,
+          nullptr);
+
+      }
+      void VisitLogicalNotExpr(const LogicalNotExpr& exp) {
+        // ????????? todo
+      }
       void VisitConditional(const Conditional& conditional) {
         IrGenVisitor trueVisitor;
         IrGenVisitor falseVisitor;
@@ -279,7 +321,7 @@ namespace cs160 {
         }
         newtail = new StatementNode(
           new Label(labelNum_++),
-          new Label(falseStatements + labelNum_ + 1),
+          new Label(falseStatements + labelNum_ ),
           new Operator(Operator::kGoto),
           nullptr,
           nullptr,
