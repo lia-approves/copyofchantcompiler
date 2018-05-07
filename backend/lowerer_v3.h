@@ -32,13 +32,13 @@ using cs160::abstract_syntax::version_3::LogicalOrExpr;
 using cs160::abstract_syntax::version_3::LogicalNotExpr;
 using cs160::abstract_syntax::version_3::Conditional;
 using cs160::abstract_syntax::version_3::Loop;
-using cs160::backend::ir::StatementNode;
-using cs160::backend::ir::Constant;
-using cs160::backend::ir::Label;
-using cs160::backend::ir::Operator;
-using cs160::backend::ir::Register;
-using cs160::backend::ir::Operand;
-using cs160::backend::ir::Variable;
+using cs160::backend::StatementNode;
+using cs160::backend::Constant;
+using cs160::backend::Label;
+using cs160::backend::Operator;
+using cs160::backend::Register;
+using cs160::backend::Operand;
+using cs160::backend::Variable;
 using std::cout;
 
 
@@ -152,7 +152,7 @@ namespace cs160 {
           statement->Visit(this);
         }
         program.arithmetic_exp().Visit(this);
-      
+
       }
       void VisitLessThanExpr(const LessThanExpr& exp) {
         exp.lhs().Visit(this);
@@ -330,7 +330,7 @@ namespace cs160 {
         for (auto& statement : conditional.false_branch()) {
           statement->Visit(this);
         }
-       
+
       }
       void VisitLoop(const Loop& loop) {
         IrGenVisitor blockvisitor;

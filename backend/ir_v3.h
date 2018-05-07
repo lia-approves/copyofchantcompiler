@@ -15,9 +15,8 @@ using std::string;
 
 namespace cs160 {
   namespace backend {
-    namespace ir {
 
-      class Operand {                                          //abstract class for operand can be constant(integer), 
+      class Operand {                                          //abstract class for operand can be constant(integer),
       public:                                                  //variable or register
         Operand() {}
         virtual ~Operand() {}
@@ -104,7 +103,7 @@ namespace cs160 {
       public:
         enum Opcode { kAdd, kSubtract, kMultiply, kDivide, kAssign, kLessThan, kLessThanEqualTo, kGreaterThan, kGreaterThanEqualTo, kEqualTo, kLogicalAnd, kLogicalOr, kLogicalNot, kGoto
         };
-   
+
         explicit Operator(Opcode o) { op_ = (o); }
         ~Operator() {}
         Opcode GetOpcode() const { return op_; }
@@ -143,7 +142,7 @@ namespace cs160 {
       private:
         Opcode op_;
       };
-     
+
 
       class StatementNode{                                   // this is our quadruple form of the ir
       public:                                                 // the last field is the next statement pointer
@@ -154,7 +153,7 @@ namespace cs160 {
           Operand* operand1,
           Operand* operand2,
           StatementNode* next)
-          : 
+          :
           label_(labelnum),
           target_(target),
           operator_(instruction),
@@ -209,7 +208,6 @@ namespace cs160 {
 
 
 
-    } //namespace ir
 
   }  // namespace backend
 }  // namespace cs160

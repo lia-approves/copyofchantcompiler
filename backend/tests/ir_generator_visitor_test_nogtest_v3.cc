@@ -21,6 +21,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+
+// taylor:tests$ g++ -I ../../ -std=c++11 ir_generator_visitor_test_nogtest_v3.cc
 #include <sstream>
 #include <string>
 //#include "gtest/gtest.h"
@@ -104,11 +106,11 @@ int main() {
   // bob = 2
   // secretNum = 69
   // scouterReading = 9001
-  // hamburgers = 12 / 3 
+  // hamburgers = 12 / 3
   // jim = ((12 / 3) - 4) + (3 * secretNum)
   // (((20 / bob) - 30) + (scouterReading + jim)) * 2
 
-  
+
 
 
   /*std::vector<std::unique_ptr<const Assignment>> assignments;
@@ -163,19 +165,19 @@ int main() {
         make_unique<const IntegerExpr>(0))),
     std::move(body))));*/
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
     ////////////////////
-    
-    
+
+
 
 Statement::Block statements;
 statements.push_back(std::move(
@@ -222,8 +224,8 @@ auto ae = make_unique<const AddExpr>(make_unique<const VariableExpr>("i"), make_
     std::move(body))));
 
   auto ast = make_unique<const Program>(std::move(statements), std::move(ae));
-  
-  
+
+
 
 
 
@@ -270,8 +272,8 @@ statements.push_back(std::move(make_unique<const Conditional>(
 auto ae = make_unique<const AddExpr>(make_unique<const VariableExpr>("i"), make_unique<const IntegerExpr>(2));
 
 auto ast = make_unique<const Program>(std::move(statements), std::move(ae));*/
-  
-  
+
+
   IrGenVisitor irGen;
   ast->Visit(&irGen);
   irGen.PrintIR();

@@ -11,8 +11,8 @@
 
 using std::endl;
 using std::string;
-using cs160::backend::ir::StatementNode;
-using cs160::backend::ir::Operator;
+using cs160::backend::StatementNode;
+using cs160::backend::Operator;
 
 namespace cs160 {
   namespace backend {
@@ -27,7 +27,7 @@ namespace cs160 {
       void GenerateASM(StatementNode* node);
       stringstream asm_sstring_;
       stringstream asm_sstring_variables_;
-     
+
     };
 
     void AsmProgram::IrToAsm(StatementNode* head) {
@@ -106,6 +106,14 @@ namespace cs160 {
         }
         asm_sstring_ << "pop (" << node->GetTarget()->GetName() << ")" << endl;
         break;
+      case Operator::kLessThan:
+        asm_sstring_ << "pop %rax" << endl;
+        asm_sstring_ << "pop %rbx" << endl;
+        asm_sstring_ << "cmp %rax, %rbx" << endl;
+        asm_sstring_ << "jl " << node->GetTarget()->GetName() << endl;
+        break;
+      case Operator::kGoto:
+        asm_sstring_ << "jmp " << node->GetTarget()->GetName() << endl;
       default:
         break;
 
