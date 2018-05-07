@@ -212,3 +212,51 @@ auto a_var = new Variable("a");
 
   EXPECT_EQ("6", output);
 }
+
+
+TEST(IRv2, Assign2Variables) {
+  // a = 2;
+  // b = 3;
+  // a + b
+
+auto a_var = new Variable("a");
+auto b_var = new Variable("b");
+
+  StatementNode *expr3 = new StatementNode(
+    new Register(3),
+    new Operator(Operator::kAdd),
+    a_var,
+    b_var,
+    nullptr);
+  StatementNode *expr2 = new StatementNode(
+    b_var,
+    new Operator(Operator::kAssign),
+    new Constant(2),
+    nullptr,
+    expr3);
+  StatementNode *expr1 = new StatementNode(
+    a_var,
+    new Operator(Operator::kAssign),
+    new Constant(3),
+    nullptr,
+    expr2);
+
+  AsmProgram testasm;
+  testasm.IrToAsm(expr1);
+
+  std::ofstream test_output_file;
+  test_output_file.open("testfile.s");
+  test_output_file << testasm.GetASMString();
+  test_output_file.close();
+  system("gcc testfile.s && ./a.out > test_output.txt");
+
+  std::ifstream output_file;
+  output_file.open("test_output.txt");
+  std::string output;
+  output_file >> output;
+  // std::cout << output;
+  output_file.close();
+  system("rm testfile.s test_output.txt");
+
+  EXPECT_EQ("5", output);
+}
