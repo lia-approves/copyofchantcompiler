@@ -28,6 +28,13 @@ There is one good approach I can think of.
 
 Include an AstNode field in the Result class (but make it a template so users supply their own AstNode class).  Make all parse function generators take an extra parameter: a function that converts the parse results into an AST node.  This approach is flexible and easy to reason about.  However, it gets awkward with parsers that don't generate AST nodes (for example, ones that consume excess whitespace).
 
+### Have a Capture function which takes a parser, and a AstNode creator
+
+It runs the parser, creates an AstNode from its output (which may also include AstNodes), and returns a result.  This works (implemented and tested in branch classy\_combinator).  However, it has several problems:
+* Hard to read, since you have Capture functions wrapping everywhere
+* Templates everywhere, making the code hard to read and write
+* Makes the code very brittle.  Since your AstNode creator functions need to know how their input looks, they also need to know the composition of the provided parser function.
+
 ## Questions
 
 * How should we convert the expressions to an AST?
