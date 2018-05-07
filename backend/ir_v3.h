@@ -168,29 +168,46 @@ namespace cs160 {
           delete operand2_;
           delete label_;
         }
-        void Print(int ) {
+        void Print() {
           std::cout << "# S" << label_->GetValue() << ":  ";
           switch (GetInstruction()->GetOpcode()){
           case Operator::kAdd:
+          case Operator::kSubtract:
+          case Operator::kMultiply:
+          case Operator::kDivide:
+            if (target_ != nullptr) std::cout << target_->GetName();
+            std::cout << " = ";
+            if (operand1_ != nullptr) std::cout << GetOp1()->GetName() << " ";
+            std::cout << GetInstruction()->GetSymbol() << " ";
+            if (operand2_ !- nullptr) std::cout << GetOp2()->GetName():
+            break;
 
-          default:
+          case Operator::kAssign:
+            if (target_ != nullptr) std::cout << target->GetName();
+            std::cout << " = ";
+            if (operand2_ != nullptr) std::cout << GetOp2()->GetName();
+            break;
+
+          case Operator::kLessThan:
+          case Operator::kLessThanEqualTo:
+          case Operator::kGreaterThan:
+          case Operator::kGreaterThanEquatlTo:
+          case Operator::kEqualTo:
+          case Operator::kLogicalAnd:
+          case Operator::kLogicalOr:
+          case Operator::kLogicalNot:
+            std::cout << "if (";
+            if (operand1_ != nullptr) std::cout << GetOp1()->GetName() << " ";
+            std::cout << GetInstruction()->GetSymbol() << " ";
+            if (operand2_ != nullptr) std::cout << GetOp2()->GetName() << " ";
+            std::cout << ") goto S";
+            if (target_ != nullptr) std::cout << target_->GetName() << ":";
+            break;
+
+          case Operator::kGoto:
+            if (target_ != nullptr) std::cout << "goto S" << target_->GetName() << ":";
             break;
           }
-
-          if (GetInstruction()->GetOpcode() == Operator::kLessThan) {
-            std::cout << "if (" << GetOp1()->GetName() << "<" << GetOp2()->GetName() << ") goto S"
-              << GetTarget()->GetValue() << ":";
-            return;
-          }
-          if (GetInstruction()->GetOpcode() == Operator::kGoto) {
-            std::cout << "goto S" << GetTarget()->GetValue() << ":";
-            return;
-          }
-          if (target_ != nullptr) std::cout << target_->GetName();
-          std::cout << " = ";
-          if (operand1_ != nullptr) std::cout << GetOp1()->GetName() << " ";
-          std::cout << GetInstruction()->GetName() << " ";
-          if (operand2_ != nullptr) std::cout << GetOp2()->GetName() << " ";
         }
         Operand*& GetLabel() { return label_; }
         Operand*& GetOp1() { return operand1_; }
