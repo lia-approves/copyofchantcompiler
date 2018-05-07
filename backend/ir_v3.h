@@ -195,11 +195,17 @@ namespace cs160 {
           case Operator::kEqualTo:
           case Operator::kLogicalAnd:
           case Operator::kLogicalOr:
-          case Operator::kLogicalNot:
             std::cout << "if (";
             if (operand1_ != nullptr) std::cout << GetOp1()->GetName() << " ";
             std::cout << GetInstruction()->GetSymbol() << " ";
             if (operand2_ != nullptr) std::cout << GetOp2()->GetName() << " ";
+            std::cout << ") goto S";
+            if (target_ != nullptr) std::cout << target_->GetName() << ":";
+            break;
+
+          case Operator::kLogicalNot:
+            std::cout << "if (!";
+            if (operand2_ != nullptr) std::cout << GetOp2()->GetName();
             std::cout << ") goto S";
             if (target_ != nullptr) std::cout << target_->GetName() << ":";
             break;
