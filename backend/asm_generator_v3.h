@@ -1,18 +1,19 @@
 // Copyright msg for cpplint
-#ifndef BACKEND_ASM_GENERATOR_V2_H_
-#define BACKEND_ASM_GENERATOR_V2_H_
+#ifndef BACKEND_ASM_GENERATOR_V3_H_
+#define BACKEND_ASM_GENERATOR_V3_H_
 
 #include <iostream>
 #include <string>
 #include <vector>
 #include <sstream>
 #include "utility/memory.h"
-#include "backend/ir_v2.h"
+#include "backend/ir_v3.h"
 
 using std::endl;
 using std::string;
 using cs160::backend::ir::StatementNode;
 using cs160::backend::ir::Operator;
+
 namespace cs160 {
   namespace backend {
 
@@ -26,16 +27,27 @@ namespace cs160 {
       void GenerateASM(StatementNode* node);
       stringstream asm_sstring_;
       stringstream asm_sstring_variables_;
+     
     };
 
     void AsmProgram::IrToAsm(StatementNode* head) {
+      asm_sstring_ << "#### Start of Assembly ####\n\n";
+
       asm_sstring_ << ".global main" << endl;
       asm_sstring_ << ".text" << endl;
       asm_sstring_ << "main:" << endl << endl;
+      asm_sstring_ << "#### Start of Statements ####\n";
+
       while (head != nullptr) {
+
+        asm_sstring_ << endl << "statementnumber_" << head->GetLabel()->GetValue() << ":" << endl << endl;
+
         GenerateASM(head);
+
         head = head->GetNext();
       }
+
+      asm_sstring_ << "#### End of Statements ####\n\n";
       asm_sstring_ << "pop %rax" << endl;
       asm_sstring_ << "mov     $format, %rdi" << endl;
       asm_sstring_ << "mov     %rax, %rsi" << endl;
@@ -45,10 +57,13 @@ namespace cs160 {
       asm_sstring_ << "  ret" << endl;
 
       asm_sstring_ << "format:" << endl;
-      asm_sstring_ << "  .asciz  \"%0ld\\n\"" << endl;
+      asm_sstring_ << "  .asciz  \"%d\\n\"" << endl;
       asm_sstring_ << endl;
       asm_sstring_ << ".data" << endl;
       asm_sstring_ << asm_sstring_variables_.str();
+
+      asm_sstring_ << "\n#### End of Assembly ####\n";
+
     }
 
     void AsmProgram::GenerateASM(StatementNode* node) {
@@ -102,4 +117,4 @@ namespace cs160 {
   }  // namespace backend
 }  // namespace cs160
 
-#endif  // BACKEND_ASM_GENERATOR_V2_H_
+#endif  // BACKEND_ASM_GENERATOR_V3_H_
