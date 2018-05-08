@@ -1,5 +1,6 @@
-#ifndef FRONT_END_PARSER_EXPRESSION_H_
-#define FRONT_END_PARSER_EXPRESSION_H_
+// copyright msg for cpplint
+#ifndef FRONTEND_PARSER_EXPRESSION_H_
+#define FRONTEND_PARSER_EXPRESSION_H_
 
 #include "frontend/scanner/token/Token.h"
 
@@ -7,46 +8,48 @@ namespace cs160 {
 namespace frontend {
 
 class Expression {
-
 };
 class BinaryExpr : public Expression {
-  public:
-    explicit BinaryExpr(Expression left, cs160::frontend::Token op, Expression right)
-      : left_(left), right_(right), op_(op)
-    {}
+ public:
+  explicit BinaryExpr(
+    Expression left,
+    cs160::frontend::Token op,
+    Expression right)
+    : left_(left), right_(right), op_(op)
+  {}
 
-  private:
-    const Expression left_;
-    const Expression right_;
-    const cs160::frontend::Token op_;
+ private:
+  const Expression left_;
+  const Expression right_;
+  const cs160::frontend::Token op_;
 };
 
 class UnaryExpr : public Expression {
-  public:
-    explicit UnaryExpr(cs160::frontend::Token op, Expression right)
-      : op_(op), right_(right) {}
+ public:
+  explicit UnaryExpr(cs160::frontend::Token op, Expression right)
+    : op_(op), right_(right) {}
 
-  private:
-    const cs160::frontend::Token op_;
-    const Expression right_;
+ private:
+  const cs160::frontend::Token op_;
+  const Expression right_;
 };
 
 class Group : public Expression {
-  public:
-    explicit Group(Expression enclosed) : enclosed_(enclosed) {}
+ public:
+  explicit Group(Expression enclosed) : enclosed_(enclosed) {}
 
-  private:
-    const Expression enclosed_;
+ private:
+  const Expression enclosed_;
 };
 
 class Literal : public Expression {
-  public:
-    explicit Literal(cs160::frontend::Token lit) : lit_(lit) {}
+ public:
+  explicit Literal(cs160::frontend::Token lit) : lit_(lit) {}
 
-  private:
-    const cs160::frontend::Token lit_;
+ private:
+  const cs160::frontend::Token lit_;
 };
 }  // namespace frontend
 }  // namespace cs160
 
-#endif
+#endif  // FRONTEND_PARSER_EXPRESSION_H_
