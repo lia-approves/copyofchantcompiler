@@ -238,19 +238,15 @@ namespace cs160 {
         IrGenVisitor countVisitor;
         exp.rhs().Visit(&countVisitor);
         int numRhs = countVisitor.NumberOfStatements();
-
         exp.lhs().Visit(this); 
-
         StatementNode *newtail = new StatementNode(
           new Label(labelNum_++),
           new Label(labelNum_ + numRhs),
-          //new Label(labelNum_ + numGuard_+numTrue_),
           new Operator(Operator::kGoto),
           nullptr,
           nullptr,
           nullptr);
         AddToEnd(newtail);
-        //numGuard_  -= 2;
         exp.rhs().Visit(this);
       }
       void VisitLogicalOrExpr(const LogicalOrExpr& exp) {
@@ -258,7 +254,6 @@ namespace cs160 {
         IrGenVisitor countVisitor;
         exp.rhs().Visit(&countVisitor);
         int numRhs = countVisitor.NumberOfStatements();
-
         exp.lhs().Visit(this);
         tail_->GetTarget()->SetValue(tail_->GetTarget()->GetValue() + numRhs);
         exp.rhs().Visit(this);
@@ -278,8 +273,6 @@ namespace cs160 {
           nullptr,
           nullptr);
         AddToEnd(newtail);
-
-        
       }
       void VisitLogicalNotExpr(const LogicalNotExpr& exp) {
         exp.operand().Visit(this);
@@ -295,7 +288,6 @@ namespace cs160 {
       void VisitConditional(const Conditional& conditional) {
         IrGenVisitor trueVisitor;
         IrGenVisitor falseVisitor;
-        IrGenVisitor guardVisitor;
         int startLabelNum = labelNum_;
         for (auto& statement : conditional.true_branch()) {
           statement->Visit(&trueVisitor);
@@ -303,13 +295,8 @@ namespace cs160 {
         for (auto& statement : conditional.false_branch()) {
           statement->Visit(&falseVisitor);
         }
-        conditional.guard().Visit(&guardVisitor);
-        int trueStatements =+ trueVisitor.NumberOfStatements();
-        int falseStatements =+ falseVisitor.NumberOfStatements();
-        int guardStatements =+ guardVisitor.NumberOfStatements();
-        numGuard_ = guardStatements;
-        numTrue_ = trueStatements;
-        numFalse_ = falseStatements;
+        int trueStatements = trueVisitor.NumberOfStatements();
+        int falseStatements = falseVisitor.NumberOfStatements();
         conditional.guard().Visit(this);
         StatementNode *newtail = new StatementNode(
           new Label(labelNum_++),
@@ -333,21 +320,17 @@ namespace cs160 {
         for (auto& statement : conditional.false_branch()) {
           statement->Visit(this);
         }
-
       }
       void VisitLoop(const Loop& loop) {
         IrGenVisitor blockvisitor;
         IrGenVisitor guardVisitor;
         loop.guard().Visit(&guardVisitor);
         int guardStatements = guardVisitor.NumberOfStatements();
-
         int startLabelNum = labelNum_;
-
         for (auto& statement : loop.body()) {
           statement->Visit((&blockvisitor));
         }
         int bodyStatements = blockvisitor.NumberOfStatements();
-
         loop.guard().Visit(this);
         StatementNode *newtail = new StatementNode(
           new Label(labelNum_++),
@@ -357,7 +340,6 @@ namespace cs160 {
           nullptr,
           nullptr);
         AddToEnd(newtail);
-
         for (auto& statement : loop.body()) {
           statement->Visit(this);
         }
@@ -369,9 +351,6 @@ namespace cs160 {
           nullptr,
           nullptr);
         AddToEnd(newtail);
-
-
-
       }
 
       StatementNode* GetIR() { return head_; }
@@ -385,14 +364,11 @@ namespace cs160 {
         tail_->GetNext() = newtail;
         tail_ = tail_->GetNext();
         while (tail_->GetNext() != nullptr) tail_ = tail_->GetNext();
-
       }
 
       void PrintIR() {
         StatementNode* itor = head_;
-
         std::cout << "#### Sart of IR ####\n\n";
-
         int statementNum = 1;
         while (itor != nullptr) {
           itor->Print();
@@ -404,7 +380,6 @@ namespace cs160 {
 
       int NumberOfStatements() {
         StatementNode* itor = head_;
-
         int statementCount = 0;
         while (itor != nullptr) {
           itor = itor->GetNext();
@@ -419,28 +394,7 @@ namespace cs160 {
       int labelNum_ = 1;
       std::vector<Operand*> stack_;
       int register_number_ = 1;
-      int numGuard_ = 0;
-      int numTrue_ = 0;
-      int numFalse_ = 0;
-    };
 
-    class GuardVisitor : IrGenVisitor {
-    public:
-      GuardVisitor() { IrGenVisitor(); }
-      int NumberOfStatements();
-      void VisitLogicalAndExpr(const LogicalAndExpr& exp) {
-        IrGenVisitor::VisitLogicalAndExpr(exp);
-        numberOfStatements_++;
-      }
-      void VisitLogicalOrExpr(const LogicalOrExpr& exp) {
-        IrGenVisitor::VisitLogicalOrExpr(exp);
-        numberOfStatements_++;
-      }
-      void VisitLogicalNotExpr(const LogicalAndExpr& exp) {
-        // to 
-      }
-    private:
-      int numberOfStatements_ = 0;
     };
   }  // namespace backend
 }  // namespace cs160

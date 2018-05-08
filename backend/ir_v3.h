@@ -36,15 +36,10 @@ namespace cs160 {
         int GetValue() { return value_; }
         void SetValue(int value) { value_ = value; }
         std::string GetName() { return "statementnumber_" + std::to_string(value_); }
-        void PushToAsmSS(stringstream& ss) {                   // function for asm generator
-          // todo
-        }
-        void PopToAsmSS(stringstream& ss, string register_) {  // function for asm generator
-          // todo
-        }
+        void PushToAsmSS(stringstream& ss) { /* todo*/ }
+        void PopToAsmSS(stringstream& ss, string register_) {  /*todo*/ }
       private:
         int value_;
-
       };
 
       class Register : public Operand {                        // t1, t2 ,etc
@@ -53,17 +48,13 @@ namespace cs160 {
         ~Register() {}
         int GetValue() { return value_; }
         void SetValue(int value) { value_ = value; }
-
         std::string GetName() { return "t" + std::to_string(value_); }
-        void PushToAsmSS(stringstream& ss) {                   // function for asm generator
-                                                               // There is nothing to push because it's a register
-        }
-        void PopToAsmSS(stringstream& ss, string register_) {  // function for asm generator
-          ss << "pop " << register_ << endl;                   // There is nothing to push because it's a register
-        }
+        void PushToAsmSS(stringstream& ss) { /* There is nothing to push because it's a register*/ }
+        void PopToAsmSS(stringstream& ss, string register_) { ss << "pop " << register_ << endl; }
       private:
         int value_;
       };
+
       class Variable : public Operand {                        // bob, a, b, height, etc
       public:
         explicit Variable(std::string s) { name_ = (s); }
@@ -71,13 +62,8 @@ namespace cs160 {
         int GetValue() { return 0; }                           //dummy return
         std::string GetName() { return name_; }
         void SetValue(int value) { /*value_ = value;*/ }
-
-        void PushToAsmSS(stringstream& ss) {                   // function for asm generator
-          ss << "push (" << name_ << ")" << endl;              // There is nothing to push because it's a variable
-        }
-        void PopToAsmSS(stringstream& ss, string register_) {  // function for asm generator
-          ss << "pop (" << GetName() << ")" << endl;           // There is nothing to push because it's a register
-        }
+        void PushToAsmSS(stringstream& ss) { ss << "push (" << name_ << ")" << endl; }
+        void PopToAsmSS(stringstream& ss, string register_) { ss << "pop (" << GetName() << ")" << endl; }
       private:
         std::string name_;
       };
@@ -88,11 +74,8 @@ namespace cs160 {
         ~Constant() {}
         int GetValue() { return value_; }
         void SetValue(int value) { value_ = value; }
-
         std::string GetName() { return std::to_string(value_); }
-        void PushToAsmSS(stringstream& ss) {                  // function for asm generator
-          ss << "push $" << value_ << endl;
-        }
+        void PushToAsmSS(stringstream& ss) { ss << "push $" << value_ << endl; }
         void PopToAsmSS(stringstream& ss, string register_) { // function for asm generator
           ss << "pop " << register_ << endl;                  // There is nothing to push because it's a register
         }
@@ -102,9 +85,10 @@ namespace cs160 {
 
       class Operator {                                        // assign, add multiply, etc
       public:
-        enum Opcode { kAdd, kSubtract, kMultiply, kDivide, kAssign, kLessThan, kLessThanEqualTo, kGreaterThan, kGreaterThanEqualTo, kEqualTo, kLogicalAnd, kLogicalOr, kLogicalNot, kGoto
+        enum Opcode {
+          kAdd, kSubtract, kMultiply, kDivide, kAssign, kLessThan, kLessThanEqualTo,
+          kGreaterThan, kGreaterThanEqualTo, kEqualTo, kLogicalAnd, kLogicalOr, kLogicalNot, kGoto
         };
-   
         explicit Operator(Opcode o) { op_ = (o); }
         ~Operator() {}
         Opcode GetOpcode() const { return op_; }
@@ -143,19 +127,17 @@ namespace cs160 {
       private:
         Opcode op_;
       };
-     
-
-      class StatementNode{                                   // this is our quadruple form of the ir
+      class StatementNode {                                   // this is our quadruple form of the ir
       public:                                                 // the last field is the next statement pointer
         StatementNode(
-          Operand* labelnum,
+          Operand* label,
           Operand* target,
           Operator* instruction,
           Operand* operand1,
           Operand* operand2,
           StatementNode* next)
-          : 
-          label_(labelnum),
+          :
+          label_(label),
           target_(target),
           operator_(instruction),
           operand1_(operand1),
@@ -170,7 +152,7 @@ namespace cs160 {
         }
         void Print() {
           std::cout << "# S" << label_->GetValue() << ":  ";
-          switch (GetInstruction()->GetOpcode()){
+          switch (GetInstruction()->GetOpcode()) {
           case Operator::kAdd:
           case Operator::kSubtract:
           case Operator::kMultiply:
@@ -203,15 +185,14 @@ namespace cs160 {
             if (target_ != nullptr) std::cout << target_->GetValue() << ":";
             break;
 
-          case Operator::kLogicalNot:
-            std::cout << "if (!";
-            if (operand2_ != nullptr) std::cout << GetOp2()->GetName();
-            std::cout << ") goto S";
-            if (target_ != nullptr) std::cout << target_->GetValue() << ":";
-            break;
-
           case Operator::kGoto:
             if (target_ != nullptr) std::cout << "goto S" << target_->GetValue() << ":";
+            break;
+
+          case Operator::kLogicalNot: //unused
+            break;
+
+          default:
             break;
           }
         }
@@ -229,11 +210,7 @@ namespace cs160 {
         Operand* operand2_;
         StatementNode* next_;
       };
-
-
-
     } //namespace ir
-
   }  // namespace backend
 }  // namespace cs160
 
