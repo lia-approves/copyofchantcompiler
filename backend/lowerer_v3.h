@@ -152,7 +152,7 @@ namespace cs160 {
           statement->Visit(this);
         }
         program.arithmetic_exp().Visit(this);
-      
+
       }
       void VisitLessThanExpr(const LessThanExpr& exp) {
         exp.lhs().Visit(this);
@@ -161,12 +161,9 @@ namespace cs160 {
         stack_.pop_back();
         Operand* op1 = stack_.back();
         stack_.pop_back();
-        Operand* targetLabel = stack_.back();
-        targetLabel->SetValue(labelNum_ + 2);
-        stack_.pop_back();
         StatementNode *newtail = new StatementNode(
           new Label(labelNum_++),
-          targetLabel,
+          new Label(labelNum_ + 1),
           new Operator(Operator::kLessThan),
           op1,
           op2,
@@ -180,12 +177,9 @@ namespace cs160 {
         stack_.pop_back();
         Operand* op1 = stack_.back();
         stack_.pop_back();
-        Operand* targetLabel = stack_.back();
-        targetLabel->SetValue(labelNum_ + 2);
-        stack_.pop_back();
         StatementNode *newtail = new StatementNode(
           new Label(labelNum_++),
-          targetLabel,
+          new Label(labelNum_ + 1),
           new Operator(Operator::kLessThanEqualTo),
           op1,
           op2,
@@ -199,12 +193,9 @@ namespace cs160 {
         stack_.pop_back();
         Operand* op1 = stack_.back();
         stack_.pop_back();
-        Operand* targetLabel = stack_.back();
-        targetLabel->SetValue(labelNum_ + 2);
-        stack_.pop_back();
         StatementNode *newtail = new StatementNode(
           new Label(labelNum_++),
-          targetLabel,
+          new Label(labelNum_ + 1),
           new Operator(Operator::kGreaterThan),
           op1,
           op2,
@@ -218,12 +209,9 @@ namespace cs160 {
         stack_.pop_back();
         Operand* op1 = stack_.back();
         stack_.pop_back();
-        Operand* targetLabel = stack_.back();
-        targetLabel->SetValue(labelNum_ + 2);
-        stack_.pop_back();
         StatementNode *newtail = new StatementNode(
           new Label(labelNum_++),
-          targetLabel,
+          new Label(labelNum_ + 1),
           new Operator(Operator::kGreaterThanEqualTo),
           op1,
           op2,
@@ -237,12 +225,9 @@ namespace cs160 {
         stack_.pop_back();
         Operand* op1 = stack_.back();
         stack_.pop_back();
-        Operand* targetLabel = stack_.back();
-        targetLabel->SetValue(labelNum_ + 2);
-        stack_.pop_back();
         StatementNode *newtail = new StatementNode(
           new Label(labelNum_++),
-          targetLabel,
+          new Label(labelNum_ + 1),
           new Operator(Operator::kEqualTo),
           op1,
           op2,
@@ -250,53 +235,67 @@ namespace cs160 {
         AddToEnd(newtail);
       }
       void VisitLogicalAndExpr(const LogicalAndExpr& exp) {
+        IrGenVisitor countVisitor;
+        exp.rhs().Visit(&countVisitor);
+        int numRhs = countVisitor.NumberOfStatements();
 
-        exp.lhs().Visit(this);
+        exp.lhs().Visit(this); 
+
         StatementNode *newtail = new StatementNode(
           new Label(labelNum_++),
-          new Label(labelNum_ + 2),
+          new Label(labelNum_ + numRhs),
+          //new Label(labelNum_ + numGuard_+numTrue_),
           new Operator(Operator::kGoto),
           nullptr,
           nullptr,
           nullptr);
         AddToEnd(newtail);
+        //numGuard_  -= 2;
         exp.rhs().Visit(this);
-        newtail = new StatementNode(
-          new Label(labelNum_),
-          new Label(labelNum_ + 2),
-          new Operator(Operator::kGoto),
-          nullptr,
-          nullptr,
-          nullptr);
-
-
       }
       void VisitLogicalOrExpr(const LogicalOrExpr& exp) {
+
+        IrGenVisitor countVisitor;
+        exp.rhs().Visit(&countVisitor);
+        int numRhs = countVisitor.NumberOfStatements();
+
         exp.lhs().Visit(this);
+        tail_->GetTarget()->SetValue(tail_->GetTarget()->GetValue() + numRhs);
+        exp.rhs().Visit(this);
         StatementNode *newtail = new StatementNode(
           new Label(labelNum_++),
-          new Label(labelNum_ + 2),
+          new Label(labelNum_ + 1),
           new Operator(Operator::kGoto),
           nullptr,
           nullptr,
           nullptr);
         AddToEnd(newtail);
-        exp.rhs().Visit(this);
         newtail = new StatementNode(
-          new Label(labelNum_),
-          new Label(labelNum_ + 2),
+          new Label(labelNum_++),
+          new Label(labelNum_ + 1),
           new Operator(Operator::kGoto),
           nullptr,
           nullptr,
           nullptr);
+        AddToEnd(newtail);
 
+        
       }
       void VisitLogicalNotExpr(const LogicalNotExpr& exp) {
-        // ????????? todo
+        exp.operand().Visit(this);
+        StatementNode *newtail = new StatementNode(
+          new Label(labelNum_++),
+          new Label(labelNum_ + 1),
+          new Operator(Operator::kGoto),
+          nullptr,
+          nullptr,
+          nullptr);
+        AddToEnd(newtail);
       }
       void VisitConditional(const Conditional& conditional) {
         IrGenVisitor trueVisitor;
         IrGenVisitor falseVisitor;
+        IrGenVisitor guardVisitor;
         int startLabelNum = labelNum_;
         for (auto& statement : conditional.true_branch()) {
           statement->Visit(&trueVisitor);
@@ -304,13 +303,17 @@ namespace cs160 {
         for (auto& statement : conditional.false_branch()) {
           statement->Visit(&falseVisitor);
         }
-        int trueStatements = trueVisitor.NumberOfStatements();
-        int falseStatements = falseVisitor.NumberOfStatements();
-
+        conditional.guard().Visit(&guardVisitor);
+        int trueStatements =+ trueVisitor.NumberOfStatements();
+        int falseStatements =+ falseVisitor.NumberOfStatements();
+        int guardStatements =+ guardVisitor.NumberOfStatements();
+        numGuard_ = guardStatements;
+        numTrue_ = trueStatements;
+        numFalse_ = falseStatements;
         conditional.guard().Visit(this);
         StatementNode *newtail = new StatementNode(
           new Label(labelNum_++),
-          new Label(trueStatements+labelNum_+1),
+          new Label(trueStatements + labelNum_ + 1),
           new Operator(Operator::kGoto),
           nullptr,
           nullptr,
@@ -330,10 +333,14 @@ namespace cs160 {
         for (auto& statement : conditional.false_branch()) {
           statement->Visit(this);
         }
-       
+
       }
       void VisitLoop(const Loop& loop) {
         IrGenVisitor blockvisitor;
+        IrGenVisitor guardVisitor;
+        loop.guard().Visit(&guardVisitor);
+        int guardStatements = guardVisitor.NumberOfStatements();
+
         int startLabelNum = labelNum_;
 
         for (auto& statement : loop.body()) {
@@ -344,7 +351,7 @@ namespace cs160 {
         loop.guard().Visit(this);
         StatementNode *newtail = new StatementNode(
           new Label(labelNum_++),
-          new Label(bodyStatements+labelNum_+1),
+          new Label(bodyStatements + labelNum_ + 1),
           new Operator(Operator::kGoto),
           nullptr,
           nullptr,
@@ -372,7 +379,7 @@ namespace cs160 {
         if (head_ == nullptr && tail_ == nullptr) {
           head_ = newtail;
           tail_ = newtail;
-          while (tail_->GetNext()!=nullptr) tail_ = tail_->GetNext();
+          while (tail_->GetNext() != nullptr) tail_ = tail_->GetNext();
           return;
         }
         tail_->GetNext() = newtail;
@@ -412,6 +419,28 @@ namespace cs160 {
       int labelNum_ = 1;
       std::vector<Operand*> stack_;
       int register_number_ = 1;
+      int numGuard_ = 0;
+      int numTrue_ = 0;
+      int numFalse_ = 0;
+    };
+
+    class GuardVisitor : IrGenVisitor {
+    public:
+      GuardVisitor() { IrGenVisitor(); }
+      int NumberOfStatements();
+      void VisitLogicalAndExpr(const LogicalAndExpr& exp) {
+        IrGenVisitor::VisitLogicalAndExpr(exp);
+        numberOfStatements_++;
+      }
+      void VisitLogicalOrExpr(const LogicalOrExpr& exp) {
+        IrGenVisitor::VisitLogicalOrExpr(exp);
+        numberOfStatements_++;
+      }
+      void VisitLogicalNotExpr(const LogicalAndExpr& exp) {
+        // to 
+      }
+    private:
+      int numberOfStatements_ = 0;
     };
   }  // namespace backend
 }  // namespace cs160
