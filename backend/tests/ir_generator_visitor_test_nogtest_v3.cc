@@ -22,10 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// taylor:tests$ g++ -I ../../ -std=c++11 ir_generator_visitor_test_nogtest_v3.cc
+// g++ -I ../../ -std=c++11 ir_generator_visitor_test_nogtest_v3.cc
 #include <sstream>
 #include <string>
-//#include "gtest/gtest.h"
+// #include "gtest/gtest.h"
 #include "abstract_syntax/abstract_syntax_tree_v3.h"
 #include "utility/memory.h"
 #include "backend/lowerer_v3.h"
@@ -50,9 +50,12 @@ using cs160::backend::AsmProgram;
 
 
 int main() {
-
-  //IrGenVisitor printer;
-  /*auto expr = make_unique<AddExpr>(make_unique<IntegerExpr>(5), make_unique<SubtractExpr>(make_unique<MultiplyExpr>(make_unique<DivideExpr>(make_unique<IntegerExpr>(7), make_unique<IntegerExpr>(5)), make_unique<IntegerExpr>(9)), make_unique<IntegerExpr>(6)));
+  // IrGenVisitor printer;
+  /*auto expr = make_unique<AddExpr>(make_unique<IntegerExpr>(5),
+   make_unique<SubtractExpr>(make_unique<MultiplyExpr>(
+   make_unique<DivideExpr>(make_unique<IntegerExpr>(7),
+   make_unique<IntegerExpr>(5)), make_unique<IntegerExpr>(9)),
+   make_unique<IntegerExpr>(6)));
   expr->Visit(&printer_);
     /* Expected output:
     t1 = 7 divide 5
@@ -61,11 +64,14 @@ int main() {
     t4 = 5 add t3
     */
 
-  //auto expr = make_unique<AddExpr>(make_unique<AddExpr>(make_unique<IntegerExpr>(5), make_unique<IntegerExpr>(7)), make_unique<AddExpr>(make_unique<IntegerExpr>(1), make_unique<IntegerExpr>(2)));
-  //expr->Visit(&printer);
+  // auto expr = make_unique<AddExpr>(make_unique<AddExpr>(
+  // make_unique<IntegerExpr>(5), make_unique<IntegerExpr>(7)),
+  // make_unique<AddExpr>(make_unique<IntegerExpr>(1),
+  // make_unique<IntegerExpr>(2)));
+  // expr->Visit(&printer);
 
 
-  //printer.PrintIR();
+  // printer.PrintIR();
   /*std::vector<std::unique_ptr<const Assignment>> assignments;
   assignments.push_back(std::move(
     make_unique<const Assignment>(make_unique<const VariableExpr>("bob"),
@@ -187,12 +193,13 @@ statements.push_back(std::move(
   make_unique<const Assignment>(make_unique<const VariableExpr>("i"),
     make_unique<const IntegerExpr>(20))));
 
-Statement::Block body;  //i=i-1
+Statement::Block body;  // i=i-1
 body.push_back(std::move(make_unique<const Assignment>(
   make_unique<const VariableExpr>("i"),
   make_unique<const AddExpr>(make_unique<const VariableExpr>("i"),
     make_unique<const IntegerExpr>(1)))));
-auto ae = make_unique<const AddExpr>(make_unique<const VariableExpr>("i"), make_unique<const IntegerExpr>(50));
+auto ae = make_unique<const AddExpr>(make_unique<const VariableExpr>("i"),
+make_unique<const IntegerExpr>(50));
 
   Statement::Block falsebody;
 
