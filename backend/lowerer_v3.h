@@ -65,7 +65,8 @@ namespace cs160 {
         Operand* op2 = stack_.back();
         stack_.pop_back();
         Operand* op1 = stack_.back();
-        StatementNode *newtail = new StatementNode(new Label(labelNum_++),
+        StatementNode *newtail = new StatementNode(
+          new Label(labelNum_++),
           new Register(register_number_),
           new Operator(Operator::kAdd),
           op1,
@@ -83,7 +84,8 @@ namespace cs160 {
         Operand* op2 = stack_.back();
         stack_.pop_back();
         Operand* op1 = stack_.back();
-        StatementNode *newtail = new StatementNode(new Label(labelNum_++),
+        StatementNode *newtail = new StatementNode(
+          new Label(labelNum_++),
           new Register(register_number_),
           new Operator(Operator::kSubtract),
           op1,
@@ -101,7 +103,8 @@ namespace cs160 {
         Operand* op2 = stack_.back();
         stack_.pop_back();
         Operand* op1 = stack_.back();
-        StatementNode *newtail = new StatementNode(new Label(labelNum_++),
+        StatementNode *newtail = new StatementNode(
+          new Label(labelNum_++),
           new Register(register_number_),
           new Operator(Operator::kMultiply),
           op1,
@@ -119,7 +122,8 @@ namespace cs160 {
         Operand* op2 = stack_.back();
         stack_.pop_back();
         Operand* op1 = stack_.back();
-        StatementNode *newtail = new StatementNode(new Label(labelNum_++),
+        StatementNode *newtail = new StatementNode(
+          new Label(labelNum_++),
           new Register(register_number_),
           new Operator(Operator::kDivide),
           op1,
@@ -138,7 +142,8 @@ namespace cs160 {
         assignment.rhs().Visit(this);
         Operand* op2 = stack_.back();
         stack_.pop_back();
-        StatementNode *newtail = new StatementNode(new Label(labelNum_++),
+        StatementNode *newtail = new StatementNode(
+          new Label(labelNum_++),
           new Variable(assignment.lhs().name()),
           new Operator(Operator::kAssign),
           nullptr,
@@ -238,7 +243,7 @@ namespace cs160 {
         IrGenVisitor countVisitor;
         exp.rhs().Visit(&countVisitor);
         int numRhs = countVisitor.NumberOfStatements();
-        exp.lhs().Visit(this); 
+        exp.lhs().Visit(this);
         StatementNode *newtail = new StatementNode(
           new Label(labelNum_++),
           new Label(labelNum_ + numRhs),
@@ -311,7 +316,7 @@ namespace cs160 {
         }
         newtail = new StatementNode(
           new Label(labelNum_++),
-          new Label(falseStatements + labelNum_ ),
+          new Label(falseStatements + labelNum_),
           new Operator(Operator::kGoto),
           nullptr,
           nullptr,
@@ -368,7 +373,7 @@ namespace cs160 {
 
       void PrintIR() {
         StatementNode* itor = head_;
-        std::cout << "#### Sart of IR ####\n\n";
+        std::cout << "#### Start of IR ####\n\n";
         int statementNum = 1;
         while (itor != nullptr) {
           itor->Print();
@@ -392,8 +397,8 @@ namespace cs160 {
       StatementNode * head_ = nullptr;
       StatementNode* tail_ = nullptr;
       int labelNum_ = 1;
-      std::vector<Operand*> stack_;
       int register_number_ = 1;
+      std::vector<Operand*> stack_;
 
     };
   }  // namespace backend

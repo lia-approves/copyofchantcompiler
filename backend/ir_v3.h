@@ -18,13 +18,13 @@ namespace cs160 {
     namespace ir {
 
       class Operand {                                          //abstract class for operand can be constant(integer), 
-      public:                                                  //variable or register
+      public:                                                  //variable or register or label
         Operand() {}
         virtual ~Operand() {}
         virtual int GetValue() = 0;
         virtual void SetValue(int value) = 0;
         virtual std::string GetName() = 0;
-        virtual void PushToAsmSS(stringstream& ss) = 0;        // function for asm generator
+        virtual void PushToAsmSS(stringstream& ss) = 0;
         virtual void PopToAsmSS(stringstream& ss, string register_) = 0;
       private:
       };
@@ -36,8 +36,8 @@ namespace cs160 {
         int GetValue() { return value_; }
         void SetValue(int value) { value_ = value; }
         std::string GetName() { return "statementnumber_" + std::to_string(value_); }
-        void PushToAsmSS(stringstream& ss) { /* todo*/ }
-        void PopToAsmSS(stringstream& ss, string register_) {  /*todo*/ }
+        void PushToAsmSS(stringstream& ss) {}
+        void PopToAsmSS(stringstream& ss, string register_) {}
       private:
         int value_;
       };
@@ -59,16 +59,16 @@ namespace cs160 {
       public:
         explicit Variable(std::string s) { name_ = (s); }
         ~Variable() {}
-        int GetValue() { return 0; }                           //dummy return
+        int GetValue() {}                          
         std::string GetName() { return name_; }
-        void SetValue(int value) { /*value_ = value;*/ }
+        void SetValue(int value) {}
         void PushToAsmSS(stringstream& ss) { ss << "push (" << name_ << ")" << endl; }
         void PopToAsmSS(stringstream& ss, string register_) { ss << "pop (" << GetName() << ")" << endl; }
       private:
         std::string name_;
       };
 
-      class Constant : public Operand {                       // integer value 3, 8, 6 etc
+      class Constant : public Operand {                       // 3, 8, 6 etc (integers)
       public:
         explicit Constant(int v) { value_ = (v); }
         ~Constant() {}
@@ -76,14 +76,12 @@ namespace cs160 {
         void SetValue(int value) { value_ = value; }
         std::string GetName() { return std::to_string(value_); }
         void PushToAsmSS(stringstream& ss) { ss << "push $" << value_ << endl; }
-        void PopToAsmSS(stringstream& ss, string register_) { // function for asm generator
-          ss << "pop " << register_ << endl;                  // There is nothing to push because it's a register
-        }
+        void PopToAsmSS(stringstream& ss, string register_) { ss << "pop " << register_ << endl; }
       private:
         int value_;
       };
 
-      class Operator {                                        // assign, add multiply, etc
+      class Operator {    
       public:
         enum Opcode {
           kAdd, kSubtract, kMultiply, kDivide, kAssign, kLessThan, kLessThanEqualTo,
@@ -127,7 +125,7 @@ namespace cs160 {
       private:
         Opcode op_;
       };
-      class StatementNode {                                   // this is our quadruple form of the ir
+      class StatementNode {                                   
       public:                                                 // the last field is the next statement pointer
         StatementNode(
           Operand* label,
@@ -144,11 +142,11 @@ namespace cs160 {
           operand2_(operand2),
           next_(next) {}
         ~StatementNode() {
+          delete label_;
           delete target_;
           delete operator_;
           delete operand1_;
           delete operand2_;
-          delete label_;
         }
         void Print() {
           std::cout << "# S" << label_->GetValue() << ":  ";
