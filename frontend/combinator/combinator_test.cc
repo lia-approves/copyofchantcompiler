@@ -31,6 +31,35 @@ TEST(CombinatorTest, ParseLiteral) {
   ASSERT_EQ(successfulResultI.value(), "i");
 }
 
+TEST(CombinatorTest, ParseRange) {
+  std::shared_ptr<State> s(new State("hi"));
+  auto parseAZ = Range("az");
+  auto resultAZ = parseAZ(s);
+  auto resultAZ2 = parseAZ(s);
+
+  auto parseAG = Range("ag");
+  auto resultAG = parseAG(s);
+
+  auto parseZA = Range("za");
+  auto resultZA = parseZA(s);
+
+  auto parseAH = Range("ah");
+  auto resultAH = parseAH(s);
+  auto resultAH2 = parseAH(s);
+
+  ASSERT_EQ(resultAZ.success(), true);
+  ASSERT_EQ(resultAZ.value(), 'h');
+  ASSERT_EQ(resultAZ2.success(), true);
+  ASSERT_EQ(resultAZ2.value(), 'i');
+
+  ASSERT_EQ(resultAG.success(), false);
+  ASSERT_EQ(resultZA.success(), false);
+
+  ASSERT_EQ(resultAH.success(), true);
+  ASSERT_EQ(resultAH.value(), 'h');
+  ASSERT_EQ(resultAH2.success(), false);
+}
+
 TEST(CombinatorTest, ParseOr) {
   std::shared_ptr<State> s(new State("hi"));
   auto parser = Or<std::string>(Literal('a'), Literal('h'));
@@ -77,4 +106,3 @@ TEST(CombinatorTest, Star) {
 
 }  // namespace frontend
 }  // namespace cs160
-

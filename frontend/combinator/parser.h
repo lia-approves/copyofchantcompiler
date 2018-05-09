@@ -49,33 +49,30 @@ Parser<std::string> Literal(char c) {
   };
 }
 
-// Prototype range
-/*
-Parser<std::string> Range(string c) {
+// Returns a function which checks if a character is within a range of two characters
+Parser<std::string> Range(std::string c) {
     return [c](std::shared_ptr<State> state) {
       if (state->atEnd()) {
         return Result<std::string>(false, "end of file");
       }
       char a = c.at(0);
       char b = c.at(1);
-      if(a - 'a' > b - 'a'){
+
+      if(a - 'a' >= b - 'a'){
         return Result<std::string>(false, "improper range");
       }
 
-      while(!state->atEnd()){
-        char next = state->readChar();
-        if(next - 'a' > b - 'a'){
-          return Result<std::string>(false, "greater than range");
-        }else if(next - 'a' < a - 'a'){
-          return Result<std::string>(false, "less than range");
-        }
+      char next = state->readChar();
+      if (next - 'a' >= a - 'a' && next - 'a' <= b - 'a'){
+        state->advance();
+        return Result<std::string>(std::string(1, next));
+      } else {
+        std::string err = "not in range for character: ";
+        err += next;
+        return Result<std::string>(false, err);
       }
-
-      state->advance();
-      return Result<std::string>(std::string(1, c));
     };
   }
-  */
 
 // Return a function which runs 1 parser, then the next.  That function returns
 // the first successful result (or failure)
