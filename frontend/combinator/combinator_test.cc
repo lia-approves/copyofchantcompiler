@@ -9,6 +9,7 @@ namespace frontend {
 using std::string;
 using abstract_syntax::frontend::IntegerExpr;
 using abstract_syntax::frontend::AstNode;
+using abstract_syntax::frontend::SubtractExpr;
 
 // TEST(CombinatorTest, InstantiateResult) {
 //   Result<int> fail(false, "sample error");
@@ -79,15 +80,15 @@ TEST(CombinatorTest, ParseOr) {
 
 TEST(CombinatorTest, ParseAnd) {
   State s("hi");
-  auto failParse = And<std::string>(Literal('h'), Literal('a'));
-  auto parse = And<std::string>(Literal('h'), Literal('i'));
+  auto failParse = And<std::string, std::string>(Literal('h'), Literal('a'));
+  auto parse = And<std::string, std::string>(Literal('h'), Literal('i'));
   auto fail = failParse(s);
   auto result = parse(s);
   ASSERT_EQ(fail.success(), false);
   ASSERT_EQ(result.success(), true);
-  auto val = result.value();
-  ASSERT_EQ(val[0], "h");
-  ASSERT_EQ(val[1], "i");
+  auto [first, second] = result.value();
+  ASSERT_EQ(first, "h");
+  ASSERT_EQ(second, "i");
 }
 
 TEST(CombinatorTest, NotTest) {
@@ -191,6 +192,15 @@ TEST(CombinatorTest, CaptureIntNode) {
   result.value()->Visit(&printer_);
   ASSERT_EQ(printer_.GetOutput(), "1");
 }
+
+// TEST(CombinatorTest, CaptureNegativeInt) {
+//   State s("-1");
+//   auto parseIntNode1 = Capture<string>(Literal('1'), [](string s) {
+//     return std::unique_ptr<AstNode>(new IntegerExpr(std::stoi(s)));
+//   });
+//   auto parse = Capture<
+//   auto parse = Captur
+// }
 
 TEST(CombinatorTest, Star) {
   State s("1112");

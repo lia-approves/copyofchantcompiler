@@ -112,23 +112,23 @@ Parser<T> Or(Parser<T> parseA, Parser<T> parseB) {
 
 //  Returns a function which runs 2 parsers, and returns an array of their
 //  results.  If either fails, it returns failure
-template<class T>
-Parser<std::array<T, 2>> And(Parser<T> parseA, Parser<T> parseB) {
+template<class A, class B>
+Parser<std::tuple<A, B>> And(Parser<A> parseA, Parser<B> parseB) {
   return [parseA, parseB](State state) {
     // Save position so we can reset later.
     int oldPosition = state.position();
     auto resultA = parseA(state);
     if (!resultA.success()) {
       state.setPosition(oldPosition);
-      return Result<std::array<T, 2>>(state, false, "no match for A and B");
+      return Result<std::tuple<A, B>>(state, false, "no match for A and B");
     }
     auto resultB = parseB(resultA.state());
     if (!resultB.success()) {
       state.setPosition(oldPosition);
-      return Result<std::array<T, 2>>(state, false, "no match for A and B");
+      return Result<std::tuple<A, B>>(state, false, "no match for A and B");
     }
-    std::array<T, 2> res{{ resultA.value(), resultB.value() }};
-    return Result<std::array<T, 2>>(resultB.state(), res);
+    std::tuple<A, B> res = std::make_tuple(resultA.value(), resultB.value());
+    return Result<std::tuple<A, B>>(resultB.state(), res);
   };
 }
 
