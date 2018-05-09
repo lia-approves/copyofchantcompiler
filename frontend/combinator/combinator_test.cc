@@ -202,20 +202,20 @@ TEST(CombinatorTest, CaptureIntNode) {
 //   auto parse = Captur
 // }
 
-TEST(CombinatorTest, Star) {
-  State s("1112");
-  auto parseOnes = Star<std::string>(Literal('1'));
-  auto parseZeroes = Star<std::string>(Literal('0'));
-  auto zr = parseZeroes(s);
-  auto result = parseOnes(s);
-  ASSERT_EQ(result.success(), true);
-  ASSERT_EQ(zr.success(), true);
-  auto val = result.value();
-  ASSERT_EQ(val.size(), 3);
-  ASSERT_EQ(val[0], val[1]);
-  ASSERT_EQ(val[2], val[1]);
-  ASSERT_EQ(val[0], "1");
-}
+// TEST(CombinatorTest, Star) {
+//   State s("1112");
+//   auto parseOnes = Star<std::string>(Literal('1'));
+//   auto parseZeroes = Star<std::string>(Literal('0'));
+//   auto zr = parseZeroes(s);
+//   auto result = parseOnes(s);
+//   ASSERT_EQ(result.success(), true);
+//   ASSERT_EQ(zr.success(), true);
+//   auto val = result.value();
+//   ASSERT_EQ(val.size(), 3);
+//   ASSERT_EQ(val[0], val[1]);
+//   ASSERT_EQ(val[2], val[1]);
+//   ASSERT_EQ(val[0], "1");
+// }
 
 }  // namespace frontend
 }  // namespace cs160
