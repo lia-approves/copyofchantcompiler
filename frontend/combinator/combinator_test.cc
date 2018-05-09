@@ -1,3 +1,4 @@
+// Copyright (c) 2018, Team-Chant
 #include "gtest/gtest.h"
 #include "frontend/combinator/parser.h"
 
@@ -54,6 +55,72 @@ TEST(CombinatorTest, ParseAnd) {
   ASSERT_EQ(result.value()[1], "i");
 }
 
+TEST(CombinatorTest, NotTest) {
+  State s("a");
+  auto successParse = Not(Literal('b'));
+  auto failParse = Not(Literal('a'));
+  auto fail = failParse(s);
+  auto success = successParse(s);
+  ASSERT_EQ(fail.success(), false);
+  ASSERT_EQ(success.success(), true);
+  ASSERT_EQ(success.value()[0], '!');
+}
+
+TEST(CombinatorTest, StringMatchSensitiveTest) {
+  // test without spaces
+  State s1("hey");
+  auto parse1 = StringMatchSensitive("hey");
+  auto success1 = parse1(s1);
+  ASSERT_EQ(success1.success(), true);
+  ASSERT_EQ(success1.value()[0], 'h');
+  ASSERT_EQ(success1.value()[1], 'e');
+  ASSERT_EQ(success1.value()[2], 'y');
+
+  // test with spaces
+  State s2("hello world");
+  auto parse2 = StringMatchSensitive("hello world");
+  auto success2 = parse2(s2);
+  ASSERT_EQ(success2.success(), true);
+  ASSERT_EQ(success2.value()[0], 'h');
+  ASSERT_EQ(success2.value()[1], 'e');
+  ASSERT_EQ(success2.value()[2], 'l');
+  ASSERT_EQ(success2.value()[3], 'l');
+  ASSERT_EQ(success2.value()[4], 'o');
+  ASSERT_EQ(success2.value()[5], ' ');
+  ASSERT_EQ(success2.value()[6], 'w');
+  ASSERT_EQ(success2.value()[7], 'o');
+  ASSERT_EQ(success2.value()[8], 'r');
+  ASSERT_EQ(success2.value()[9], 'l');
+  ASSERT_EQ(success2.value()[10], 'd');
+
+  State s3("nope");
+  auto parseFail = StringMatchSensitive("yes!");
+  auto fail = parseFail(s3);
+  ASSERT_EQ(fail.success(), false);
+}
+
+TEST(CombinatorTest, StringMatchInsensitiveTest) {
+  State s1("hello world");
+  auto parse1 = StringMatchInsensitive("helloworld");
+  auto success1 = parse1(s1);
+  ASSERT_EQ(success1.success(), true);
+
+  State s2("hi");
+  auto parse2 = StringMatchInsensitive("hi");
+  auto success2 = parse2(s2);
+  ASSERT_EQ(success2.success(), true);
+
+  State s3("hey   ");
+  auto parse3 = StringMatchInsensitive("hey");
+  auto success3 = parse3(s3);
+  ASSERT_EQ(success3.success(), true);
+
+  State s4("  he");
+  auto parse4 = StringMatchInsensitive(" he ");
+  auto success4 = parse4(s4);
+  ASSERT_EQ(success4.success(), true);
+}
+
 // // TEST(CombinatorTest, Apply) {
 // //   State s("1112");
 // //   std::function<int(std::string)> toInt = [](std::string in) {
@@ -80,4 +147,3 @@ TEST(CombinatorTest, Star) {
 
 }  // namespace frontend
 }  // namespace cs160
-

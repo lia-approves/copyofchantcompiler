@@ -6,6 +6,7 @@
 #include <array>
 #include <vector>
 #include <string>
+#include <iostream>
 #include "frontend/combinator/result.h"
 #include "frontend/combinator/state.h"
 #include "utility/memory.h"
@@ -131,6 +132,98 @@ Parser<std::vector<T>> Star(Parser<T> parse) {
     //   return Result<std::vector<T>>(state, false, "no matches at all");
     // }
     return Result<std::vector<T>>(state, results);
+  };
+}
+
+// Returns a function which runs a parser, and returns a success if it fails
+// and a failure if it succeeds
+template<class T>
+Parser<T> Not(Parser<T> parse) {
+    return [parse](State state) {
+      auto result = parse(state);
+      if (result.success()) {
+        return Result<T>(state, false, "no match for not");
+      }
+      return Result<std::string>(state, "!");;
+    };
+}
+
+// Return a function which parses a string (whitespace sensitive)
+Parser<std::string> StringMatchSensitive(std::string str) {
+  return [str](State state) {
+    if (state.atEnd()) {
+      return Result<std::string>(state, false, "end of file");
+    }
+
+    for (int i=0; i < str.size(); i++) {
+        char next_p = state.readChar();
+        char next_str = str.at(i);
+
+        if (next_p != next_str) {
+          return Result<std::string>(state, false, "no match for " + str);
+        } else {
+          state.advance();
+        }
+
+        if (state.atEnd() && i != str.size()-1) {
+          // checks if it is at the end of the file
+          // must have the second statement to avoid
+          // returning on the last check
+          return Result<std::string>(state, false, "end of file");
+        }
+    }
+
+    // got to end of string with all characters matching
+    // and not reaching end of file
+    // therefore, return success
+    return Result<std::string>(state, str);
+  };
+}
+
+// Return a function which parses a string (whitespace insensitive)
+// AKA this function ignores whitespace in either state or string
+Parser<std::string> StringMatchInsensitive(std::string str) {
+  return [str](State state) {
+    if (state.atEnd()) {
+      return Result<std::string>(state, false, "end of file");
+    }
+
+    int counter = 0;
+    while (!state.atEnd() && counter < str.size()) {
+      char next_p = state.readChar();
+      char next_str = str.at(counter);
+      counter++;
+      std::cout << "next_p: " << next_p << std::endl;
+      std::cout << "next_str: " << next_str << std::endl;
+
+      while (next_p == ' ' && !state.atEnd()) {
+        state.advance();
+        next_p = state.readChar();
+        std::cout << "next_p1: " << next_p << std::endl;
+      }
+      while (next_str == ' ' && counter < str.size()) {
+        next_str = str.at(counter);
+        counter++;
+        std::cout << "next_str1: " << next_str << std::endl;
+      }
+
+      if ( (state.atEnd() || counter >= str.size())
+        && (next_p == ' ' || next_str == ' ') ) {
+          // for one of the strings, the last character is a whitespace
+        break;
+      }
+
+      std::cout << "together: " << next_p << ", " << next_str << std::endl;
+      if (next_p != next_str) {
+        return Result<std::string>(state, false, "no match for " + str);
+      } else {
+        state.advance();
+      }
+    }
+    // got to end of string with all characters matching
+    // and not reaching end of file
+    // therefore, return success
+    return Result<std::string>(state, str);
   };
 }
 
