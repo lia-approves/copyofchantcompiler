@@ -5,6 +5,7 @@
 
 #include <array>
 #include <vector>
+#include <string>
 #include "frontend/combinator/result.h"
 #include "frontend/combinator/state.h"
 #include "utility/memory.h"
@@ -61,7 +62,6 @@ Parser<std::string> Range(string c) {
       if(a - 'a' > b - 'a'){
         return Result<std::string>(false, "improper range");
       }
-
       while(!state->atEnd()){
         char next = state->readChar();
         if(next - 'a' > b - 'a'){
@@ -70,7 +70,6 @@ Parser<std::string> Range(string c) {
           return Result<std::string>(false, "less than range");
         }
       }
-
       state->advance();
       return Result<std::string>(std::string(1, c));
     };
