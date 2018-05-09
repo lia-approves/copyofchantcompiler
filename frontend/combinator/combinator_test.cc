@@ -38,7 +38,6 @@ TEST(CombinatorTest, ParseLiteral) {
   ASSERT_EQ(successfulResultI.value(), "i");
 }
 
-<<<<<<< HEAD
 TEST(CombinatorTest, ParseRange) {
   State s("hi");
   auto parseAZ = Range("az");
@@ -77,36 +76,6 @@ TEST(CombinatorTest, ParseRange4) {
   ASSERT_EQ(resultAH.value(), "h");
   ASSERT_EQ(resultAH2.success(), false);
 }
-=======
-// TEST(CombinatorTest, ParseRange) {
-//   State s("hi");
-//   auto parseAZ = Range("az");
-//   auto resultAZ = parseAZ(s);
-//   auto resultAZ2 = parseAZ(s);
-//
-//   auto parseAG = Range("ag");
-//   auto resultAG = parseAG(s);
-//
-//   auto parseZA = Range("za");
-//   auto resultZA = parseZA(s);
-//
-//   auto parseAH = Range("ah");
-//   auto resultAH = parseAH(s);
-//   auto resultAH2 = parseAH(s);
-//
-//   ASSERT_EQ(resultAZ.success(), true);
-//   ASSERT_EQ(resultAZ.value()[0], 'h');
-//   ASSERT_EQ(resultAZ2.success(), true);
-//   ASSERT_EQ(resultAZ2.value()[1], 'i');
-//
-//   ASSERT_EQ(resultAG.success(), false);
-//   ASSERT_EQ(resultZA.success(), false);
-//
-//   ASSERT_EQ(resultAH.success(), true);
-//   ASSERT_EQ(resultAH.value()[0], 'h');
-//   ASSERT_EQ(resultAH2.success(), false);
-// }
->>>>>>> 9a6b34721eccb58ec24bd8d87e9d3a2584641c4f
 
 TEST(CombinatorTest, ParseOr) {
   State s("hi");
