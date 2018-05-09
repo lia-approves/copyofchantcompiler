@@ -163,7 +163,7 @@ Parser<T> Not(Parser<T> parse) {
 }
 
 // Return a function which parses a string (whitespace sensitive)
-Parser<std::string> StringMatchSensitive(std::string str) {
+Parser<std::string> ExactMatch(std::string str) {
   return [str](State state) {
     if (state.atEnd()) {
       return Result<std::string>(state, false, "end of file");
@@ -196,7 +196,7 @@ Parser<std::string> StringMatchSensitive(std::string str) {
 
 // Return a function which parses a string (whitespace insensitive)
 // AKA this function ignores whitespace in either state or string
-Parser<std::string> StringMatchInsensitive(std::string str) {
+Parser<std::string> Match(std::string str) {
   return [str](State state) {
     if (state.atEnd()) {
       return Result<std::string>(state, false, "end of file");

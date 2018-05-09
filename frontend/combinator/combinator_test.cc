@@ -101,10 +101,10 @@ TEST(CombinatorTest, NotTest) {
   ASSERT_EQ(success.value()[0], '!');
 }
 
-TEST(CombinatorTest, StringMatchSensitiveTest) {
+TEST(CombinatorTest, ExactMatchTest) {
   // test without spaces
   State s1("hey");
-  auto parse1 = StringMatchSensitive("hey");
+  auto parse1 = ExactMatch("hey");
   auto success1 = parse1(s1);
   ASSERT_EQ(success1.success(), true);
   auto val = success1.value();
@@ -114,7 +114,7 @@ TEST(CombinatorTest, StringMatchSensitiveTest) {
 
   // test with spaces
   State s2("hello world");
-  auto parse2 = StringMatchSensitive("hello world");
+  auto parse2 = ExactMatch("hello world");
   auto success2 = parse2(s2);
   ASSERT_EQ(success2.success(), true);
   auto val2 = success2.value();
@@ -131,29 +131,29 @@ TEST(CombinatorTest, StringMatchSensitiveTest) {
   ASSERT_EQ(val2[10], 'd');
 
   State s3("nope");
-  auto parseFail = StringMatchSensitive("yes!");
+  auto parseFail = ExactMatch("yes!");
   auto fail = parseFail(s3);
   ASSERT_EQ(fail.success(), false);
 }
 
-TEST(CombinatorTest, StringMatchInsensitiveTest) {
+TEST(CombinatorTest, MatchTest) {
   State s1("hello world");
-  auto parse1 = StringMatchInsensitive("helloworld");
+  auto parse1 = Match("helloworld");
   auto success1 = parse1(s1);
   ASSERT_EQ(success1.success(), true);
 
   State s2("hi");
-  auto parse2 = StringMatchInsensitive("hi");
+  auto parse2 = Match("hi");
   auto success2 = parse2(s2);
   ASSERT_EQ(success2.success(), true);
 
   State s3("hey   ");
-  auto parse3 = StringMatchInsensitive("hey");
+  auto parse3 = Match("hey");
   auto success3 = parse3(s3);
   ASSERT_EQ(success3.success(), true);
 
   State s4("  he");
-  auto parse4 = StringMatchInsensitive(" he ");
+  auto parse4 = Match(" he ");
   auto success4 = parse4(s4);
   ASSERT_EQ(success4.success(), true);
 }
