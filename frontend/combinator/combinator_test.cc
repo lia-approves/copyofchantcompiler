@@ -1,9 +1,14 @@
 // Copyright (c) 2018, Team-Chant
 #include "gtest/gtest.h"
 #include "frontend/combinator/parser.h"
+#include "abstract_syntax/print_visitor_v1.h"
 
 namespace cs160 {
 namespace frontend {
+
+using std::string;
+using abstract_syntax::frontend::IntegerExpr;
+using abstract_syntax::frontend::AstNode;
 
 // TEST(CombinatorTest, InstantiateResult) {
 //   Result<int> fail(false, "sample error");
@@ -80,8 +85,9 @@ TEST(CombinatorTest, ParseAnd) {
   auto result = parse(s);
   ASSERT_EQ(fail.success(), false);
   ASSERT_EQ(result.success(), true);
-  ASSERT_EQ(result.value()[0], "h");
-  ASSERT_EQ(result.value()[1], "i");
+  auto val = result.value();
+  ASSERT_EQ(val[0], "h");
+  ASSERT_EQ(val[1], "i");
 }
 
 TEST(CombinatorTest, NotTest) {
@@ -101,26 +107,28 @@ TEST(CombinatorTest, StringMatchSensitiveTest) {
   auto parse1 = StringMatchSensitive("hey");
   auto success1 = parse1(s1);
   ASSERT_EQ(success1.success(), true);
-  ASSERT_EQ(success1.value()[0], 'h');
-  ASSERT_EQ(success1.value()[1], 'e');
-  ASSERT_EQ(success1.value()[2], 'y');
+  auto val = success1.value();
+  ASSERT_EQ(val[0], 'h');
+  ASSERT_EQ(val[1], 'e');
+  ASSERT_EQ(val[2], 'y');
 
   // test with spaces
   State s2("hello world");
   auto parse2 = StringMatchSensitive("hello world");
   auto success2 = parse2(s2);
   ASSERT_EQ(success2.success(), true);
-  ASSERT_EQ(success2.value()[0], 'h');
-  ASSERT_EQ(success2.value()[1], 'e');
-  ASSERT_EQ(success2.value()[2], 'l');
-  ASSERT_EQ(success2.value()[3], 'l');
-  ASSERT_EQ(success2.value()[4], 'o');
-  ASSERT_EQ(success2.value()[5], ' ');
-  ASSERT_EQ(success2.value()[6], 'w');
-  ASSERT_EQ(success2.value()[7], 'o');
-  ASSERT_EQ(success2.value()[8], 'r');
-  ASSERT_EQ(success2.value()[9], 'l');
-  ASSERT_EQ(success2.value()[10], 'd');
+  auto val2 = success2.value();
+  ASSERT_EQ(val2[0], 'h');
+  ASSERT_EQ(val2[1], 'e');
+  ASSERT_EQ(val2[2], 'l');
+  ASSERT_EQ(val2[3], 'l');
+  ASSERT_EQ(val2[4], 'o');
+  ASSERT_EQ(val2[5], ' ');
+  ASSERT_EQ(val2[6], 'w');
+  ASSERT_EQ(val2[7], 'o');
+  ASSERT_EQ(val2[8], 'r');
+  ASSERT_EQ(val2[9], 'l');
+  ASSERT_EQ(val2[10], 'd');
 
   State s3("nope");
   auto parseFail = StringMatchSensitive("yes!");
@@ -173,6 +181,17 @@ TEST(CombinatorTest, BetweenTest) {
 // //   ASSERT_EQ(result.value(), 1);
 // // }
 
+TEST(CombinatorTest, CaptureIntNode) {
+  State s("1");
+  auto parseIntNode = Capture<string>(Literal('1'), [](string s) {
+    return std::unique_ptr<AstNode>(new IntegerExpr(std::stoi(s)));
+  });
+  auto result = parseIntNode(s);
+  abstract_syntax::frontend::PrintVisitor printer_;
+  result.value()->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "1");
+}
+
 TEST(CombinatorTest, Star) {
   State s("1112");
   auto parseOnes = Star<std::string>(Literal('1'));
@@ -181,10 +200,11 @@ TEST(CombinatorTest, Star) {
   auto result = parseOnes(s);
   ASSERT_EQ(result.success(), true);
   ASSERT_EQ(zr.success(), true);
-  ASSERT_EQ(result.value().size(), 3);
-  ASSERT_EQ(result.value()[0], result.value()[1]);
-  ASSERT_EQ(result.value()[2], result.value()[1]);
-  ASSERT_EQ(result.value()[0], "1");
+  auto val = result.value();
+  ASSERT_EQ(val.size(), 3);
+  ASSERT_EQ(val[0], val[1]);
+  ASSERT_EQ(val[2], val[1]);
+  ASSERT_EQ(val[0], "1");
 }
 
 }  // namespace frontend

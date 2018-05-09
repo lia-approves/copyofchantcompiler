@@ -21,13 +21,13 @@ class Result {
     }
   }
   explicit Result(State state, T value)
-  : state_(state), value_(value), error_("no error"), success_(true) {}
+  : state_(state), value_(std::move(value)), error_("no error"), success_(true) {}
 
   const T value() {
     if (!success_) {
       throw std::logic_error("can't access value of failed result");
     }
-    return value_;
+    return std::move(value_);
   }
   const bool success() { return success_; }
   const std::string error() { return error_; }

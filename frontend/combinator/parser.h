@@ -19,8 +19,10 @@ namespace frontend {
 template<class T>
 using Parser = std::function<Result<T>(State)>;
 
+using Node = std::unique_ptr<abstract_syntax::frontend::AstNode>;
+
 template<class T>
-using NodeMaker = std::function<abstract_syntax::frontend::
+using NodeMaker = std::function<Node(T)>;
 
 //  Returns a function which:
 //  runs the parser, then runs f on the result, then returns the final result
@@ -35,8 +37,14 @@ using NodeMaker = std::function<abstract_syntax::frontend::
 //   };
 // }
 
-template<T>
-Parser<T> Capture(Parser<T> parser, )
+template<class T>
+Parser<Node> Capture(Parser<T> Parse, NodeMaker<T> MakeNode) {
+  return [Parse, MakeNode](State state) {
+    auto result = Parse(state);
+    Result<Node> ret(result.state(), MakeNode(result.value()));
+    return ret;
+  };
+}
 
 // Return a function which parses a single literal
 Parser<std::string> Literal(char c) {
