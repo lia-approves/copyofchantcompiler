@@ -15,7 +15,6 @@ using std::string;
 
 namespace cs160 {
   namespace backend {
-    namespace ir {
 
       class Operand {                                          //abstract class for operand can be constant(integer), 
       public:                                                  //variable or register or label
@@ -208,7 +207,6 @@ namespace cs160 {
         Operand* operand2_;
         StatementNode* next_;
       };
-    } //namespace ir
   }  // namespace backend
 }  // namespace cs160
 

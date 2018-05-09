@@ -11,8 +11,8 @@
 
 using std::endl;
 using std::string;
-using cs160::backend::ir::StatementNode;
-using cs160::backend::ir::Operator;
+using cs160::backend::StatementNode;
+using cs160::backend::Operator;
 
 namespace cs160 {
   namespace backend {
@@ -27,7 +27,6 @@ namespace cs160 {
       void GenerateASM(StatementNode* node);
       stringstream asm_sstring_;
       stringstream asm_sstring_variables_;
-     
     };
 
     void AsmProgram::IrToAsm(StatementNode* head) {
@@ -39,8 +38,13 @@ namespace cs160 {
       asm_sstring_ << "#### Start of Statements ####\n";
 
       while (head != nullptr) {
-
-        asm_sstring_ << endl << "statementnumber_" << head->GetLabel()->GetValue() << ":" << endl << endl;
+        asm_sstring_
+          << endl
+          << "statementnumber_"
+          << head->GetLabel()->GetValue()
+          << ":"
+          << endl
+          << endl;
 
         GenerateASM(head);
 
@@ -63,7 +67,6 @@ namespace cs160 {
       asm_sstring_ << asm_sstring_variables_.str();
 
       asm_sstring_ << "\n#### End of Assembly ####\n";
-
     }
 
     void AsmProgram::GenerateASM(StatementNode* node) {
@@ -97,7 +100,9 @@ namespace cs160 {
         asm_sstring_ << "push %rax" << endl << endl;
         break;
       case Operator::kAssign:
-        if (asm_sstring_variables_.str().find(node->GetTarget()->GetName()) == std::string::npos) {
+        if (asm_sstring_variables_
+          .str()
+          .find(node->GetTarget()->GetName()) == std::string::npos) {
           asm_sstring_variables_ << node->GetTarget()->GetName() << ":" << endl;
           asm_sstring_variables_ << "  .quad  0" << endl;
         }
@@ -106,11 +111,41 @@ namespace cs160 {
         }
         asm_sstring_ << "pop (" << node->GetTarget()->GetName() << ")" << endl;
         break;
+      case Operator::kLessThan:
+        asm_sstring_ << "pop %rax" << endl;
+        asm_sstring_ << "pop %rbx" << endl;
+        asm_sstring_ << "cmp %rax, %rbx" << endl;
+        asm_sstring_ << "jl " << node->GetTarget()->GetName() << endl;
+        break;
+      case Operator::kLessThanEqualTo:
+        asm_sstring_ << "pop %rax" << endl;
+        asm_sstring_ << "pop %rbx" << endl;
+        asm_sstring_ << "cmp %rax, %rbx" << endl;
+        asm_sstring_ << "jle " << node->GetTarget()->GetName() << endl;
+        break;
+      case Operator::kGreaterThan:
+        asm_sstring_ << "pop %rax" << endl;
+        asm_sstring_ << "pop %rbx" << endl;
+        asm_sstring_ << "cmp %rax, %rbx" << endl;
+        asm_sstring_ << "jg " << node->GetTarget()->GetName() << endl;
+        break;
+      case Operator::kGreaterThanEqualTo:
+        asm_sstring_ << "pop %rax" << endl;
+        asm_sstring_ << "pop %rbx" << endl;
+        asm_sstring_ << "cmp %rax, %rbx" << endl;
+        asm_sstring_ << "jge " << node->GetTarget()->GetName() << endl;
+        break;
+      case Operator::kEqualTo:
+        asm_sstring_ << "pop %rax" << endl;
+        asm_sstring_ << "pop %rbx" << endl;
+        asm_sstring_ << "cmp %rax, %rbx" << endl;
+        asm_sstring_ << "je " << node->GetTarget()->GetName() << endl;
+        break;
+      case Operator::kGoto:
+        asm_sstring_ << "jmp " << node->GetTarget()->GetName() << endl;
       default:
         break;
-
       }
-
     }
 
 
