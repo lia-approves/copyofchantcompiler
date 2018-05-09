@@ -96,7 +96,7 @@ TEST(CombinatorTest, ParseAnd) {
   auto result = parse(s);
   ASSERT_EQ(fail.success(), false);
   ASSERT_EQ(result.success(), true);
-  auto [first, second] = result.value();
+  auto[first, second] = result.value();
   ASSERT_EQ(first, "h");
   ASSERT_EQ(second, "i");
 }
@@ -233,8 +233,8 @@ TEST(CombinatorTest, OnePlus) {
   auto parseZeroes = OnePlus<std::string>(Literal('0'));
   auto zr = parseZeroes(s);
   auto result = parseOnes(s);
-  ASSERT_EQ(result.success(), true);  //multiple matches is OK
-  ASSERT_EQ(zr.success(), false);  //no matches is not allowed, unlike Star
+  ASSERT_EQ(result.success(), true);  // multiple matches is OK
+  ASSERT_EQ(zr.success(), false);  // no matches is not allowed, unlike Star
   auto val = result.value();
   ASSERT_EQ(val.size(), 3);
   ASSERT_EQ(val[0], val[1]);
@@ -242,6 +242,22 @@ TEST(CombinatorTest, OnePlus) {
   ASSERT_EQ(val[0], "1");
 }
 
+TEST(CombinatorTest, SequenceTest) {
+  State s("hey");
+  auto parse = Sequence<std::string, std::string, std::string>
+          (Literal('h'), Literal('e'), Literal('y'));
+  auto success = parse(s);
+  auto[first, second, third] = success.value();
+  ASSERT_EQ(success.success(), true);
+  ASSERT_EQ(first, "h");
+  ASSERT_EQ(second, "e");
+  ASSERT_EQ(third, "y");
+
+  auto parseFail = Sequence<std::string, std::string, std::string>
+          (Literal('l'), Literal('o'), Literal('l'));
+  auto fail = parseFail(s);
+  ASSERT_EQ(fail.success(), false);
+}
 
 }  // namespace frontend
 }  // namespace cs160
