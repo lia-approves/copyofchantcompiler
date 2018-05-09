@@ -15,36 +15,36 @@ namespace frontend {
 // Represents a 'parse function': a function which takes a state and returns
 // a result.  Just an alias for convenience; this type does not ever change.
 template<class T>
-using Parser = std::function<Result<T>(std::shared_ptr<State>)>;
+using Parser = std::function<Result<T>(State)>;
 
 //  Returns a function which:
 //  runs the parser, then runs f on the result, then returns the final result
 template<class I, class O>
 Parser<O> Apply(Parser<I> parse, std::function<O(I)> f) {
-  return [parse, f](std::shared_ptr<State> state) {
+  return [parse, f](State state) {
     auto result = parse(state);
     if (!result.success()) {
-      return Result<O>(false, "failed to parse");
+      return Result<O>(state, false, "failed to parse");
     }
-    return Result<O>(f(result.value()));
+    return Result<O>(state, f(result.value()));
   };
 }
 
 // Return a function which parses a single literal
 Parser<std::string> Literal(char c) {
-  return [c](std::shared_ptr<State> state) {
-    if (state->atEnd()) {
-      return Result<std::string>(false, "end of file");
+  return [c](State state) {
+    if (state.atEnd()) {
+      return Result<std::string>(state, false, "end of file");
     }
-    char next = state->readChar();
+    char next = state.readChar();
 
     if (next == c) {
-      state->advance();
-      return Result<std::string>(std::string(1, c));
+      state.advance();
+      return Result<std::string>(state, std::string(1, c));
     } else {
       std::string err = "no match for character: ";
       err += c;
-      return Result<std::string>(false, err);
+      return Result<std::string>(state, false, err);
     }
   };
 }
@@ -80,7 +80,7 @@ template<class T>
 Parser<T> Or(Parser<T> parseA, Parser<T> parseB) {
   // Note: we don't need to rewind the input here.  Since at most ONE parser
   // will successfully run, the input parsers will can rewind for us
-  return [parseA, parseB](std::shared_ptr<State> state) {
+  return [parseA, parseB](State state) {
     auto resultA = parseA(state);
     if (resultA.success()) {
       return resultA;
@@ -89,7 +89,7 @@ Parser<T> Or(Parser<T> parseA, Parser<T> parseB) {
     if (resultB.success()) {
       return resultB;
     }
-    return Result<T>(false, "no match for A or B");
+    return Result<T>(state, false, "no match for A or B");
   };
 }
 
@@ -97,38 +97,38 @@ Parser<T> Or(Parser<T> parseA, Parser<T> parseB) {
 //  results.  If either fails, it returns failure
 template<class T>
 Parser<std::array<T, 2>> And(Parser<T> parseA, Parser<T> parseB) {
-  return [parseA, parseB](std::shared_ptr<State> state) {
+  return [parseA, parseB](State state) {
     // Save position so we can reset later.
-    int oldPosition = state->position();
+    int oldPosition = state.position();
     auto resultA = parseA(state);
     if (!resultA.success()) {
-      state->setPosition(oldPosition);
-      return Result<std::array<T, 2>>(false, "no match for A and B");
+      state.setPosition(oldPosition);
+      return Result<std::array<T, 2>>(state, false, "no match for A and B");
     }
-    auto resultB = parseB(state);
+    auto resultB = parseB(resultA.state());
     if (!resultB.success()) {
-      state->setPosition(oldPosition);
-      return Result<std::array<T, 2>>(false, "no match for A and B");
+      state.setPosition(oldPosition);
+      return Result<std::array<T, 2>>(state, false, "no match for A and B");
     }
     std::array<T, 2> res{{ resultA.value(), resultB.value() }};
-    return Result<std::array<T, 2>>(res);
+    return Result<std::array<T, 2>>(resultB.state(), res);
   };
 }
 
 // Returns a function which runs a parser 0 or more times, returning all results
 template<class T>
 Parser<std::vector<T>> Star(Parser<T> parse) {
-  return [parse](std::shared_ptr<State> state) {
+  return [parse](State state) {
     std::vector<T> results;
     auto currentResult = parse(state);  // Parse first element before the loop
     while (currentResult.success()) {
       results.push_back(currentResult.value());
-      currentResult = parse(state);
+      currentResult = parse(currentResult.state());
     }
-    if (results.size() == 0) {
-      return Result<std::vector<T>>(false, "no matches at all");
-    }
-    return Result<std::vector<T>>(results);
+    // if (results.size() == 0) {
+    //   return Result<std::vector<T>>(state, false, "no matches at all");
+    // }
+    return Result<std::vector<T>>(state, results);
   };
 }
 
