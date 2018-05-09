@@ -217,5 +217,21 @@ TEST(CombinatorTest, Star) {
   ASSERT_EQ(val[0], "1");
 }
 
+TEST(CombinatorTest, OnePlus) {
+  State s("1112");
+  auto parseOnes = OnePlus<std::string>(Literal('1'));
+  auto parseZeroes = OnePlus<std::string>(Literal('0'));
+  auto zr = parseZeroes(s);
+  auto result = parseOnes(s);
+  ASSERT_EQ(result.success(), true);  //multiple matches is OK
+  ASSERT_EQ(zr.success(), false);  //no matches is not allowed, unlike Star
+  auto val = result.value();
+  ASSERT_EQ(val.size(), 3);
+  ASSERT_EQ(val[0], val[1]);
+  ASSERT_EQ(val[2], val[1]);
+  ASSERT_EQ(val[0], "1");
+}
+
+
 }  // namespace frontend
 }  // namespace cs160
