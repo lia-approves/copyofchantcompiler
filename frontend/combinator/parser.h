@@ -17,18 +17,24 @@ namespace frontend {
 template<class T>
 using Parser = std::function<Result<T>(State)>;
 
+template<class T>
+using NodeMaker = std::function<abstract_syntax::frontend::
+
 //  Returns a function which:
 //  runs the parser, then runs f on the result, then returns the final result
-template<class I, class O>
-Parser<O> Apply(Parser<I> parse, std::function<O(I)> f) {
-  return [parse, f](State state) {
-    auto result = parse(state);
-    if (!result.success()) {
-      return Result<O>(state, false, "failed to parse");
-    }
-    return Result<O>(state, f(result.value()));
-  };
-}
+// template<class I, class O>
+// Parser<O> Apply(Parser<I> parse, std::function<O(I)> f) {
+//   return [parse, f](State state) {
+//     auto result = parse(state);
+//     if (!result.success()) {
+//       return Result<O>(state, false, "failed to parse");
+//     }
+//     return Result<O>(state, f(result.value()));
+//   };
+// }
+
+template<T>
+Parser<T> Capture(Parser<T> parser, )
 
 // Return a function which parses a single literal
 Parser<std::string> Literal(char c) {
