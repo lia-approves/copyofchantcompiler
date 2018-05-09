@@ -11,7 +11,8 @@
 
 using std::endl;
 using std::string;
-using cs160::backend::StatementNode;
+using cs160::backend::ir::StatementNode;
+using cs160::backend::ir::Operator;
 namespace cs160 {
 namespace backend {
 

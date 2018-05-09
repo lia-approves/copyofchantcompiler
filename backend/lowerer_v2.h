@@ -8,6 +8,7 @@
 #include <vector>
 #include "backend/ir_v2.h"
 #include "utility/memory.h"
+#include "abstract_syntax/abstract_syntax_tree_v2.h"
 
 using cs160::abstract_syntax::version_2::IntegerExpr;
 using cs160::abstract_syntax::version_2::BinaryOperatorExpr;
@@ -26,6 +27,7 @@ using cs160::backend::Operator;
 using cs160::backend::Register;
 using cs160::backend::Operand;
 using cs160::backend::Variable;
+
 
 
 namespace cs160 {

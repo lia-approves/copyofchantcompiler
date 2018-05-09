@@ -1,4 +1,6 @@
-#include "frontend.h"
+// copyright msg for cpplint
+#include <string>
+#include "frontend/frontend.h"
 #include "frontend/scanner/token/IntegerToken.h"
 #include "frontend/scanner/token/ArithmeticExpressionToken.h"
 #include "frontend/scanner/token/OpenParenthesisToken.h"
@@ -31,7 +33,8 @@ std::queue<Token> Frontend::tokenizeString(std::string input) {
   return q;
 }
 
-std::unique_ptr<ast::AstNode> Frontend::makeParseTree(std::queue<Token> tokens) {
+std::unique_ptr<ast::AstNode> Frontend::makeParseTree(
+  std::queue<Token> tokens) {
   auto two = cs160::make_unique<ast::IntegerExpr>(2);
   auto one = cs160::make_unique<ast::IntegerExpr>(1);
   auto three = cs160::make_unique<ast::IntegerExpr>(3);
