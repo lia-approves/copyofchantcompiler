@@ -51,25 +51,25 @@ Parser<std::string> Literal(char c) {
 
 // Returns a function which checks if a character is within a range of two characters
 Parser<std::string> Range(std::string c) {
-    return [c](std::shared_ptr<State> state) {
-      if (state->atEnd()) {
-        return Result<std::string>(false, "end of file");
+    return [c](State state) {
+      if (state.atEnd()) {
+        return Result<std::string>(state, false, "end of file");
       }
       char a = c.at(0);
       char b = c.at(1);
 
       if(a - 'a' >= b - 'a'){
-        return Result<std::string>(false, "improper range");
+        return Result<std::string>(state, false, "improper range");
       }
 
-      char next = state->readChar();
+      char next = state.readChar();
       if (next - 'a' >= a - 'a' && next - 'a' <= b - 'a'){
-        state->advance();
-        return Result<std::string>(std::string(1, next));
+        state.advance();
+        return Result<std::string>(state, std::string(1, next));
       } else {
         std::string err = "not in range for character: ";
         err += next;
-        return Result<std::string>(false, err);
+        return Result<std::string>(state, false, err);
       }
     };
   }

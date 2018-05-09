@@ -32,31 +32,41 @@ TEST(CombinatorTest, ParseLiteral) {
 }
 
 TEST(CombinatorTest, ParseRange) {
-  std::shared_ptr<State> s(new State("hi"));
+  State s("hi");
   auto parseAZ = Range("az");
   auto resultAZ = parseAZ(s);
-  auto resultAZ2 = parseAZ(s);
+  auto resultAZ2 = parseAZ(resultAZ.state());
 
+  ASSERT_EQ(resultAZ.success(), true);
+  ASSERT_EQ(resultAZ.value(), "h");
+  ASSERT_EQ(resultAZ2.success(), true);
+  ASSERT_EQ(resultAZ2.value(), "i");
+}
+
+TEST(CombinatorTest, ParseRange2) {
+  State s("hi");
   auto parseAG = Range("ag");
   auto resultAG = parseAG(s);
 
+  ASSERT_EQ(resultAG.success(), false);
+}
+
+TEST(CombinatorTest, ParseRange3) {
+  State s("hi");
   auto parseZA = Range("za");
   auto resultZA = parseZA(s);
 
+  ASSERT_EQ(resultZA.success(), false);
+}
+
+TEST(CombinatorTest, ParseRange4) {
+  State s("hi");
   auto parseAH = Range("ah");
   auto resultAH = parseAH(s);
   auto resultAH2 = parseAH(s);
 
-  ASSERT_EQ(resultAZ.success(), true);
-  ASSERT_EQ(resultAZ.value(), 'h');
-  ASSERT_EQ(resultAZ2.success(), true);
-  ASSERT_EQ(resultAZ2.value(), 'i');
-
-  ASSERT_EQ(resultAG.success(), false);
-  ASSERT_EQ(resultZA.success(), false);
-
   ASSERT_EQ(resultAH.success(), true);
-  ASSERT_EQ(resultAH.value(), 'h');
+  ASSERT_EQ(resultAH.value(), "h");
   ASSERT_EQ(resultAH2.success(), false);
 }
 
