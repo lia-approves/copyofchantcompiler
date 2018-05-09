@@ -51,41 +51,29 @@ Parser<std::string> Literal(char c) {
   };
 }
 
-// Returns a function which checks if a character is within a range of two characters
+// Returns a function which checks if a character is within
+// a range of two characters
 Parser<std::string> Range(std::string c) {
-    return [c](std::shared_ptr<State> state) {
-      if (state->atEnd()) {
-        return Result<std::string>(false, "end of file");
+    return [c](State state) {
+      if (state.atEnd()) {
+        return Result<std::string>(state, false, "end of file");
       }
       char a = c.at(0);
       char b = c.at(1);
 
-      if(a - 'a' >= b - 'a'){
-        return Result<std::string>(false, "improper range");
+      if (a - 'a' >= b - 'a') {
+        return Result<std::string>(state, false, "improper range");
       }
-<<<<<<< HEAD
-      while(!state->atEnd()){
-        char next = state->readChar();
-        if(next - 'a' > b - 'a'){
-          return Result<std::string>(false, "greater than range");
-        }else if(next - 'a' < a - 'a'){
-          return Result<std::string>(false, "less than range");
-        }
-      }
-      state->advance();
-      return Result<std::string>(std::string(1, c));
-=======
 
-      char next = state->readChar();
-      if (next - 'a' >= a - 'a' && next - 'a' <= b - 'a'){
-        state->advance();
-        return Result<std::string>(std::string(1, next));
+      char next = state.readChar();
+      if (next - 'a' >= a - 'a' && next - 'a' <= b - 'a') {
+        state.advance();
+        return Result<std::string>(state, std::string(1, next));
       } else {
         std::string err = "not in range for character: ";
         err += next;
-        return Result<std::string>(false, err);
+        return Result<std::string>(state, false, err);
       }
->>>>>>> 537a80f0dac2660aa4c0f28c27b603ac9f4da426
     };
   }
 
@@ -205,18 +193,14 @@ Parser<std::string> StringMatchInsensitive(std::string str) {
       char next_p = state.readChar();
       char next_str = str.at(counter);
       counter++;
-      std::cout << "next_p: " << next_p << std::endl;
-      std::cout << "next_str: " << next_str << std::endl;
 
       while (next_p == ' ' && !state.atEnd()) {
         state.advance();
         next_p = state.readChar();
-        std::cout << "next_p1: " << next_p << std::endl;
       }
       while (next_str == ' ' && counter < str.size()) {
         next_str = str.at(counter);
         counter++;
-        std::cout << "next_str1: " << next_str << std::endl;
       }
 
       if ( (state.atEnd() || counter >= str.size())
@@ -225,7 +209,6 @@ Parser<std::string> StringMatchInsensitive(std::string str) {
         break;
       }
 
-      std::cout << "together: " << next_p << ", " << next_str << std::endl;
       if (next_p != next_str) {
         return Result<std::string>(state, false, "no match for " + str);
       } else {
@@ -236,6 +219,33 @@ Parser<std::string> StringMatchInsensitive(std::string str) {
     // and not reaching end of file
     // therefore, return success
     return Result<std::string>(state, str);
+  };
+}
+
+template <class T>
+Parser<T> Between(Parser<T> parseA, Parser<T> parseB, Parser<T> parseC) {
+  return [parseA, parseB, parseC](State state) {
+    // Save position so we can reset later.
+    int oldPosition = state.position();
+    auto resultA = parseA(state);
+    if (!resultA.success()) {
+      state.setPosition(oldPosition);
+      return Result<T>(state, false, "C is not between A and B");
+    }
+
+    auto resultB = parseB(resultA.state());
+    if (!resultB.success()) {
+      state.setPosition(oldPosition);
+      return Result<T>(state, false, "C is not between A and B");
+    }
+
+    auto resultC = parseC(resultB.state());
+    if (!resultC.success()) {
+      state.setPosition(oldPosition);
+      return Result<T>(state, false, "C is not between A and B");
+    }
+
+    return Result<T>(resultB.state(), resultB.value());
   };
 }
 
