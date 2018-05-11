@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <tuple>
 #include "frontend/combinator/result.h"
 #include "frontend/combinator/state.h"
 #include "utility/memory.h"
@@ -80,6 +81,7 @@ Parser<std::string> Range(std::string c) {
       }
 
       char next = state.readChar();
+
       if (next - 'a' >= a - 'a' && next - 'a' <= b - 'a') {
         state.advance();
         return Result<std::string>(state, std::string(1, next));
@@ -137,7 +139,8 @@ Parser<std::tuple<A, B>> And(Parser<A> parseA, Parser<B> parseB) {
 // Parser<std::vector<T>> Star(Parser<T> parse) {
 //   return [parse](State state) {
 //     std::vector<T> results;
-//     auto currentResult = parse(state);  // Parse first element before the loop
+//     auto currentResult = parse(state);
+// Parse first element before the loop
 //     while (currentResult.success()) {
 //       results.push_back(currentResult.value());
 //       currentResult = parse(currentResult.state());
@@ -277,6 +280,40 @@ Parser<T> Between(Parser<T> parseA, Parser<T> parseB, Parser<T> parseC) {
     }
 
     return Result<T>(resultB.state(), resultB.value());
+  };
+}
+
+//  Returns a function which runs 2 parsers, and returns an array of their
+//  results.
+template<class A, class B, class C>
+Parser<std::tuple<A, B, C>> Sequence
+        (Parser<A> parseA, Parser<B> parseB, Parser<C> parseC) {
+  return [parseA, parseB, parseC](State state) {
+    // Save position so we can reset later.
+    int oldPosition = state.position();
+    auto resultA = parseA(state);
+    if (!resultA.success()) {
+      state.setPosition(oldPosition);
+      return Result<std::tuple<A, B, C>>
+              (state, false, "no match for A, B, and C");
+    }
+    auto resultB = parseB(resultA.state());
+    if (!resultB.success()) {
+      state.setPosition(oldPosition);
+      return Result<std::tuple<A, B, C>>
+              (state, false, "no match for A, B, and C");
+    }
+
+    auto resultC = parseC(resultB.state());
+    if (!resultC.success()) {
+      state.setPosition(oldPosition);
+      return Result<std::tuple<A, B, C>>
+              (state, false, "no match for A, B, and C");
+    }
+
+    std::tuple<A, B, C> res = std::make_tuple
+            (resultA.value(), resultB.value(), resultC.value());
+    return Result<std::tuple<A, B, C>>(resultC.state(), res);
   };
 }
 
