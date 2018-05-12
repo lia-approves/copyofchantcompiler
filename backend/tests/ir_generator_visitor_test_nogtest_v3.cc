@@ -21,11 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
-// g++ -I ../../ -std=c++11 ir_generator_visitor_test_nogtest_v3.cc
 #include <sstream>
 #include <string>
-// #include "gtest/gtest.h"
+//#include "gtest/gtest.h"
 #include "abstract_syntax/abstract_syntax_tree_v3.h"
 #include "utility/memory.h"
 #include "backend/lowerer_v3.h"
@@ -50,7 +48,6 @@ using cs160::backend::AsmProgram;
 
 
 int main() {
-<<<<<<< HEAD
 
   /* made up test
 
@@ -72,63 +69,6 @@ int main() {
   */
   
   Statement::Block statements;
-=======
-  // IrGenVisitor printer;
-  /*auto expr = make_unique<AddExpr>(make_unique<IntegerExpr>(5),
-   make_unique<SubtractExpr>(make_unique<MultiplyExpr>(
-   make_unique<DivideExpr>(make_unique<IntegerExpr>(7),
-   make_unique<IntegerExpr>(5)), make_unique<IntegerExpr>(9)),
-   make_unique<IntegerExpr>(6)));
-  expr->Visit(&printer_);
-    /* Expected output:
-    t1 = 7 divide 5
-    t2 = t1 multiply 9
-    t3 = t2 subtract 6
-    t4 = 5 add t3
-    */
-
-  // auto expr = make_unique<AddExpr>(make_unique<AddExpr>(
-  // make_unique<IntegerExpr>(5), make_unique<IntegerExpr>(7)),
-  // make_unique<AddExpr>(make_unique<IntegerExpr>(1),
-  // make_unique<IntegerExpr>(2)));
-  // expr->Visit(&printer);
-
-
-  // printer.PrintIR();
-  /*std::vector<std::unique_ptr<const Assignment>> assignments;
-  assignments.push_back(std::move(
-    make_unique<const Assignment>(make_unique<const VariableExpr>("bob"),
-      make_unique<const IntegerExpr>(2)))),
-  assignments.push_back(std::move(
-    make_unique<const Assignment>(make_unique<const VariableExpr>("secretNum"),
-      make_unique<const IntegerExpr>(69))));
-  assignments.push_back(std::move(
-    make_unique<const Assignment>(make_unique<const VariableExpr>("scouterReading"),
-      make_unique<const IntegerExpr>(9001))));
-  assignments.push_back(std::move(
-    make_unique<const Assignment>(make_unique<const VariableExpr>("hamburgers"),
-      make_unique<const DivideExpr>(make_unique<const IntegerExpr>(12),
-        make_unique<const IntegerExpr>(3)))));
-  assignments.push_back(std::move(
-    make_unique<const Assignment>(make_unique<const VariableExpr>("jim"), make_unique<const AddExpr>(
-      make_unique<const SubtractExpr>(
-        make_unique<const DivideExpr>(make_unique<const IntegerExpr>(12),
-          make_unique<const IntegerExpr>(3)),
-        make_unique<const IntegerExpr>(4)),
-      make_unique<const MultiplyExpr>(make_unique<const IntegerExpr>(3),
-        make_unique<const VariableExpr>("secretNum"))))));
-
-
-  auto ae = make_unique<const MultiplyExpr>(make_unique<const AddExpr>(
-    make_unique<const SubtractExpr>(
-      make_unique<const DivideExpr>(make_unique<const IntegerExpr>(20),
-        make_unique<const VariableExpr>("bob")),
-      make_unique<const IntegerExpr>(30)),
-    make_unique<const AddExpr>(make_unique<const VariableExpr>("scouterReading"),
-      make_unique<const VariableExpr>("jim"))), make_unique<const IntegerExpr>(2));
-
-  auto ast = make_unique<const Program>(std::move(assignments), std::move(ae));/*
->>>>>>> 160c71cb371d2b02a6df186bc1ee1c5891334f42
 
   Statement::Block truebody;
   truebody.push_back(std::move(make_unique<const Assignment>(
@@ -166,9 +106,10 @@ int main() {
               make_unique<const VariableExpr>("b"),
               make_unique<const VariableExpr>("c")),
             make_unique<const IntegerExpr>(50)),
-          make_unique<const LessThanExpr>(
-            make_unique<const VariableExpr>("c"),
-            make_unique<const IntegerExpr>(10))),
+          make_unique<const LogicalNotExpr>(
+            make_unique<const GreaterThanExpr>(
+              make_unique<const VariableExpr>("c"),
+              make_unique<const IntegerExpr>(10)))),
         make_unique<const LogicalAndExpr>(
           make_unique<const LessThanExpr>(
             make_unique<const VariableExpr>("i"),
@@ -201,7 +142,6 @@ int main() {
         make_unique<const IntegerExpr>(9))),
     std::move(truebody), std::move(falsebody))));
 
-<<<<<<< HEAD
  
 
   auto ae = make_unique<const AddExpr>(make_unique<const VariableExpr>("a"), make_unique<const VariableExpr>("b"));
@@ -212,16 +152,6 @@ int main() {
   /*
   bob = 42
   if ((bob<100 && bob>0) || (bob =<100 && bob =>0)) {
-=======
-  // bob = 2
-  // secretNum = 69
-  // scouterReading = 9001
-  // hamburgers = 12 / 3
-  // jim = ((12 / 3) - 4) + (3 * secretNum)
-  // (((20 / bob) - 30) + (scouterReading + jim)) * 2
-
-
->>>>>>> 160c71cb371d2b02a6df186bc1ee1c5891334f42
 
   } else {
 
@@ -268,7 +198,6 @@ int main() {
     make_unique<const LogicalNotExpr>(
       make_unique<const EqualToExpr>(make_unique<const VariableExpr>("bob"),
         make_unique<const IntegerExpr>(0))),
-<<<<<<< HEAD
     std::move(body))));
 
   auto ae = make_unique<const AddExpr>(
@@ -278,124 +207,10 @@ int main() {
       make_unique<const IntegerExpr>(4)),
     make_unique<const MultiplyExpr>(make_unique<const IntegerExpr>(3),
       make_unique<const IntegerExpr>(2)));
-=======
-    std::move(body))));*/
-
-
-
-
-
-
-
-
-
-
-
-    ////////////////////
-
-
-
-Statement::Block statements;
-statements.push_back(std::move(
-  make_unique<const Assignment>(make_unique<const VariableExpr>("a"),
-    make_unique<const IntegerExpr>(10))));
-statements.push_back(std::move(
-  make_unique<const Assignment>(make_unique<const VariableExpr>("i"),
-    make_unique<const IntegerExpr>(20))));
-
-Statement::Block body;  // i=i-1
-body.push_back(std::move(make_unique<const Assignment>(
-  make_unique<const VariableExpr>("i"),
-  make_unique<const AddExpr>(make_unique<const VariableExpr>("i"),
-    make_unique<const IntegerExpr>(1)))));
-auto ae = make_unique<const AddExpr>(make_unique<const VariableExpr>("i"),
-make_unique<const IntegerExpr>(50));
-
-  Statement::Block falsebody;
-
-  Statement::Block truebody;
-  truebody.push_back(std::move(make_unique<const Assignment>(
-    make_unique<const VariableExpr>("a"),
-    make_unique<const IntegerExpr>(10))));
-  truebody.push_back(std::move(make_unique<const Assignment>(
-    make_unique<const VariableExpr>("b"),
-    make_unique<const IntegerExpr>(1))));
-
-  falsebody.push_back(std::move(make_unique<const Assignment>(
-    make_unique<const VariableExpr>("a"),
-    make_unique<const IntegerExpr>(1))));
-  falsebody.push_back(std::move(make_unique<const Assignment>(
-    make_unique<const VariableExpr>("b"),
-    make_unique<const IntegerExpr>(5))));
-  falsebody.push_back(std::move(make_unique<const Assignment>(
-    make_unique<const VariableExpr>("c"),
-    make_unique<const IntegerExpr>(3))));
-
-  body.push_back(std::move(make_unique<const Conditional>(
-    make_unique<const LessThanExpr>(make_unique<const VariableExpr>("a"),
-      make_unique<const IntegerExpr>(5)),
-    std::move(truebody), std::move(falsebody))));
-  statements.push_back(std::move(make_unique<const Loop>(
-    make_unique<const LessThanExpr>(make_unique<const VariableExpr>("i"),
-      make_unique<const IntegerExpr>(15)),
-    std::move(body))));
-
-  auto ast = make_unique<const Program>(std::move(statements), std::move(ae));
-
-
-
-
-
-
-
-/*
-
-Statement::Block statements;//
-
-statements.push_back(std::move(
-  make_unique<const Assignment>(make_unique<const VariableExpr>("a"),
-    make_unique<const IntegerExpr>(10))));
-statements.push_back(std::move(
-  make_unique<const Assignment>(make_unique<const VariableExpr>("b"),
-    make_unique<const IntegerExpr>(20))));
-
-Statement::Block falsebody;
-Statement::Block truebody;
-truebody.push_back(std::move(make_unique<const Assignment>(
-  make_unique<const VariableExpr>("a"),
-  make_unique<const IntegerExpr>(10))));
-truebody.push_back(std::move(make_unique<const Assignment>(
-  make_unique<const VariableExpr>("b"),
-  make_unique<const IntegerExpr>(1))));
-
-falsebody.push_back(std::move(make_unique<const Assignment>(
-  make_unique<const VariableExpr>("a"),
-  make_unique<const IntegerExpr>(1))));
-falsebody.push_back(std::move(make_unique<const Assignment>(
-  make_unique<const VariableExpr>("b"),
-  make_unique<const IntegerExpr>(5))));
-falsebody.push_back(std::move(make_unique<const Assignment>(
-  make_unique<const VariableExpr>("c"),
-  make_unique<const IntegerExpr>(3))));
-
-statements.push_back(std::move(make_unique<const Conditional>(
-
-  make_unique<const LessThanExpr>(
-    make_unique<const VariableExpr>("b"),
-    make_unique<const IntegerExpr>(20)),
-  std::move(truebody), std::move(falsebody))));
-
->>>>>>> 160c71cb371d2b02a6df186bc1ee1c5891334f42
 
   auto ast = make_unique<const Program>(std::move(statements), std::move(ae));
   */
 
-<<<<<<< HEAD
-=======
-auto ast = make_unique<const Program>(std::move(statements), std::move(ae));*/
-
-
->>>>>>> 160c71cb371d2b02a6df186bc1ee1c5891334f42
   IrGenVisitor irGen;
   ast->Visit(&irGen);
   irGen.PrintIR();
