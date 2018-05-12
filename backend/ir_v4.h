@@ -72,7 +72,9 @@ namespace cs160 {
         int GetValue() {}                          
         std::string GetName() { return name_; }
         void SetValue(int value) {}
-        void PushToAsmSS(stringstream& ss) { ss << "push " << GetStackOffset() << "(%rbp)" << endl; }
+        void PushToAsmSS(stringstream& ss) { 
+          //ss << "push " << GetStackOffset() << "(%rbp)" << endl; 
+        }
         void PopToAsmSS(stringstream& ss, string register_) { ss << "pop " << GetStackOffset() << "(%rbp)" << endl; }
         void SetStackOffset(int offset) { stackOffSet_ = offset; }
         int GetStackOffset() { return stackOffSet_; }
@@ -89,7 +91,9 @@ namespace cs160 {
         int GetValue() { return value_; }
         void SetValue(int value) { value_ = value; }
         std::string GetName() { return std::to_string(value_); }
-        void PushToAsmSS(stringstream& ss) { ss << "push $" << value_ << endl; }
+        void PushToAsmSS(stringstream& ss) { 
+          //ss << "push $" << value_ << endl; 
+        }
         void PopToAsmSS(stringstream& ss, string register_) { ss << "pop " << register_ << endl; }
         void SetStackOffset(int offset) {  }
         int GetStackOffset() { }

@@ -76,7 +76,7 @@ int main() {
   arguments.push_back(std::move(make_unique<const AddExpr>(make_unique<const IntegerExpr>(1), make_unique<const IntegerExpr>(1))));
   Statement::Block statements;
   statements.push_back(std::move(make_unique<const FunctionCall>( make_unique<const VariableExpr>("foo_retval"), "foo", std::move(arguments))));
-  auto ae = make_unique<const AddExpr>( make_unique<const IntegerExpr>(12), make_unique<const VariableExpr>("foo_retval"));
+  auto ae = make_unique<const IntegerExpr>(12);
   auto ast = make_unique<const Program>(std::move(function_defs),
   std::move(statements), std::move(ae));
 /*  

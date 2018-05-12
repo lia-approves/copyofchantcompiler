@@ -111,15 +111,6 @@ namespace cs160 {
         asm_sstring_ << "push %rax" << endl << endl;
         break;
       case Operator::kAssign:
-        /*if (asm_sstring_variables_
-          .str()
-          .find(node->GetTarget()->GetName()) == std::string::npos) {
-          asm_sstring_variables_ << node->GetTarget()->GetName() << ":" << endl;
-          asm_sstring_variables_ << "  .quad  0" << endl;
-        }
-        else {
-          // do not add same definition of variable if its already there
-        }*/
         asm_sstring_ << "pop " << node->GetTarget()->GetStackOffset() << "(%rbp)" << endl;
         break;
       case Operator::kLessThan:

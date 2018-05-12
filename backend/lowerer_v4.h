@@ -50,7 +50,7 @@ using std::cout;
 
 namespace cs160 {
   namespace backend {
-    class VariableCountVisitor : public AstVisitor {
+    class CountVisitor : public AstVisitor {
     public:
       void VisitIntegerExpr(const IntegerExpr& exp) override {  }
 
@@ -155,10 +155,6 @@ namespace cs160 {
         program.arithmetic_exp().Visit(this);
       }
       void VisitFunctionCall(const FunctionCall& call) override {
-        /*call.lhs().Visit(this);
-        for (auto& arg : call.arguments()) {
-          arg->Visit(this);
-        }*/
         bool found = std::find(variables_.begin(), variables_.end(), (call.lhs().name())) != variables_.end();
         if (!found) {
           variables_.push_back(call.lhs().name());
@@ -166,16 +162,7 @@ namespace cs160 {
         }
       }
 
-      void VisitFunctionDef(const FunctionDef& def) override {
-        /*for (auto& param : def.parameters()) {
-          param->Visit(this);
-        }
-        for (auto& statement : def.function_body()) {
-          statement->Visit(this);
-        }
-        def.retval().Visit(this);*/
-      }
-
+      void VisitFunctionDef(const FunctionDef& def) override { }
 
       int count() { return count_; }
 
@@ -193,8 +180,6 @@ namespace cs160 {
           tobe_deleted = tobe_deleted->GetNext();
         }
       }
-
-
 
       void VisitAddExpr(const AddExpr& exp) {
         exp.lhs().Visit(this);
@@ -273,30 +258,63 @@ namespace cs160 {
       }
       void VisitIntegerExpr(const IntegerExpr& exp) {
         stack_.push_back(new Constant(exp.value()));
+        string main = "push $";
+        main.append(std::to_string(exp.value()));
+        main.append("\n");
+        //                void PushToAsmSS(stringstream& ss) { ss << "push $" << value_ << endl; }
+        StatementNode* newhead = new StatementNode(
+          new Label(labelNum_++),
+          new Text(main),
+          new Operator(Operator::kPrint),
+          nullptr,
+          nullptr,
+          nullptr
+        );
+        AddToEnd(newhead);
       }
       void VisitVariableExpr(const VariableExpr& exp) {
         stack_.push_back(new Variable(exp.name()));
+        int pos;
+        int stackOffset;
         bool foundinParams = std::find(paramVariables_.begin(), paramVariables_.end(), (exp.name())) != paramVariables_.end();
         if (foundinParams) {
-          int pos = std::distance(paramVariables_.begin(), std::find(paramVariables_.begin(), paramVariables_.end(), exp.name()));
-          stack_.back()->SetStackOffset(1 * ((pos + 2) * 8));
+          pos = std::distance(paramVariables_.begin(), std::find(paramVariables_.begin(), paramVariables_.end(), exp.name()));
+          stackOffset = 1 * ((pos + 2) * 8);
+          stack_.back()->SetStackOffset(stackOffset);
         }
         else {
           if (scanningParams_ == false) {
             bool found = std::find(localVariables_.begin(), localVariables_.end(), (exp.name())) != localVariables_.end();
             if (!found) { localVariables_.push_back(exp.name()); }
             else {}
-            int pos = std::distance(localVariables_.begin(), std::find(localVariables_.begin(), localVariables_.end(), exp.name()));
-            stack_.back()->SetStackOffset(-1 * ((pos + 1) * 8));
+            pos = std::distance(localVariables_.begin(), std::find(localVariables_.begin(), localVariables_.end(), exp.name()));
+            stackOffset = -1 * ((pos + 1) * 8);
+            stack_.back()->SetStackOffset(stackOffset);
           }
           else if (scanningParams_ == true) {
             bool found = std::find(paramVariables_.begin(), paramVariables_.end(), (exp.name())) != paramVariables_.end();
             if (!found) { paramVariables_.push_back(exp.name()); }
             else {}
-            int pos = std::distance(paramVariables_.begin(), std::find(paramVariables_.begin(), paramVariables_.end(), exp.name()));
-            stack_.back()->SetStackOffset(1 * ((pos + 2) * 8));
+            pos = std::distance(paramVariables_.begin(), std::find(paramVariables_.begin(), paramVariables_.end(), exp.name()));
+            stackOffset = 1 * ((pos + 2) * 8);
+            stack_.back()->SetStackOffset(stackOffset);
           }
         }
+        string main = "push ";
+        main.append(std::to_string( stackOffset));
+        main.append("(%rbp)\n");
+        //                          //ss << "push " << GetStackOffset() << "(%rbp)" << endl; 
+
+        StatementNode* newhead = new StatementNode(
+          new Label(labelNum_++),
+          new Text(main),
+          new Operator(Operator::kPrint),
+          nullptr,
+          nullptr,
+          nullptr
+        );
+        AddToEnd(newhead);
+
       }
       void VisitAssignment(const Assignment& assignment) {
         int pos;
@@ -343,7 +361,7 @@ namespace cs160 {
         for (auto& def : program.function_defs()) {
           def->Visit(this);
         }
-        VariableCountVisitor varCount;
+        CountVisitor varCount;
         for (auto& statement : program.statements()) { statement->Visit(&varCount); }
         mainVars_ = varCount.count();
         string main = ".global main\n.text\nmain:\nmov %rsp, %rbp";
@@ -370,7 +388,7 @@ namespace cs160 {
         localVariables_.clear();
       }
       void VisitFunctionCall(const FunctionCall& call) override {
-        VariableCountVisitor argCount;
+        CountVisitor argCount;
         for (auto& arg : call.arguments()) {
           arg->Visit(&argCount);
         }
@@ -465,13 +483,13 @@ namespace cs160 {
           nullptr,
           nullptr);
         AddToEnd(newhead);
-        VariableCountVisitor paramVarsCounter;
+        CountVisitor paramVarsCounter;
         scanningParams_ = true;
         for (auto& param : def.parameters()) {
           param->Visit(&paramVarsCounter);
         }
         int numParamVar = paramVarsCounter.count();
-        VariableCountVisitor localVarsCounter;
+        CountVisitor localVarsCounter;
         scanningParams_ = true;
         for (auto& param : def.parameters()) {
           param->Visit(&localVarsCounter);
