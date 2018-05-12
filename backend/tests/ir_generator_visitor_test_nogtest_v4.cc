@@ -83,6 +83,7 @@ int main() {
     //function definition:
     def foo(bob) {
       bob = bob + 8
+      a = 45
       return bob + 5
     }
 
