@@ -64,8 +64,8 @@ using cs160::backend::AsmProgram;
 int main() {
 
   Statement::Block foo_statements;
-  foo_statements.push_back(std::move(make_unique<const Assignment>( make_unique<const VariableExpr>("bob"), make_unique<const AddExpr>(make_unique<const VariableExpr>("bob"), make_unique<const IntegerExpr>(8)))));
   foo_statements.push_back(std::move(make_unique<const Assignment>(make_unique<const VariableExpr>("a"), make_unique<const IntegerExpr>(45))));
+  foo_statements.push_back(std::move(make_unique<const Assignment>( make_unique<const VariableExpr>("bob"), make_unique<const AddExpr>(make_unique<const VariableExpr>("bob"), make_unique<const IntegerExpr>(8)))));
   auto foo_retval = make_unique<const AddExpr>( make_unique<const VariableExpr>("bob"),make_unique<const IntegerExpr>(5));
   auto foo_params = std::vector<std::unique_ptr<const VariableExpr>>();
   foo_params.push_back(std::move(make_unique<const VariableExpr>("bob")));
@@ -73,23 +73,27 @@ int main() {
   FunctionDef::Block function_defs;
   function_defs.push_back(std::move(foo_def));
   auto arguments = std::vector<std::unique_ptr<const ArithmeticExpr>>();
-  arguments.push_back(std::move(make_unique<const AddExpr>(make_unique<const IntegerExpr>(1), make_unique<const IntegerExpr>(1))));
+  arguments.push_back(std::move(make_unique<const IntegerExpr>(17)));
   Statement::Block statements;
+  statements.push_back(std::move(make_unique<const Assignment>(make_unique<const VariableExpr>("y"), make_unique<const IntegerExpr>(9))));
+  statements.push_back(std::move(make_unique<const Assignment>(make_unique<const VariableExpr>("x"), make_unique<const IntegerExpr>(1))));
   statements.push_back(std::move(make_unique<const FunctionCall>( make_unique<const VariableExpr>("foo_retval"), "foo", std::move(arguments))));
-  auto ae = make_unique<const IntegerExpr>(12);
+  auto ae = make_unique<const AddExpr>( make_unique<const IntegerExpr>(12), make_unique<const VariableExpr>("foo_retval"));
   auto ast = make_unique<const Program>(std::move(function_defs),
   std::move(statements), std::move(ae));
 /*  
     //function definition:
     def foo(bob) {
+      a=45
       bob = bob + 8
-      a = 45
       return bob + 5
     }
 
     //main function:
-    foo_retval=foo(1+1)
-    print 12+foo_retval 
+    y=9
+    x=1
+    foo_retval=foo(17)
+    12+foo_retval 
  */
 
 

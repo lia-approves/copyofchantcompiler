@@ -14,17 +14,17 @@ sub $8, %rsp
 /*push 16(%rbp)
 */
 # S3:  print
-/*push 16(%rbp)
-*/
-# S4:  print
-/*push $8
-*/
-# S5:  t1 = bob + 8
-# S6:  bob = t1
-# S7:  print
 /*push $45
 */
-# S8:  a = 45
+# S4:  a = 45
+# S5:  print
+/*push 16(%rbp)
+*/
+# S6:  print
+/*push $8
+*/
+# S7:  t1 = bob + 8
+# S8:  bob = t1
 # S9:  print
 /*push 16(%rbp)
 */
@@ -44,29 +44,37 @@ ret*/
 .text
 main:
 mov %rsp, %rbp*/
-# S15:  alloc 8*1 bytes:
+# S15:  alloc 8*3 bytes:
 # S16:  print
+/*push $9
+*/
+# S17:  y = 9
+# S18:  print
 /*push $1
 */
-# S17:  print
-/*push $1
-*/
-# S18:  t3 = 1 + 1
-# S19:  print
-/*call foo
-*/
+# S19:  x = 1
 # S20:  print
-/*push %rax
+/*push $17
 */
 # S21:  print
-/*pop -8(%rbp)
+/*call foo
 */
 # S22:  print
-/*add $8, %rsp
+/*push %rax
 */
 # S23:  print
+/*pop -24(%rbp)
+*/
+# S24:  print
+/*add $8, %rsp
+*/
+# S25:  print
 /*push $12
 */
+# S26:  print
+/*push -24(%rbp)
+*/
+# S27:  t3 = 12 + foo_retval
 
 #### End of IR ####
 
@@ -95,15 +103,24 @@ push 16(%rbp)
 
 statementnumber_3:
 
-push 16(%rbp)
+push $45
 
 
 statementnumber_4:
 
+pop -8(%rbp)
+
+statementnumber_5:
+
+push 16(%rbp)
+
+
+statementnumber_6:
+
 push $8
 
 
-statementnumber_5:
+statementnumber_7:
 
 pop %rax
 pop %rbx
@@ -111,18 +128,9 @@ add %rax, %rbx
 push %rbx
 
 
-statementnumber_6:
-
-pop 16(%rbp)
-
-statementnumber_7:
-
-push $45
-
-
 statementnumber_8:
 
-pop -8(%rbp)
+pop 16(%rbp)
 
 statementnumber_9:
 
@@ -162,49 +170,67 @@ mov %rsp, %rbp
 
 statementnumber_15:
 
-sub $8, %rsp
+sub $24, %rsp
 
 statementnumber_16:
 
-push $1
+push $9
 
 
 statementnumber_17:
 
+pop -8(%rbp)
+
+statementnumber_18:
+
 push $1
 
 
-statementnumber_18:
+statementnumber_19:
+
+pop -16(%rbp)
+
+statementnumber_20:
+
+push $17
+
+
+statementnumber_21:
+
+call foo
+
+
+statementnumber_22:
+
+push %rax
+
+
+statementnumber_23:
+
+pop -24(%rbp)
+
+
+statementnumber_24:
+
+add $8, %rsp
+
+
+statementnumber_25:
+
+push $12
+
+
+statementnumber_26:
+
+push -24(%rbp)
+
+
+statementnumber_27:
 
 pop %rax
 pop %rbx
 add %rax, %rbx
 push %rbx
-
-
-statementnumber_19:
-
-call foo
-
-
-statementnumber_20:
-
-push %rax
-
-
-statementnumber_21:
-
-pop -8(%rbp)
-
-
-statementnumber_22:
-
-add $8, %rsp
-
-
-statementnumber_23:
-
-push $12
 
 #### End of Statements ####
 
@@ -215,7 +241,7 @@ xor     %rax, %rax
 call    printf
 
 ##DESTROY LOCAL VARS
-add $8, %rsp
+add $24, %rsp
 ##end DESTROY LOCAL VARS
 
   ret
