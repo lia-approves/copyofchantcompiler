@@ -54,6 +54,8 @@ class IrGenVisitor : public AstVisitor {
       tobe_deleted = tobe_deleted->GetNext();
     }
   }
+private:
+  int num_vars_;
 
   void VisitIntegerExpr(const IntegerExpr& exp) {
     stack_.push_back(new Constant(exp.value()));
