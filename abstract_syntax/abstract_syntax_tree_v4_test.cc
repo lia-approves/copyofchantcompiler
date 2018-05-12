@@ -224,6 +224,7 @@ TEST(AstTestV4, CanCreateAst) {
   arguments.push_back(std::move(make_unique<const IntegerExpr>(42)));
 
   Statement::Block statements;
+
   statements.push_back(std::move(make_unique<const FunctionCall>(
       make_unique<const VariableExpr>("foo_retval"), "foo",
       std::move(arguments))));
