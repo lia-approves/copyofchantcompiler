@@ -26,6 +26,7 @@ class AsmProgram {
   void GenerateASM(StatementNode* node);
   stringstream asm_sstring_;
   stringstream asm_sstring_variables_;
+  int num_vars_ = 0;
 };
 
   void AsmProgram::IrToAsm(StatementNode* head) {
@@ -104,6 +105,9 @@ class AsmProgram {
         .find(node->GetTarget()->GetName()) == std::string::npos) {
         asm_sstring_variables_ << node->GetTarget()->GetName() << ":" << endl;
         asm_sstring_variables_ << "  .quad  0" << endl;
+
+        node->GetTarget()->SetOffset(num_vars_ * 8);
+        num_vars_++;
       } else {
         // do not add same definition of variable if its already there
       }

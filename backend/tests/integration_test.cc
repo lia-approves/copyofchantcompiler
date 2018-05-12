@@ -176,7 +176,7 @@ TEST(ExecuteASM, AndNotOr) {
             make_unique<const VariableExpr>("b"),
             make_unique<const IntegerExpr>(-1)))),
       std::move(truebody), std::move(falsebody))));
-  
+
   auto ae = make_unique<const AddExpr>(
               make_unique<VariableExpr>("a"),
               make_unique<IntegerExpr>(0));
@@ -186,13 +186,13 @@ TEST(ExecuteASM, AndNotOr) {
   ast->Visit(&irGen);
 
   AsmProgram testasm;
-  irGen.PrintIR(); //see IR
+  irGen.PrintIR();  // see IR
   testasm.IrToAsm(irGen.GetIR());
 
   std::ofstream test_output_file;
   test_output_file.open("testfile.s");
   test_output_file << testasm.GetASMString();
-  //std::cout << testasm.GetASMString(); //see assembly
+  // std::cout << testasm.GetASMString(); //see assembly
   test_output_file.close();
   system("gcc testfile.s && ./a.out > test_output.txt");
 
@@ -205,4 +205,3 @@ TEST(ExecuteASM, AndNotOr) {
 
   EXPECT_EQ("1", output);
 }
-
