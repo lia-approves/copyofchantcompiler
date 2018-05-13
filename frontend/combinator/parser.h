@@ -115,22 +115,26 @@ Parser<T> Or(Parser<T> parseA, Parser<T> parseB) {
 //  Returns a function which runs 2 parsers, and returns an array of their
 //  results.  If either fails, it returns failure
 template<class A, class B>
-Parser<std::tuple<A, B>> And(Parser<A> parseA, Parser<B> parseB) {
-  return [parseA, parseB](State state) {
+Parser<std::tuple<std::unique_ptr<A>, std::unique_ptr<B>>> And(Parser<A> parseA, Parser<B> parseB) {
+  return [parseA, parseB](State state) -> Result<std::tuple<std::unique_ptr<A>, std::unique_ptr<B>>> {
     // Save position so we can reset later.
     int oldPosition = state.position();
     auto resultA = parseA(state);
     if (!resultA.success()) {
       state.setPosition(oldPosition);
-      return Result<std::tuple<A, B>>(state, false, "no match for A and B");
+      return Result<std::tuple<std::unique_ptr<A>, std::unique_ptr<B>>>(state, false, "no match for A and B");
     }
     auto resultB = parseB(resultA.state());
     if (!resultB.success()) {
       state.setPosition(oldPosition);
-      return Result<std::tuple<A, B>>(state, false, "no match for A and B");
+      return Result<std::tuple<std::unique_ptr<A>, std::unique_ptr<B>>>(state, false, "no match for A and B");
     }
-    std::tuple<A, B> res = std::make_tuple(resultA.value(), resultB.value());
-    return Result<std::tuple<A, B>>(resultB.state(), res);
+    std::unique_ptr<A> ra = resultA.value();
+    std::unique_ptr<A> rb = resultB.value();
+    auto res = std::make_tuple(std::move(ra), std::move(rb));
+    std::unique_ptr<std::tuple<std::unique_ptr<A>, std::unique_ptr<B>>> r;
+    r.reset(&res);
+    return Result<std::tuple<std::unique_ptr<A>, std::unique_ptr<B>>>(resultB.state(), std::move(r));
   };
 }
 
