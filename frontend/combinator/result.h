@@ -11,7 +11,7 @@
 namespace cs160 {
 namespace frontend {
 
-template<typename T>
+template<typename T, typename Container = std::unique_ptr<T>>
 class Result {
  public:
   explicit Result(State state, bool success, std::string errorMessage)
@@ -41,7 +41,7 @@ class Result {
 
  private:
   State state_;
-  std::unique_ptr<T> value_;
+  Container value_;
   std::string error_;
   bool success_;
   std::unique_ptr<abstract_syntax::frontend::AstNode> lastNode_;
