@@ -32,10 +32,10 @@ TEST(CombinatorTest, ParseLiteral) {
   auto resultH = parseH(s);
   ASSERT_EQ(resultH.success(), true);
   ASSERT_EQ(resultI.success(), false);
-  ASSERT_EQ(*resultH.value(), "h");
+  ASSERT_EQ(resultH.value(), "h");
   auto successfulResultI = parseI(resultH.state());
   ASSERT_EQ(successfulResultI.success(), true);
-  ASSERT_EQ(*successfulResultI.value(), "i");
+  ASSERT_EQ(successfulResultI.value(), "i");
 }
 
 TEST(CombinatorTest, ParseRange) {
@@ -45,9 +45,9 @@ TEST(CombinatorTest, ParseRange) {
   auto resultAZ2 = parseAZ(resultAZ.state());
 
   ASSERT_EQ(resultAZ.success(), true);
-  ASSERT_EQ(*resultAZ.value(), "h");
+  ASSERT_EQ(resultAZ.value(), "h");
   ASSERT_EQ(resultAZ2.success(), true);
-  ASSERT_EQ(*resultAZ2.value(), "i");
+  ASSERT_EQ(resultAZ2.value(), "i");
 }
 
 TEST(CombinatorTest, ParseRange2) {
@@ -70,10 +70,10 @@ TEST(CombinatorTest, ParseRange4) {
   State s("hi");
   auto parseAH = Range("ah");
   auto resultAH = parseAH(s);
-  auto resultAH2 = parseAH(resultAH.state());
+  auto resultAH2 = parseAH(s);
 
   ASSERT_EQ(resultAH.success(), true);
-  ASSERT_EQ(*resultAH.value(), "h");
+  ASSERT_EQ(resultAH.value(), "h");
   ASSERT_EQ(resultAH2.success(), false);
 }
 
@@ -82,24 +82,24 @@ TEST(CombinatorTest, ParseOr) {
   auto parser = Or<std::string>(Literal('a'), Literal('h'));
   auto successResult = parser(s);
   ASSERT_EQ(successResult.success(), true);
-  ASSERT_EQ(*successResult.value(), "h");
+  ASSERT_EQ(successResult.value(), "h");
 
   auto failResult = parser(successResult.state());
   ASSERT_EQ(failResult.success(), false);
 }
 
-// TEST(CombinatorTest, ParseAnd) {
-//   State s("hi");
-//   auto failParse = And<std::string, std::string>(Literal('h'), Literal('a'));
-//   auto parse = And<std::string, std::string>(Literal('h'), Literal('i'));
-//   auto fail = failParse(s);
-//   auto result = parse(s);
-//   ASSERT_EQ(fail.success(), false);
-//   ASSERT_EQ(result.success(), true);
-//   auto[first, second] = result.value();
-//   ASSERT_EQ(first, "h");
-//   ASSERT_EQ(second, "i");
-// }
+TEST(CombinatorTest, ParseAnd) {
+  State s("hi");
+  auto failParse = And<std::string, std::string>(Literal('h'), Literal('a'));
+  auto parse = And<std::string, std::string>(Literal('h'), Literal('i'));
+  auto fail = failParse(s);
+  auto result = parse(s);
+  ASSERT_EQ(fail.success(), false);
+  ASSERT_EQ(result.success(), true);
+  auto[first, second] = result.value();
+  ASSERT_EQ(first, "h");
+  ASSERT_EQ(second, "i");
+}
 
 TEST(CombinatorTest, NotTest) {
   State s("a");
@@ -109,6 +109,7 @@ TEST(CombinatorTest, NotTest) {
   auto success = successParse(s);
   ASSERT_EQ(fail.success(), false);
   ASSERT_EQ(success.success(), true);
+  ASSERT_EQ(success.value()[0], '!');
 }
 
 TEST(CombinatorTest, ExactMatchTest) {
@@ -118,9 +119,9 @@ TEST(CombinatorTest, ExactMatchTest) {
   auto success1 = parse1(s1);
   ASSERT_EQ(success1.success(), true);
   auto val = success1.value();
-  ASSERT_EQ(val->at(0), 'h');
-  ASSERT_EQ(val->at(1), 'e');
-  ASSERT_EQ(val->at(2), 'y');
+  ASSERT_EQ(val[0], 'h');
+  ASSERT_EQ(val[1], 'e');
+  ASSERT_EQ(val[2], 'y');
 
   // test with spaces
   State s2("hello world");
@@ -128,17 +129,17 @@ TEST(CombinatorTest, ExactMatchTest) {
   auto success2 = parse2(s2);
   ASSERT_EQ(success2.success(), true);
   auto val2 = success2.value();
-  ASSERT_EQ(val2->at(0), 'h');
-  ASSERT_EQ(val2->at(1), 'e');
-  ASSERT_EQ(val2->at(2), 'l');
-  ASSERT_EQ(val2->at(3), 'l');
-  ASSERT_EQ(val2->at(4), 'o');
-  ASSERT_EQ(val2->at(5), ' ');
-  ASSERT_EQ(val2->at(6), 'w');
-  ASSERT_EQ(val2->at(7), 'o');
-  ASSERT_EQ(val2->at(8), 'r');
-  ASSERT_EQ(val2->at(9), 'l');
-  ASSERT_EQ(val2->at(10), 'd');
+  ASSERT_EQ(val2[0], 'h');
+  ASSERT_EQ(val2[1], 'e');
+  ASSERT_EQ(val2[2], 'l');
+  ASSERT_EQ(val2[3], 'l');
+  ASSERT_EQ(val2[4], 'o');
+  ASSERT_EQ(val2[5], ' ');
+  ASSERT_EQ(val2[6], 'w');
+  ASSERT_EQ(val2[7], 'o');
+  ASSERT_EQ(val2[8], 'r');
+  ASSERT_EQ(val2[9], 'l');
+  ASSERT_EQ(val2[10], 'd');
 
   State s3("nope");
   auto parseFail = ExactMatch("yes!");
@@ -173,7 +174,7 @@ TEST(CombinatorTest, BetweenTest) {
   auto parse = Between(Literal('('), Literal('h'), Literal(')'));
   auto success = parse(s1);
   ASSERT_EQ(success.success(), true);
-  ASSERT_EQ(success.value()->at(0), 'h');
+  ASSERT_EQ(success.value()[0], 'h');
 
   State s2("heh");
   auto parseFail = Between(Literal('h'), Literal('a'), Literal('h'));
@@ -193,8 +194,8 @@ TEST(CombinatorTest, BetweenTest) {
 
 TEST(CombinatorTest, CaptureIntNode) {
   State s("1");
-  auto parseIntNode = Capture<string>(Literal('1'), [](std::unique_ptr<string> s) {
-    return std::unique_ptr<AstNode>(new IntegerExpr(std::stoi(*s)));
+  auto parseIntNode = Capture<string>(Literal('1'), [](string s) {
+    return std::unique_ptr<AstNode>(new IntegerExpr(std::stoi(s)));
   });
   auto result = parseIntNode(s);
   abstract_syntax::frontend::PrintVisitor printer_;
@@ -204,14 +205,11 @@ TEST(CombinatorTest, CaptureIntNode) {
 
 // TEST(CombinatorTest, CaptureNegativeInt) {
 //   State s("-1");
-//   auto parseInt = Capture<string>(Literal('1'), [](string s) {
+//   auto parseIntNode1 = Capture<string>(Literal('1'), [](string s) {
 //     return std::unique_ptr<AstNode>(new IntegerExpr(std::stoi(s)));
 //   });
-//   auto parse = Capture<std::tuple<string, Node>>(And(Literal('-'), parseInt), [](std::tuple<string, Node> i) {
-//     //return std::unique_ptr<AstNode>(new SubtractExpr(0, std::move(std::get<1>(i))));
-//     return std::unique_ptr<AstNode>(new IntegerExpr(1));
-//   });
-//   // auto parse = Captur
+//   auto parse = Capture<
+//   auto parse = Captur
 // }
 
 // TEST(CombinatorTest, Star) {
@@ -229,37 +227,37 @@ TEST(CombinatorTest, CaptureIntNode) {
 //   ASSERT_EQ(val[0], "1");
 // }
 
-// TEST(CombinatorTest, OnePlus) {
-//   State s("1112");
-//   auto parseOnes = OnePlus<std::string>(Literal('1'));
-//   auto parseZeroes = OnePlus<std::string>(Literal('0'));
-//   auto zr = parseZeroes(s);
-//   auto result = parseOnes(s);
-//   ASSERT_EQ(result.success(), true);  // multiple matches is OK
-//   ASSERT_EQ(zr.success(), false);  // no matches is not allowed, unlike Star
-//   auto val = result.value();
-//   ASSERT_EQ(val->size(), 3);
-//   ASSERT_EQ(val->at(0), val->at(1));
-//   ASSERT_EQ(val->at(2), val->at(1));
-//   ASSERT_EQ(val->at(0), "1");
-// }
+TEST(CombinatorTest, OnePlus) {
+  State s("1112");
+  auto parseOnes = OnePlus<std::string>(Literal('1'));
+  auto parseZeroes = OnePlus<std::string>(Literal('0'));
+  auto zr = parseZeroes(s);
+  auto result = parseOnes(s);
+  ASSERT_EQ(result.success(), true);  // multiple matches is OK
+  ASSERT_EQ(zr.success(), false);  // no matches is not allowed, unlike Star
+  auto val = result.value();
+  ASSERT_EQ(val.size(), 3);
+  ASSERT_EQ(val[0], val[1]);
+  ASSERT_EQ(val[2], val[1]);
+  ASSERT_EQ(val[0], "1");
+}
 
-// TEST(CombinatorTest, SequenceTest) {
-//   State s("hey");
-//   auto parse = Sequence<std::string, std::string, std::string>
-//           (Literal('h'), Literal('e'), Literal('y'));
-//   auto success = parse(s);
-//   auto[first, second, third] = success.value();
-//   ASSERT_EQ(success.success(), true);
-//   ASSERT_EQ(first, "h");
-//   ASSERT_EQ(second, "e");
-//   ASSERT_EQ(third, "y");
-//
-//   auto parseFail = Sequence<std::string, std::string, std::string>
-//           (Literal('l'), Literal('o'), Literal('l'));
-//   auto fail = parseFail(s);
-//   ASSERT_EQ(fail.success(), false);
-// }
+TEST(CombinatorTest, SequenceTest) {
+  State s("hey");
+  auto parse = Sequence<std::string, std::string, std::string>
+          (Literal('h'), Literal('e'), Literal('y'));
+  auto success = parse(s);
+  auto[first, second, third] = success.value();
+  ASSERT_EQ(success.success(), true);
+  ASSERT_EQ(first, "h");
+  ASSERT_EQ(second, "e");
+  ASSERT_EQ(third, "y");
+
+  auto parseFail = Sequence<std::string, std::string, std::string>
+          (Literal('l'), Literal('o'), Literal('l'));
+  auto fail = parseFail(s);
+  ASSERT_EQ(fail.success(), false);
+}
 
 }  // namespace frontend
 }  // namespace cs160

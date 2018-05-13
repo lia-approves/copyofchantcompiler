@@ -20,10 +20,10 @@ class Result {
       throw std::logic_error("fail constructor should not be used for success");
     }
   }
-  explicit Result(State state, std::unique_ptr<T> value)
+  explicit Result(State state, T value)
   : state_(state), value_(std::move(value)), error_("no error"), success_(true) {}
 
-  const std::unique_ptr<T> value() {
+  const T value() {
     if (!success_) {
       throw std::logic_error("can't access value of failed result");
     }
@@ -41,7 +41,7 @@ class Result {
 
  private:
   State state_;
-  std::unique_ptr<T> value_;
+  T value_;
   std::string error_;
   bool success_;
   std::unique_ptr<abstract_syntax::frontend::AstNode> lastNode_;

@@ -20,10 +20,10 @@ namespace frontend {
 template<class T>
 using Parser = std::function<Result<T>(State)>;
 
-using Node = abstract_syntax::frontend::AstNode;
+using Node = std::unique_ptr<abstract_syntax::frontend::AstNode>;
 
 template<class T>
-using NodeMaker = std::function<std::unique_ptr<Node>(std::unique_ptr<T>)>;
+using NodeMaker = std::function<Node(T)>;
 
 //  Returns a function which:
 //  runs the parser, then runs f on the result, then returns the final result
@@ -57,7 +57,7 @@ Parser<std::string> Literal(char c) {
 
     if (next == c) {
       state.advance();
-      return Result<std::string>(state, std::unique_ptr<std::string>(new std::string(1, c)));
+      return Result<std::string>(state, std::string(1, c));
     } else {
       std::string err = "no match for character: ";
       err += c;
@@ -84,7 +84,7 @@ Parser<std::string> Range(std::string c) {
 
       if (next - 'a' >= a - 'a' && next - 'a' <= b - 'a') {
         state.advance();
-        return Result<std::string>(state, std::unique_ptr<std::string>(new std::string(1, next)));
+        return Result<std::string>(state, std::string(1, next));
       } else {
         std::string err = "not in range for character: ";
         err += next;
@@ -153,21 +153,21 @@ Parser<std::tuple<A, B>> And(Parser<A> parseA, Parser<B> parseB) {
 // }
 
 // Returns a function which runs a parser 1 or more times, returning all results
-// template<class T>
-// Parser<std::vector<T>> OnePlus(Parser<T> parse) {
-//   return [parse](State state) {
-//     std::unique_ptr<std::vector<T>> results(new std::vector<T>);
-//     auto currentResult = parse(state);  // Parse first element before the loop
-//     while (currentResult.success()) {
-//       results->push_back(currentResult.value());
-//       currentResult = parse(currentResult.state());
-//     }
-//     // if (results.size() == 0) {
-//     //   return Result<std::vector<T>>(state, false, "no matches at all");
-//     // }
-//     return Result<std::vector<T>>(state, std::move(results));
-//   };
-// }
+template<class T>
+Parser<std::vector<T>> OnePlus(Parser<T> parse) {
+  return [parse](State state) {
+    std::vector<T> results;
+    auto currentResult = parse(state);  // Parse first element before the loop
+    while (currentResult.success()) {
+      results.push_back(currentResult.value());
+      currentResult = parse(currentResult.state());
+    }
+    if (results.size() == 0) {  // Must have one or more match, unlike Star()
+       return Result<std::vector<T>>(state, false, "no matches at all");
+    }
+    return Result<std::vector<T>>(state, results);
+  };
+}
 
 // Returns a function which runs a parser, and returns a success if it fails
 // and a failure if it succeeds
@@ -178,7 +178,7 @@ Parser<T> Not(Parser<T> parse) {
       if (result.success()) {
         return Result<T>(state, false, "no match for not");
       }
-      return Result<std::string>(state, std::unique_ptr<std::string>(new std::string("!")));;
+      return Result<std::string>(state, "!");;
     };
 }
 
@@ -210,7 +210,7 @@ Parser<std::string> ExactMatch(std::string str) {
     // got to end of string with all characters matching
     // and not reaching end of file
     // therefore, return success
-    return Result<std::string>(state, std::unique_ptr<std::string>(new std::string(str)));
+    return Result<std::string>(state, str);
   };
 }
 
@@ -252,7 +252,7 @@ Parser<std::string> Match(std::string str) {
     // got to end of string with all characters matching
     // and not reaching end of file
     // therefore, return success
-    return Result<std::string>(state, std::unique_ptr<std::string>(new std::string(str)));
+    return Result<std::string>(state, str);
   };
 }
 
