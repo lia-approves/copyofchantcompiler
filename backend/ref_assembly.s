@@ -10,20 +10,29 @@
 .text
 
 main:
+## create a tuple x(3)
+## x->1 = 1
+## x->2 = 2
+## x->3 = 3
 
-push $3
-movq $11, (a)
-push (a)
-pop %rax
+push %rbp
+mov %rsp, %rbp
+push $33
+mov (%rsp), %rax
+movq $3, %rdi
+call malloc
+push %rax
+movq $5, (%rsp)
+movq $6, 8(%rsp)
+movq $-1, 16(%rsp)
+movq 16(%rsp), %rax
+
 pop %rbx
-call fun
-add %rax, %rbx
-push %rbx
-
-pop %rax
 mov     $format, %rdi
 mov     %rax, %rsi
 xor     %rax, %rax
+pop	%rbx
+pop	%rbx
 call    printf
   ret
 
@@ -37,3 +46,4 @@ format:
 .data
 a:
   .quad  0
+
