@@ -70,7 +70,7 @@ TEST(CombinatorTest, ParseRange4) {
   State s("hi");
   auto parseAH = Range("ah");
   auto resultAH = parseAH(s);
-  auto resultAH2 = parseAH(s);
+  auto resultAH2 = parseAH(resultAH.state());
 
   ASSERT_EQ(resultAH.success(), true);
   ASSERT_EQ(resultAH.value(), "h");
