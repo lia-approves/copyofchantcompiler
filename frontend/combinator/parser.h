@@ -52,6 +52,14 @@ Value ToStringValue(std::string s) {
   return Value(s);
 }
 
+// Assumes both values are strings.  If one isn't, throws an exception
+Value Concat(Value v1, Value v2) {
+  if (v1.Type() != Value::type::string || v2.Type() != Value::type::string) {
+    throw std::logic_error("Attempted to concatenate non-string values.");
+  }
+  return Value(v1.String() + v2.String());
+}
+
 //  Returns a function which:
 //  runs the parser, then runs f on the result, then returns the final result
 // template<class I, class O>
@@ -128,28 +136,27 @@ Parser Range(std::string c, Converter<std::string> ToValue = ToStringValue) {
 //     return Result<T>(state, false, "no match for A or B");
 //   };
 // }
-//
-// //  Returns a function which runs 2 parsers, and returns an array of their
-// //  results.  If either fails, it returns failure
-// Parser And(Parser parseA, Parser parseB) {
-//   return [parseA, parseB](State state) {
-//     // Save position so we can reset later.
-//     int oldPosition = state.position();
-//     auto resultA = parseA(state);
-//     if (!resultA.success()) {
-//       state.setPosition(oldPosition);
-//       return Result<std::tuple<A, B>>(state, false, "no match for A and B");
-//     }
-//     auto resultB = parseB(resultA.state());
-//     if (!resultB.success()) {
-//       state.setPosition(oldPosition);
-//       return Result<std::tuple<A, B>>(state, false, "no match for A and B");
-//     }
-//     std::tuple<A, B> res = std::make_tuple(resultA.value(), resultB.value());
-//     return Result<std::tuple<A, B>>(resultB.state(), res);
-//   };
-// }
-//
+
+//  Returns a function which runs 2 parsers, and returns an array of their
+//  results.  If either fails, it returns failure
+Parser And(Parser parseA, Parser parseB, std::function<Value(Value, Value)> ToValue = Concat) {
+  return [parseA, parseB, ToValue](State state) {
+    // Save position so we can reset later.
+    int oldPosition = state.position();
+    auto resultA = parseA(state);
+    if (!resultA.success()) {
+      state.setPosition(oldPosition);
+      return Result(state, false, "no match for A and B");
+    }
+    auto resultB = parseB(resultA.state());
+    if (!resultB.success()) {
+      state.setPosition(oldPosition);
+      return Result(state, false, "no match for A and B");
+    }
+    return Result(resultB.state(), ToValue(resultA.value(), resultB.value()));
+  };
+}
+
 // // Returns a function which runs a parser 0 or more times, returning all results
 // // template<class T>
 // // Parser> Star(Parser parse) {

@@ -27,6 +27,9 @@ class Value {
   std::string String() const {
     return string_;
   }
+  type Type() const {
+    return type_;
+  }
 
  private:
   type type_;

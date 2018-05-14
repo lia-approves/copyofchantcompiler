@@ -88,19 +88,18 @@ TEST(CombinatorTest, ParseRange4) {
 //   ASSERT_EQ(failResult.success(), false);
 // }
 //
-// TEST(CombinatorTest, ParseAnd) {
-//   State s("hi");
-//   auto failParse = And<std::string, std::string>(Literal('h'), Literal('a'));
-//   auto parse = And<std::string, std::string>(Literal('h'), Literal('i'));
-//   auto fail = failParse(s);
-//   auto result = parse(s);
-//   ASSERT_EQ(fail.success(), false);
-//   ASSERT_EQ(result.success(), true);
-//   auto[first, second] = result.value();
-//   ASSERT_EQ(first, "h");
-//   ASSERT_EQ(second, "i");
-// }
-//
+TEST(CombinatorTest, ParseAnd) {
+  State s("hi");
+  auto failParse = And(Literal('h'), Literal('a'));
+  auto parse = And(Literal('h'), Literal('i'));
+  auto fail = failParse(s);
+  auto result = parse(s);
+  ASSERT_EQ(fail.success(), false);
+  ASSERT_EQ(result.success(), true);
+  auto v = result.value();
+  ASSERT_EQ(v.String(), "hi");
+}
+
 // TEST(CombinatorTest, NotTest) {
 //   State s("a");
 //   auto successParse = Not(Literal('b'));
