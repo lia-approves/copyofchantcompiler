@@ -190,19 +190,19 @@ Parser And(Parser parseA, Parser parseB, std::function<Value(Value, Value)> ToVa
 //     return Result<std::vector<T>>(state, results);
 //   };
 // }
-//
+
 // // Returns a function which runs a parser, and returns a success if it fails
 // // and a failure if it succeeds
-// Parser Not(Parser parse) {
-//     return [parse](State state) {
-//       auto result = parse(state);
-//       if (result.success()) {
-//         return Result<T>(state, false, "no match for not");
-//       }
-//       return Result<std::string>(state, "!");;
-//     };
-// }
-//
+ Parser Not(Parser parse, Converter<std::string> ToValue = ToStringValue) {
+     return [parse, ToValue](State state) {
+       auto result = parse(state);
+       if (result.success()) {
+         return Result(state, false, "no match for not");
+       }
+       char temp = state.readChar();
+       return Result(state, ToValue(std::string(1, temp)));;
+     };
+ }
 // // Return a function which parses a string (whitespace sensitive)
 // Parser ExactMatch(std::string str) {
 //   return [str](State state) {
