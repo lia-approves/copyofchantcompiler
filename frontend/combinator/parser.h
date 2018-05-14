@@ -206,7 +206,7 @@ Parser And(Parser parseA, Parser parseB, std::function<Value(Value, Value)> ToVa
        return Result(state, ToValue(std::string(1, temp)));;
      };
  }
- 
+
 // Return a function which parses a string (whitespace sensitive)
 Parser ExactMatch(std::string str, Converter<std::string> ToValue = ToStringValue) {
   return [str, ToValue](State state) {
@@ -241,48 +241,48 @@ Parser ExactMatch(std::string str, Converter<std::string> ToValue = ToStringValu
   };
 }
 
-// // Return a function which parses a string (whitespace insensitive)
-// // AKA this function ignores whitespace in either state or string
-// Parser Match(std::string str) {
-//   return [str](State state) {
-//     if (state.atEnd()) {
-//       return Result<std::string>(state, false, "end of file");
-//     }
-//
-//     int counter = 0;
-//     while (!state.atEnd() && counter < str.size()) {
-//       char next_p = state.readChar();
-//       char next_str = str.at(counter);
-//       counter++;
-//
-//       while (next_p == ' ' && !state.atEnd()) {
-//         state.advance();
-//         next_p = state.readChar();
-//       }
-//       while (next_str == ' ' && counter < str.size()) {
-//         next_str = str.at(counter);
-//         counter++;
-//       }
-//
-//       if ( (state.atEnd() || counter >= str.size())
-//         && (next_p == ' ' || next_str == ' ') ) {
-//           // for one of the strings, the last character is a whitespace
-//         break;
-//       }
-//
-//       if (next_p != next_str) {
-//         return Result<std::string>(state, false, "no match for " + str);
-//       } else {
-//         state.advance();
-//       }
-//     }
-//     // got to end of string with all characters matching
-//     // and not reaching end of file
-//     // therefore, return success
-//     return Result<std::string>(state, str);
-//   };
-// }
-//
+// Return a function which parses a string (whitespace insensitive)
+// AKA this function ignores whitespace in either state or string
+Parser Match(std::string str, Converter<std::string> ToValue = ToStringValue) {
+  return [str, ToValue](State state) {
+    if (state.atEnd()) {
+      return Result(state, false, "end of file");
+    }
+
+    int counter = 0;
+    while (!state.atEnd() && counter < str.size()) {
+      char next_p = state.readChar();
+      char next_str = str.at(counter);
+      counter++;
+
+      while (next_p == ' ' && !state.atEnd()) {
+        state.advance();
+        next_p = state.readChar();
+      }
+      while (next_str == ' ' && counter < str.size()) {
+        next_str = str.at(counter);
+        counter++;
+      }
+
+      if ( (state.atEnd() || counter >= str.size())
+        && (next_p == ' ' || next_str == ' ') ) {
+          // for one of the strings, the last character is a whitespace
+        break;
+      }
+
+      if (next_p != next_str) {
+        return Result(state, false, "no match for " + str);
+      } else {
+        state.advance();
+      }
+    }
+    // got to end of string with all characters matching
+    // and not reaching end of file
+    // therefore, return success
+    return Result(state, ToValue(str));
+  };
+}
+
 // Parser Between(Parser parseA, Parser parseB, Parser parseC) {
 //   return [parseA, parseB, parseC](State state) {
 //     // Save position so we can reset later.

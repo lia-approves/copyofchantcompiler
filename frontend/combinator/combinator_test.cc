@@ -134,28 +134,37 @@ TEST(CombinatorTest, ExactMatchTest) {
   ASSERT_EQ(fail.success(), false);
 }
 
-// TEST(CombinatorTest, MatchTest) {
-//   State s1("hello world");
-//   auto parse1 = Match("helloworld");
-//   auto success1 = parse1(s1);
-//   ASSERT_EQ(success1.success(), true);
-//
-//   State s2("hi");
-//   auto parse2 = Match("hi");
-//   auto success2 = parse2(s2);
-//   ASSERT_EQ(success2.success(), true);
-//
-//   State s3("hey   ");
-//   auto parse3 = Match("hey");
-//   auto success3 = parse3(s3);
-//   ASSERT_EQ(success3.success(), true);
-//
-//   State s4("  he");
-//   auto parse4 = Match(" he ");
-//   auto success4 = parse4(s4);
-//   ASSERT_EQ(success4.success(), true);
-// }
-//
+TEST(CombinatorTest, MatchTest) {
+  State s1("hello world");
+  auto parse1 = Match("helloworld");
+  auto success1 = parse1(s1);
+  ASSERT_EQ(success1.success(), true);
+  ASSERT_EQ(success1.value().String(), "helloworld");
+
+  State s2("hi");
+  auto parse2 = Match("hi");
+  auto success2 = parse2(s2);
+  ASSERT_EQ(success2.success(), true);
+  ASSERT_EQ(success2.value().String(), "hi");
+
+  State s3("hey   ");
+  auto parse3 = Match("hey");
+  auto success3 = parse3(s3);
+  ASSERT_EQ(success3.success(), true);
+  ASSERT_EQ(success3.value().String(), "hey");
+
+  State s4("  he");
+  auto parse4 = Match(" he ");
+  auto success4 = parse4(s4);
+  ASSERT_EQ(success4.success(), true);
+  ASSERT_EQ(success4.value().String(), " he ");
+
+  State s5("test");
+  auto parse5 = Match("lol");
+  auto fail1 = parse5(s5);
+  ASSERT_EQ(fail1.success(), false);
+}
+
 // TEST(CombinatorTest, BetweenTest) {
 //   State s1("(h)");
 //   auto parse = Between(Literal('('), Literal('h'), Literal(')'));
