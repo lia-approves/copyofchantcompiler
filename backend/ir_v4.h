@@ -16,7 +16,7 @@ using std::string;
 namespace cs160 {
   namespace backend {
 
-      class Operand {                                          //abstract class for operand can be constant(integer), 
+      class Operand {                                          //abstract class for operand can be constant(integer),
       public:                                                  //variable or register or label
         Operand() {}
         virtual ~Operand() {}
@@ -41,7 +41,7 @@ namespace cs160 {
         void PushToAsmSS(stringstream& ss) {}
         void PopToAsmSS(stringstream& ss, string register_) {}
         void SetStackOffset(int offset) {  }
-        int GetStackOffset() { }
+        int GetStackOffset();
 
 
       private:
@@ -58,7 +58,7 @@ namespace cs160 {
         void PushToAsmSS(stringstream& ss) { /* There is nothing to push because it's a register*/ }
         void PopToAsmSS(stringstream& ss, string register_) { ss << "pop " << register_ << endl; }
         void SetStackOffset(int offset) { }
-        int GetStackOffset() { }
+        int GetStackOffset();
 
 
       private:
@@ -69,11 +69,11 @@ namespace cs160 {
       public:
         explicit Variable(std::string s) { name_ = (s); }
         ~Variable() {}
-        int GetValue() {}                          
+        int GetValue();
         std::string GetName() { return name_; }
         void SetValue(int value) {}
-        void PushToAsmSS(stringstream& ss) { 
-          //ss << "push " << GetStackOffset() << "(%rbp)" << endl; 
+        void PushToAsmSS(stringstream& ss) {
+          //ss << "push " << GetStackOffset() << "(%rbp)" << endl;
         }
         void PopToAsmSS(stringstream& ss, string register_) { ss << "pop " << GetStackOffset() << "(%rbp)" << endl; }
         void SetStackOffset(int offset) { stackOffSet_ = offset; }
@@ -91,12 +91,12 @@ namespace cs160 {
         int GetValue() { return value_; }
         void SetValue(int value) { value_ = value; }
         std::string GetName() { return std::to_string(value_); }
-        void PushToAsmSS(stringstream& ss) { 
-          //ss << "push $" << value_ << endl; 
+        void PushToAsmSS(stringstream& ss) {
+          //ss << "push $" << value_ << endl;
         }
         void PopToAsmSS(stringstream& ss, string register_) { ss << "pop " << register_ << endl; }
         void SetStackOffset(int offset) {  }
-        int GetStackOffset() { }
+        int GetStackOffset();
 
 
       private:
@@ -112,8 +112,8 @@ namespace cs160 {
         std::string GetName() { return text_; }
         void PushToAsmSS(stringstream& ss) { ss << "push $" << text_ << endl; }
         void PopToAsmSS(stringstream& ss, string register_) { ss << "pop " << register_ << endl; }
-        void SetStackOffset(int offset) {  }
-        int GetStackOffset() { }
+        void SetStackOffset(int offset);
+        int GetStackOffset();
 
 
       private:
@@ -121,10 +121,10 @@ namespace cs160 {
 
       };
 
-      class Operator {    
+      class Operator {
       public:
-        enum Opcode { kAdd, kSubtract, kMultiply, kDivide, 
-          kAssign, kLessThan, kLessThanEqualTo, kGreaterThan, 
+        enum Opcode { kAdd, kSubtract, kMultiply, kDivide,
+          kAssign, kLessThan, kLessThanEqualTo, kGreaterThan,
           kGreaterThanEqualTo, kEqualTo, kGoto,kAllocateVars,
         kDeallocateVars,kPrint};
         explicit Operator(Opcode o) { op_ = (o); }
@@ -150,8 +150,8 @@ namespace cs160 {
       private:
         Opcode op_;
       };
-      class StatementNode {                                   
-      public:                               
+      class StatementNode {
+      public:
         StatementNode(
           Operand* label,
           Operand* target,

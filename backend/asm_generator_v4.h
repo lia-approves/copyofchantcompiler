@@ -8,6 +8,7 @@
 #include <sstream>
 #include "utility/memory.h"
 #include "backend/ir_v4.h"
+#include "backend/lowerer_v4.h"
 
 using std::endl;
 using std::string;
