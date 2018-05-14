@@ -206,25 +206,7 @@ Parser And(Parser parseA, Parser parseB, std::function<Value(Value, Value)> ToVa
        return Result(state, ToValue(std::string(1, temp)));;
      };
  }
- /*
- Parser Literal(char c, Converter<std::string> ToValue = ToStringValue) {
-   return [c, ToValue](State state) {
-     if (state.atEnd()) {
-       return Result(state, false, "end of file");
-     }
-     char next = state.readChar();
-
-     if (next == c) {
-       state.advance();
-       return Result(state, ToValue(std::string(1, c)));
-     } else {
-       std::string err = "no match for character: ";
-       err += c;
-       return Result(state, false, err);
-     }
-   };
- }
- */
+ 
 // Return a function which parses a string (whitespace sensitive)
 Parser ExactMatch(std::string str, Converter<std::string> ToValue = ToStringValue) {
   return [str, ToValue](State state) {
