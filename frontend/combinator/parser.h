@@ -157,24 +157,27 @@ Parser And(Parser parseA, Parser parseB, std::function<Value(Value, Value)> ToVa
   };
 }
 
-// // Returns a function which runs a parser 0 or more times, returning all results
-// // template<class T>
-// // Parser> Star(Parser parse) {
-// //   return [parse](State state) {
-// //     std::vector<T> results;
-// //     auto currentResult = parse(state);
-// // Parse first element before the loop
-// //     while (currentResult.success()) {
-// //       results.push_back(currentResult.value());
-// //       currentResult = parse(currentResult.state());
-// //     }
-// //     // if (results.size() == 0) {
-// //     //   return Result<std::vector<T>>(state, false, "no matches at all");
-// //     // }
-// //     return Result<std::vector<T>>(state, results);
-// //   };
-// // }
-//
+// Returns a function which runs a parser 0 or more times, returning all results
+// template<class T>
+// Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
+//   return [Parse, ToNode](State state) {
+//     std::vector<Value> results;
+//     auto currentResult = Parse(state);
+//     // Parse first element before the loop
+//     while (currentResult.success()) {
+//       if (currentResult.value().Type() == Value::type::string) {
+//         results.push_back(Value(currentResult.value().String()));
+//       } else if (currentResult.value().Type() == Value::type::node) {
+//         results.push_back( Value(Node()) );
+//       }
+//       currentResult = Parse(currentResult.state());
+//     }
+//     return currentResult;
+//     // return Result(currentResult.state(), std::move(ToNode(std::move(results))));
+//   };
+// }
+
+
 // // Returns a function which runs a parser 1 or more times, returning all results
 // Parser> OnePlus(Parser parse) {
 //   return [parse](State state) {
