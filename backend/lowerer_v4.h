@@ -522,7 +522,6 @@ namespace cs160 {
           statement->Visit(&varsCounter);
         }
         int numLocalVar = varsCounter.LocalVars();
-        cout << "#PARAMS: " << numParamVar << "\n";
         string main = "";
         main.append(".type ");
         main.append(def.function_name());
