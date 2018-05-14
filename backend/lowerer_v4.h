@@ -714,7 +714,6 @@ namespace cs160 {
       void VisitConditional(const Conditional& conditional) {
         IrGenVisitor trueVisitor;
         IrGenVisitor falseVisitor;
-        int startLabelNum = labelNum_;
         for (auto& statement : conditional.true_branch()) {
           statement->Visit(&trueVisitor);
         }
@@ -751,7 +750,6 @@ namespace cs160 {
         IrGenVisitor blockvisitor;
         IrGenVisitor guardVisitor;
         loop.guard().Visit(&guardVisitor);
-        int guardStatements = guardVisitor.NumberOfStatements();
         int startLabelNum = labelNum_;
         for (auto& statement : loop.body()) {
           statement->Visit((&blockvisitor));
@@ -795,7 +793,6 @@ namespace cs160 {
       void PrintIR() {
         StatementNode* itor = head_;
         std::cout << "#### Start of IR ####\n\n";
-        int statementNum = 1;
         while (itor != nullptr) {
           itor->Print();
           itor = itor->GetNext();
