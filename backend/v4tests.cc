@@ -4,7 +4,7 @@
 #include <sstream>
 
 #include <string>
-#include "abstract_syntax/abstract_syntax_tree_v4.h"
+#include "abstract_syntax/abstract_syntax.h"
 #include "backend/ir_v4.h"
 #include "gtest/gtest.h"
 #include "utility/memory.h"
@@ -89,14 +89,14 @@ TEST(Version4, IntegrationTest) {
   testasm.IrToAsm(&irGen);
 
   std::ofstream test_output_file;
-  test_output_file.open("backend/testfile.s");
+  test_output_file.open("testfile.s");
   test_output_file << testasm.GetASMString();
-  // system("gcc testfile.s && ./a.out > test_output.txt");
-  //
-  // std::ifstream output_file;
-  // output_file.open("test_output.txt");
-  // std::string output;
-  // output_file >> output;
+  system("gcc testfile.s && ./a.out > test_output.txt");
+
+  std::ifstream output_file;
+  output_file.open("test_output.txt");
+  std::string output;
+  output_file >> output;
 
   // EXPECT_EQ("42", output);
   EXPECT_EQ("42", "42");

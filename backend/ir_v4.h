@@ -41,7 +41,7 @@ namespace cs160 {
         void PushToAsmSS(stringstream& ss) {}
         void PopToAsmSS(stringstream& ss, string register_) {}
         void SetStackOffset(int offset) {  }
-        int GetStackOffset();
+        int GetStackOffset() {return 0;};
 
 
       private:
@@ -58,7 +58,7 @@ namespace cs160 {
         void PushToAsmSS(stringstream& ss) { /* There is nothing to push because it's a register*/ }
         void PopToAsmSS(stringstream& ss, string register_) { ss << "pop " << register_ << endl; }
         void SetStackOffset(int offset) { }
-        int GetStackOffset();
+        int GetStackOffset() {return 0;};
 
 
       private:
@@ -69,7 +69,7 @@ namespace cs160 {
       public:
         explicit Variable(std::string s) { name_ = (s); }
         ~Variable() {}
-        int GetValue();
+        int GetValue() {return 0;};
         std::string GetName() { return name_; }
         void SetValue(int value) {}
         void PushToAsmSS(stringstream& ss) {
@@ -96,7 +96,7 @@ namespace cs160 {
         }
         void PopToAsmSS(stringstream& ss, string register_) { ss << "pop " << register_ << endl; }
         void SetStackOffset(int offset) {  }
-        int GetStackOffset();
+        int GetStackOffset() {return 0;};
 
 
       private:
@@ -112,8 +112,8 @@ namespace cs160 {
         std::string GetName() { return text_; }
         void PushToAsmSS(stringstream& ss) { ss << "push $" << text_ << endl; }
         void PopToAsmSS(stringstream& ss, string register_) { ss << "pop " << register_ << endl; }
-        void SetStackOffset(int offset);
-        int GetStackOffset();
+        void SetStackOffset(int offset) {};
+        int GetStackOffset() {return 0;};
 
 
       private:
