@@ -129,6 +129,5 @@ TEST(Version4, IntegrationTest) {
   std::string output;
   output_file >> output;
 
-  // EXPECT_EQ("42", output);
-  EXPECT_EQ("42", "42");
+  EXPECT_EQ("42", output);
 }
