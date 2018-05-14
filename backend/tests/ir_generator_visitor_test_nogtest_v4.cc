@@ -66,14 +66,25 @@ int main() {
   Statement::Block foo_statements;
   foo_statements.push_back(std::move(make_unique<const Assignment>(make_unique<const VariableExpr>("a"), make_unique<const IntegerExpr>(45))));
   foo_statements.push_back(std::move(make_unique<const Assignment>( make_unique<const VariableExpr>("bob"), make_unique<const AddExpr>(make_unique<const VariableExpr>("bob"), make_unique<const IntegerExpr>(8)))));
+  foo_statements.push_back(std::move(make_unique<const Assignment>(make_unique<const VariableExpr>("h"), make_unique<const IntegerExpr>(45))));
+  foo_statements.push_back(std::move(make_unique<const Assignment>(make_unique<const VariableExpr>("j"), make_unique<const IntegerExpr>(45))));
+  foo_statements.push_back(std::move(make_unique<const Assignment>(make_unique<const VariableExpr>("mike"), make_unique<const IntegerExpr>(45))));
+  foo_statements.push_back(std::move(make_unique<const Assignment>(make_unique<const VariableExpr>("ab"), make_unique<const IntegerExpr>(45))));
+
+  
   auto foo_retval = make_unique<const AddExpr>( make_unique<const VariableExpr>("bob"),make_unique<const IntegerExpr>(5));
   auto foo_params = std::vector<std::unique_ptr<const VariableExpr>>();
   foo_params.push_back(std::move(make_unique<const VariableExpr>("bob")));
+  foo_params.push_back(std::move(make_unique<const VariableExpr>("jim")));
+  foo_params.push_back(std::move(make_unique<const VariableExpr>("mike")));
   auto foo_def = make_unique<const FunctionDef>("foo", std::move(foo_params), std::move(foo_statements),std::move(foo_retval));
   FunctionDef::Block function_defs;
   function_defs.push_back(std::move(foo_def));
   auto arguments = std::vector<std::unique_ptr<const ArithmeticExpr>>();
   arguments.push_back(std::move(make_unique<const IntegerExpr>(17)));
+  arguments.push_back(std::move(make_unique<const IntegerExpr>(17)));
+  arguments.push_back(std::move(make_unique<const IntegerExpr>(17)));
+
   Statement::Block statements;
   statements.push_back(std::move(make_unique<const Assignment>(make_unique<const VariableExpr>("y"), make_unique<const IntegerExpr>(9))));
   statements.push_back(std::move(make_unique<const Assignment>(make_unique<const VariableExpr>("x"), make_unique<const IntegerExpr>(1))));
@@ -84,18 +95,24 @@ int main() {
 
 /*
     function definition:
-    def foo(bob) {
+    def foo(bob,jim,mike) {
       a=45
       bob = bob + 8
+      h=45
+      j=45
+      mike=45
+      ab=45
       return bob + 5
     }
 
     //main function:
     y=9
     x=1
-    foo_retval=foo(17)
+    foo_retval=foo(17,17,17)
     12+foo_retval 
  */
+
+
   /*
   Statement::Block foo_statements;
 
