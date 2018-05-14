@@ -100,52 +100,40 @@ TEST(CombinatorTest, ParseAnd) {
   ASSERT_EQ(v.String(), "hi");
 }
 
-// TEST(CombinatorTest, NotTest) {
-//   State s("a");
-//   auto successParse = Not(Literal('b'));
-//   auto failParse = Not(Literal('a'));
-//   auto fail = failParse(s);
-//   auto success = successParse(s);
-//   ASSERT_EQ(fail.success(), false);
-//   ASSERT_EQ(success.success(), true);
-//   ASSERT_EQ(success.value()[0], '!');
-// }
-//
-// TEST(CombinatorTest, ExactMatchTest) {
-//   // test without spaces
-//   State s1("hey");
-//   auto parse1 = ExactMatch("hey");
-//   auto success1 = parse1(s1);
-//   ASSERT_EQ(success1.success(), true);
-//   auto val = success1.value();
-//   ASSERT_EQ(val[0], 'h');
-//   ASSERT_EQ(val[1], 'e');
-//   ASSERT_EQ(val[2], 'y');
-//
-//   // test with spaces
-//   State s2("hello world");
-//   auto parse2 = ExactMatch("hello world");
-//   auto success2 = parse2(s2);
-//   ASSERT_EQ(success2.success(), true);
-//   auto val2 = success2.value();
-//   ASSERT_EQ(val2[0], 'h');
-//   ASSERT_EQ(val2[1], 'e');
-//   ASSERT_EQ(val2[2], 'l');
-//   ASSERT_EQ(val2[3], 'l');
-//   ASSERT_EQ(val2[4], 'o');
-//   ASSERT_EQ(val2[5], ' ');
-//   ASSERT_EQ(val2[6], 'w');
-//   ASSERT_EQ(val2[7], 'o');
-//   ASSERT_EQ(val2[8], 'r');
-//   ASSERT_EQ(val2[9], 'l');
-//   ASSERT_EQ(val2[10], 'd');
-//
-//   State s3("nope");
-//   auto parseFail = ExactMatch("yes!");
-//   auto fail = parseFail(s3);
-//   ASSERT_EQ(fail.success(), false);
-// }
-//
+ TEST(CombinatorTest, NotTest) {
+   State s("a");
+   auto successParse = Not(Literal('b'));
+   auto failParse = Not(Literal('a'));
+   auto fail = failParse(s);
+   auto success = successParse(s);
+   ASSERT_EQ(fail.success(), false);
+   ASSERT_EQ(success.success(), true);
+   ASSERT_EQ(success.value().String(), "a");
+ }
+
+TEST(CombinatorTest, ExactMatchTest) {
+  // test without spaces
+  State s1("hey");
+  auto parse1 = ExactMatch("hey");
+  auto success1 = parse1(s1);
+  ASSERT_EQ(success1.success(), true);
+  auto val = success1.value().String();
+  ASSERT_EQ(val, "hey");
+
+  // test with spaces
+  State s2("hello world");
+  auto parse2 = ExactMatch("hello world");
+  auto success2 = parse2(s2);
+  ASSERT_EQ(success2.success(), true);
+  auto val2 = success2.value().String();
+  ASSERT_EQ(val2, "hello world");
+
+  State s3("nope");
+  auto parseFail = ExactMatch("yes!");
+  auto fail = parseFail(s3);
+  ASSERT_EQ(fail.success(), false);
+}
+
 // TEST(CombinatorTest, MatchTest) {
 //   State s1("hello world");
 //   auto parse1 = Match("helloworld");
