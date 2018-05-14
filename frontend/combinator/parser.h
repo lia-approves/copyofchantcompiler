@@ -84,33 +84,33 @@ Parser Literal(char c, Converter<std::string> ToValue = ToStringValue) {
   };
 }
 
-// // Returns a function which checks if a character is within
-// // a range of two characters
-// Parser Range(std::string c) {
-//     return [c](State state) {
-//       if (state.atEnd()) {
-//         return Result<std::string>(state, false, "end of file");
-//       }
-//       char a = c.at(0);
-//       char b = c.at(1);
-//
-//       if (a - 'a' >= b - 'a') {
-//         return Result<std::string>(state, false, "improper range");
-//       }
-//
-//       char next = state.readChar();
-//
-//       if (next - 'a' >= a - 'a' && next - 'a' <= b - 'a') {
-//         state.advance();
-//         return Result<std::string>(state, std::string(1, next));
-//       } else {
-//         std::string err = "not in range for character: ";
-//         err += next;
-//         return Result<std::string>(state, false, err);
-//       }
-//     };
-//   }
-//
+// Returns a function which checks if a character is within
+// a range of two characters
+Parser Range(std::string c, Converter<std::string> ToValue = ToStringValue) {
+    return [c, ToValue](State state) {
+      if (state.atEnd()) {
+        return Result(state, false, "end of file");
+      }
+      char a = c.at(0);
+      char b = c.at(1);
+
+      if (a - 'a' >= b - 'a') {
+        return Result(state, false, "improper range");
+      }
+
+      char next = state.readChar();
+
+      if (next - 'a' >= a - 'a' && next - 'a' <= b - 'a') {
+        state.advance();
+        return Result(state, ToValue(std::string(1, next)));
+      } else {
+        std::string err = "not in range for character: ";
+        err += next;
+        return Result(state, false, err);
+      }
+    };
+  }
+
 // // Return a function which runs 1 parser, then the next.  That function returns
 // // the first successful result (or failure)
 // Parser Or(Parser parseA, Parser parseB) {

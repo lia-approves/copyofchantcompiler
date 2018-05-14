@@ -38,45 +38,45 @@ TEST(CombinatorTest, ParseLiteral) {
   ASSERT_EQ(successfulResultI.value().String(), "i");
 }
 
-// TEST(CombinatorTest, ParseRange) {
-//   State s("hi");
-//   auto parseAZ = Range("az");
-//   auto resultAZ = parseAZ(s);
-//   auto resultAZ2 = parseAZ(resultAZ.state());
-//
-//   ASSERT_EQ(resultAZ.success(), true);
-//   ASSERT_EQ(resultAZ.value(), "h");
-//   ASSERT_EQ(resultAZ2.success(), true);
-//   ASSERT_EQ(resultAZ2.value(), "i");
-// }
-//
-// TEST(CombinatorTest, ParseRange2) {
-//   State s("hi");
-//   auto parseAG = Range("ag");
-//   auto resultAG = parseAG(s);
-//
-//   ASSERT_EQ(resultAG.success(), false);
-// }
-//
-// TEST(CombinatorTest, ParseRange3) {
-//   State s("hi");
-//   auto parseZA = Range("za");
-//   auto resultZA = parseZA(s);
-//
-//   ASSERT_EQ(resultZA.success(), false);
-// }
-//
-// TEST(CombinatorTest, ParseRange4) {
-//   State s("hi");
-//   auto parseAH = Range("ah");
-//   auto resultAH = parseAH(s);
-//   auto resultAH2 = parseAH(resultAH.state());
-//
-//   ASSERT_EQ(resultAH.success(), true);
-//   ASSERT_EQ(resultAH.value(), "h");
-//   ASSERT_EQ(resultAH2.success(), false);
-// }
-//
+TEST(CombinatorTest, ParseRange) {
+  State s("hi");
+  auto parseAZ = Range("az");
+  auto resultAZ = parseAZ(s);
+  auto resultAZ2 = parseAZ(resultAZ.state());
+
+  ASSERT_EQ(resultAZ.success(), true);
+  ASSERT_EQ(resultAZ.value().String(), "h");
+  ASSERT_EQ(resultAZ2.success(), true);
+  ASSERT_EQ(resultAZ2.value().String(), "i");
+}
+
+TEST(CombinatorTest, ParseRange2) {
+  State s("hi");
+  auto parseAG = Range("ag");
+  auto resultAG = parseAG(s);
+
+  ASSERT_EQ(resultAG.success(), false);
+}
+
+TEST(CombinatorTest, ParseRange3) {
+  State s("hi");
+  auto parseZA = Range("za");
+  auto resultZA = parseZA(s);
+
+  ASSERT_EQ(resultZA.success(), false);
+}
+
+TEST(CombinatorTest, ParseRange4) {
+  State s("hi");
+  auto parseAH = Range("ah");
+  auto resultAH = parseAH(s);
+  auto resultAH2 = parseAH(resultAH.state());
+
+  ASSERT_EQ(resultAH.success(), true);
+  ASSERT_EQ(resultAH.value().String(), "h");
+  ASSERT_EQ(resultAH2.success(), false);
+}
+
 // TEST(CombinatorTest, ParseOr) {
 //   State s("hi");
 //   auto parser = Or<std::string>(Literal('a'), Literal('h'));
