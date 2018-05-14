@@ -197,7 +197,7 @@ class StatementNode{
     delete operand2_;
     delete label_;
   }
-  void Print(int ) {
+  void Print() {
     std::cout << "# S" << label_->GetValue() << ":  ";
     switch (GetInstruction()->GetOpcode()) {
     case Operator::kAdd:

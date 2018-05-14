@@ -65,7 +65,8 @@ class IrGenVisitor : public AstVisitor {
     Operand* op2 = stack_.back();
     stack_.pop_back();
     Operand* op1 = stack_.back();
-    StatementNode *newtail = new StatementNode(new Label(labelNum_++),
+    StatementNode *newtail = new StatementNode(
+      new Label(labelNum_++),
       new Register(register_number_),
       new Operator(Operator::kAdd),
       op1,
@@ -83,7 +84,8 @@ class IrGenVisitor : public AstVisitor {
     Operand* op2 = stack_.back();
     stack_.pop_back();
     Operand* op1 = stack_.back();
-    StatementNode *newtail = new StatementNode(new Label(labelNum_++),
+    StatementNode *newtail = new StatementNode(
+      new Label(labelNum_++),
       new Register(register_number_),
       new Operator(Operator::kSubtract),
       op1,
@@ -101,7 +103,8 @@ class IrGenVisitor : public AstVisitor {
     Operand* op2 = stack_.back();
     stack_.pop_back();
     Operand* op1 = stack_.back();
-    StatementNode *newtail = new StatementNode(new Label(labelNum_++),
+    StatementNode *newtail = new StatementNode(
+      new Label(labelNum_++),
       new Register(register_number_),
       new Operator(Operator::kMultiply),
       op1,
@@ -119,7 +122,8 @@ class IrGenVisitor : public AstVisitor {
     Operand* op2 = stack_.back();
     stack_.pop_back();
     Operand* op1 = stack_.back();
-    StatementNode *newtail = new StatementNode(new Label(labelNum_++),
+    StatementNode *newtail = new StatementNode(
+      new Label(labelNum_++),
       new Register(register_number_),
       new Operator(Operator::kDivide),
       op1,
@@ -138,7 +142,8 @@ class IrGenVisitor : public AstVisitor {
     assignment.rhs().Visit(this);
     Operand* op2 = stack_.back();
     stack_.pop_back();
-    StatementNode *newtail = new StatementNode(new Label(labelNum_++),
+    StatementNode *newtail = new StatementNode(
+      new Label(labelNum_++),
       new Variable(assignment.lhs().name()),
       new Operator(Operator::kAssign),
       nullptr,
@@ -160,12 +165,9 @@ class IrGenVisitor : public AstVisitor {
     stack_.pop_back();
     Operand* op1 = stack_.back();
     stack_.pop_back();
-    Operand* targetLabel = stack_.back();
-    targetLabel->SetValue(labelNum_ + 2);
-    stack_.pop_back();
     StatementNode *newtail = new StatementNode(
       new Label(labelNum_++),
-      targetLabel,
+      new Label(labelNum_ + 1),
       new Operator(Operator::kLessThan),
       op1,
       op2,
@@ -179,12 +181,9 @@ class IrGenVisitor : public AstVisitor {
     stack_.pop_back();
     Operand* op1 = stack_.back();
     stack_.pop_back();
-    Operand* targetLabel = stack_.back();
-    targetLabel->SetValue(labelNum_ + 2);
-    stack_.pop_back();
     StatementNode *newtail = new StatementNode(
       new Label(labelNum_++),
-      targetLabel,
+      new Label(labelNum_ + 1),
       new Operator(Operator::kLessThanEqualTo),
       op1,
       op2,
@@ -198,12 +197,9 @@ class IrGenVisitor : public AstVisitor {
     stack_.pop_back();
     Operand* op1 = stack_.back();
     stack_.pop_back();
-    Operand* targetLabel = stack_.back();
-    targetLabel->SetValue(labelNum_ + 2);
-    stack_.pop_back();
     StatementNode *newtail = new StatementNode(
       new Label(labelNum_++),
-      targetLabel,
+      new Label(labelNum_ + 1),
       new Operator(Operator::kGreaterThan),
       op1,
       op2,
@@ -217,12 +213,9 @@ class IrGenVisitor : public AstVisitor {
     stack_.pop_back();
     Operand* op1 = stack_.back();
     stack_.pop_back();
-    Operand* targetLabel = stack_.back();
-    targetLabel->SetValue(labelNum_ + 2);
-    stack_.pop_back();
     StatementNode *newtail = new StatementNode(
       new Label(labelNum_++),
-      targetLabel,
+      new Label(labelNum_ + 1),
       new Operator(Operator::kGreaterThanEqualTo),
       op1,
       op2,
@@ -236,12 +229,9 @@ class IrGenVisitor : public AstVisitor {
     stack_.pop_back();
     Operand* op1 = stack_.back();
     stack_.pop_back();
-    Operand* targetLabel = stack_.back();
-    targetLabel->SetValue(labelNum_ + 2);
-    stack_.pop_back();
     StatementNode *newtail = new StatementNode(
       new Label(labelNum_++),
-      targetLabel,
+      new Label(labelNum_ + 1),
       new Operator(Operator::kEqualTo),
       op1,
       op2,
@@ -249,45 +239,54 @@ class IrGenVisitor : public AstVisitor {
     AddToEnd(newtail);
   }
   void VisitLogicalAndExpr(const LogicalAndExpr& exp) {
+    IrGenVisitor countVisitor;
+    exp.rhs().Visit(&countVisitor);
+    int numRhs = countVisitor.NumberOfStatements();
     exp.lhs().Visit(this);
     StatementNode *newtail = new StatementNode(
       new Label(labelNum_++),
-      new Label(labelNum_ + 2),
+      new Label(labelNum_ + numRhs),
       new Operator(Operator::kGoto),
       nullptr,
       nullptr,
       nullptr);
     AddToEnd(newtail);
     exp.rhs().Visit(this);
-    newtail = new StatementNode(
-      new Label(labelNum_),
-      new Label(labelNum_ + 2),
-      new Operator(Operator::kGoto),
-      nullptr,
-      nullptr,
-      nullptr);
   }
   void VisitLogicalOrExpr(const LogicalOrExpr& exp) {
+    IrGenVisitor countVisitor;
+    exp.rhs().Visit(&countVisitor);
+    int numRhs = countVisitor.NumberOfStatements();
     exp.lhs().Visit(this);
+    tail_->GetTarget()->SetValue(tail_->GetTarget()->GetValue() + numRhs);
+    exp.rhs().Visit(this);
     StatementNode *newtail = new StatementNode(
       new Label(labelNum_++),
-      new Label(labelNum_ + 2),
+      new Label(labelNum_ + 1),
       new Operator(Operator::kGoto),
       nullptr,
       nullptr,
       nullptr);
     AddToEnd(newtail);
-    exp.rhs().Visit(this);
     newtail = new StatementNode(
-      new Label(labelNum_),
-      new Label(labelNum_ + 2),
+      new Label(labelNum_++),
+      new Label(labelNum_ + 1),
       new Operator(Operator::kGoto),
       nullptr,
       nullptr,
       nullptr);
+    AddToEnd(newtail);
   }
   void VisitLogicalNotExpr(const LogicalNotExpr& exp) {
-    // ????????? todo
+    exp.operand().Visit(this);
+    StatementNode *newtail = new StatementNode(
+      new Label(labelNum_++),
+      new Label(labelNum_ + 1),
+      new Operator(Operator::kGoto),
+      nullptr,
+      nullptr,
+      nullptr);
+    AddToEnd(newtail);
   }
   void VisitConditional(const Conditional& conditional) {
     IrGenVisitor trueVisitor;
@@ -301,11 +300,10 @@ class IrGenVisitor : public AstVisitor {
     }
     int trueStatements = trueVisitor.NumberOfStatements();
     int falseStatements = falseVisitor.NumberOfStatements();
-
     conditional.guard().Visit(this);
     StatementNode *newtail = new StatementNode(
       new Label(labelNum_++),
-      new Label(trueStatements+labelNum_+1),
+      new Label(trueStatements + labelNum_ + 1),
       new Operator(Operator::kGoto),
       nullptr,
       nullptr,
@@ -316,7 +314,7 @@ class IrGenVisitor : public AstVisitor {
     }
     newtail = new StatementNode(
       new Label(labelNum_++),
-      new Label(falseStatements + labelNum_ ),
+      new Label(falseStatements + labelNum_),
       new Operator(Operator::kGoto),
       nullptr,
       nullptr,
@@ -328,23 +326,23 @@ class IrGenVisitor : public AstVisitor {
   }
   void VisitLoop(const Loop& loop) {
     IrGenVisitor blockvisitor;
+    IrGenVisitor guardVisitor;
+    loop.guard().Visit(&guardVisitor);
+    int guardStatements = guardVisitor.NumberOfStatements();
     int startLabelNum = labelNum_;
-
     for (auto& statement : loop.body()) {
       statement->Visit((&blockvisitor));
     }
     int bodyStatements = blockvisitor.NumberOfStatements();
-
     loop.guard().Visit(this);
     StatementNode *newtail = new StatementNode(
       new Label(labelNum_++),
-      new Label(bodyStatements+labelNum_+1),
+      new Label(bodyStatements + labelNum_ + 1),
       new Operator(Operator::kGoto),
       nullptr,
       nullptr,
       nullptr);
     AddToEnd(newtail);
-
     for (auto& statement : loop.body()) {
       statement->Visit(this);
     }
@@ -373,12 +371,10 @@ class IrGenVisitor : public AstVisitor {
 
   void PrintIR() {
     StatementNode* itor = head_;
-
-    std::cout << "#### Sart of IR ####\n\n";
-
+    std::cout << "#### Start of IR ####\n\n";
     int statementNum = 1;
     while (itor != nullptr) {
-      itor->Print(statementNum++);
+      itor->Print();
       itor = itor->GetNext();
       std::cout << endl;
     }
@@ -387,7 +383,6 @@ class IrGenVisitor : public AstVisitor {
 
   int NumberOfStatements() {
     StatementNode* itor = head_;
-
     int statementCount = 0;
     while (itor != nullptr) {
       itor = itor->GetNext();
@@ -400,8 +395,8 @@ class IrGenVisitor : public AstVisitor {
   StatementNode * head_ = nullptr;
   StatementNode* tail_ = nullptr;
   int labelNum_ = 1;
-  std::vector<Operand*> stack_;
   int register_number_ = 1;
+  std::vector<Operand*> stack_;
 };
 }  // namespace backend
 }  // namespace cs160
