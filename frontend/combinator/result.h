@@ -11,7 +11,29 @@
 namespace cs160 {
 namespace frontend {
 
-template<typename T>
+// Container for return value of a parser
+// Can either be a string or a unique pointer to an AstNode
+class Value {
+ public:
+  enum type { node, string };
+  explicit Value() {}
+  explicit Value(std::unique_ptr<abstract_syntax::frontend::AstNode> value) :
+    type_(type::node), node_(std::move(value)) {}
+  explicit Value(std::string value) :
+    type_(type::string), string_(value) {}
+  std::unique_ptr<abstract_syntax::frontend::AstNode> Node() {
+    return std::move(node_);
+  }
+  std::string String() const {
+    return string_;
+  }
+
+ private:
+  type type_;
+  std::unique_ptr<abstract_syntax::frontend::AstNode> node_;
+  std::string string_;
+};
+
 class Result {
  public:
   explicit Result(State state, bool success, std::string errorMessage)
@@ -20,10 +42,10 @@ class Result {
       throw std::logic_error("fail constructor should not be used for success");
     }
   }
-  explicit Result(State state, T value)
+  explicit Result(State state, Value value)
   : state_(state), value_(std::move(value)), error_("no error"), success_(true) {}
 
-  const T value() {
+  const Value value() {
     if (!success_) {
       throw std::logic_error("can't access value of failed result");
     }
@@ -31,20 +53,13 @@ class Result {
   }
   const bool success() { return success_; }
   const std::string error() { return error_; }
-  const std::unique_ptr<abstract_syntax::frontend::AstNode> lastNode() {
-    return lastNode_;
-  }
-  void lastNode(std::unique_ptr<abstract_syntax::frontend::AstNode> node) {
-    lastNode_ = std::move(node);
-  }
   const State state() { return state_; }
 
  private:
   State state_;
-  T value_;
+  Value value_;
   std::string error_;
   bool success_;
-  std::unique_ptr<abstract_syntax::frontend::AstNode> lastNode_;
 };
 
 }  // namespace frontend
