@@ -55,10 +55,19 @@ namespace cs160 {
       void VisitIntegerExpr(const IntegerExpr& exp) override {  }
 
       void VisitVariableExpr(const VariableExpr& exp) override {
-        bool found = std::find(variables_.begin(), variables_.end(), (exp.name())) != variables_.end();
-        if (!found) {
-          variables_.push_back(exp.name());
-          count_++;
+        bool foundinParams = std::find(paramVariables_.begin(), paramVariables_.end(), (exp.name())) != paramVariables_.end();
+        if (foundinParams) {}
+        else {
+          if (scanningParams_ == false) {
+            bool found = std::find(localVariables_.begin(), localVariables_.end(), (exp.name())) != localVariables_.end();
+            if (!found) { localVariables_.push_back(exp.name()); }
+            else {}
+          }
+          else if (scanningParams_ == true) {
+            bool found = std::find(paramVariables_.begin(), paramVariables_.end(), (exp.name())) != paramVariables_.end();
+            if (!found) { paramVariables_.push_back(exp.name()); }
+            else {}
+          }
         }
       }
 
@@ -123,11 +132,19 @@ namespace cs160 {
 
       void VisitAssignment(const Assignment& assignment) override {
         assignment.rhs().Visit(this);
-
-        bool found = std::find(variables_.begin(), variables_.end(), (assignment.lhs().name())) != variables_.end();
-        if (!found) {
-          variables_.push_back(assignment.lhs().name());
-          count_++;
+        bool foundinParams = std::find(paramVariables_.begin(), paramVariables_.end(), (assignment.lhs().name())) != paramVariables_.end();
+        if (foundinParams) {}
+        else {
+          if (scanningParams_ == false) {
+            bool found = std::find(localVariables_.begin(), localVariables_.end(), (assignment.lhs().name())) != localVariables_.end();
+            if (!found) { localVariables_.push_back(assignment.lhs().name()); }
+            else {}
+          }
+          else if (scanningParams_ == true) {
+            bool found = std::find(paramVariables_.begin(), paramVariables_.end(), (assignment.lhs().name())) != paramVariables_.end();
+            if (!found) { paramVariables_.push_back(assignment.lhs().name()); }
+            else {}
+          }
         }
       }
 
@@ -155,20 +172,31 @@ namespace cs160 {
         program.arithmetic_exp().Visit(this);
       }
       void VisitFunctionCall(const FunctionCall& call) override {
-        bool found = std::find(variables_.begin(), variables_.end(), (call.lhs().name())) != variables_.end();
-        if (!found) {
-          variables_.push_back(call.lhs().name());
-          count_++;
+        bool foundinParams = std::find(paramVariables_.begin(), paramVariables_.end(), (call.lhs().name())) != paramVariables_.end();
+        if (foundinParams) {}
+        else {
+          if (scanningParams_ == false) {
+            bool found = std::find(localVariables_.begin(), localVariables_.end(), (call.lhs().name())) != localVariables_.end();
+            if (!found) { localVariables_.push_back(call.lhs().name()); }
+            else {}
+          }
+          else if (scanningParams_ == true) {
+            bool found = std::find(paramVariables_.begin(), paramVariables_.end(), (call.lhs().name())) != paramVariables_.end();
+            if (!found) { paramVariables_.push_back(call.lhs().name()); }
+            else {}
+          }
         }
       }
 
       void VisitFunctionDef(const FunctionDef& def) override { }
 
-      int count() { return count_; }
-
+      void ScanningParams(bool scanningParams) { scanningParams_ = scanningParams; }
+      int LocalVars() { return localVariables_.size(); }
+      int ParamVars() { return paramVariables_.size(); }
     private:
-      int count_ = 0;
-      std::vector<string> variables_;
+      bool scanningParams_ = false;
+      std::vector<string> paramVariables_;
+      std::vector<string> localVariables_;
     };
     class IrGenVisitor : public AstVisitor {
     public:
@@ -300,20 +328,22 @@ namespace cs160 {
             stack_.back()->SetStackOffset(stackOffset);
           }
         }
-        string main = "push ";
-        main.append(std::to_string( stackOffset));
-        main.append("(%rbp)\n");
-        //                          //ss << "push " << GetStackOffset() << "(%rbp)" << endl; 
+        if (!scanningParams_) {
+          string main = "push ";
+          main.append(std::to_string(stackOffset));
+          main.append("(%rbp)\n");
+          //                          //ss << "push " << GetStackOffset() << "(%rbp)" << endl; 
 
-        StatementNode* newhead = new StatementNode(
-          new Label(labelNum_++),
-          new Text(main),
-          new Operator(Operator::kPrint),
-          nullptr,
-          nullptr,
-          nullptr
-        );
-        AddToEnd(newhead);
+          StatementNode* newhead = new StatementNode(
+            new Label(labelNum_++),
+            new Text(main),
+            new Operator(Operator::kPrint),
+            nullptr,
+            nullptr,
+            nullptr
+          );
+          AddToEnd(newhead);
+        }
 
       }
       void VisitAssignment(const Assignment& assignment) {
@@ -362,8 +392,9 @@ namespace cs160 {
           def->Visit(this);
         }
         CountVisitor varCount;
+        varCount.ScanningParams(false);
         for (auto& statement : program.statements()) { statement->Visit(&varCount); }
-        mainVars_ = varCount.count();
+        mainVars_ = varCount.LocalVars();
         string main = ".global main\n.text\nmain:\nmov %rsp, %rbp";
         StatementNode* newhead = new StatementNode(
           new Label(labelNum_++),
@@ -376,7 +407,7 @@ namespace cs160 {
         AddToEnd(newhead);
         newhead = new StatementNode(
           new Label(labelNum_++),
-          new Constant(varCount.count()),
+          new Constant(varCount.LocalVars()),
           new Operator(Operator::kAllocateVars),
           nullptr,
           nullptr,
@@ -388,11 +419,8 @@ namespace cs160 {
         localVariables_.clear();
       }
       void VisitFunctionCall(const FunctionCall& call) override {
-        CountVisitor argCount;
-        for (auto& arg : call.arguments()) {
-          arg->Visit(&argCount);
-        }
         int numArgs = call.arguments().size();
+
         for (auto& arg : call.arguments()) {
           arg->Visit(this);
         }
@@ -483,18 +511,17 @@ namespace cs160 {
           nullptr,
           nullptr);
         AddToEnd(newhead);
-        CountVisitor paramVarsCounter;
-        scanningParams_ = true;
+        CountVisitor varsCounter;
+        varsCounter.ScanningParams(true);
         for (auto& param : def.parameters()) {
-          param->Visit(&paramVarsCounter);
+          param->Visit(&varsCounter);
         }
-        int numParamVar = paramVarsCounter.count();
-        CountVisitor localVarsCounter;
-        scanningParams_ = true;
-        for (auto& param : def.parameters()) {
-          param->Visit(&localVarsCounter);
+        int numParamVar = varsCounter.ParamVars();
+        varsCounter.ScanningParams(false);
+        for (auto& statement : def.function_body()) {
+          statement->Visit(&varsCounter);
         }
-        int numLocalVar = localVarsCounter.count();
+        int numLocalVar = varsCounter.LocalVars();
         cout << "#PARAMS: " << numParamVar << "\n";
         string main = "";
         main.append(".type ");
@@ -504,7 +531,6 @@ namespace cs160 {
         main.append(":\n");
         main.append("push %rbp\n");
         main.append("mov %rsp, %rbp\n");
-
         main.append("sub $");
         main.append(std::to_string(8 * numLocalVar));
         main.append(", %rsp\n");

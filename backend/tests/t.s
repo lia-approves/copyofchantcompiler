@@ -11,70 +11,67 @@ mov %rsp, %rbp
 sub $8, %rsp
 */
 # S2:  print
-/*push 16(%rbp)
-*/
-# S3:  print
 /*push $45
 */
-# S4:  a = 45
-# S5:  print
+# S3:  a = 45
+# S4:  print
 /*push 16(%rbp)
 */
-# S6:  print
+# S5:  print
 /*push $8
 */
-# S7:  t1 = bob + 8
-# S8:  bob = t1
-# S9:  print
+# S6:  t1 = bob + 8
+# S7:  bob = t1
+# S8:  print
 /*push 16(%rbp)
 */
-# S10:  print
+# S9:  print
 /*push $5
 */
-# S11:  t2 = bob + 5
-# S12:  print
+# S10:  t2 = bob + 5
+# S11:  print
 /*pop %rax
 mov %rbp, %rsp
 pop %rbp
 ret*/
-# S13:  print
+# S12:  print
 /*###END FUN DEF###*/
-# S14:  print
+# S13:  print
 /*.global main
 .text
 main:
 mov %rsp, %rbp*/
-# S15:  alloc 8*3 bytes:
-# S16:  print
+# S14:  alloc 8*3 bytes:
+# S15:  print
 /*push $9
 */
-# S17:  y = 9
-# S18:  print
+# S16:  y = 9
+# S17:  print
 /*push $1
 */
-# S19:  x = 1
-# S20:  print
+# S18:  x = 1
+# S19:  print
 /*push $17
 */
-# S21:  print
+# S20:  print
 /*call foo
 */
-# S22:  print
+# S21:  print
 /*push %rax
 */
-# S23:  print
+# S22:  print
 /*pop -24(%rbp)
 */
-# S24:  print
+# S23:  print
 /*add $8, %rsp
 */
-# S25:  print
+# S24:  print
 /*push $12
 */
-# S26:  print
+# S25:  print
 /*push -24(%rbp)
 */
-# S27:  t3 = 12 + foo_retval
+# S26:  t3 = 12 + foo_retval
 
 #### End of IR ####
 
@@ -98,29 +95,24 @@ sub $8, %rsp
 
 statementnumber_2:
 
-push 16(%rbp)
+push $45
 
 
 statementnumber_3:
 
-push $45
-
-
-statementnumber_4:
-
 pop -8(%rbp)
 
-statementnumber_5:
+statementnumber_4:
 
 push 16(%rbp)
 
 
-statementnumber_6:
+statementnumber_5:
 
 push $8
 
 
-statementnumber_7:
+statementnumber_6:
 
 pop %rax
 pop %rbx
@@ -128,21 +120,21 @@ add %rax, %rbx
 push %rbx
 
 
-statementnumber_8:
+statementnumber_7:
 
 pop 16(%rbp)
 
-statementnumber_9:
+statementnumber_8:
 
 push 16(%rbp)
 
 
-statementnumber_10:
+statementnumber_9:
 
 push $5
 
 
-statementnumber_11:
+statementnumber_10:
 
 pop %rax
 pop %rbx
@@ -150,82 +142,82 @@ add %rax, %rbx
 push %rbx
 
 
-statementnumber_12:
+statementnumber_11:
 
 pop %rax
 mov %rbp, %rsp
 pop %rbp
 ret
 
-statementnumber_13:
+statementnumber_12:
 
 ###END FUN DEF###
 
-statementnumber_14:
+statementnumber_13:
 
 .global main
 .text
 main:
 mov %rsp, %rbp
 
-statementnumber_15:
+statementnumber_14:
 
 sub $24, %rsp
 
-statementnumber_16:
+statementnumber_15:
 
 push $9
 
 
-statementnumber_17:
+statementnumber_16:
 
 pop -8(%rbp)
 
-statementnumber_18:
+statementnumber_17:
 
 push $1
 
 
-statementnumber_19:
+statementnumber_18:
 
 pop -16(%rbp)
 
-statementnumber_20:
+statementnumber_19:
 
 push $17
 
 
-statementnumber_21:
+statementnumber_20:
 
 call foo
 
 
-statementnumber_22:
+statementnumber_21:
 
 push %rax
 
 
-statementnumber_23:
+statementnumber_22:
 
 pop -24(%rbp)
 
 
-statementnumber_24:
+statementnumber_23:
 
 add $8, %rsp
 
 
-statementnumber_25:
+statementnumber_24:
 
 push $12
 
 
-statementnumber_26:
+statementnumber_25:
 
 push -24(%rbp)
 
 
-statementnumber_27:
+statementnumber_26:
 
 pop %rax
 pop %rbx
