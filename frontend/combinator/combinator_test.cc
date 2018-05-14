@@ -77,17 +77,17 @@ TEST(CombinatorTest, ParseRange4) {
   ASSERT_EQ(resultAH2.success(), false);
 }
 
-// TEST(CombinatorTest, ParseOr) {
-//   State s("hi");
-//   auto parser = Or<std::string>(Literal('a'), Literal('h'));
-//   auto successResult = parser(s);
-//   ASSERT_EQ(successResult.success(), true);
-//   ASSERT_EQ(successResult.value(), "h");
-//
-//   auto failResult = parser(successResult.state());
-//   ASSERT_EQ(failResult.success(), false);
-// }
-//
+TEST(CombinatorTest, ParseOr) {
+  State s("hi");
+  auto parser = Or(Literal('a'), Literal('h'));
+  auto successResult = parser(s);
+  ASSERT_EQ(successResult.success(), true);
+  ASSERT_EQ(successResult.value().String(), "h");
+
+  auto failResult = parser(successResult.state());
+  ASSERT_EQ(failResult.success(), false);
+}
+
 TEST(CombinatorTest, ParseAnd) {
   State s("hi");
   auto failParse = And(Literal('h'), Literal('a'));
