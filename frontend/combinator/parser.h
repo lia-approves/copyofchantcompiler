@@ -158,20 +158,20 @@ Parser And(Parser parseA, Parser parseB, std::function<Value(Value, Value)> ToVa
 }
 
 // Returns a function which runs a parser 0 or more times, returning all results
-// Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
-//   return [Parse, ToNode](State state) {
-//     std::vector<Value> results;
-//     auto currentResult = Parse(state);
-//     // Parse first element before the loop
-//     while (currentResult.success()) {
-//       Value v = currentResult.value();
-//       results.push_back( std::move(v) );
-//       currentResult = Parse(currentResult.state());
-//     }
-//     // return currentResult;
-//     return Result(currentResult.state(), ToNode(std::move(results)));
-//   };
-// }
+Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
+  return [Parse, ToNode](State state) {
+    std::vector<Value> results;
+    auto currentResult = Parse(state);
+    // Parse first element before the loop
+    while (currentResult.success()) {
+      Value v = currentResult.value();
+      results.push_back( std::move(v) );
+      currentResult = Parse(currentResult.state());
+    }
+    // return currentResult;
+    return Result(currentResult.state(), ToNode(std::move(results)));
+  };
+}
 
 
 // // Returns a function which runs a parser 1 or more times, returning all results
