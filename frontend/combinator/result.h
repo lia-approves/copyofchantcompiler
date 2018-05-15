@@ -21,6 +21,15 @@ class Value {
     type_(type::node), node_(std::move(value)) {}
   explicit Value(std::string value) :
     type_(type::string), string_(value) {}
+  Value(Value&& other) : type_(other.type_), node_(std::move(other.node_)), string_(other.string_) {}
+  Value& operator=(Value&& other) {
+    if (this != &other) {
+      type_ = other.type_;
+      string_ = other.string_;
+      node_ = std::move(other.node_);
+    }
+    return *this;
+  }
   std::unique_ptr<abstract_syntax::frontend::AstNode> Node() {
     return std::move(node_);
   }
