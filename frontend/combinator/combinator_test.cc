@@ -220,20 +220,26 @@ TEST(CombinatorTest, Star) {
   ASSERT_EQ(val.GetString(), "111");
 }
 
-// TEST(CombinatorTest, OnePlus) {
-//   State s("1112");
-//   auto parseOnes = OnePlus<std::string>(Literal('1'));
-//   auto parseZeroes = OnePlus<std::string>(Literal('0'));
-//   auto zr = parseZeroes(s);
-//   auto result = parseOnes(s);
-//   ASSERT_EQ(result.success(), true);  // multiple matches is OK
-//   ASSERT_EQ(zr.success(), false);  // no matches is not allowed, unlike Star
-//   auto val = result.value();
-//   ASSERT_EQ(val.size(), 3);
-//   ASSERT_EQ(val[0], val[1]);
-//   ASSERT_EQ(val[2], val[1]);
-//   ASSERT_EQ(val[0], "1");
-// }
+TEST(CombinatorTest, OnePlus) {
+  State s("1112");
+  Converter<std::vector<Value>> concat = [](std::vector<Value> values) {
+    std::string s;
+    for (auto it = values.begin(); it != values.end(); ++it) {
+      s += it->GetString();
+    }
+    return Value(s);
+  };
+  auto parseOnes = Star(Literal('1'), concat);
+  auto parseZeroes = Star(Literal('0'), concat);
+  auto result = parseOnes(s);
+  auto zr = parseZeroes(s);
+  ASSERT_EQ(result.success(), true);  //multiple matches is OK
+  ASSERT_EQ(zr.success(), false);  //no matches is not allowed, unlike Star
+  auto val = result.value();
+  ASSERT_EQ(val.GetString(), "111");
+}
+
+
 
 TEST(CombinatorTest, SequenceTest) {
   State s("hey");
