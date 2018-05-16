@@ -56,8 +56,11 @@ Parser Or(Parser parseA, Parser parseB);
 
 //  Returns a function which runs 2 parsers, and returns an array of their
 //  results.  If either fails, it returns failure
-Parser And(Parser parseA, Parser parseB,
-    std::function<Value(Value, Value)> ToValue = Concat);
+Parser And(
+  Parser parseA,
+  Parser parseB,
+  std::function<Value(Value, Value)> ToValue = Concat
+);
 
 Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode);
 
