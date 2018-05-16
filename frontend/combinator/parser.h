@@ -39,13 +39,15 @@ using Converter = std::function<Value(T)>;
 //   T value() {
 //     return value_;
 //   }
-//   void Visit(abstract_syntax::frontend::AstVisitor* visitor) const { visitor->VisitDummy(*this); }
+//   void Visit(abstract_syntax::frontend::
+// AstVisitor* visitor) const { visitor->VisitDummy(*this); }
 //  private:
 //   T value_;
 // };
 
 // NodeMaker<T> ToDummyNode = [](T value) {
-//   return std::unique_ptr<abstract_syntax::frontend::AstNode>(new DummyNode<T>(value));
+//   return std::unique_ptr<abstract_syntax::
+// frontend::AstNode>(new DummyNode<T>(value));
 // };
 
 Value ToStringValue(std::string s) {
@@ -139,7 +141,8 @@ Parser Or(Parser parseA, Parser parseB) {
 
 //  Returns a function which runs 2 parsers, and returns an array of their
 //  results.  If either fails, it returns failure
-Parser And(Parser parseA, Parser parseB, std::function<Value(Value, Value)> ToValue = Concat) {
+Parser And(Parser parseA, Parser parseB,
+    std::function<Value(Value, Value)> ToValue = Concat) {
   return [parseA, parseB, ToValue](State state) {
     // Save position so we can reset later.
     int oldPosition = state.position();
@@ -173,16 +176,19 @@ Parser And(Parser parseA, Parser parseB, std::function<Value(Value, Value)> ToVa
 //       currentResult = Parse(currentResult.state());
 //     }
 //     return currentResult;
-//     // return Result(currentResult.state(), std::move(ToNode(std::move(results))));
+//
+// return Result(currentResult.state(), std::move(ToNode(std::move(results))));
 //   };
 // }
 
 
-// // Returns a function which runs a parser 1 or more times, returning all results
+// // Returns a function which runs a
+// parser 1 or more times, returning all results
 // Parser> OnePlus(Parser parse) {
 //   return [parse](State state) {
 //     std::vector<T> results;
-//     auto currentResult = parse(state);  // Parse first element before the loop
+//     auto currentResult = parse(state);
+// Parse first element before the loop
 //     while (currentResult.success()) {
 //       results.push_back(currentResult.value());
 //       currentResult = parse(currentResult.state());
@@ -196,7 +202,8 @@ Parser And(Parser parseA, Parser parseB, std::function<Value(Value, Value)> ToVa
 
 // Returns a function which runs a parser, and returns a success if it fails
 // and a failure if it succeeds
- Parser Not(Parser parse, Converter<std::string> ToValue = ToStringValue) {
+Parser Not(Parser parse,
+   Converter<std::string> ToValue = ToStringValue) {
      return [parse, ToValue](State state) {
        auto result = parse(state);
        if (result.success()) {
@@ -205,10 +212,11 @@ Parser And(Parser parseA, Parser parseB, std::function<Value(Value, Value)> ToVa
        char temp = state.readChar();
        return Result(state, ToValue(std::string(1, temp)));;
      };
- }
+}
 
 // Return a function which parses a string (whitespace sensitive)
-Parser ExactMatch(std::string str, Converter<std::string> ToValue = ToStringValue) {
+Parser ExactMatch(std::string str,
+    Converter<std::string> ToValue = ToStringValue) {
   return [str, ToValue](State state) {
     if (state.atEnd()) {
       return Result(state, false, "end of file");
@@ -283,8 +291,8 @@ Parser Match(std::string str, Converter<std::string> ToValue = ToStringValue) {
   };
 }
 
-Parser Between
-  (Parser parseA, Parser parseB, Parser parseC, Converter<std::string> ToValue = ToStringValue) {
+Parser Between(Parser parseA, Parser parseB,
+    Parser parseC, Converter<std::string> ToValue = ToStringValue) {
   return [parseA, parseB, parseC, ToValue](State state) {
     // Save position so we can reset later.
     int oldPosition = state.position();

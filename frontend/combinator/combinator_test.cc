@@ -100,16 +100,16 @@ TEST(CombinatorTest, ParseAnd) {
   ASSERT_EQ(v.String(), "hi");
 }
 
- TEST(CombinatorTest, NotTest) {
-   State s("a");
-   auto successParse = Not(Literal('b'));
-   auto failParse = Not(Literal('a'));
-   auto fail = failParse(s);
-   auto success = successParse(s);
-   ASSERT_EQ(fail.success(), false);
-   ASSERT_EQ(success.success(), true);
-   ASSERT_EQ(success.value().String(), "a");
- }
+TEST(CombinatorTest, NotTest) {
+  State s("a");
+  auto successParse = Not(Literal('b'));
+  auto failParse = Not(Literal('a'));
+  auto fail = failParse(s);
+  auto success = successParse(s);
+  ASSERT_EQ(fail.success(), false);
+  ASSERT_EQ(success.success(), true);
+  ASSERT_EQ(success.value().String(), "a");
+}
 
 TEST(CombinatorTest, ExactMatchTest) {
   // test without spaces
