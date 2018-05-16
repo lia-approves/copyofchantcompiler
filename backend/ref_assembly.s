@@ -20,7 +20,10 @@ mov %rsp, %rbp
 push $33
 mov (%rsp), %rax
 movq $3, %rdi
-call malloc
+#call malloc
+mov $0x2d, %rax
+mov $0, %rbx
+syscall
 push %rax
 movq $5, (%rsp)
 movq $6, 8(%rsp)
@@ -46,4 +49,3 @@ format:
 .data
 a:
   .quad  0
-
