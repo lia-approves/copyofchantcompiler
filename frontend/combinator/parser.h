@@ -279,37 +279,41 @@ Parser Int(Converter<std::string> ToNode = [](std::string s) {
   };
 }
 
-// //  Returns a function which runs 2 parsers, and returns an array of their
-// //  results.
-// Parser Sequence (Parser parseA, Parser parseB, Parser parseC) {
-//   return [parseA, parseB, parseC](State state) {
-//     // Save position so we can reset later.
-//     int oldPosition = state.position();
-//     auto resultA = parseA(state);
-//     if (!resultA.success()) {
-//       state.setPosition(oldPosition);
-//       return Result<std::tuple<A, B, C>>
-//               (state, false, "no match for A, B, and C");
-//     }
-//     auto resultB = parseB(resultA.state());
-//     if (!resultB.success()) {
-//       state.setPosition(oldPosition);
-//       return Result<std::tuple<A, B, C>>
-//               (state, false, "no match for A, B, and C");
-//     }
-//
-//     auto resultC = parseC(resultB.state());
-//     if (!resultC.success()) {
-//       state.setPosition(oldPosition);
-//       return Result<std::tuple<A, B, C>>
-//               (state, false, "no match for A, B, and C");
-//     }
-//
-//     std::tuple<A, B, C> res = std::make_tuple
-//             (resultA.value(), resultB.value(), resultC.value());
-//     return Result<std::tuple<A, B, C>>(resultC.state(), res);
-//   };
-// }
+//  Returns a function which runs 3 parsers, and returns an array of their
+//  results.
+Parser Sequence (Parser parseA, Parser parseB, Parser parseC, Converter<std::vector<Value>> ToNode) {
+  return [parseA, parseB, parseC, ToNode](State state) {
+    // Save position so we can reset later.
+    int oldPosition = state.position();
+    std::vector<Value> results;
+
+    auto resultA = parseA(state);
+    if (!resultA.success()) {
+      state.setPosition(oldPosition);
+      return Result(state, false, "no match for A, B, and C");
+    }
+    auto resultB = parseB(resultA.state());
+    if (!resultB.success()) {
+      state.setPosition(oldPosition);
+      return Result(state, false, "no match for A, B, and C");
+    }
+
+    auto resultC = parseC(resultB.state());
+    if (!resultC.success()) {
+      state.setPosition(oldPosition);
+      return Result(state, false, "no match for A, B, and C");
+    }
+
+    Value v1 = resultA.value();
+    Value v2 = resultB.value();
+    Value v3 = resultC.value();
+    results.push_back( std::move(v1) );
+    results.push_back( std::move(v2) );
+    results.push_back( std::move(v3) );
+
+    return Result(resultC.state(), ToNode(std::move(results)));
+  };
+}
 
 }  // namespace frontend
 }  // namespace cs160
