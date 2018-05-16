@@ -1,7 +1,7 @@
 cc_library(
   name = "combinator",
   copts = ["-Wall -g"],
-  srcs = [],
+  srcs = ["parser.cc"],
   hdrs = ["result.h", "parser.h", "state.h"],
   deps = ["//frontend/v1/scanner/token", "//utility", "//abstract_syntax"],
   visibility = ["//visibility:public"],

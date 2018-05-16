@@ -28,71 +28,21 @@ using NodeMaker = std::function<Node(T)>;
 template<class T>
 using Converter = std::function<Value(T)>;
 
-// class DummyVisitor
-
-// template<class T>
-// class DummyNode : public abstract_syntax::frontend::AstNode {
-//  public:
-//   explicit DummyNode(T value) {
-//     value_ = value;
-//   }
-//   T value() {
-//     return value_;
-//   }
-//   void Visit(abstract_syntax::frontend::
-// AstVisitor* visitor) const { visitor->VisitDummy(*this); }
-//  private:
-//   T value_;
-// };
-
-// NodeMaker<T> ToDummyNode = [](T value) {
-//   return std::unique_ptr<abstract_syntax::
-// frontend::AstNode>(new DummyNode<T>(value));
-// };
-
 Value ToStringValue(std::string s) {
   return Value(s);
 }
 
 // Assumes both values are strings.  If one isn't, throws an exception
 Value Concat(Value v1, Value v2) {
-  if (v1.GetType() != Value::type::string || v2.GetType() != Value::type::string) {
+  if (v1.GetType() != Value::type::string ||
+      v2.GetType() != Value::type::string) {
     throw std::logic_error("Attempted to concatenate non-string values.");
   }
   return Value(v1.GetString() + v2.GetString());
 }
 
-//  Returns a function which:
-//  runs the parser, then runs f on the result, then returns the final result
-// template<class I, class O>
-// Parser Apply(Parser parse, std::function<O(I)> f) {
-//   return [parse, f](State state) {
-//     auto result = parse(state);
-//     if (!result.success()) {
-//       return Result<O>(state, false, "failed to parse");
-//     }
-//     return Result<O>(state, f(result.value()));
-//   };
-// }
-
 // Return a function which parses a single literal
-Parser Literal(char c, Converter<std::string> ToValue = ToStringValue) {
-  return [c, ToValue](State state) {
-    if (state.atEnd()) {
-      return Result(state, false, "end of file");
-    }
-    char next = state.readChar();
-
-    if (next == c) {
-      state.advance();
-      return Result(state, ToValue(std::string(1, c)));
-    } else {
-      std::string err = "no match for character: ";
-      err += c;
-      return Result(state, false, err);
-    }
-  };
-}
+Parser Literal(char c, Converter<std::string> ToValue = ToStringValue);
 
 // Returns a function which checks if a character is within
 // a range of two characters
@@ -160,26 +110,6 @@ Parser And(Parser parseA, Parser parseB,
   };
 }
 
-// Returns a function which runs a parser 0 or more times, returning all results
-// template<class T>
-// Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
-//   return [Parse, ToNode](State state) {
-//     std::vector<Value> results;
-//     auto currentResult = Parse(state);
-//     // Parse first element before the loop
-//     while (currentResult.success()) {
-//       if (currentResult.value().Type() == Value::type::string) {
-//         results.push_back(Value(currentResult.value().String()));
-//       } else if (currentResult.value().Type() == Value::type::node) {
-//         results.push_back( Value(Node()) );
-//       }
-//       currentResult = Parse(currentResult.state());
-//     }
-//     return currentResult;
-//
-// return Result(currentResult.state(), std::move(ToNode(std::move(results))));
-//   };
-// }
 Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
   return [Parse, ToNode](State state) {
     std::vector<Value> results;
