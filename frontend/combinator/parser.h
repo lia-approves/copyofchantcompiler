@@ -57,23 +57,7 @@ Parser Or(Parser parseA, Parser parseB);
 //  Returns a function which runs 2 parsers, and returns an array of their
 //  results.  If either fails, it returns failure
 Parser And(Parser parseA, Parser parseB,
-    std::function<Value(Value, Value)> ToValue = Concat) {
-  return [parseA, parseB, ToValue](State state) {
-    // Save position so we can reset later.
-    int oldPosition = state.position();
-    auto resultA = parseA(state);
-    if (!resultA.success()) {
-      state.setPosition(oldPosition);
-      return Result(state, false, "no match for A and B");
-    }
-    auto resultB = parseB(resultA.state());
-    if (!resultB.success()) {
-      state.setPosition(oldPosition);
-      return Result(state, false, "no match for A and B");
-    }
-    return Result(resultB.state(), ToValue(resultA.value(), resultB.value()));
-  };
-}
+    std::function<Value(Value, Value)> ToValue = Concat);
 
 Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
   return [Parse, ToNode](State state) {
