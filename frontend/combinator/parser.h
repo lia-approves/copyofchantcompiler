@@ -59,21 +59,7 @@ Parser Or(Parser parseA, Parser parseB);
 Parser And(Parser parseA, Parser parseB,
     std::function<Value(Value, Value)> ToValue = Concat);
 
-Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
-  return [Parse, ToNode](State state) {
-    std::vector<Value> results;
-    auto currentResult = Parse(state);
-    // Parse first element before the loop
-    while (currentResult.success()) {
-      Value v = currentResult.value();
-      results.push_back( std::move(v) );
-      currentResult = Parse(currentResult.state());
-    }
-    // return currentResult;
-    return Result(currentResult.state(), ToNode(std::move(results)));
-  };
-}
-
+Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode);
 
 // // Returns a function which runs a
 // parser 1 or more times, returning all results
@@ -95,17 +81,7 @@ Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
 
 // Returns a function which runs a parser, and returns a success if it fails
 // and a failure if it succeeds
-Parser Not(Parser parse,
-   Converter<std::string> ToValue = ToStringValue) {
-     return [parse, ToValue](State state) {
-       auto result = parse(state);
-       if (result.success()) {
-         return Result(state, false, "no match for not");
-       }
-       char temp = state.readChar();
-       return Result(state, ToValue(std::string(1, temp)));;
-     };
-}
+Parser Not(Parser parse, Converter<std::string> ToValue = ToStringValue);
 
 // Return a function which parses a string (whitespace sensitive)
 Parser ExactMatch(std::string str,

@@ -84,6 +84,32 @@ Parser And(Parser parseA, Parser parseB,
   };
 }
 
+Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
+  return [Parse, ToNode](State state) {
+    std::vector<Value> results;
+    auto currentResult = Parse(state);
+    // Parse first element before the loop
+    while (currentResult.success()) {
+      Value v = currentResult.value();
+      results.push_back( std::move(v) );
+      currentResult = Parse(currentResult.state());
+    }
+    // return currentResult;
+    return Result(currentResult.state(), ToNode(std::move(results)));
+  };
+}
+
+Parser Not(Parser parse, Converter<std::string> ToValue) {
+  return [parse, ToValue](State state) {
+   auto result = parse(state);
+   if (result.success()) {
+     return Result(state, false, "no match for not");
+   }
+   char temp = state.readChar();
+   return Result(state, ToValue(std::string(1, temp)));;
+  };
+}
+
 }  // namespace Parse
 }  // namespace frontend
 }  // namespace cs160
