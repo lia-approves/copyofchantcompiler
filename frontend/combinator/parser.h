@@ -54,10 +54,10 @@ Value ToStringValue(std::string s) {
 
 // Assumes both values are strings.  If one isn't, throws an exception
 Value Concat(Value v1, Value v2) {
-  if (v1.Type() != Value::type::string || v2.Type() != Value::type::string) {
+  if (v1.GetType() != Value::type::string || v2.GetType() != Value::type::string) {
     throw std::logic_error("Attempted to concatenate non-string values.");
   }
-  return Value(v1.String() + v2.String());
+  return Value(v1.GetString() + v2.GetString());
 }
 
 //  Returns a function which:
@@ -276,6 +276,23 @@ Parser Match(std::string str, Converter<std::string> ToValue = ToStringValue) {
     // and not reaching end of file
     // therefore, return success
     return Result(state, ToValue(str));
+  };
+}
+
+Parser Int(Converter<std::string> ToNode = [](std::string s) {
+  auto node = Node(new abstract_syntax::frontend::IntegerExpr(std::stoi(s)));
+  return Value(std::move(node));
+}) {
+  return [ToNode](State state) {
+    auto parse = Range("09");
+    auto res = parse(state);
+    if (!res.success()) {
+      return Result(state, false, "not an integer");
+    }
+    // auto result = Result(res.state(), ToNode(res.value().String()));
+    auto v = ToNode(res.value().GetString());
+    std::cout << "node pointer after callback " << v.GetNodePointer() << std::endl;
+    return Result(res.state(), std::move(v));
   };
 }
 

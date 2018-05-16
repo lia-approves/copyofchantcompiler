@@ -32,10 +32,10 @@ TEST(CombinatorTest, ParseLiteral) {
   auto resultH = parseH(s);
   ASSERT_EQ(resultH.success(), true);
   ASSERT_EQ(resultI.success(), false);
-  ASSERT_EQ(resultH.value().String(), "h");
+  ASSERT_EQ(resultH.value().GetString(), "h");
   auto successfulResultI = parseI(resultH.state());
   ASSERT_EQ(successfulResultI.success(), true);
-  ASSERT_EQ(successfulResultI.value().String(), "i");
+  ASSERT_EQ(successfulResultI.value().GetString(), "i");
 }
 
 TEST(CombinatorTest, ParseRange) {
@@ -45,9 +45,9 @@ TEST(CombinatorTest, ParseRange) {
   auto resultAZ2 = parseAZ(resultAZ.state());
 
   ASSERT_EQ(resultAZ.success(), true);
-  ASSERT_EQ(resultAZ.value().String(), "h");
+  ASSERT_EQ(resultAZ.value().GetString(), "h");
   ASSERT_EQ(resultAZ2.success(), true);
-  ASSERT_EQ(resultAZ2.value().String(), "i");
+  ASSERT_EQ(resultAZ2.value().GetString(), "i");
 }
 
 TEST(CombinatorTest, ParseRange2) {
@@ -73,7 +73,7 @@ TEST(CombinatorTest, ParseRange4) {
   auto resultAH2 = parseAH(resultAH.state());
 
   ASSERT_EQ(resultAH.success(), true);
-  ASSERT_EQ(resultAH.value().String(), "h");
+  ASSERT_EQ(resultAH.value().GetString(), "h");
   ASSERT_EQ(resultAH2.success(), false);
 }
 
@@ -82,7 +82,7 @@ TEST(CombinatorTest, ParseOr) {
   auto parser = Or(Literal('a'), Literal('h'));
   auto successResult = parser(s);
   ASSERT_EQ(successResult.success(), true);
-  ASSERT_EQ(successResult.value().String(), "h");
+  ASSERT_EQ(successResult.value().GetString(), "h");
 
   auto failResult = parser(successResult.state());
   ASSERT_EQ(failResult.success(), false);
@@ -97,7 +97,7 @@ TEST(CombinatorTest, ParseAnd) {
   ASSERT_EQ(fail.success(), false);
   ASSERT_EQ(result.success(), true);
   auto v = result.value();
-  ASSERT_EQ(v.String(), "hi");
+  ASSERT_EQ(v.GetString(), "hi");
 }
 
  TEST(CombinatorTest, NotTest) {
@@ -108,7 +108,7 @@ TEST(CombinatorTest, ParseAnd) {
    auto success = successParse(s);
    ASSERT_EQ(fail.success(), false);
    ASSERT_EQ(success.success(), true);
-   ASSERT_EQ(success.value().String(), "a");
+   ASSERT_EQ(success.value().GetString(), "a");
  }
 
 TEST(CombinatorTest, ExactMatchTest) {
@@ -117,7 +117,7 @@ TEST(CombinatorTest, ExactMatchTest) {
   auto parse1 = ExactMatch("hey");
   auto success1 = parse1(s1);
   ASSERT_EQ(success1.success(), true);
-  auto val = success1.value().String();
+  auto val = success1.value().GetString();
   ASSERT_EQ(val, "hey");
 
   // test with spaces
@@ -125,7 +125,7 @@ TEST(CombinatorTest, ExactMatchTest) {
   auto parse2 = ExactMatch("hello world");
   auto success2 = parse2(s2);
   ASSERT_EQ(success2.success(), true);
-  auto val2 = success2.value().String();
+  auto val2 = success2.value().GetString();
   ASSERT_EQ(val2, "hello world");
 
   State s3("nope");
@@ -139,25 +139,25 @@ TEST(CombinatorTest, MatchTest) {
   auto parse1 = Match("helloworld");
   auto success1 = parse1(s1);
   ASSERT_EQ(success1.success(), true);
-  ASSERT_EQ(success1.value().String(), "helloworld");
+  ASSERT_EQ(success1.value().GetString(), "helloworld");
 
   State s2("hi");
   auto parse2 = Match("hi");
   auto success2 = parse2(s2);
   ASSERT_EQ(success2.success(), true);
-  ASSERT_EQ(success2.value().String(), "hi");
+  ASSERT_EQ(success2.value().GetString(), "hi");
 
   State s3("hey   ");
   auto parse3 = Match("hey");
   auto success3 = parse3(s3);
   ASSERT_EQ(success3.success(), true);
-  ASSERT_EQ(success3.value().String(), "hey");
+  ASSERT_EQ(success3.value().GetString(), "hey");
 
   State s4("  he");
   auto parse4 = Match(" he ");
   auto success4 = parse4(s4);
   ASSERT_EQ(success4.success(), true);
-  ASSERT_EQ(success4.value().String(), " he ");
+  ASSERT_EQ(success4.value().GetString(), " he ");
 
   State s5("test");
   auto parse5 = Match("lol");
@@ -187,33 +187,24 @@ TEST(CombinatorTest, MatchTest) {
 // // //   auto result = parseInt(s);
 // // //   ASSERT_EQ(result.value(), 1);
 // // // }
-//
-// TEST(CombinatorTest, CaptureIntNode) {
-//   State s("1");
-//   auto parseIntNode = Capture<string>(Literal('1'), [](string s) {
-//     return std::unique_ptr<AstNode>(new IntegerExpr(std::stoi(s)));
-//   });
-//   auto result = parseIntNode(s);
-//   abstract_syntax::frontend::PrintVisitor printer_;
-//   result.value()->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "1");
-// }
-//
-// // TEST(CombinatorTest, CaptureNegativeInt) {
-// //   State s("-1");
-// //   auto parseIntNode1 = Capture<string>(Literal('1'), [](string s) {
-// //     return std::unique_ptr<AstNode>(new IntegerExpr(std::stoi(s)));
-// //   });
-// //   auto parse = Capture<
-// //   auto parse = Captur
-// // }
+
+TEST(CombinatorTest, CaptureIntNode) {
+  State s("1");
+  auto parseIntNode = Int();
+  auto result = parseIntNode(s);
+  auto v = result.value();
+  ASSERT_EQ(v.GetType(), Value::node);
+  abstract_syntax::frontend::PrintVisitor printer_;
+  v.Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "1");
+}
 
 TEST(CombinatorTest, Star) {
   State s("1112");
   Converter<std::vector<Value>> concat = [](std::vector<Value> values) {
     std::string s;
     for (auto it = values.begin(); it != values.end(); ++it) {
-      s += it->String();
+      s += it->GetString();
     }
     return Value(s);
   };
@@ -224,7 +215,7 @@ TEST(CombinatorTest, Star) {
   ASSERT_EQ(result.success(), true);
   ASSERT_EQ(zr.success(), true);
   auto val = result.value();
-  ASSERT_EQ(val.String(), "111");
+  ASSERT_EQ(val.GetString(), "111");
 }
 
 // TEST(CombinatorTest, OnePlus) {

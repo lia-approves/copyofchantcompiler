@@ -11,34 +11,36 @@
 namespace cs160 {
 namespace frontend {
 
-// Container for return value of a parser
-// Can either be a string or a unique pointer to an AstNode
 class Value {
  public:
   enum type { node, string };
-  explicit Value() {}
-  explicit Value(std::unique_ptr<abstract_syntax::frontend::AstNode> value) :
-    type_(type::node), node_(std::move(value)) {}
-  explicit Value(std::string value) :
-    type_(type::string), string_(value) {}
-  Value(Value&& other) : type_(other.type_), node_(std::move(other.node_)), string_(other.string_) {}
-  Value& operator=(Value&& other) {
-    if (this != &other) {
-      type_ = other.type_;
-      string_ = other.string_;
-      node_ = std::move(other.node_);
+  Value() {};
+  Value(std::unique_ptr<abstract_syntax::frontend::AstNode> i) :
+    type_(type::node),
+    node_(std::move(i)) {};
+  Value(std::string s) :
+    type_(type::string),
+    string_(s) {};
+  Value(Value&& v) :
+    type_(v.type_),
+    node_(std::move(v.node_)),
+    string_(v.string_) {};
+  Value& operator=(Value&& v) {
+    if (this != &v) {
+      std::cout << "assignment move constructor\n";
+      type_ = v.type_;
+      string_ = v.string_;
+      node_ = std::move(v.node_);
     }
     return *this;
   }
-  std::unique_ptr<abstract_syntax::frontend::AstNode> Node() {
-    return std::move(node_);
+  void Visit(abstract_syntax::frontend::AstVisitor* visitor) {
+    node_->Visit(visitor);
   }
-  std::string String() const {
-    return string_;
-  }
-  type Type() const {
-    return type_;
-  }
+
+  abstract_syntax::frontend::AstNode* GetNodePointer() const { return node_.get(); }
+  std::string GetString() const { return string_; }
+  type GetType() const { return type_; }
 
  private:
   type type_;
