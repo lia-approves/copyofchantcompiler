@@ -5,6 +5,7 @@
 
 namespace cs160 {
 namespace frontend {
+namespace Parse {
 
 using std::string;
 using abstract_syntax::frontend::IntegerExpr;
@@ -254,5 +255,6 @@ TEST(CombinatorTest, SequenceTest) {
   ASSERT_EQ(fail.success(), false);
 }
 
+}  // namespace Parse
 }  // namespace frontend
 }  // namespace cs160

@@ -4,6 +4,7 @@
 
 namespace cs160 {
 namespace frontend {
+namespace Parse {
 
 Parser Literal(char c, Converter<std::string> ToValue) {
   return [c, ToValue](State state) {
@@ -23,5 +24,6 @@ Parser Literal(char c, Converter<std::string> ToValue) {
   };
 }
 
+}  // namespace Parse
 }  // namespace frontend
 }  // namespace cs160

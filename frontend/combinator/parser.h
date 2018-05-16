@@ -16,6 +16,8 @@
 namespace cs160 {
 namespace frontend {
 
+namespace Parse {
+
 // Represents a 'parse function': a function which takes a state and returns
 // a result.  Just an alias for convenience; this type does not ever change.
 using Parser = std::function<Result(State)>;
@@ -315,6 +317,7 @@ Parser Sequence (Parser parseA, Parser parseB, Parser parseC, Converter<std::vec
   };
 }
 
+}  // namespace Parse
 }  // namespace frontend
 }  // namespace cs160
 
