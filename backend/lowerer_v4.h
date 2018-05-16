@@ -320,8 +320,7 @@ namespace cs160 {
             stack_.back()->SetStackOffset(stackOffset);
           }
           else if (scanningParams_ == true) {
-            bool found = std::find(paramVariables_.begin(), paramVariables_.end(), (exp.name())) != paramVariables_.end();
-            if (!found) { paramVariables_.push_back(exp.name()); }
+           if (!foundinParams) { paramVariables_.push_back(exp.name()); }
             else {}
             pos = std::distance(paramVariables_.begin(), std::find(paramVariables_.begin(), paramVariables_.end(), exp.name()));
             stackOffset = 1 * ((pos + 2) * 8);
@@ -332,7 +331,7 @@ namespace cs160 {
           string main = "push ";
           main.append(std::to_string(stackOffset));
           main.append("(%rbp)\n");
-          //                          //ss << "push " << GetStackOffset() << "(%rbp)" << endl; 
+          //                          //ss << "push " << GetStackOffset() << "(%rbp)" << endl;
 
           StatementNode* newhead = new StatementNode(
             new Label(labelNum_++),
@@ -516,13 +515,11 @@ namespace cs160 {
         for (auto& param : def.parameters()) {
           param->Visit(&varsCounter);
         }
-        int numParamVar = varsCounter.ParamVars();
         varsCounter.ScanningParams(false);
         for (auto& statement : def.function_body()) {
           statement->Visit(&varsCounter);
         }
         int numLocalVar = varsCounter.LocalVars();
-        cout << "#PARAMS: " << numParamVar << "\n";
         string main = "";
         main.append(".type ");
         main.append(def.function_name());
@@ -714,7 +711,6 @@ namespace cs160 {
       void VisitConditional(const Conditional& conditional) {
         IrGenVisitor trueVisitor;
         IrGenVisitor falseVisitor;
-        int startLabelNum = labelNum_;
         for (auto& statement : conditional.true_branch()) {
           statement->Visit(&trueVisitor);
         }
@@ -751,7 +747,6 @@ namespace cs160 {
         IrGenVisitor blockvisitor;
         IrGenVisitor guardVisitor;
         loop.guard().Visit(&guardVisitor);
-        int guardStatements = guardVisitor.NumberOfStatements();
         int startLabelNum = labelNum_;
         for (auto& statement : loop.body()) {
           statement->Visit((&blockvisitor));
@@ -794,14 +789,13 @@ namespace cs160 {
 
       void PrintIR() {
         StatementNode* itor = head_;
-        std::cout << "#### Start of IR ####\n\n";
-        int statementNum = 1;
+        std::cout << "/*#### Start of IR ####\n\n";
         while (itor != nullptr) {
           itor->Print();
           itor = itor->GetNext();
           std::cout << endl;
         }
-        std::cout << "\n#### End of IR ####\n\n";
+        std::cout << "\n#### End of IR ####*/\n\n";
       }
 
       int NumberOfStatements() {

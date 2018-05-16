@@ -55,9 +55,6 @@ class IrGenVisitor : public AstVisitor {
     }
   }
 
- private:
-  int num_vars_;
-
   void VisitIntegerExpr(const IntegerExpr& exp) {
     stack_.push_back(new Constant(exp.value()));
   }
