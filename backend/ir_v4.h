@@ -230,7 +230,7 @@ class StatementNode {
       break;
     case Operator::kPrint:
       if (target_ != nullptr) {
-        std::cout << "print\n/*" << target_->GetName() << "*/";
+        std::cout << "" << target_->GetName() << "";
       }
       break;
     default:

@@ -320,8 +320,7 @@ namespace cs160 {
             stack_.back()->SetStackOffset(stackOffset);
           }
           else if (scanningParams_ == true) {
-            bool found = std::find(paramVariables_.begin(), paramVariables_.end(), (exp.name())) != paramVariables_.end();
-            if (!found) { paramVariables_.push_back(exp.name()); }
+           if (!foundinParams) { paramVariables_.push_back(exp.name()); }
             else {}
             pos = std::distance(paramVariables_.begin(), std::find(paramVariables_.begin(), paramVariables_.end(), exp.name()));
             stackOffset = 1 * ((pos + 2) * 8);
@@ -516,7 +515,6 @@ namespace cs160 {
         for (auto& param : def.parameters()) {
           param->Visit(&varsCounter);
         }
-        int numParamVar = varsCounter.ParamVars();
         varsCounter.ScanningParams(false);
         for (auto& statement : def.function_body()) {
           statement->Visit(&varsCounter);
@@ -791,13 +789,13 @@ namespace cs160 {
 
       void PrintIR() {
         StatementNode* itor = head_;
-        std::cout << "#### Start of IR ####\n\n";
+        std::cout << "/*#### Start of IR ####\n\n";
         while (itor != nullptr) {
           itor->Print();
           itor = itor->GetNext();
           std::cout << endl;
         }
-        std::cout << "\n#### End of IR ####\n\n";
+        std::cout << "\n#### End of IR ####*/\n\n";
       }
 
       int NumberOfStatements() {
