@@ -233,8 +233,8 @@ TEST(CombinatorTest, OnePlus) {
   auto parseZeroes = OnePlus(Literal('0'), concat);
   auto result = parseOnes(s);
   auto zr = parseZeroes(s);
-  ASSERT_EQ(result.success(), true);  //multiple matches is OK
-  ASSERT_EQ(zr.success(), false);  //no matches is not allowed, unlike Star
+  ASSERT_EQ(result.success(), true);  // multiple matches is OK
+  ASSERT_EQ(zr.success(), false);  // no matches is not allowed, unlike Star
   auto val = result.value();
   ASSERT_EQ(val.GetString(), "111");
 }

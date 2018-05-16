@@ -70,7 +70,8 @@ Parser OnePlus(Parser parse, Converter<std::vector<Value>> ToNode);
 // and a failure if it succeeds
 Parser Not(Parser parse, Converter<std::string> ToValue = ToStringValue);
 
-Parser ExactMatch(std::string str, Converter<std::string> ToValuee = ToStringValue);
+Parser ExactMatch(std::string str, Converter<std::string>
+  ToValue = ToStringValue);
 
 Parser Match(std::string str, Converter<std::string> ToValue = ToStringValue);
 

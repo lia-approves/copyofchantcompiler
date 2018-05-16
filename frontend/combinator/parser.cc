@@ -91,7 +91,7 @@ Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
     // Parse first element before the loop
     while (currentResult.success()) {
       Value v = currentResult.value();
-      results.push_back( std::move(v) );
+      results.push_back(std::move(v) );
       currentResult = Parse(currentResult.state());
     }
     // return currentResult;
@@ -101,12 +101,12 @@ Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
 
 Parser Not(Parser parse, Converter<std::string> ToValue) {
   return [parse, ToValue](State state) {
-   auto result = parse(state);
-   if (result.success()) {
+  auto result = parse(state);
+  if (result.success()) {
      return Result(state, false, "no match for not");
-   }
-   char temp = state.readChar();
-   return Result(state, ToValue(std::string(1, temp)));;
+  }
+  char temp = state.readChar();
+  return Result(state, ToValue(std::string(1, temp)));;
   };
 }
 
@@ -114,10 +114,11 @@ Parser Not(Parser parse, Converter<std::string> ToValue) {
 Parser OnePlus(Parser parse, Converter<std::vector<Value>> ToNode) {
   return [parse, ToNode](State state) {
     std::vector<Value> results;
-    auto currentResult = parse(state); //Parse first element before the loop
+    auto currentResult = parse(state);
+          // Parse first element before the loop
     while (currentResult.success()) {
       Value v = currentResult.value();
-      results.push_back( std::move(v) );
+      results.push_back(std::move(v) );
       currentResult = parse(currentResult.state());
     }
     if (results.size() == 0) {  // Must have one or more match, unlike Star()
@@ -242,7 +243,8 @@ Parser Int(Converter<std::string> ToNode) {
     }
     // auto result = Result(res.state(), ToNode(res.value().String()));
     auto v = ToNode(res.value().GetString());
-    std::cout << "node pointer after callback " << v.GetNodePointer() << std::endl;
+    std::cout << "node pointer after callback "
+      << v.GetNodePointer() << std::endl;
     return Result(res.state(), std::move(v));
   };
 }
@@ -276,9 +278,9 @@ Parser Sequence(Parser parseA, Parser parseB, Parser parseC,
     Value v1 = resultA.value();
     Value v2 = resultB.value();
     Value v3 = resultC.value();
-    results.push_back( std::move(v1) );
-    results.push_back( std::move(v2) );
-    results.push_back( std::move(v3) );
+    results.push_back(std::move(v1) );
+    results.push_back(std::move(v2) );
+    results.push_back(std::move(v3) );
 
     return Result(resultC.state(), ToNode(std::move(results)));
   };
