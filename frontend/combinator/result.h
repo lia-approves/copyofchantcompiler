@@ -1,7 +1,7 @@
 // Copyright (c) 2018, Team-Chant
 
-#ifndef FRONTEND_COMBINATOR_RESULT_H
-#define FRONTEND_COMBINATOR_RESULT_H
+#ifndef FRONTEND_COMBINATOR_RESULT_H_
+#define FRONTEND_COMBINATOR_RESULT_H_
 
 #include <string>
 #include <stdexcept>
@@ -14,17 +14,17 @@ namespace frontend {
 class Value {
  public:
   enum type { node, string };
-  Value() {};
-  Value(std::unique_ptr<abstract_syntax::frontend::AstNode> i) :
+  Value() {}
+  explicit Value(std::unique_ptr<abstract_syntax::frontend::AstNode> i) :
     type_(type::node),
-    node_(std::move(i)) {};
-  Value(std::string s) :
+    node_(std::move(i)) {}
+  explicit Value(std::string s) :
     type_(type::string),
-    string_(s) {};
+    string_(s) {}
   Value(Value&& v) :
     type_(v.type_),
     node_(std::move(v.node_)),
-    string_(v.string_) {};
+    string_(v.string_) {}
   Value& operator=(Value&& v) {
     if (this != &v) {
       std::cout << "assignment move constructor\n";
@@ -38,7 +38,8 @@ class Value {
     node_->Visit(visitor);
   }
 
-  abstract_syntax::frontend::AstNode* GetNodePointer() const { return node_.get(); }
+  abstract_syntax::frontend::AstNode* GetNodePointer() const
+  { return node_.get(); }
   std::string GetString() const { return string_; }
   type GetType() const { return type_; }
 
@@ -57,7 +58,8 @@ class Result {
     }
   }
   explicit Result(State state, Value value)
-  : state_(state), value_(std::move(value)), error_("no error"), success_(true) {}
+  : state_(state), value_(std::move(value)),
+      error_("no error"), success_(true) {}
 
   const Value value() {
     if (!success_) {
@@ -79,4 +81,4 @@ class Result {
 }  // namespace frontend
 }  // namespace cs160
 
-#endif  // FRONTEND_COMBINATOR_RESULT_H
+#endif  // FRONTEND_COMBINATOR_RESULT_H_
