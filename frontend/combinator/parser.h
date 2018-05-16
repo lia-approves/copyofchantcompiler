@@ -39,13 +39,15 @@ using Converter = std::function<Value(T)>;
 //   T value() {
 //     return value_;
 //   }
-//   void Visit(abstract_syntax::frontend::AstVisitor* visitor) const { visitor->VisitDummy(*this); }
+//   void Visit(abstract_syntax::frontend::
+// AstVisitor* visitor) const { visitor->VisitDummy(*this); }
 //  private:
 //   T value_;
 // };
 
 // NodeMaker<T> ToDummyNode = [](T value) {
-//   return std::unique_ptr<abstract_syntax::frontend::AstNode>(new DummyNode<T>(value));
+//   return std::unique_ptr<abstract_syntax::
+// frontend::AstNode>(new DummyNode<T>(value));
 // };
 
 Value ToStringValue(std::string s) {
@@ -139,7 +141,8 @@ Parser Or(Parser parseA, Parser parseB) {
 
 //  Returns a function which runs 2 parsers, and returns an array of their
 //  results.  If either fails, it returns failure
-Parser And(Parser parseA, Parser parseB, std::function<Value(Value, Value)> ToValue = Concat) {
+Parser And(Parser parseA, Parser parseB,
+    std::function<Value(Value, Value)> ToValue = Concat) {
   return [parseA, parseB, ToValue](State state) {
     // Save position so we can reset later.
     int oldPosition = state.position();
@@ -158,6 +161,25 @@ Parser And(Parser parseA, Parser parseB, std::function<Value(Value, Value)> ToVa
 }
 
 // Returns a function which runs a parser 0 or more times, returning all results
+// template<class T>
+// Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
+//   return [Parse, ToNode](State state) {
+//     std::vector<Value> results;
+//     auto currentResult = Parse(state);
+//     // Parse first element before the loop
+//     while (currentResult.success()) {
+//       if (currentResult.value().Type() == Value::type::string) {
+//         results.push_back(Value(currentResult.value().String()));
+//       } else if (currentResult.value().Type() == Value::type::node) {
+//         results.push_back( Value(Node()) );
+//       }
+//       currentResult = Parse(currentResult.state());
+//     }
+//     return currentResult;
+//
+// return Result(currentResult.state(), std::move(ToNode(std::move(results))));
+//   };
+// }
 Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
   return [Parse, ToNode](State state) {
     std::vector<Value> results;
@@ -174,11 +196,13 @@ Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
 }
 
 
-// // Returns a function which runs a parser 1 or more times, returning all results
+// // Returns a function which runs a
+// parser 1 or more times, returning all results
 // Parser> OnePlus(Parser parse) {
 //   return [parse](State state) {
 //     std::vector<T> results;
-//     auto currentResult = parse(state);  // Parse first element before the loop
+//     auto currentResult = parse(state);
+// Parse first element before the loop
 //     while (currentResult.success()) {
 //       results.push_back(currentResult.value());
 //       currentResult = parse(currentResult.state());
@@ -192,7 +216,8 @@ Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
 
 // Returns a function which runs a parser, and returns a success if it fails
 // and a failure if it succeeds
- Parser Not(Parser parse, Converter<std::string> ToValue = ToStringValue) {
+Parser Not(Parser parse,
+   Converter<std::string> ToValue = ToStringValue) {
      return [parse, ToValue](State state) {
        auto result = parse(state);
        if (result.success()) {
@@ -201,10 +226,11 @@ Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
        char temp = state.readChar();
        return Result(state, ToValue(std::string(1, temp)));;
      };
- }
+}
 
 // Return a function which parses a string (whitespace sensitive)
-Parser ExactMatch(std::string str, Converter<std::string> ToValue = ToStringValue) {
+Parser ExactMatch(std::string str,
+    Converter<std::string> ToValue = ToStringValue) {
   return [str, ToValue](State state) {
     if (state.atEnd()) {
       return Result(state, false, "end of file");
@@ -279,6 +305,33 @@ Parser Match(std::string str, Converter<std::string> ToValue = ToStringValue) {
   };
 }
 
+Parser Between(Parser parseA, Parser parseB,
+    Parser parseC, Converter<std::string> ToValue = ToStringValue) {
+  return [parseA, parseB, parseC, ToValue](State state) {
+    // Save position so we can reset later.
+    int oldPosition = state.position();
+    auto resultA = parseA(state);
+    if (!resultA.success()) {
+      state.setPosition(oldPosition);
+      return Result(state, false, "C is not between A and B");
+    }
+
+    auto resultB = parseB(resultA.state());
+    if (!resultB.success()) {
+      state.setPosition(oldPosition);
+      return Result(state, false, "C is not between A and B");
+    }
+
+    auto resultC = parseC(resultB.state());
+    if (!resultC.success()) {
+      state.setPosition(oldPosition);
+      return Result(state, false, "C is not between A and B");
+    }
+
+    return Result(resultB.state(), resultB.value());
+  };
+}
+
 Parser Int(Converter<std::string> ToNode = [](std::string s) {
   auto node = Node(new abstract_syntax::frontend::IntegerExpr(std::stoi(s)));
   return Value(std::move(node));
@@ -296,32 +349,6 @@ Parser Int(Converter<std::string> ToNode = [](std::string s) {
   };
 }
 
-// Parser Between(Parser parseA, Parser parseB, Parser parseC) {
-//   return [parseA, parseB, parseC](State state) {
-//     // Save position so we can reset later.
-//     int oldPosition = state.position();
-//     auto resultA = parseA(state);
-//     if (!resultA.success()) {
-//       state.setPosition(oldPosition);
-//       return Result<T>(state, false, "C is not between A and B");
-//     }
-//
-//     auto resultB = parseB(resultA.state());
-//     if (!resultB.success()) {
-//       state.setPosition(oldPosition);
-//       return Result<T>(state, false, "C is not between A and B");
-//     }
-//
-//     auto resultC = parseC(resultB.state());
-//     if (!resultC.success()) {
-//       state.setPosition(oldPosition);
-//       return Result<T>(state, false, "C is not between A and B");
-//     }
-//
-//     return Result<T>(resultB.state(), resultB.value());
-//   };
-// }
-//
 // //  Returns a function which runs 2 parsers, and returns an array of their
 // //  results.
 // Parser Sequence (Parser parseA, Parser parseB, Parser parseC) {
