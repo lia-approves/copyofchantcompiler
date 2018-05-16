@@ -110,6 +110,22 @@ Parser Not(Parser parse, Converter<std::string> ToValue) {
   };
 }
 
+// Returns a function which runs a parser 1 or more times, returning all results
+Parser OnePlus(Parser parse, Converter<std::vector<Value>> ToNode) {
+  return [parse, ToNode](State state) {
+    std::vector<Value> results;
+    auto currentResult = parse(state); //Parse first element before the loop
+    while (currentResult.success()) {
+      Value v = currentResult.value();
+      results.push_back( std::move(v) );
+      currentResult = parse(currentResult.state());
+    }
+    if (results.size() == 0) {  // Must have one or more match, unlike Star()
+       return Result(state, false, "no matches at all");
+    }
+    return Result(currentResult.state(), ToNode(std::move(results)));
+  };
+}
 
 // Return a function which parses a string (whitespace sensitive)
 Parser ExactMatch(std::string str,

@@ -229,8 +229,8 @@ TEST(CombinatorTest, OnePlus) {
     }
     return Value(s);
   };
-  auto parseOnes = Star(Literal('1'), concat);
-  auto parseZeroes = Star(Literal('0'), concat);
+  auto parseOnes = OnePlus(Literal('1'), concat);
+  auto parseZeroes = OnePlus(Literal('0'), concat);
   auto result = parseOnes(s);
   auto zr = parseZeroes(s);
   ASSERT_EQ(result.success(), true);  //multiple matches is OK

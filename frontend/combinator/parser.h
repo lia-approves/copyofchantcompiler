@@ -64,22 +64,7 @@ Parser And(
 
 Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode);
 
-// Returns a function which runs a parser 1 or more times, returning all results
-Parser OnePlus(Parser parse) {
-  return [parse](State state) {
-    std::vector<T> results;
-    auto currentResult = parse(state); //Parse first element before the loop
-    while (currentResult.success()) {
-      Value v = currentResult.value();
-      results.push_back( std::move(v) );
-      currentResult = parse(currentResult.state());
-    }
-    if (results.size() == 0) {  // Must have one or more match, unlike Star()
-       return Result(state, false, "no matches at all");
-    }
-    return Result(currentResult.state(), ToNode(std::move(results)));
-  };
-}
+Parser OnePlus(Parser parse, Converter<std::vector<Value>> ToNode);
 
 // Returns a function which runs a parser, and returns a success if it fails
 // and a failure if it succeeds
