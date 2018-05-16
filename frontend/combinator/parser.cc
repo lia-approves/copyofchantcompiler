@@ -1,5 +1,6 @@
 // Copyright (c) 2018, Team-Chant
 
+#include <utility>
 #include "frontend/combinator/parser.h"
 
 namespace cs160 {
@@ -66,22 +67,25 @@ Parser Or(Parser parseA, Parser parseB) {
 }
 
 Parser And(Parser parseA, Parser parseB,
-    std::function<Value(Value, Value)> ToValue) {
-  return [parseA, parseB, ToValue](State state) {
-    // Save position so we can reset later.
-    int oldPosition = state.position();
-    auto resultA = parseA(state);
-    if (!resultA.success()) {
-      state.setPosition(oldPosition);
-      return Result(state, false, "no match for A and B");
-    }
-    auto resultB = parseB(resultA.state());
-    if (!resultB.success()) {
-      state.setPosition(oldPosition);
-      return Result(state, false, "no match for A and B");
-    }
-    return Result(resultB.state(), ToValue(resultA.value(), resultB.value()));
-  };
+  std::function<Value(Value, Value)> ToValue) {
+      return [parseA, parseB, ToValue](State state) {
+        // Save position so we can reset later.
+        int oldPosition = state.position();
+        auto resultA = parseA(state);
+        if (!resultA.success()) {
+          state.setPosition(oldPosition);
+          return Result(state, false, "no match for A and B");
+        }
+        auto resultB = parseB(resultA.state());
+        if (!resultB.success()) {
+          state.setPosition(oldPosition);
+          return Result(state, false, "no match for A and B");
+        }
+        return Result(
+          resultB.state(),
+          ToValue(resultA.value(), resultB.value())
+        );
+      };
 }
 
 Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
@@ -101,12 +105,12 @@ Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
 
 Parser Not(Parser parse, Converter<std::string> ToValue) {
   return [parse, ToValue](State state) {
-   auto result = parse(state);
-   if (result.success()) {
-     return Result(state, false, "no match for not");
-   }
-   char temp = state.readChar();
-   return Result(state, ToValue(std::string(1, temp)));;
+    auto result = parse(state);
+    if (result.success()) {
+      return Result(state, false, "no match for not");
+    }
+    char temp = state.readChar();
+    return Result(state, ToValue(std::string(1, temp)));;
   };
 }
 

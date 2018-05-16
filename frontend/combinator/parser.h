@@ -3,11 +3,11 @@
 #ifndef FRONTEND_COMBINATOR_PARSER_H_
 #define FRONTEND_COMBINATOR_PARSER_H_
 
-#include <array>
 #include <vector>
 #include <string>
 #include <iostream>
-#include <tuple>
+#include <utility>
+#include <memory>
 #include "frontend/combinator/result.h"
 #include "frontend/combinator/state.h"
 #include "utility/memory.h"
@@ -202,7 +202,6 @@ Parser Int(Converter<std::string> ToNode = [](std::string s) {
     }
     // auto result = Result(res.state(), ToNode(res.value().String()));
     auto v = ToNode(res.value().GetString());
-    std::cout << "node pointer after callback " << v.GetNodePointer() << std::endl;
     return Result(res.state(), std::move(v));
   };
 }
@@ -235,9 +234,9 @@ Parser Sequence (Parser parseA, Parser parseB, Parser parseC, Converter<std::vec
     Value v1 = resultA.value();
     Value v2 = resultB.value();
     Value v3 = resultC.value();
-    results.push_back( std::move(v1) );
-    results.push_back( std::move(v2) );
-    results.push_back( std::move(v3) );
+    results.push_back(std::move(v1));
+    results.push_back(std::move(v2));
+    results.push_back(std::move(v3));
 
     return Result(resultC.state(), ToNode(std::move(results)));
   };

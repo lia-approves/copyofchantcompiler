@@ -34,6 +34,6 @@ class State {
   int position_;
 };
 
-} // namespace frontend
-} // namespace cs160
+}  // namespace frontend
+}  // namespace cs160
 #endif  // FRONTEND_COMBINATOR_STATE_H
