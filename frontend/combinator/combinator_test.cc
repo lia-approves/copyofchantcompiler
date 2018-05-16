@@ -232,23 +232,26 @@ TEST(CombinatorTest, Star) {
 //   ASSERT_EQ(val[2], val[1]);
 //   ASSERT_EQ(val[0], "1");
 // }
-//
-// TEST(CombinatorTest, SequenceTest) {
-//   State s("hey");
-//   auto parse = Sequence<std::string, std::string, std::string>
-//           (Literal('h'), Literal('e'), Literal('y'));
-//   auto success = parse(s);
-//   auto[first, second, third] = success.value();
-//   ASSERT_EQ(success.success(), true);
-//   ASSERT_EQ(first, "h");
-//   ASSERT_EQ(second, "e");
-//   ASSERT_EQ(third, "y");
-//
-//   auto parseFail = Sequence<std::string, std::string, std::string>
-//           (Literal('l'), Literal('o'), Literal('l'));
-//   auto fail = parseFail(s);
-//   ASSERT_EQ(fail.success(), false);
-// }
+
+TEST(CombinatorTest, SequenceTest) {
+  State s("hey");
+  Converter<std::vector<Value>> concat = [](std::vector<Value> values) {
+    std::string s;
+    for (auto it = values.begin(); it != values.end(); ++it) {
+      s += it->GetString();
+    }
+    return Value(s);
+  };
+  auto parse = Sequence(Literal('h'), Literal('e'), Literal('y'), concat);
+  auto success = parse(s);
+  std::string r = success.value().GetString();
+  ASSERT_EQ(success.success(), true);
+  ASSERT_EQ(r, "hey");
+
+  auto parseFail = Sequence(Literal('l'), Literal('o'), Literal('l'), concat);
+  auto fail = parseFail(s);
+  ASSERT_EQ(fail.success(), false);
+}
 
 }  // namespace frontend
 }  // namespace cs160
