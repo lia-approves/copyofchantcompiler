@@ -165,19 +165,19 @@ TEST(CombinatorTest, MatchTest) {
   ASSERT_EQ(fail1.success(), false);
 }
 
-// TEST(CombinatorTest, BetweenTest) {
-//   State s1("(h)");
-//   auto parse = Between(Literal('('), Literal('h'), Literal(')'));
-//   auto success = parse(s1);
-//   ASSERT_EQ(success.success(), true);
-//   ASSERT_EQ(success.value()[0], 'h');
-//
-//   State s2("heh");
-//   auto parseFail = Between(Literal('h'), Literal('a'), Literal('h'));
-//   auto fail = parseFail(s2);
-//   ASSERT_EQ(fail.success(), false);
-// }
-//
+TEST(CombinatorTest, BetweenTest) {
+  State s1("(h)");
+  auto parse = Between(Literal('('), Literal('h'), Literal(')'));
+  auto success = parse(s1);
+  ASSERT_EQ(success.success(), true);
+  ASSERT_EQ(success.value().String(), "h");
+
+  State s2("heh");
+  auto parseFail = Between(Literal('h'), Literal('a'), Literal('h'));
+  auto fail = parseFail(s2);
+  ASSERT_EQ(fail.success(), false);
+}
+
 // // // TEST(CombinatorTest, Apply) {
 // // //   State s("1112");
 // // //   std::function<int(std::string)> toInt = [](std::string in) {

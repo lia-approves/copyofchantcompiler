@@ -283,32 +283,33 @@ Parser Match(std::string str, Converter<std::string> ToValue = ToStringValue) {
   };
 }
 
-// Parser Between(Parser parseA, Parser parseB, Parser parseC) {
-//   return [parseA, parseB, parseC](State state) {
-//     // Save position so we can reset later.
-//     int oldPosition = state.position();
-//     auto resultA = parseA(state);
-//     if (!resultA.success()) {
-//       state.setPosition(oldPosition);
-//       return Result<T>(state, false, "C is not between A and B");
-//     }
-//
-//     auto resultB = parseB(resultA.state());
-//     if (!resultB.success()) {
-//       state.setPosition(oldPosition);
-//       return Result<T>(state, false, "C is not between A and B");
-//     }
-//
-//     auto resultC = parseC(resultB.state());
-//     if (!resultC.success()) {
-//       state.setPosition(oldPosition);
-//       return Result<T>(state, false, "C is not between A and B");
-//     }
-//
-//     return Result<T>(resultB.state(), resultB.value());
-//   };
-// }
-//
+Parser Between
+  (Parser parseA, Parser parseB, Parser parseC, Converter<std::string> ToValue = ToStringValue) {
+  return [parseA, parseB, parseC, ToValue](State state) {
+    // Save position so we can reset later.
+    int oldPosition = state.position();
+    auto resultA = parseA(state);
+    if (!resultA.success()) {
+      state.setPosition(oldPosition);
+      return Result(state, false, "C is not between A and B");
+    }
+
+    auto resultB = parseB(resultA.state());
+    if (!resultB.success()) {
+      state.setPosition(oldPosition);
+      return Result(state, false, "C is not between A and B");
+    }
+
+    auto resultC = parseC(resultB.state());
+    if (!resultC.success()) {
+      state.setPosition(oldPosition);
+      return Result(state, false, "C is not between A and B");
+    }
+
+    return Result(resultB.state(), resultB.value());
+  };
+}
+
 // //  Returns a function which runs 2 parsers, and returns an array of their
 // //  results.
 // Parser Sequence (Parser parseA, Parser parseB, Parser parseC) {
