@@ -49,6 +49,22 @@ Parser Range(std::string c, Converter<std::string> ToValue) {
   };
 }
 
+Parser Or(Parser parseA, Parser parseB) {
+  // Note: we don't need to rewind the input here.  Since at most ONE parser
+  // will successfully run, the input parsers will can rewind for us
+  return [parseA, parseB](State state) {
+    auto resultA = parseA(state);
+    if (resultA.success()) {
+      return resultA;
+    }
+    auto resultB = parseB(state);
+    if (resultB.success()) {
+      return resultB;
+    }
+    return Result(state, false, "no match for A or B");
+  };
+}
+
 }  // namespace Parse
 }  // namespace frontend
 }  // namespace cs160

@@ -52,21 +52,7 @@ Parser Range(std::string c, Converter<std::string> ToValue = ToStringValue);
 
 // Return a function which runs 1 parser, then the next.  That function returns
 // the first successful result (or failure)
-Parser Or(Parser parseA, Parser parseB) {
-  // Note: we don't need to rewind the input here.  Since at most ONE parser
-  // will successfully run, the input parsers will can rewind for us
-  return [parseA, parseB](State state) {
-    auto resultA = parseA(state);
-    if (resultA.success()) {
-      return resultA;
-    }
-    auto resultB = parseB(state);
-    if (resultB.success()) {
-      return resultB;
-    }
-    return Result(state, false, "no match for A or B");
-  };
-}
+Parser Or(Parser parseA, Parser parseB);
 
 //  Returns a function which runs 2 parsers, and returns an array of their
 //  results.  If either fails, it returns failure
