@@ -52,162 +52,45 @@ namespace cs160 {
 namespace backend {
 class CountVisitor : public AstVisitor {
  public:
-  void VisitIntegerExpr(const IntegerExpr& exp) override {  }
+  void VisitIntegerExpr(const IntegerExpr& exp) override;
 
-  void VisitVariableExpr(const VariableExpr& exp) override {
-    bool foundinParams = std::find(
-      paramVariables_.begin(),
-      paramVariables_.end(),
-      (exp.name())) != paramVariables_.end();
-    if (foundinParams) {
-    } else {
-      if (scanningParams_ == false) {
-        bool found = std::find(
-          localVariables_.begin(),
-          localVariables_.end(),
-          (exp.name())) != localVariables_.end();
-        if (!found) { localVariables_.push_back(exp.name()); }
-      } else if (scanningParams_ == true) {
-        bool found = std::find(
-          paramVariables_.begin(),
-          paramVariables_.end(),
-          (exp.name())) != paramVariables_.end();
-        if (!found) { paramVariables_.push_back(exp.name()); }
-      }
-    }
-  }
+  void VisitVariableExpr(const VariableExpr& exp) override;
 
-  void VisitAddExpr(const AddExpr& exp) override {
-    exp.lhs().Visit(this);
-    exp.rhs().Visit(this);
-  }
+  void VisitAddExpr(const AddExpr& exp) override;
 
-  void VisitSubtractExpr(const SubtractExpr& exp) override {
-    exp.lhs().Visit(this);
-    exp.rhs().Visit(this);
-  }
+  void VisitSubtractExpr(const SubtractExpr& exp) override;
 
-  void VisitMultiplyExpr(const MultiplyExpr& exp) override {
-    exp.lhs().Visit(this);
-    exp.rhs().Visit(this);
-  }
+  void VisitMultiplyExpr(const MultiplyExpr& exp) override;
 
-  void VisitDivideExpr(const DivideExpr& exp) override {
-    exp.lhs().Visit(this);
-    exp.rhs().Visit(this);
-  }
+  void VisitDivideExpr(const DivideExpr& exp) override;
 
-  void VisitLessThanExpr(const LessThanExpr& exp) override {
-    exp.lhs().Visit(this);
-    exp.rhs().Visit(this);
-  }
+  void VisitLessThanExpr(const LessThanExpr& exp) override;
 
-  void VisitLessThanEqualToExpr(const LessThanEqualToExpr& exp) override {
-    exp.lhs().Visit(this);
-    exp.rhs().Visit(this);
-  }
+  void VisitLessThanEqualToExpr(const LessThanEqualToExpr& exp) override;
 
-  void VisitGreaterThanExpr(const GreaterThanExpr& exp) override {
-    exp.lhs().Visit(this);
-    exp.rhs().Visit(this);
-  }
+  void VisitGreaterThanExpr(const GreaterThanExpr& exp) override;
 
-  void VisitGreaterThanEqualToExpr(const GreaterThanEqualToExpr& exp) override {
-    exp.lhs().Visit(this);
-    exp.rhs().Visit(this);
-  }
+  void VisitGreaterThanEqualToExpr(const GreaterThanEqualToExpr& exp) override;
+  void VisitEqualToExpr(const EqualToExpr& exp) override;
 
-  void VisitEqualToExpr(const EqualToExpr& exp) override {
-    exp.lhs().Visit(this);
-    exp.rhs().Visit(this);
-  }
+  void VisitLogicalAndExpr(const LogicalAndExpr& exp) override;
 
-  void VisitLogicalAndExpr(const LogicalAndExpr& exp) override {
-    exp.lhs().Visit(this);
-    exp.rhs().Visit(this);
-  }
+  void VisitLogicalOrExpr(const LogicalOrExpr& exp) override;
 
-  void VisitLogicalOrExpr(const LogicalOrExpr& exp) override {
-    exp.lhs().Visit(this);
-    exp.rhs().Visit(this);
-  }
+  void VisitLogicalNotExpr(const LogicalNotExpr& exp) override;
 
-  void VisitLogicalNotExpr(const LogicalNotExpr& exp) override {
-    exp.operand().Visit(this);
-  }
+  void VisitAssignment(const Assignment& assignment) override;
 
-  void VisitAssignment(const Assignment& assignment) override {
-    assignment.rhs().Visit(this);
-    bool foundinParams = std::find(
-      paramVariables_.begin(),
-      paramVariables_.end(),
-      (assignment.lhs().name())) != paramVariables_.end();
-    if (foundinParams) {
-    } else {
-      if (scanningParams_ == false) {
-        bool found = std::find(
-          localVariables_.begin(),
-          localVariables_.end(),
-          (assignment.lhs().name())) != localVariables_.end();
-        if (!found) { localVariables_.push_back(assignment.lhs().name()); }
-      } else if (scanningParams_ == true) {
-        bool found = std::find(
-          paramVariables_.begin(),
-          paramVariables_.end(),
-          (assignment.lhs().name())) != paramVariables_.end();
-        if (!found) { paramVariables_.push_back(assignment.lhs().name()); }
-      }
-    }
-  }
+  void VisitConditional(const Conditional& conditional) override;
 
-  void VisitConditional(const Conditional& conditional) override {
-    conditional.guard().Visit(this);
-    for (auto& statement : conditional.true_branch()) {
-      statement->Visit(this);
-    }
-    for (auto& statement : conditional.false_branch()) {
-      statement->Visit(this);
-    }
-  }
+  void VisitLoop(const Loop& loop) override;
 
-  void VisitLoop(const Loop& loop) override {
-    loop.guard().Visit(this);
-    for (auto& statement : loop.body()) {
-      statement->Visit(this);
-    }
-  }
+  void VisitProgram(const Program& program) override;
+  void VisitFunctionCall(const FunctionCall& call) override;
 
-  void VisitProgram(const Program& program) override {
-    for (auto& statement : program.statements()) {
-      statement->Visit(this);
-    }
-    program.arithmetic_exp().Visit(this);
-  }
-  void VisitFunctionCall(const FunctionCall& call) override {
-    bool foundinParams = std::find(
-      paramVariables_.begin(),
-      paramVariables_.end(), (call.lhs().name())) != paramVariables_.end();
-    if (foundinParams) {
-    }  else {
-      if (scanningParams_ == false) {
-        bool found = std::find(
-          localVariables_.begin(),
-          localVariables_.end(),
-          (call.lhs().name())) != localVariables_.end();
-        if (!found) { localVariables_.push_back(call.lhs().name()); }
-      } else if (scanningParams_ == true) {
-        bool found = std::find(
-          paramVariables_.begin(),
-          paramVariables_.end(),
-          (call.lhs().name())) != paramVariables_.end();
-        if (!found) { paramVariables_.push_back(call.lhs().name()); }
-      }
-    }
-  }
+  void VisitFunctionDef(const FunctionDef& def) override;
 
-  void VisitFunctionDef(const FunctionDef& def) override { }
-
-  void ScanningParams(bool scanningParams) { scanningParams_ = scanningParams; }
+  void ScanningParams(bool scanningParams);
   int LocalVars() { return localVariables_.size(); }
   int ParamVars() { return paramVariables_.size(); }
 
