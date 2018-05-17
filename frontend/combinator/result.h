@@ -17,10 +17,10 @@ class Value {
  public:
   enum type { node, string };
   Value() {}
-  Value(std::unique_ptr<abstract_syntax::frontend::AstNode> i) :
+  explicit Value(std::unique_ptr<abstract_syntax::frontend::AstNode> i) :
     type_(type::node),
     node_(std::move(i)) {}
-  Value(std::string s) :
+  explicit Value(std::string s) :
     type_(type::string),
     string_(s) {}
   Value(Value&& v) :
