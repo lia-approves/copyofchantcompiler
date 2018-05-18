@@ -127,7 +127,7 @@ class IrGenVisitor : public AstVisitor {
 
   void VisitLessThanExpr(const LessThanExpr& exp);
   void VisitLessThanEqualToExpr(const LessThanEqualToExpr& exp);
-  void VisitGreaterThanExpr(const GreaterThanExpr& exp) ;
+  void VisitGreaterThanExpr(const GreaterThanExpr& exp);
   void VisitGreaterThanEqualToExpr(const GreaterThanEqualToExpr& exp);
   void VisitEqualToExpr(const EqualToExpr& exp);
   void VisitLogicalAndExpr(const LogicalAndExpr& exp);

@@ -110,7 +110,8 @@ void CountVisitor::VisitGreaterThanExpr(const GreaterThanExpr& exp) {
     exp.rhs().Visit(this);
   }
 
-void CountVisitor::VisitGreaterThanEqualToExpr(const GreaterThanEqualToExpr& exp) {
+void CountVisitor::VisitGreaterThanEqualToExpr(
+  const GreaterThanEqualToExpr& exp) {
     exp.lhs().Visit(this);
     exp.rhs().Visit(this);
   }
@@ -205,7 +206,9 @@ void CountVisitor::VisitFunctionCall(const FunctionCall& call) {
 
 void CountVisitor::VisitFunctionDef(const FunctionDef& def) { }
 
-void CountVisitor::ScanningParams(bool scanningParams) { scanningParams_ = scanningParams; }
+void CountVisitor::ScanningParams(bool scanningParams) {
+  scanningParams_ = scanningParams;
+}
 
 void IrGenVisitor::VisitAddExpr(const AddExpr& exp) {
   exp.lhs().Visit(this);
@@ -655,7 +658,8 @@ void IrGenVisitor::VisitGreaterThanExpr(const GreaterThanExpr& exp) {
     nullptr);
   AddToEnd(newtail);
 }
-void IrGenVisitor::VisitGreaterThanEqualToExpr(const GreaterThanEqualToExpr& exp) {
+void IrGenVisitor::VisitGreaterThanEqualToExpr(
+  const GreaterThanEqualToExpr& exp) {
   exp.lhs().Visit(this);
   exp.rhs().Visit(this);
   Operand* op2 = stack_.back();

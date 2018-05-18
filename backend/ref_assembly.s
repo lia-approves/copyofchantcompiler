@@ -28,7 +28,7 @@ push %rax
 movq $5, (%rsp)
 movq $6, 8(%rsp)
 movq $-1, 16(%rsp)
-movq 16(%rsp), %rax
+movq 8(%rsp), %rax
 
 pop %rbx
 mov     $format, %rdi
