@@ -284,6 +284,24 @@ void IrGenVisitor::VisitDereference(const Dereference& exp) {
   exp.lhs().Visit(this);
   Operand* op1 = stack_.back();
   stack_.pop_back();
+
+  exp.rhs().Visit(this);
+  Operand* op2 = stack_.back();
+  stack_.pop_back();
+
+  stack_.push_back(new DereferenceVar(op1->GetName(), op1->GetOffset(), op2->GetValue()));
+  string main = "#push ";
+  // main.append(op1);
+  // main.append("(%rbp)\n");
+
+  StatementNode* newhead = new StatementNode(
+    new Label(labelNum_++),
+    new Text(main),
+    new Operator(Operator::kPrint),
+    nullptr,
+    nullptr,
+    nullptr);
+  AddToEnd(newhead);
 }
 
 
@@ -302,7 +320,7 @@ void IrGenVisitor::VisitVariableExpr(const VariableExpr& exp) {
     pos = std::distance(paramVariables_.begin(), std::find(
       paramVariables_.begin(), paramVariables_.end(), exp.name()));
     stackOffset = 1 * ((pos + 2) * 8);
-    stack_.back()->SetStackOffset(stackOffset);
+    stack_.back()->SetOffset(stackOffset);
   } else {
     // This variable is not a parameter
     if (scanningParams_ == false) {
@@ -316,7 +334,7 @@ void IrGenVisitor::VisitVariableExpr(const VariableExpr& exp) {
         localVariables_.end(),
         exp.name()));
       stackOffset = -1 * ((pos + 1) * 8);
-      stack_.back()->SetStackOffset(stackOffset);
+      stack_.back()->SetOffset(stackOffset);
     } else if (scanningParams_ == true) {
       // Add variable to parameters vector
      if (!foundinParams) { paramVariables_.push_back(exp.name()); }
@@ -325,7 +343,7 @@ void IrGenVisitor::VisitVariableExpr(const VariableExpr& exp) {
         paramVariables_.end(),
         exp.name()));
       stackOffset = 1 * ((pos + 2) * 8);
-      stack_.back()->SetStackOffset(stackOffset);
+      stack_.back()->SetOffset(stackOffset);
     }
   }
   if (!scanningParams_) {
@@ -343,6 +361,7 @@ void IrGenVisitor::VisitVariableExpr(const VariableExpr& exp) {
     AddToEnd(newhead);
   }
 }
+
 void IrGenVisitor::VisitAssignmentFromArithExp(const AssignmentFromArithExp& assignment) {
   assignment.lhs().Visit(this);
   Operand* op1 = stack_.back();
@@ -366,7 +385,7 @@ void IrGenVisitor::VisitAssignmentFromArithExp(const AssignmentFromArithExp& ass
     nullptr,
     op2,
     nullptr);
-  // newtail->GetTarget()->SetStackOffset(stackOffset);
+  // newtail->GetTarget()->SetOffset(stackOffset);
   AddToEnd(newtail);
   stack_.push_back(new Register(register_number_));
 }

@@ -85,6 +85,7 @@ namespace cs160 {
 
       switch (node->GetInstruction()->GetOpcode()) {
       case Operator::kAdd:
+        // add a, b, on the stack and push
         asm_sstring_ << "pop %rax" << endl;
         asm_sstring_ << "pop %rbx" << endl;
         asm_sstring_ << "add %rax, %rbx" << endl;
@@ -110,7 +111,9 @@ namespace cs160 {
         asm_sstring_ << "push %rax" << endl << endl;
         break;
       case Operator::kAssign:
-        asm_sstring_ << "pop " << node->GetTarget()->GetStackOffset() << "(%rbp)" << endl;
+        // get a from stack and put in variable
+        node->GetTarget()->PopToAsmSS(asm_sstring_, "");
+        // asm_sstring_ << "pop " << node->GetTarget()->GetOffset() << "(%rbp)" << endl;
         break;
       case Operator::kLessThan:
         asm_sstring_ << "pop %rax" << endl;

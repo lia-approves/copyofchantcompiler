@@ -25,10 +25,9 @@ class Operand {        // abstract class for operand can be constant(integer),
   virtual std::string GetName() = 0;
   virtual void PushToAsmSS(stringstream& ss) = 0;
   virtual void PopToAsmSS(stringstream& ss, string register_) = 0;
-  virtual void SetStackOffset(int offset) = 0;
-  virtual int GetStackOffset() = 0;
+  virtual void SetOffset(int offset) = 0;
+  virtual int GetOffset() = 0;
 
- private:
 };
 
 class Label : public Operand {
@@ -40,9 +39,8 @@ class Label : public Operand {
   std::string GetName() { return "statementnumber_" + std::to_string(value_); }
   void PushToAsmSS(stringstream& ss) {}
   void PopToAsmSS(stringstream& ss, string register_) {}
-  void SetStackOffset(int offset) {  }
-  int GetStackOffset() { return 0; }
-
+  void SetOffset(int offset) {  }
+  int GetOffset() { return 0; }
 
  private:
   int value_;
@@ -59,8 +57,8 @@ class Register : public Operand {                        // t1, t2 ,etc
   void PopToAsmSS(stringstream& ss, string register_) {
     ss << "pop " << register_ << endl;
   }
-  void SetStackOffset(int offset) { }
-  int GetStackOffset() { return 0; }
+  void SetOffset(int offset) { }
+  int GetOffset() { return 0; }
 
 
  private:
@@ -75,13 +73,13 @@ class Variable : public Operand {     // bob, a, b, height, etc
   std::string GetName() { return name_; }
   void SetValue(int value) {}
   void PushToAsmSS(stringstream& ss) {
-    // ss << "push " << GetStackOffset() << "(%rbp)" << endl;
+    // ss << "push " << GetOffset() << "(%rbp)" << endl;
   }
   void PopToAsmSS(stringstream& ss, string register_) {
-    ss << "pop " << GetStackOffset() << "(%rbp)" << endl;
+    ss << "pop " << GetOffset() << "(%rbp)" << endl;
   }
-  void SetStackOffset(int offset) { stackOffSet_ = offset; }
-  int GetStackOffset() { return stackOffSet_; }
+  void SetOffset(int offset) { stackOffSet_ = offset; }
+  int GetOffset() { return stackOffSet_; }
 
  private:
   std::string name_;
@@ -101,8 +99,8 @@ class Constant : public Operand {    // 3, 8, 6 etc (integers)
   void PopToAsmSS(stringstream& ss, string register_) {
     ss << "pop " << register_ << endl;
   }
-  void SetStackOffset(int offset) {  }
-  int GetStackOffset() { return 0; }
+  void SetOffset(int offset) {  }
+  int GetOffset() { return 0; }
 
  private:
   int value_;
@@ -110,25 +108,32 @@ class Constant : public Operand {    // 3, 8, 6 etc (integers)
 
 class DereferenceVar : public Operand {
  public:
-  explicit DereferenceVar(std::string name, int offset) {
+  explicit DereferenceVar(std::string name, int offset, int tuple_offset) {
     name_ = name;
     offset_ = offset;
+    tuple_offset_ = tuple_offset;
   }
   ~DereferenceVar() {}
   std::string GetName() { return name_; }
+  int GetValue() { return 0; }
+  void SetValue(int value) {}
+  void SetOffset(int offset) { offset_ = offset; }
   int GetOffset() { return offset_; }
   void PushToAsmSS(stringstream& ss) {
     // ss << "push $" << value_ << endl;
   }
   void PopToAsmSS(stringstream& ss, string register_) {
-    ss << "pop " << register_ << endl;
+    // ss << "mov " << tuple_offset_ << "(%rbp), %rax" << endl;
+    ss << "pop " << GetOffset() << "(%rax)" << endl;
   }
-  void SetTupleOffset(int offset) { offset_ = offset; }
-  int GetTupleOffset() { return offset_; }
+  void SetTupleOffset(int offset) { tuple_offset_ = offset; }
+  int GetTupleOffset() { return tuple_offset_; }
 
  private:
-  int offset_;
+  // offset of the tuple w/respect to rbp
+  int tuple_offset_;
   std::string name_;
+  int offset_;
 };
 
 class Text : public Operand {
@@ -142,8 +147,8 @@ class Text : public Operand {
   void PopToAsmSS(stringstream& ss, string register_) {
     ss << "pop " << register_ << endl;
   }
-  void SetStackOffset(int offset) {}
-  int GetStackOffset() { return 0; }
+  void SetOffset(int offset) {}
+  int GetOffset() { return 0; }
 
 
  private:
