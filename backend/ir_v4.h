@@ -1,6 +1,7 @@
-// Copyright for cpplint
-#ifndef BACKEND_IR_V3_H_
-#define BACKEND_IR_V3_H_
+// Copyright(c) 2018, Team Chant
+
+#ifndef BACKEND_IR_V4_H_
+#define BACKEND_IR_V4_H_
 
 #include <iostream>
 #include <string>
@@ -15,8 +16,8 @@ using std::string;
 namespace cs160 {
 namespace backend {
 
-class Operand {
- public:
+class Operand {        // abstract class for operand can be constant(integer),
+ public:               // variable or register or label
   Operand() {}
   virtual ~Operand() {}
   virtual int GetValue() = 0;
@@ -24,6 +25,9 @@ class Operand {
   virtual std::string GetName() = 0;
   virtual void PushToAsmSS(stringstream& ss) = 0;
   virtual void PopToAsmSS(stringstream& ss, string register_) = 0;
+  virtual void SetStackOffset(int offset) = 0;
+  virtual int GetStackOffset() = 0;
+
  private:
 };
 
@@ -36,6 +40,10 @@ class Label : public Operand {
   std::string GetName() { return "statementnumber_" + std::to_string(value_); }
   void PushToAsmSS(stringstream& ss) {}
   void PopToAsmSS(stringstream& ss, string register_) {}
+  void SetStackOffset(int offset) {  }
+  int GetStackOffset() { return 0; }
+
+
  private:
   int value_;
 };
@@ -47,49 +55,85 @@ class Register : public Operand {                        // t1, t2 ,etc
   int GetValue() { return value_; }
   void SetValue(int value) { value_ = value; }
   std::string GetName() { return "t" + std::to_string(value_); }
-  void PushToAsmSS(stringstream& ss) {  }
+  void PushToAsmSS(stringstream& ss) { }
   void PopToAsmSS(stringstream& ss, string register_) {
     ss << "pop " << register_ << endl;
   }
+  void SetStackOffset(int offset) { }
+  int GetStackOffset() { return 0; }
+
+
  private:
   int value_;
 };
 
-class Variable : public Operand {         // bob, a, b, height, etc
+class Variable : public Operand {     // bob, a, b, height, etc
  public:
   explicit Variable(std::string s) { name_ = (s); }
   ~Variable() {}
-  int GetValue() {}
+  int GetValue() { return 0; }
   std::string GetName() { return name_; }
   void SetValue(int value) {}
-  void PushToAsmSS(stringstream& ss) { ss << "push (" << name_ << ")" << endl; }
-  void PopToAsmSS(stringstream& ss, string register_) {
-    ss << "pop (" << GetName() << ")" << endl;
+  void PushToAsmSS(stringstream& ss) {
+    // ss << "push " << GetStackOffset() << "(%rbp)" << endl;
   }
+  void PopToAsmSS(stringstream& ss, string register_) {
+    ss << "pop " << GetStackOffset() << "(%rbp)" << endl;
+  }
+  void SetStackOffset(int offset) { stackOffSet_ = offset; }
+  int GetStackOffset() { return stackOffSet_; }
+
  private:
   std::string name_;
+  int stackOffSet_;
 };
 
-class Constant : public Operand {  // 3, 8, 6 etc (integers)
+class Constant : public Operand {    // 3, 8, 6 etc (integers)
  public:
   explicit Constant(int v) { value_ = (v); }
   ~Constant() {}
   int GetValue() { return value_; }
   void SetValue(int value) { value_ = value; }
   std::string GetName() { return std::to_string(value_); }
-  void PushToAsmSS(stringstream& ss) { ss << "push $" << value_ << endl; }
+  void PushToAsmSS(stringstream& ss) {
+    // ss << "push $" << value_ << endl;
+  }
   void PopToAsmSS(stringstream& ss, string register_) {
     ss << "pop " << register_ << endl;
   }
+  void SetStackOffset(int offset) {  }
+  int GetStackOffset() { return 0; }
+
+
  private:
   int value_;
 };
 
+class Text : public Operand {                       // 3, 8, 6 etc (integers)
+ public:
+  explicit Text(string text) { text_ = (text); }
+  ~Text() {}
+  int GetValue() { return 0; }
+  void SetValue(int value) { text_ = value; }
+  std::string GetName() { return text_; }
+  void PushToAsmSS(stringstream& ss) { ss << "push $" << text_ << endl; }
+  void PopToAsmSS(stringstream& ss, string register_) {
+    ss << "pop " << register_ << endl;
+  }
+  void SetStackOffset(int offset) {}
+  int GetStackOffset() { return 0; }
+
+
+ private:
+  std::string text_;
+};
+
 class Operator {
  public:
-  enum Opcode {
-    kAdd, kSubtract, kMultiply, kDivide, kAssign, kLessThan, kLessThanEqualTo,
-    kGreaterThan, kGreaterThanEqualTo, kEqualTo, kGoto };
+  enum Opcode { kAdd, kSubtract, kMultiply, kDivide,
+    kAssign, kLessThan, kLessThanEqualTo, kGreaterThan,
+    kGreaterThanEqualTo, kEqualTo, kGoto, kAllocateVars,
+    kDeallocateVars, kPrint};
   explicit Operator(Opcode o) { op_ = (o); }
   ~Operator() {}
   Opcode GetOpcode() const { return op_; }
@@ -105,7 +149,11 @@ class Operator {
     if (op_ == kGreaterThanEqualTo) return ">=";
     if (op_ == kEqualTo) return "==";
     if (op_ == kGoto) return "-->";
+    if (op_ == kAllocateVars) return "alloc";
+    if (op_ ==kDeallocateVars) return "dealloc";
+    if (op_ == kPrint) return "print";
   }
+
  private:
   Opcode op_;
 };
@@ -132,7 +180,8 @@ class StatementNode {
     delete operand2_;
   }
   void Print() {
-    std::cout << "# S" << label_->GetValue() << ":  ";
+    std::cout << "# S";
+    if (label_ != nullptr) std::cout<< label_->GetValue() << ":  ";
     switch (GetInstruction()->GetOpcode()) {
     case Operator::kAdd:
     case Operator::kSubtract:
@@ -169,7 +218,21 @@ class StatementNode {
         std::cout << "goto S" << target_->GetValue() << ":";
       }
       break;
-
+    case Operator::kAllocateVars:
+      if (target_ != nullptr) {
+        std::cout << "alloc " << 8 << "*" << target_->GetValue() << " bytes:";
+      }
+      break;
+    case Operator::kDeallocateVars:
+      if (target_ != nullptr) {
+        std::cout << "dealloc " << 8 << "*" << target_->GetValue() << " bytes:";
+      }
+      break;
+    case Operator::kPrint:
+      if (target_ != nullptr) {
+        std::cout << "" << target_->GetName() << "";
+      }
+      break;
     default:
       break;
     }
@@ -192,4 +255,4 @@ class StatementNode {
 }  // namespace backend
 }  // namespace cs160
 
-#endif  // BACKEND_IR_V3_H_
+#endif  // BACKEND_IR_V4_H_

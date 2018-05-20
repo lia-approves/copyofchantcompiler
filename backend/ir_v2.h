@@ -15,14 +15,15 @@ using std::string;
 
 namespace cs160 {
 namespace backend {
+namespace ir {
 
-class Operand {    // abstract class for operand can be constant(integer),
- public:  // variable or register
+class Operand {      // abstract class for operand can be constant(integer),
+ public:             // variable or register
   Operand() {}
   virtual ~Operand() {}
   virtual int GetValue() = 0;
   virtual std::string GetName() = 0;
-  virtual void PushToAsmSS(stringstream& ss) = 0;  // function for asm generator
+  virtual void PushToAsmSS(stringstream& ss) = 0;
   virtual void PopToAsmSS(stringstream& ss, string register_) = 0;
  private:
 };
@@ -33,37 +34,30 @@ class Register : public Operand {                        // t1, t2 ,etc
   ~Register() {}
   int GetValue() { return value_; }
   std::string GetName() { return "t" + std::to_string(value_); }
-  void PushToAsmSS(stringstream& ss) {  // function for asm generator
-    // There is nothing to push because it's a register
-  }
-  // function for asm generator
+  void PushToAsmSS(stringstream& ss) {  }
   void PopToAsmSS(stringstream& ss, string register_) {
-    // There is nothing to push because it's a register
     ss << "pop " << register_ << endl;
   }
  private:
   int value_;
 };
-class Variable : public Operand {   // bob, a, b, height, etc
+class Variable : public Operand {  // bob, a, b, height, etc
  public:
   explicit Variable(std::string s) { name_ = (s); }
   ~Variable() {}
-  int GetValue() { return 0; }  // dummy return
+  int GetValue() { return 0; }                           // dummy return
   std::string GetName() { return name_; }
-  void PushToAsmSS(stringstream& ss) {   // function for asm generator
-    // There is nothing to push because it's a variable
+  void PushToAsmSS(stringstream& ss) {
     ss << "push (" << name_ << ")" << endl;
   }
-  // function for asm generator
   void PopToAsmSS(stringstream& ss, string register_) {
-    // There is nothing to push because it's a register
     ss << "pop (" << GetName() << ")" << endl;
   }
  private:
   std::string name_;
 };
 
-class Constant : public Operand {   // integer value 3, 8, 6 etc
+class Constant : public Operand {  // integer value 3, 8, 6 etc
  public:
   explicit Constant(int v) { value_ = (v); }
   ~Constant() {}
@@ -72,16 +66,14 @@ class Constant : public Operand {   // integer value 3, 8, 6 etc
   void PushToAsmSS(stringstream& ss) {  // function for asm generator
     ss << "push $" << value_ << endl;
   }
-  // function for asm generator
   void PopToAsmSS(stringstream& ss, string register_) {
-    // There is nothing to push because it's a register
     ss << "pop " << register_ << endl;
   }
  private:
   int value_;
 };
 
-class Operator {  // assign, add multiply, etc
+class Operator {   // assign, add multiply, etc
  public:
   enum Opcode { kAdd, kSubtract, kMultiply, kDivide, kAssign };
   explicit Operator(Opcode o) { op_ = (o); }
@@ -105,8 +97,8 @@ class Operator {  // assign, add multiply, etc
   Opcode op_;
 };
 
-class StatementNode {  // this is our quadruple form of the ir
- public:  // the last field is the next statement pointer
+class StatementNode {
+ public:
   StatementNode(Operand* target,
     Operator* instruction,
     Operand* operand1,
@@ -143,6 +135,7 @@ class StatementNode {  // this is our quadruple form of the ir
   Operand* operand2_;
   StatementNode* next_;
 };
+}  // namespace ir
 
 }  // namespace backend
 }  // namespace cs160

@@ -21,11 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
-// g++ -I ../../ -std=c++11 ir_generator_visitor_test_nogtest_v3.cc
 #include <sstream>
 #include <string>
-// #include "gtest/gtest.h"
+//#include "gtest/gtest.h"
 #include "abstract_syntax/abstract_syntax_tree_v3.h"
 #include "utility/memory.h"
 #include "backend/lowerer_v3.h"
@@ -50,6 +48,7 @@ using cs160::backend::AsmProgram;
 
 
 int main() {
+
   /* made up test
 
   a=2
@@ -68,7 +67,7 @@ int main() {
   a+b
 
   */
-
+  
   Statement::Block statements;
 
   Statement::Block truebody;
@@ -142,15 +141,13 @@ int main() {
         make_unique<const IntegerExpr>(9))),
     std::move(truebody), std::move(falsebody))));
 
+ 
 
-
-  auto ae = make_unique<const AddExpr>(
-    make_unique<const VariableExpr>("a"),
-    make_unique<const VariableExpr>("b"));
-
+  auto ae = make_unique<const AddExpr>(make_unique<const VariableExpr>("a"), make_unique<const VariableExpr>("b"));
+  
   auto ast = make_unique<const Program>(std::move(statements), std::move(ae));
-
-
+  
+  
   /*
   bob = 42
   if ((bob<100 && bob>0) || (bob =<100 && bob =>0)) {

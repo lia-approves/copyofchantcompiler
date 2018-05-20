@@ -1,7 +1,8 @@
 cc_library(
 	name = "intermediate_representation",
 	copts = ["-Wall -g"],
-	hdrs = ["asm_generator_v3.h", "ir_v3.h", "lowerer_v3.h"],
+	hdrs = ["asm_generator_v4.h", "ir_v4.h", "lowerer_v4.h"],
+	srcs = ["lowerer_v4.cc"],
 	deps = [
              "//abstract_syntax",
              "//utility"
@@ -10,30 +11,8 @@ cc_library(
 )
 
 cc_test(
-	name = "asm_generator_v1_test",
-	srcs = ["asm_generator_v1_test.cc"],
-	deps = [
-             "@gtest//:main",
-             ":intermediate_representation"
-        ],
-	timeout = "short",
-	size = "small",
-)
-
-cc_test(
-	name = "asm_generator_v2_test",
-	srcs = ["asm_generator_v2_test.cc"],
-	deps = [
-             "@gtest//:main",
-             ":intermediate_representation"
-        ],
-	timeout = "short",
-	size = "small",
-)
-
-cc_test(
-	name = "asm_generator_v3_test",
-	srcs = ["asm_generator_v3_test.cc"],
+	name = "assembly_test",
+	srcs = ["asm_generator_test.cc"],
 	deps = [
              "@gtest//:main",
              ":intermediate_representation"
@@ -44,7 +23,7 @@ cc_test(
 
 cc_test(
 	name = "integration_test",
-	srcs = ["integration_test.cc"],
+	srcs = ["v4tests.cc"],
 	deps = [
              "@gtest//:main",
              ":intermediate_representation"

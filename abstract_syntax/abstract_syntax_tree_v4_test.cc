@@ -224,6 +224,7 @@ TEST(AstTestV4, CanCreateAst) {
   arguments.push_back(std::move(make_unique<const IntegerExpr>(42)));
 
   Statement::Block statements;
+
   statements.push_back(std::move(make_unique<const FunctionCall>(
       make_unique<const VariableExpr>("foo_retval"), "foo",
       std::move(arguments))));
@@ -232,6 +233,39 @@ TEST(AstTestV4, CanCreateAst) {
 
   auto ast = make_unique<const Program>(std::move(function_defs),
                                         std::move(statements), std::move(ae));
+  statements.push_back(std::move(
+    make_unique<const Assignment>(make_unique<const VariableExpr>("bob"),
+      make_unique<const IntegerExpr>(42))));
+
+  statements.push_back(std::move(make_unique<const Conditional>(
+    make_unique<const LogicalOrExpr>(
+      make_unique<const LogicalAndExpr>(
+        make_unique<const LessThanExpr>(
+          make_unique<const VariableExpr>("bob"),
+          make_unique<const IntegerExpr>(100)),
+        make_unique<const GreaterThanExpr>(
+          make_unique<const VariableExpr>("bob"),
+          make_unique<const IntegerExpr>(0))),
+      make_unique<const LogicalAndExpr>(
+        make_unique<const LessThanEqualToExpr>(
+          make_unique<const VariableExpr>("bob"),
+          make_unique<const IntegerExpr>(100)),
+        make_unique<const GreaterThanEqualToExpr>(
+          make_unique<const VariableExpr>("bob"),
+          make_unique<const IntegerExpr>(0)))),
+    Statement::Block(), Statement::Block())));
+
+  Statement::Block body;
+  body.push_back(std::move(make_unique<const Assignment>(
+    make_unique<const VariableExpr>("bob"),
+    make_unique<const SubtractExpr>(make_unique<const VariableExpr>("bob"),
+      make_unique<const IntegerExpr>(1)))));
+
+  statements.push_back(std::move(make_unique<const Loop>(
+    make_unique<const LogicalNotExpr>(
+      make_unique<const EqualToExpr>(make_unique<const VariableExpr>("bob"),
+        make_unique<const IntegerExpr>(0))),
+    std::move(body))));
 
   CountVisitor counter;
   ast->Visit(&counter);
