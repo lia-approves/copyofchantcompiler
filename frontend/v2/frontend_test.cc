@@ -19,7 +19,7 @@ class FrontendTest : public ::testing::Test {
 //   ret->Visit(&printer_);
 //   ASSERT_EQ(printer_.GetOutput(), "1");
 // }
-//
+// 
 // TEST_F(FrontendTest, BasicAdditionTest) {
 //   // make a basic expression and parse
 //   Frontend f;

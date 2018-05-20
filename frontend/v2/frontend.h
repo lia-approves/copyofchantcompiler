@@ -11,14 +11,25 @@
 
 namespace cs160 {
 namespace frontend {
+namespace Parse {
 
 class Frontend {
  public:
-    ~Frontend(void);
+  ~Frontend(void);
+  Node stringToAst(std::string input);
 
-  Parse::Node stringToAst(std::string input);
-
+ private:
+  Result Program(State s);
+  Result Assign(State s);
+  Result Id(State s);
+  Result Expression(State s);
+  Result Add(State s);
+  Result Multiply(State s);
+  Result Unary(State s);
+  Result Primary(State s);
 };
+
+}  // namespace Parse
 }  // namespace frontend
 }  // namespace cs160
 

@@ -43,6 +43,14 @@ Value Concat(Value v1, Value v2) {
   return Value(v1.GetString() + v2.GetString());
 }
 
+Value ConcatVector(std::vector<Value> values) {
+  std::string s;
+  for (auto it = values.begin(); it != values.end(); ++it) {
+    s += it->GetString();
+  }
+  return Value(s);
+}
+
 // Return a function which parses a single literal
 Parser Literal(char c, Converter<std::string> ToValue = ToStringValue);
 

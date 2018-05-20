@@ -7,19 +7,27 @@
 
 namespace cs160 {
 namespace frontend {
+namespace Parse {
 
 namespace ast = cs160::abstract_syntax::frontend;
 
 Frontend::~Frontend(void) {}
 
-Parse::Node Frontend::stringToAst(std::string s) {
+Result Variable(State s) {
+  auto parse = OnePlus(Range("az"), ConcatVector);
+  return parse(s);
+}
+
+Node Frontend::stringToAst(std::string s) {
   State state(s);
-  auto parse = Parse::Literal('h');
+
+  auto parse = Variable;
   auto result = parse(state);
-  Parse::Node ret;
+  Node ret;
   ret.reset(result.value().GetNodePointer());
   return ret;
 }
 
+}  // namespace Parse
 }  // namespace frontend
 }  // namespace cs160
