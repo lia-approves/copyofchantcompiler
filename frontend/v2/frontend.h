@@ -6,6 +6,7 @@
 #include <string>
 #include <memory>
 #include "abstract_syntax/abstract_syntax.h"
+#include "frontend/combinator/parser.h"
 #include "utility/memory.h"
 
 namespace cs160 {
@@ -15,8 +16,7 @@ class Frontend {
  public:
     ~Frontend(void);
 
-    std::unique_ptr<cs160::abstract_syntax::frontend::AstNode>
-      stringToAst(std::string input);
+  Parse::Node stringToAst(std::string input);
 
 };
 }  // namespace frontend
