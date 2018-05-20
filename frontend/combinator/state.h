@@ -1,7 +1,7 @@
 // Copyright (c) 2018, Team-Chant
 
-#ifndef FRONTEND_COMBINATOR_STATE_H
-#define FRONTEND_COMBINATOR_STATE_H
+#ifndef FRONTEND_COMBINATOR_STATE_H_
+#define FRONTEND_COMBINATOR_STATE_H_
 
 #include <string>
 #include <stdexcept>
@@ -11,7 +11,7 @@ namespace frontend {
 
 class State {
  public:
-  State(std::string input) : input_(input), position_(0) {}
+  explicit State(std::string input) : input_(input), position_(0) {}
   void advance() {
     position_++;
   }
@@ -34,6 +34,6 @@ class State {
   int position_;
 };
 
-} // namespace frontend
-} // namespace cs160
-#endif  // FRONTEND_COMBINATOR_STATE_H
+}  // namespace frontend
+}  // namespace cs160
+#endif  // FRONTEND_COMBINATOR_STATE_H_
