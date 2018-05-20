@@ -205,82 +205,6 @@ namespace cs160 {
           tobe_deleted = tobe_deleted->GetNext();
         }
       }
-
-      void VisitAddExpr(const AddExpr& exp) {
-        exp.lhs().Visit(this);
-        exp.rhs().Visit(this);
-        Operand* op2 = stack_.back();
-        stack_.pop_back();
-        Operand* op1 = stack_.back();
-        StatementNode *newtail = new StatementNode(
-          new Label(labelNum_++),
-          new Register(register_number_),
-          new Operator(Operator::kAdd),
-          op1,
-          op2,
-          nullptr);
-        AddToEnd(newtail);
-        stack_.pop_back();
-        stack_.push_back(new Register(register_number_));
-        register_number_++;
-      }
-
-      void VisitSubtractExpr(const SubtractExpr& exp) {
-        exp.lhs().Visit(this);
-        exp.rhs().Visit(this);
-        Operand* op2 = stack_.back();
-        stack_.pop_back();
-        Operand* op1 = stack_.back();
-        StatementNode *newtail = new StatementNode(
-          new Label(labelNum_++),
-          new Register(register_number_),
-          new Operator(Operator::kSubtract),
-          op1,
-          op2,
-          nullptr);
-        AddToEnd(newtail);
-        stack_.pop_back();
-        stack_.push_back(new Register(register_number_));
-        register_number_++;
-      }
-
-      void VisitMultiplyExpr(const MultiplyExpr& exp) {
-        exp.lhs().Visit(this);
-        exp.rhs().Visit(this);
-        Operand* op2 = stack_.back();
-        stack_.pop_back();
-        Operand* op1 = stack_.back();
-        StatementNode *newtail = new StatementNode(
-          new Label(labelNum_++),
-          new Register(register_number_),
-          new Operator(Operator::kMultiply),
-          op1,
-          op2,
-          nullptr);
-        AddToEnd(newtail);
-        stack_.pop_back();
-        stack_.push_back(new Register(register_number_));
-        register_number_++;
-      }
-
-      void VisitDivideExpr(const DivideExpr& exp) {
-        exp.lhs().Visit(this);
-        exp.rhs().Visit(this);
-        Operand* op2 = stack_.back();
-        stack_.pop_back();
-        Operand* op1 = stack_.back();
-        StatementNode *newtail = new StatementNode(
-          new Label(labelNum_++),
-          new Register(register_number_),
-          new Operator(Operator::kDivide),
-          op1,
-          op2,
-          nullptr);
-        AddToEnd(newtail);
-        stack_.pop_back();
-        stack_.push_back(new Register(register_number_));
-        register_number_++;
-      }
       void VisitIntegerExpr(const IntegerExpr& exp) {
         stack_.push_back(new Register(register_number_));
         StatementNode* newhead = new StatementNode(
@@ -373,6 +297,82 @@ namespace cs160 {
         AddToEnd(newtail);
         stack_.push_back(new Register(register_number_));
       }
+      void VisitAddExpr(const AddExpr& exp) {
+        exp.lhs().Visit(this);
+        exp.rhs().Visit(this);
+        Operand* op2 = stack_.back();
+        stack_.pop_back();
+        Operand* op1 = stack_.back();
+        StatementNode *newtail = new StatementNode(
+          new Label(labelNum_++),
+          new Register(register_number_),
+          new Operator(Operator::kAdd),
+          op1,
+          op2,
+          nullptr);
+        AddToEnd(newtail);
+        stack_.pop_back();
+        stack_.push_back(new Register(register_number_));
+        register_number_++;
+      }
+
+      void VisitSubtractExpr(const SubtractExpr& exp) {
+        exp.lhs().Visit(this);
+        exp.rhs().Visit(this);
+        Operand* op2 = stack_.back();
+        stack_.pop_back();
+        Operand* op1 = stack_.back();
+        StatementNode *newtail = new StatementNode(
+          new Label(labelNum_++),
+          new Register(register_number_),
+          new Operator(Operator::kSubtract),
+          op1,
+          op2,
+          nullptr);
+        AddToEnd(newtail);
+        stack_.pop_back();
+        stack_.push_back(new Register(register_number_));
+        register_number_++;
+      }
+
+      void VisitMultiplyExpr(const MultiplyExpr& exp) {
+        exp.lhs().Visit(this);
+        exp.rhs().Visit(this);
+        Operand* op2 = stack_.back();
+        stack_.pop_back();
+        Operand* op1 = stack_.back();
+        StatementNode *newtail = new StatementNode(
+          new Label(labelNum_++),
+          new Register(register_number_),
+          new Operator(Operator::kMultiply),
+          op1,
+          op2,
+          nullptr);
+        AddToEnd(newtail);
+        stack_.pop_back();
+        stack_.push_back(new Register(register_number_));
+        register_number_++;
+      }
+
+      void VisitDivideExpr(const DivideExpr& exp) {
+        exp.lhs().Visit(this);
+        exp.rhs().Visit(this);
+        Operand* op2 = stack_.back();
+        stack_.pop_back();
+        Operand* op1 = stack_.back();
+        StatementNode *newtail = new StatementNode(
+          new Label(labelNum_++),
+          new Register(register_number_),
+          new Operator(Operator::kDivide),
+          op1,
+          op2,
+          nullptr);
+        AddToEnd(newtail);
+        stack_.pop_back();
+        stack_.push_back(new Register(register_number_));
+        register_number_++;
+      }
+      
       void VisitProgram(const Program& program) {
         for (auto& def : program.function_defs()) { def->Visit(this); }
         CountVisitor varCount;
@@ -390,6 +390,15 @@ namespace cs160 {
         AddToEnd(newhead);
         for (auto& statement : program.statements()) { statement->Visit(this); }
         program.arithmetic_exp().Visit(this);
+        newhead = new StatementNode(
+          new Label(labelNum_++),
+          new Register(register_number_ - 1),
+          new Operator(Operator::kReturn),
+          nullptr,
+          nullptr,
+          nullptr
+        );
+        AddToEnd(newhead);
         localVariables_.clear();
       }
       void VisitFunctionCall(const FunctionCall& call) override {
@@ -692,13 +701,13 @@ namespace cs160 {
 
       void PrintIR() {
         StatementNode* itor = head_;
-        std::cout << "/*#### Start of IR ####\n\n";
+        std::cout << "#### Start of IR ####\n\n";
         while (itor != nullptr) {
           itor->Print();
           itor = itor->GetNext();
           std::cout << endl;
         }
-        std::cout << "\n#### End of IR ####*/\n\n";
+        std::cout << "\n#### End of IR ####\n\n";
       }
 
       int NumberOfStatements() {

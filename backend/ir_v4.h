@@ -100,7 +100,8 @@ namespace cs160 {
         kAdd, kSubtract, kMultiply, kDivide,
         kAssign, kLessThan, kLessThanEqualTo, kGreaterThan,
         kGreaterThanEqualTo, kEqualTo, kGoto, kAllocateVars,
-        kDeallocateVars, kPrint, kRegister, kProgramStart, kCall, kFuncBegin, kFuncEnd, kReturn,kParam
+        kDeallocateVars, kPrint, kRegister, kProgramStart, 
+        kCall, kFuncBegin, kFuncEnd, kReturn,kParam
       };
       explicit Operator(Opcode o) { op_ = (o); }
       ~Operator() {}
@@ -149,7 +150,7 @@ namespace cs160 {
         delete operand2_;
       }
       void Print() {
-        std::cout << "# S";
+        std::cout << "#S";
         if (label_ != nullptr) std::cout << label_->GetValue() << ":\t";
         switch (GetInstruction()->GetOpcode()) {
         case Operator::kAdd:
