@@ -36,8 +36,6 @@ using cs160::abstract_syntax::version_4::Conditional;
 using cs160::abstract_syntax::version_4::Loop;
 using cs160::abstract_syntax::version_4::FunctionCall;
 using cs160::abstract_syntax::version_4::FunctionDef;
-
-
 using cs160::backend::StatementNode;
 using cs160::backend::Constant;
 using cs160::backend::Label;
@@ -47,13 +45,11 @@ using cs160::backend::Operand;
 using cs160::backend::Variable;
 using std::cout;
 
-
 namespace cs160 {
   namespace backend {
     class CountVisitor : public AstVisitor {
     public:
       void VisitIntegerExpr(const IntegerExpr& exp) override {  }
-
       void VisitVariableExpr(const VariableExpr& exp) override {
         bool foundinParams = std::find(paramVariables_.begin(), paramVariables_.end(), (exp.name())) != paramVariables_.end();
         if (foundinParams) {}
@@ -189,7 +185,6 @@ namespace cs160 {
       }
 
       void VisitFunctionDef(const FunctionDef& def) override { }
-
       void ScanningParams(bool scanningParams) { scanningParams_ = scanningParams; }
       int LocalVars() { return localVariables_.size(); }
       int ParamVars() { return paramVariables_.size(); }
@@ -198,6 +193,8 @@ namespace cs160 {
       std::vector<string> paramVariables_;
       std::vector<string> localVariables_;
     };
+
+
     class IrGenVisitor : public AstVisitor {
     public:
       IrGenVisitor() {}
@@ -285,23 +282,19 @@ namespace cs160 {
         register_number_++;
       }
       void VisitIntegerExpr(const IntegerExpr& exp) {
-        stack_.push_back(new Constant(exp.value()));
-        string main = "push $";
-        main.append(std::to_string(exp.value()));
-        main.append("\n");
-        //                void PushToAsmSS(stringstream& ss) { ss << "push $" << value_ << endl; }
+        stack_.push_back(new Register(register_number_));
         StatementNode* newhead = new StatementNode(
           new Label(labelNum_++),
-          new Text(main),
-          new Operator(Operator::kPrint),
+          new Register(register_number_++),
+          new Operator(Operator::kRegister),
           nullptr,
-          nullptr,
+          new Constant(exp.value()),
           nullptr
         );
         AddToEnd(newhead);
       }
       void VisitVariableExpr(const VariableExpr& exp) {
-        stack_.push_back(new Variable(exp.name()));
+        stack_.push_back(new Register(register_number_));
         int pos;
         int stackOffset;
         bool foundinParams = std::find(paramVariables_.begin(), paramVariables_.end(), (exp.name())) != paramVariables_.end();
@@ -320,7 +313,7 @@ namespace cs160 {
             stack_.back()->SetStackOffset(stackOffset);
           }
           else if (scanningParams_ == true) {
-           if (!foundinParams) { paramVariables_.push_back(exp.name()); }
+            if (!foundinParams) { paramVariables_.push_back(exp.name()); }
             else {}
             pos = std::distance(paramVariables_.begin(), std::find(paramVariables_.begin(), paramVariables_.end(), exp.name()));
             stackOffset = 1 * ((pos + 2) * 8);
@@ -328,22 +321,17 @@ namespace cs160 {
           }
         }
         if (!scanningParams_) {
-          string main = "push ";
-          main.append(std::to_string(stackOffset));
-          main.append("(%rbp)\n");
-          //                          //ss << "push " << GetStackOffset() << "(%rbp)" << endl;
-
           StatementNode* newhead = new StatementNode(
             new Label(labelNum_++),
-            new Text(main),
-            new Operator(Operator::kPrint),
+            new Register(register_number_++),
+            new Operator(Operator::kRegister),
             nullptr,
-            nullptr,
+            new Variable(exp.name()),
             nullptr
           );
+          newhead->GetOp2()->SetStackOffset(stackOffset);
           AddToEnd(newhead);
         }
-
       }
       void VisitAssignment(const Assignment& assignment) {
         int pos;
@@ -371,7 +359,6 @@ namespace cs160 {
             stackOffset = 1 * ((pos + 2) * 8);
           }
         }
-
         assignment.rhs().Visit(this);
         Operand* op2 = stack_.back();
         stack_.pop_back();
@@ -387,29 +374,17 @@ namespace cs160 {
         stack_.push_back(new Register(register_number_));
       }
       void VisitProgram(const Program& program) {
-        for (auto& def : program.function_defs()) {
-          def->Visit(this);
-        }
+        for (auto& def : program.function_defs()) { def->Visit(this); }
         CountVisitor varCount;
         varCount.ScanningParams(false);
         for (auto& statement : program.statements()) { statement->Visit(&varCount); }
         mainVars_ = varCount.LocalVars();
-        string main = ".global main\n.text\nmain:\nmov %rsp, %rbp";
         StatementNode* newhead = new StatementNode(
           new Label(labelNum_++),
-          new Text(main),
-          new Operator(Operator::kPrint),
           nullptr,
+          new Operator(Operator::kProgramStart),
           nullptr,
-          nullptr
-        );
-        AddToEnd(newhead);
-        newhead = new StatementNode(
-          new Label(labelNum_++),
-          new Constant(varCount.LocalVars()),
-          new Operator(Operator::kAllocateVars),
-          nullptr,
-          nullptr,
+          new Constant(mainVars_),
           nullptr
         );
         AddToEnd(newhead);
@@ -419,23 +394,7 @@ namespace cs160 {
       }
       void VisitFunctionCall(const FunctionCall& call) override {
         int numArgs = call.arguments().size();
-
-        for (auto& arg : call.arguments()) {
-          arg->Visit(this);
-        }
-        string main = "";
-        main.append("call ");
-        main.append(call.callee_name());
-        main.append("\n");
-
-        StatementNode* newhead = new StatementNode(
-          new Label(labelNum_++),
-          new Text(main),
-          new Operator(Operator::kPrint),
-          nullptr,
-          nullptr,
-          nullptr);
-        AddToEnd(newhead);
+        for (auto& arg : call.arguments()) { arg->Visit(this); }
         int pos;
         int stackOffset;
         bool foundinParams = std::find(paramVariables_.begin(), paramVariables_.end(), (call.lhs().name())) != paramVariables_.end();
@@ -461,122 +420,56 @@ namespace cs160 {
             stackOffset = 1 * ((pos + 2) * 8);
           }
         }
-        main = "";
-        main.append("push ");
-        main.append("%rax\n");
-        newhead = new StatementNode(
+        StatementNode* newhead = new StatementNode(
           new Label(labelNum_++),
-          new Text(main),
-          new Operator(Operator::kPrint),
-          nullptr,
-          nullptr,
+          new Variable(call.callee_name()),
+          new Operator(Operator::kCall),
+          new Variable(call.lhs().name()),
+          new Constant(numArgs),
           nullptr);
-        AddToEnd(newhead);
-
-        main = "";
-        main.append("pop ");
-        main.append(std::to_string(stackOffset));
-        main.append("(%rbp)\n");
-        newhead = new StatementNode(
-          new Label(labelNum_++),
-          new Text(main),
-          new Operator(Operator::kPrint),
-          nullptr,
-          nullptr,
-          nullptr);
-        AddToEnd(newhead);
-
-        main = "";
-        main.append("add $");
-        main.append(std::to_string(8 * numArgs));
-        main.append(", %rsp\n");
-
-        newhead = new StatementNode(
-          new Label(labelNum_++),
-          new Text(main),
-          new Operator(Operator::kPrint),
-          nullptr,
-          nullptr,
-          nullptr);
+        newhead->GetTarget()->SetStackOffset(stackOffset);
         AddToEnd(newhead);
       }
-
       void VisitFunctionDef(const FunctionDef& def) override {
-        StatementNode*newhead = new StatementNode(
-          new Label(labelNum_++),
-          new Text("###BEGIN FUNct DEF###"),
-          new Operator(Operator::kPrint),
-          nullptr,
-          nullptr,
-          nullptr);
-        AddToEnd(newhead);
         CountVisitor varsCounter;
         varsCounter.ScanningParams(true);
-        for (auto& param : def.parameters()) {
-          param->Visit(&varsCounter);
-        }
+        for (auto& param : def.parameters()) { param->Visit(&varsCounter); }
         varsCounter.ScanningParams(false);
-        for (auto& statement : def.function_body()) {
-          statement->Visit(&varsCounter);
-        }
+        for (auto& statement : def.function_body()) { statement->Visit(&varsCounter); }
         int numLocalVar = varsCounter.LocalVars();
-        string main = "";
-        main.append(".type ");
-        main.append(def.function_name());
-        main.append(", @function\n");
-        main.append(def.function_name());
-        main.append(":\n");
-        main.append("push %rbp\n");
-        main.append("mov %rsp, %rbp\n");
-        main.append("sub $");
-        main.append(std::to_string(8 * numLocalVar));
-        main.append(", %rsp\n");
-        newhead = new StatementNode(
+        StatementNode*newhead = new StatementNode(
           new Label(labelNum_++),
-          new Text(main),
-          new Operator(Operator::kPrint),
+          new Variable(def.function_name()),
+          new Operator(Operator::kFuncBegin),
           nullptr,
-          nullptr,
+          new Constant(numLocalVar),
           nullptr);
         AddToEnd(newhead);
-        // we allocated local vars and know how many parameres and local vars there are
-
         scanningParams_ = true;
-        for (auto& param : def.parameters()) {
-          param->Visit(this);
-        }
+        for (auto& param : def.parameters()) { param->Visit(this); }
         scanningParams_ = false;
-        for (auto& statement : def.function_body()) {
-          statement->Visit(this);
-        }
+        for (auto& statement : def.function_body()) { statement->Visit(this); }
         def.retval().Visit(this);
-        main = "";
-        main.append("pop %rax\n");
-
-        main.append("mov %rbp, %rsp\n");
-        main.append("pop %rbp\n");
-        main.append("ret");
         newhead = new StatementNode(
           new Label(labelNum_++),
-          new Text(main),
-          new Operator(Operator::kPrint),
+          new Register(register_number_ - 1),
+          new Operator(Operator::kReturn),
           nullptr,
           nullptr,
-          nullptr);
+          nullptr
+        );
         AddToEnd(newhead);
-
         newhead = new StatementNode(
           new Label(labelNum_++),
-          new Text("###END FUN DEF###"),
-          new Operator(Operator::kPrint),
+          new Variable(def.function_name()),
+          new Operator(Operator::kFuncEnd),
           nullptr,
-          nullptr,
+          new Constant(numLocalVar),
           nullptr);
         AddToEnd(newhead);
         localVariables_.clear();
         paramVariables_.clear();
       }
-
       void VisitLessThanExpr(const LessThanExpr& exp) {
         exp.lhs().Visit(this);
         exp.rhs().Visit(this);
@@ -812,7 +705,7 @@ namespace cs160 {
     private:
       StatementNode * head_ = nullptr;
       StatementNode* tail_ = nullptr;
-      int labelNum_ = 0;
+      int labelNum_ = 1;
       int register_number_ = 1;
       std::vector<Operand*> stack_;
       int mainVars_ = 0;
