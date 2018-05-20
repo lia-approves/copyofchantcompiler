@@ -23,11 +23,8 @@ namespace cs160 {
       virtual int GetValue() = 0;
       virtual void SetValue(int value) = 0;
       virtual std::string GetName() = 0;
-      virtual void PushToAsmSS(stringstream& ss) = 0;
-      virtual void PopToAsmSS(stringstream& ss, string register_) = 0;
       virtual void SetStackOffset(int offset) = 0;
       virtual int GetStackOffset() = 0;
-
     private:
     };
 
@@ -38,12 +35,8 @@ namespace cs160 {
       int GetValue() { return value_; }
       void SetValue(int value) { value_ = value; }
       std::string GetName() { return "statementnumber_" + std::to_string(value_); }
-      void PushToAsmSS(stringstream& ss) {}
-      void PopToAsmSS(stringstream& ss, string register_) {}
       void SetStackOffset(int offset) {  }
       int GetStackOffset() { return 0; }
-
-
     private:
       int value_;
     };
@@ -55,14 +48,8 @@ namespace cs160 {
       int GetValue() { return value_; }
       void SetValue(int value) { value_ = value; }
       std::string GetName() { return "t" + std::to_string(value_); }
-      void PushToAsmSS(stringstream& ss) { }
-      void PopToAsmSS(stringstream& ss, string register_) {
-        //ss << "pop " << register_ << endl;
-      }
       void SetStackOffset(int offset) { }
       int GetStackOffset() { return 0; }
-
-
     private:
       int value_;
     };
@@ -74,15 +61,8 @@ namespace cs160 {
       int GetValue() { return 0; }
       std::string GetName() { return name_; }
       void SetValue(int value) {}
-      void PushToAsmSS(stringstream& ss) {
-        // ss << "push " << GetStackOffset() << "(%rbp)" << endl;
-      }
-      void PopToAsmSS(stringstream& ss, string register_) {
-        //ss << "pop " << GetStackOffset() << "(%rbp)" << endl;
-      }
       void SetStackOffset(int offset) { stackOffSet_ = offset; }
       int GetStackOffset() { return stackOffSet_; }
-
     private:
       std::string name_;
       int stackOffSet_;
@@ -95,20 +75,12 @@ namespace cs160 {
       int GetValue() { return value_; }
       void SetValue(int value) { value_ = value; }
       std::string GetName() { return std::to_string(value_); }
-      void PushToAsmSS(stringstream& ss) {
-        // ss << "push $" << value_ << endl;
-      }
-      void PopToAsmSS(stringstream& ss, string register_) {
-        //ss << "pop " << register_ << endl;
-      }
       void SetStackOffset(int offset) {  }
       int GetStackOffset() { return 0; }
-
-
     private:
       int value_;
     };
-
+    /*
     class Text : public Operand {                       // 3, 8, 6 etc (integers)
     public:
       explicit Text(string text) { text_ = (text); }
@@ -116,18 +88,11 @@ namespace cs160 {
       int GetValue() { return 0; }
       void SetValue(int value) { text_ = value; }
       std::string GetName() { return text_; }
-      void PushToAsmSS(stringstream& ss) { //ss << "push $" << text_ << endl;
-      }
-      void PopToAsmSS(stringstream& ss, string register_) {
-        // ss << "pop " << register_ << endl;
-      }
       void SetStackOffset(int offset) {}
       int GetStackOffset() { return 0; }
-
-
     private:
       std::string text_;
-    };
+    };*/
 
     class Operator {
     public:
@@ -135,7 +100,7 @@ namespace cs160 {
         kAdd, kSubtract, kMultiply, kDivide,
         kAssign, kLessThan, kLessThanEqualTo, kGreaterThan,
         kGreaterThanEqualTo, kEqualTo, kGoto, kAllocateVars,
-        kDeallocateVars, kPrint, kRegister, kProgramStart, kCall, kFuncBegin, kFuncEnd, kReturn
+        kDeallocateVars, kPrint, kRegister, kProgramStart, kCall, kFuncBegin, kFuncEnd, kReturn,kParam
       };
       explicit Operator(Opcode o) { op_ = (o); }
       ~Operator() {}
@@ -249,10 +214,13 @@ namespace cs160 {
           }
           break;
         case Operator::kProgramStart:
-          std::cout << "Program Start";
+          std::cout << "program begin";
           break;
         case Operator::kCall:
           std::cout << "call " << target_->GetName() << "," << operand2_->GetValue() << "  --> " << operand1_->GetName();
+          break;
+        case Operator::kParam:
+          std::cout << "param " << target_->GetName();
           break;
         case Operator::kFuncBegin:
           std::cout << "func begin " << target_->GetName();

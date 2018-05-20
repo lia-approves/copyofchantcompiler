@@ -256,7 +256,12 @@ FunctionDef::Block function_defs;
 function_defs.push_back(std::move(foo_def));
 
 auto arguments = std::vector<std::unique_ptr<const ArithmeticExpr>>();
-arguments.push_back(std::move(make_unique<const IntegerExpr>(42)));
+arguments.push_back(std::move(make_unique<const MultiplyExpr>(make_unique<const IntegerExpr>(3),
+
+  make_unique<const IntegerExpr>(2))));
+arguments.push_back(std::move(make_unique<const MultiplyExpr>(make_unique<const IntegerExpr>(3),
+
+  make_unique<const IntegerExpr>(2))));
 
 Statement::Block statements;
 

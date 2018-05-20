@@ -394,7 +394,17 @@ namespace cs160 {
       }
       void VisitFunctionCall(const FunctionCall& call) override {
         int numArgs = call.arguments().size();
-        for (auto& arg : call.arguments()) { arg->Visit(this); }
+        for (auto& arg : call.arguments()) { arg->Visit(this);
+        StatementNode* newhead = new StatementNode(
+          new Label(labelNum_++),
+          new Register(register_number_-1),
+          new Operator(Operator::kParam),
+          nullptr,
+          nullptr, 
+          nullptr
+        );
+        AddToEnd(newhead);
+        }
         int pos;
         int stackOffset;
         bool foundinParams = std::find(paramVariables_.begin(), paramVariables_.end(), (call.lhs().name())) != paramVariables_.end();
