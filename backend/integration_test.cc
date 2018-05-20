@@ -3,20 +3,20 @@
 #include <fstream>
 #include <string>
 #include "abstract_syntax/abstract_syntax.h"
-#include "backend/ir_v1.h"
+#include "backend/ir_v2.h"
 #include "gtest/gtest.h"
 #include "utility/memory.h"
-#include "backend/asm_generator_v1.h"
-#include "backend/lowerer_v1.h"
+#include "backend/asm_generator_v2.h"
+#include "backend/lowerer_v2.h"
 
 
-using cs160::abstract_syntax::version_1::IntegerExpr;
-using cs160::abstract_syntax::version_1::AddExpr;
-using cs160::abstract_syntax::version_1::SubtractExpr;
-using cs160::abstract_syntax::version_1::MultiplyExpr;
-using cs160::abstract_syntax::version_1::DivideExpr;
+using cs160::abstract_syntax::version_2::IntegerExpr;
+using cs160::abstract_syntax::version_2::AddExpr;
+using cs160::abstract_syntax::version_2::SubtractExpr;
+using cs160::abstract_syntax::version_2::MultiplyExpr;
+using cs160::abstract_syntax::version_2::DivideExpr;
 
-using cs160::backend::Instruction;
+using cs160::backend::Operator;
 using cs160::backend::Operand;
 using cs160::backend::Register;
 using cs160::backend::Constant;

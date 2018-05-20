@@ -3,33 +3,38 @@
 #include <fstream>
 #include <string>
 #include "abstract_syntax/abstract_syntax.h"
-#include "backend/ir_v1.h"
+#include "backend/ir_v3.h"
 #include "gtest/gtest.h"
 #include "utility/memory.h"
-#include "backend/asm_generator_v1.h"
-#include "backend/lowerer_v1.h"
+#include "backend/asm_generator_v3.h"
+#include "backend/lowerer_v3.h"
 
 
-using cs160::abstract_syntax::version_1::IntegerExpr;
-using cs160::abstract_syntax::version_1::AddExpr;
-using cs160::abstract_syntax::version_1::SubtractExpr;
-using cs160::abstract_syntax::version_1::MultiplyExpr;
-using cs160::abstract_syntax::version_1::DivideExpr;
+using cs160::abstract_syntax::version_3::IntegerExpr;
+using cs160::abstract_syntax::version_3::AddExpr;
+using cs160::abstract_syntax::version_3::SubtractExpr;
+using cs160::abstract_syntax::version_3::MultiplyExpr;
+using cs160::abstract_syntax::version_3::DivideExpr;
 
-using cs160::backend::Instruction;
+using cs160::backend::Operator;
 using cs160::backend::Operand;
 using cs160::backend::Register;
 using cs160::backend::Constant;
+using cs160::backend::Variable;
+using cs160::backend::Label;
 using cs160::backend::StatementNode;
 using cs160::backend::AsmProgram;
 using cs160::backend::IrGenVisitor;
 
 using cs160::make_unique;
 
-TEST(IRtoASM, Add) {
+
+
+TEST(IRv1, Add) {
   StatementNode *expr = new StatementNode(
+    new Label(1),
     new Register(3),
-    new Instruction(Instruction::kAdd),
+    new Operator(Operator::kAdd),
     new Constant(3),
     new Constant(2),
     nullptr);
@@ -53,10 +58,11 @@ TEST(IRtoASM, Add) {
   EXPECT_EQ("5", output);
 }
 
-TEST(IRtoASM, Subtract) {
+TEST(IRv1, Subtract) {
   StatementNode *expr = new StatementNode(
+    new Label(1),
     new Register(3),
-    new Instruction(Instruction::kSubtract),
+    new Operator(Operator::kSubtract),
     new Constant(3),
     new Constant(2),
     nullptr);
@@ -80,10 +86,11 @@ TEST(IRtoASM, Subtract) {
   EXPECT_EQ("1", output);
 }
 
-TEST(IRtoASM, Multiply) {
+TEST(IRv1, Multiply) {
   StatementNode *expr = new StatementNode(
+    new Label(1),
     new Register(3),
-    new Instruction(Instruction::kMultiply),
+    new Operator(Operator::kMultiply),
     new Constant(3),
     new Constant(2),
     nullptr);
@@ -107,10 +114,11 @@ TEST(IRtoASM, Multiply) {
   EXPECT_EQ("6", output);
 }
 
-TEST(IRtoASM, Divide) {
+TEST(IRv1, Divide) {
   StatementNode *expr = new StatementNode(
+    new Label(1),
     new Register(3),
-    new Instruction(Instruction::kDivide),
+    new Operator(Operator::kDivide),
     new Constant(30),
     new Constant(5),
     nullptr);
@@ -134,23 +142,26 @@ TEST(IRtoASM, Divide) {
   EXPECT_EQ("6", output);
 }
 
-TEST(IRtoASM, Complex) {
+TEST(IRv1, Complex) {
   // ((3+2) * 2) - 4 = 6
   StatementNode *expr3 = new StatementNode(
+    new Label(3),
     new Register(3),
-    new Instruction(Instruction::kSubtract),
+    new Operator(Operator::kSubtract),
     new Register(3),
     new Constant(4),
     nullptr);
   StatementNode *expr2 = new StatementNode(
+    new Label(2),
     new Register(3),
-    new Instruction(Instruction::kMultiply),
+    new Operator(Operator::kMultiply),
     new Constant(2),
     new Register(2),
     expr3);
   StatementNode *expr1 = new StatementNode(
+    new Label(1),
     new Register(3),
-    new Instruction(Instruction::kAdd),
+    new Operator(Operator::kAdd),
     new Constant(3),
     new Constant(2),
     expr2);

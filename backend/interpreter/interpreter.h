@@ -1,6 +1,6 @@
 // Copyright msg for cpplint
-#ifndef INTERPRETER_INTERPRETER_H_
-#define INTERPRETER_INTERPRETER_H_
+#ifndef BACKEND_INTERPRETER_INTERPRETER_H_
+#define BACKEND_INTERPRETER_INTERPRETER_H_
 
 #include <sstream>
 #include <string>
@@ -46,4 +46,4 @@ class InterpretVisitor : public AstVisitor {
 
 }  // namespace interpreter
 }  // namespace cs160
-#endif  // INTERPRETER_INTERPRETER_H_
+#endif  // BACKEND_INTERPRETER_INTERPRETER_H_
