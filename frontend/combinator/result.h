@@ -43,6 +43,9 @@ class Value {
   abstract_syntax::frontend::AstNode* GetNodePointer() const {
     return node_.get();
   }
+  std::unique_ptr<abstract_syntax::frontend::AstNode> GetNodeUnique() {
+    return std::move(node_);
+  }
   std::string GetString() const { return string_; }
   type GetType() const { return type_; }
 

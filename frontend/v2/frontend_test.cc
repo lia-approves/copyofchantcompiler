@@ -6,20 +6,21 @@
 
 namespace cs160 {
 namespace frontend {
+namespace Parse {
 
 class FrontendTest : public ::testing::Test {
  protected:
    bool test = false;
 };
 
-// TEST_F(FrontendTest, BasicIntegerTest) {
-//   // make a basic expression and parse
-//   Frontend f;
-//   auto ret = f.stringToAst("1");
-//   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "1");
-// }
-// 
+TEST_F(FrontendTest, BasicTest) {
+  // make a basic expression and parse
+  Frontend f;
+  auto ret = f.stringToAst("a");
+  // ret->Visit(&printer_);
+  // ASSERT_EQ(printer_.GetOutput(), "1");
+}
+
 // TEST_F(FrontendTest, BasicAdditionTest) {
 //   // make a basic expression and parse
 //   Frontend f;
@@ -35,5 +36,6 @@ class FrontendTest : public ::testing::Test {
 //   ASSERT_EQ(printer_.GetOutput(), "(+ 1 2)");
 // }
 
+}  // namespace Parse
 }  // namespace frontend
 }  // namespace cs160

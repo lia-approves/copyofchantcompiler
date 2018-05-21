@@ -21,7 +21,6 @@ class Frontend {
  private:
   Parser Program();
   Parser Assign();
-  Parser Id();
   Parser Expression();
   Parser Add();
   Parser Multiply();
