@@ -1,0 +1,29 @@
+push rbp
+mov rbp, rsp
+
+;; sys_brk(0)
+mov   rax, 12         ; 12 is SYS_brk (/usr/include/asm/unistd_64.h)
+mov   rdi, 0          ; rdi for first syscall arg in the 64-bit ABI, not rbx
+syscall               ; syscall, not int 0x80, for the 64-bit ABI
+
+mov   qword [brk_firstLocation], rax
+
+;; sys_brk(old_break + 5)
+lea   rdi, [rax + 5]  ; add 5 bytes to the break point
+mov   rax, 12
+syscall               ; set the new breakpoint
+
+At this point you can use brk_firstLocation as a pointer to whatever 5 byte struct 
+you want to store on the heap.
+Here's how you would put values in that memory space:
+
+mov   rdi, [brk_firstLocation]   ; load the pointer from memory, if you didn't already have it in a register
+
+mov   byte [rdi], 'A'            ; a char at it's first byte
+mov   [rdi+1], ecx               ; a 32-bit value in the last 4 bytes.
+
+
+
+
+
+

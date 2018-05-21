@@ -1,42 +1,47 @@
 // Copyright(c) 2018, Team Chant
 
-#ifndef BACKEND_LOWERER_V4_H_
-#define BACKEND_LOWERER_V4_H_
+#ifndef BACKEND_LOWERER_V5_H_
+#define BACKEND_LOWERER_V5_H_
 
 #include <algorithm>
 #include <sstream>
 #include <string>
 #include <vector>
 #include <iostream>
-#include "backend/ir_v4.h"
+#include "backend/ir_v5.h"
 #include "utility/memory.h"
-#include "abstract_syntax/abstract_syntax_tree_v4.h"
+#include "abstract_syntax/abstract_syntax_tree_v5.h"
+
+using cs160::abstract_syntax::version_5::AstVisitor;
+using cs160::abstract_syntax::version_5::ArithmeticExpr;
+using cs160::abstract_syntax::version_5::Assignable;
+using cs160::abstract_syntax::version_5::AddExpr;
+using cs160::abstract_syntax::version_5::SubtractExpr;
+using cs160::abstract_syntax::version_5::MultiplyExpr;
+using cs160::abstract_syntax::version_5::DivideExpr;
+using cs160::abstract_syntax::version_5::IntegerExpr;
+using cs160::abstract_syntax::version_5::VariableExpr;
+using cs160::abstract_syntax::version_5::Dereference;
+using cs160::abstract_syntax::version_5::LessThanExpr;
+using cs160::abstract_syntax::version_5::LessThanEqualToExpr;
+using cs160::abstract_syntax::version_5::GreaterThanExpr;
+using cs160::abstract_syntax::version_5::GreaterThanEqualToExpr;
+using cs160::abstract_syntax::version_5::EqualToExpr;
+using cs160::abstract_syntax::version_5::LogicalAndExpr;
+using cs160::abstract_syntax::version_5::LogicalOrExpr;
+using cs160::abstract_syntax::version_5::LogicalNotExpr;
+using cs160::abstract_syntax::version_5::Statement;
+using cs160::abstract_syntax::version_5::AssignmentFromArithExp;
+using cs160::abstract_syntax::version_5::AssignmentFromNewTuple;
+using cs160::abstract_syntax::version_5::Conditional;
+using cs160::abstract_syntax::version_5::Loop;
+using cs160::abstract_syntax::version_5::FunctionCall;
+using cs160::abstract_syntax::version_5::FunctionDef;
+using cs160::abstract_syntax::version_5::Program;
 
 
-using cs160::abstract_syntax::version_4::IntegerExpr;
-using cs160::abstract_syntax::version_4::ArithmeticBinaryOperatorExpr;
-using cs160::abstract_syntax::version_4::AddExpr;
-using cs160::abstract_syntax::version_4::SubtractExpr;
-using cs160::abstract_syntax::version_4::MultiplyExpr;
-using cs160::abstract_syntax::version_4::DivideExpr;
-using cs160::abstract_syntax::version_4::AstNode;
-using cs160::abstract_syntax::version_4::AstVisitor;
-using cs160::abstract_syntax::version_4::VariableExpr;
-using cs160::abstract_syntax::version_4::Assignment;
-using cs160::abstract_syntax::version_4::Program;
-using cs160::abstract_syntax::version_4::LessThanExpr;
-using cs160::abstract_syntax::version_4::LessThanEqualToExpr;
-using cs160::abstract_syntax::version_4::GreaterThanExpr;
-using cs160::abstract_syntax::version_4::GreaterThanEqualToExpr;
-using cs160::abstract_syntax::version_4::EqualToExpr;
-using cs160::abstract_syntax::version_4::LogicalAndExpr;
-using cs160::abstract_syntax::version_4::LogicalOrExpr;
-using cs160::abstract_syntax::version_4::LogicalNotExpr;
-using cs160::abstract_syntax::version_4::Conditional;
-using cs160::abstract_syntax::version_4::Loop;
-using cs160::abstract_syntax::version_4::FunctionCall;
-using cs160::abstract_syntax::version_4::FunctionDef;
 using cs160::backend::StatementNode;
+using cs160::backend::DereferenceVar;
 using cs160::backend::Constant;
 using cs160::backend::Label;
 using cs160::backend::Operator;
@@ -45,14 +50,16 @@ using cs160::backend::Operand;
 using cs160::backend::Variable;
 using std::cout;
 
+
 namespace cs160 {
-// <<<<<<< HEAD
 namespace backend {
 class CountVisitor : public AstVisitor {
  public:
   void VisitIntegerExpr(const IntegerExpr& exp) override;
 
   void VisitVariableExpr(const VariableExpr& exp) override;
+
+  void VisitDereference(const Dereference& exp) override;
 
   void VisitAddExpr(const AddExpr& exp) override;
 
@@ -77,7 +84,6 @@ class CountVisitor : public AstVisitor {
 
   void VisitLogicalNotExpr(const LogicalNotExpr& exp) override;
 
-  void VisitAssignment(const Assignment& assignment) override;
 
   void VisitConditional(const Conditional& conditional) override;
 
@@ -91,11 +97,17 @@ class CountVisitor : public AstVisitor {
   void ScanningParams(bool scanningParams);
   int LocalVars() { return localVariables_.size(); }
   int ParamVars() { return paramVariables_.size(); }
+  int GetNumMainVars() { return numMainVars_; }
+  void VisitAssignmentFromArithExp(
+      const AssignmentFromArithExp& assignment) override;
+  void VisitAssignmentFromNewTuple(
+      const AssignmentFromNewTuple& assignment) override;
 
  private:
   bool scanningParams_ = false;
   std::vector<string> paramVariables_;
   std::vector<string> localVariables_;
+  int numMainVars_ = 0;
 };
 class IrGenVisitor : public AstVisitor {
  public:
@@ -110,6 +122,7 @@ class IrGenVisitor : public AstVisitor {
 
   void VisitAddExpr(const AddExpr& exp);
 
+
   void VisitSubtractExpr(const SubtractExpr& exp);
 
   void VisitMultiplyExpr(const MultiplyExpr& exp);
@@ -117,7 +130,6 @@ class IrGenVisitor : public AstVisitor {
   void VisitDivideExpr(const DivideExpr& exp);
   void VisitIntegerExpr(const IntegerExpr& exp);
   void VisitVariableExpr(const VariableExpr& exp);
-  void VisitAssignment(const Assignment& assignment);
   void VisitProgram(const Program& program);
   void VisitFunctionCall(const FunctionCall& call) override;
 
@@ -134,11 +146,16 @@ class IrGenVisitor : public AstVisitor {
   void VisitConditional(const Conditional& conditional);
   void VisitLoop(const Loop& loop);
 
+  void VisitAssignmentFromArithExp(
+      const AssignmentFromArithExp& assignment) override;
+  void VisitAssignmentFromNewTuple(
+      const AssignmentFromNewTuple& assignment) override;
   StatementNode* GetIR() { return head_; }
+  void VisitDereference(const Dereference& exp) override;
+
+
   void AddToEnd(StatementNode* newtail);
-
   void PrintIR();
-
   int NumberOfStatements();
   int NumberOfMainVars() { return mainVars_; }
 
@@ -153,7 +170,8 @@ class IrGenVisitor : public AstVisitor {
   std::vector<string> localVariables_;
   bool scanningParams_ = false;
 };
-} // namespace backend
+
+}  // namespace backend
 }  // namespace cs160
 
-#endif  // BACKEND_LOWERER_V4_H_
+#endif  // BACKEND_LOWERER_V5_H_

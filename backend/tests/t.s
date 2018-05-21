@@ -1,198 +1,241 @@
-#PARAMS: 3
-#### Start of IR ####
+/*#### Start of IR ####
 
-# S0:  print
-/*###BEGIN FUNct DEF###*/
-# S1:  print
-/*.type foo, @function
-foo:
-push %rbp
-mov %rsp, %rbp
-sub $32, %rsp
-*/
-# S2:  print
-/*push $45
-*/
-# S3:  a = 45
-# S4:  print
-/*push 16(%rbp)
-*/
-# S5:  print
-/*push $8
-*/
-# S6:  t1 = bob + 8
-# S7:  bob = t1
-# S8:  print
-/*push $45
-*/
-# S9:  h = 45
-# S10:  print
-/*push $45
-*/
-# S11:  j = 45
-# S12:  print
-/*push $45
-*/
-# S13:  mike = 45
-# S14:  print
-/*push $45
-*/
-# S15:  ab = 45
-# S16:  print
-/*push 16(%rbp)
-*/
-# S17:  print
-/*push $5
-*/
-# S18:  t2 = bob + 5
-# S19:  print
-/*pop %rax
-mov %rbp, %rsp
-pop %rbp
-ret*/
-# S20:  print
-/*###END FUN DEF###*/
-# S21:  print
-/*.global main
-.text
-main:
-mov %rsp, %rbp*/
-# S22:  alloc 8*3 bytes:
-# S23:  print
-/*push $9
-*/
-# S24:  y = 9
-# S25:  print
-/*push $1
-*/
-# S26:  x = 1
-# S27:  print
-/*push $17
-*/
-# S28:  print
-/*push $17
-*/
-# S29:  print
-/*push $17
-*/
-# S30:  print
-/*call foo
-*/
-# S31:  print
-/*push %rax
-*/
-# S32:  print
-/*pop -24(%rbp)
-*/
-# S33:  print
-/*add $24, %rsp
-*/
-# S34:  print
-/*push $12
-*/
-# S35:  print
-/*push -24(%rbp)
-*/
-# S36:  t3 = 12 + foo_retval
+# S1:	func begin foo
+# S2:	t1 = bob
+# S3:	t2 = 100
+# S4:	if (t1 < t2) goto S6:
+# S5:	goto S9:
+# S6:	t3 = bob
+# S7:	t4 = 0
+# S8:	if (t3 > t4) goto S17:
+# S9:	t5 = bob
+# S10:	t6 = 100
+# S11:	if (t5 <= t6) goto S13:
+# S12:	goto S16:
+# S13:	t7 = bob
+# S14:	t8 = 0
+# S15:	if (t7 >= t8) goto S17:
+# S16:	goto S18:
+# S17:	goto S19:
+# S18:	goto S20:
+# S19:	goto S20:
+# S20:	t9 = bob
+# S21:	t10 = 0
+# S22:	if (t9 == t10) goto S24:
+# S23:	goto S25:
+# S24:	goto S30:
+# S25:	t11 = bob
+# S26:	t12 = 1
+# S27:	t13 = t11 - t12
+# S28:	bob = t13
+# S29:	goto S20:
+# S30:	t14 = 12
+# S31:	t15 = 3
+# S32:	t16 = t14 / t15
+# S33:	t17 = 4
+# S34:	t18 = t16 - t17
+# S35:	t19 = 3
+# S36:	t20 = 2
+# S37:	t21 = t19 * t20
+# S38:	t22 = t18 + t21
+# S39:	return t22
+# S40:	func end foo
+# S41:	Program Start
+# S42:	t23 = 42
+# S43:	call foo,1  --> foo_retval
+# S44:	t24 = foo_retval
 
-#### End of IR ####
+#### End of IR ####*/
 
 
 #### Start of Assembly ####
 
 #### Start of Statements ####
 
-statementnumber_0:
-
-###BEGIN FUNct DEF###
-
 statementnumber_1:
 
-.type foo, @function
+.type foo,@function
 foo:
 push %rbp
 mov %rsp, %rbp
-sub $32, %rsp
-
-
+sub $0, %rsp
 statementnumber_2:
 
-push $45
-
+push 16(%rbp)
 
 statementnumber_3:
 
-pop -8(%rbp)
+push $100
 
 statementnumber_4:
 
-push 16(%rbp)
-
+pop %rax
+pop %rbx
+cmp %rax, %rbx
+jl statementnumber_6
 
 statementnumber_5:
 
-push $8
-
+jmp statementnumber_9
 
 statementnumber_6:
 
-pop %rax
-pop %rbx
-add %rax, %rbx
-push %rbx
-
+push 16(%rbp)
 
 statementnumber_7:
 
-pop 16(%rbp)
+push $0
 
 statementnumber_8:
 
-push $45
-
+pop %rax
+pop %rbx
+cmp %rax, %rbx
+jg statementnumber_17
 
 statementnumber_9:
 
-pop -16(%rbp)
+push 16(%rbp)
 
 statementnumber_10:
 
-push $45
-
+push $100
 
 statementnumber_11:
 
-pop -24(%rbp)
+pop %rax
+pop %rbx
+cmp %rax, %rbx
+jle statementnumber_13
 
 statementnumber_12:
 
-push $45
-
+jmp statementnumber_16
 
 statementnumber_13:
 
-pop 32(%rbp)
+push 16(%rbp)
 
 statementnumber_14:
 
-push $45
-
+push $0
 
 statementnumber_15:
 
-pop -32(%rbp)
+pop %rax
+pop %rbx
+cmp %rax, %rbx
+jge statementnumber_17
 
 statementnumber_16:
 
-push 16(%rbp)
-
+jmp statementnumber_18
 
 statementnumber_17:
 
-push $5
-
+jmp statementnumber_19
 
 statementnumber_18:
+
+jmp statementnumber_20
+
+statementnumber_19:
+
+jmp statementnumber_20
+
+statementnumber_20:
+
+push 16(%rbp)
+
+statementnumber_21:
+
+push $0
+
+statementnumber_22:
+
+pop %rax
+pop %rbx
+cmp %rax, %rbx
+je statementnumber_24
+
+statementnumber_23:
+
+jmp statementnumber_25
+
+statementnumber_24:
+
+jmp statementnumber_30
+
+statementnumber_25:
+
+push 16(%rbp)
+
+statementnumber_26:
+
+push $1
+
+statementnumber_27:
+
+pop %rax
+pop %rbx
+sub %rax, %rbx
+push %rbx
+
+
+statementnumber_28:
+
+pop 16(%rbp)
+
+statementnumber_29:
+
+jmp statementnumber_20
+
+statementnumber_30:
+
+push $12
+
+statementnumber_31:
+
+push $3
+
+statementnumber_32:
+
+pop %rbx
+pop %rax
+mov $0, %rdx
+idiv %rbx
+push %rax
+
+
+statementnumber_33:
+
+push $4
+
+statementnumber_34:
+
+pop %rax
+pop %rbx
+sub %rax, %rbx
+push %rbx
+
+
+statementnumber_35:
+
+push $3
+
+statementnumber_36:
+
+push $2
+
+statementnumber_37:
+
+pop %rax
+pop %rbx
+imul %rax, %rbx
+push %rbx
+
+
+statementnumber_38:
 
 pop %rax
 pop %rbx
@@ -200,98 +243,37 @@ add %rax, %rbx
 push %rbx
 
 
-statementnumber_19:
+statementnumber_39:
+
+
+statementnumber_40:
 
 pop %rax
 mov %rbp, %rsp
 pop %rbp
 ret
 
-statementnumber_20:
-
-###END FUN DEF###
-
-statementnumber_21:
+statementnumber_41:
 
 .global main
 .text
 main:
 mov %rsp, %rbp
+sub $8, %rsp
+statementnumber_42:
 
-statementnumber_22:
+push $42
 
-sub $24, %rsp
-
-statementnumber_23:
-
-push $9
-
-
-statementnumber_24:
-
-pop -8(%rbp)
-
-statementnumber_25:
-
-push $1
-
-
-statementnumber_26:
-
-pop -16(%rbp)
-
-statementnumber_27:
-
-push $17
-
-
-statementnumber_28:
-
-push $17
-
-
-statementnumber_29:
-
-push $17
-
-
-statementnumber_30:
+statementnumber_43:
 
 call foo
-
-
-statementnumber_31:
-
 push %rax
+pop -8(%rbp)
+add $8, %rsp
 
+statementnumber_44:
 
-statementnumber_32:
-
-pop -24(%rbp)
-
-
-statementnumber_33:
-
-add $24, %rsp
-
-
-statementnumber_34:
-
-push $12
-
-
-statementnumber_35:
-
-push -24(%rbp)
-
-
-statementnumber_36:
-
-pop %rax
-pop %rbx
-add %rax, %rbx
-push %rbx
-
+push -8(%rbp)
 #### End of Statements ####
 
 pop %rax
@@ -301,7 +283,7 @@ xor     %rax, %rax
 call    printf
 
 ##DESTROY LOCAL VARS
-add $24, %rsp
+add $8, %rsp
 ##end DESTROY LOCAL VARS
 
   ret

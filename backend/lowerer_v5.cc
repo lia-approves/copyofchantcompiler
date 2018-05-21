@@ -6,51 +6,19 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include "backend/ir_v4.h"
+#include "backend/ir_v5.h"
 #include "utility/memory.h"
-#include "abstract_syntax/abstract_syntax_tree_v4.h"
-#include "backend/lowerer_v4.h"
-
-
-using cs160::abstract_syntax::version_4::IntegerExpr;
-using cs160::abstract_syntax::version_4::ArithmeticBinaryOperatorExpr;
-using cs160::abstract_syntax::version_4::AddExpr;
-using cs160::abstract_syntax::version_4::SubtractExpr;
-using cs160::abstract_syntax::version_4::MultiplyExpr;
-using cs160::abstract_syntax::version_4::DivideExpr;
-using cs160::abstract_syntax::version_4::AstNode;
-using cs160::abstract_syntax::version_4::AstVisitor;
-using cs160::abstract_syntax::version_4::VariableExpr;
-using cs160::abstract_syntax::version_4::Assignment;
-using cs160::abstract_syntax::version_4::Program;
-using cs160::abstract_syntax::version_4::LessThanExpr;
-using cs160::abstract_syntax::version_4::LessThanEqualToExpr;
-using cs160::abstract_syntax::version_4::GreaterThanExpr;
-using cs160::abstract_syntax::version_4::GreaterThanEqualToExpr;
-using cs160::abstract_syntax::version_4::EqualToExpr;
-using cs160::abstract_syntax::version_4::LogicalAndExpr;
-using cs160::abstract_syntax::version_4::LogicalOrExpr;
-using cs160::abstract_syntax::version_4::LogicalNotExpr;
-using cs160::abstract_syntax::version_4::Conditional;
-using cs160::abstract_syntax::version_4::Loop;
-using cs160::abstract_syntax::version_4::FunctionCall;
-using cs160::abstract_syntax::version_4::FunctionDef;
-
-
-using cs160::backend::StatementNode;
-using cs160::backend::Constant;
-using cs160::backend::Label;
-using cs160::backend::Operator;
-using cs160::backend::Register;
-using cs160::backend::Operand;
-using cs160::backend::Variable;
-using std::cout;
-
+#include "abstract_syntax/abstract_syntax_tree_v5.h"
+#include "backend/lowerer_v5.h"
 
 namespace cs160 {
 namespace backend {
 
 void CountVisitor::VisitIntegerExpr(const IntegerExpr& exp) {  }
+
+void CountVisitor::VisitDereference(const Dereference& exp) {
+  //!!
+}
 
 void CountVisitor::VisitVariableExpr(const VariableExpr& exp) {
     bool foundinParams = std::find(
@@ -135,8 +103,8 @@ void CountVisitor::VisitLogicalNotExpr(const LogicalNotExpr& exp) {
     exp.operand().Visit(this);
   }
 
-void CountVisitor::VisitAssignment(const Assignment& assignment) {
-    assignment.rhs().Visit(this);
+void CountVisitor::VisitAssignmentFromArithExp(const AssignmentFromArithExp& assignment) {
+  /*  assignment.rhs().Visit(this);
     bool foundinParams = std::find(
       paramVariables_.begin(),
       paramVariables_.end(),
@@ -156,7 +124,8 @@ void CountVisitor::VisitAssignment(const Assignment& assignment) {
           (assignment.lhs().name())) != paramVariables_.end();
         if (!found) { paramVariables_.push_back(assignment.lhs().name()); }
       }
-    }
+    }*/
+    numMainVars_++;
   }
 
 void CountVisitor::VisitConditional(const Conditional& conditional) {
@@ -169,6 +138,12 @@ void CountVisitor::VisitConditional(const Conditional& conditional) {
     }
   }
 
+void CountVisitor::VisitAssignmentFromNewTuple(
+    const AssignmentFromNewTuple& assignment) {
+  assignment.lhs().Visit(this);
+  assignment.rhs().Visit(this);
+  // count_++;
+}
 void CountVisitor::VisitLoop(const Loop& loop) {
     loop.guard().Visit(this);
     for (auto& statement : loop.body()) {
@@ -209,6 +184,8 @@ void CountVisitor::VisitFunctionDef(const FunctionDef& def) { }
 void CountVisitor::ScanningParams(bool scanningParams) {
   scanningParams_ = scanningParams;
 }
+
+
 
 void IrGenVisitor::VisitAddExpr(const AddExpr& exp) {
   exp.lhs().Visit(this);
@@ -286,228 +263,350 @@ void IrGenVisitor::VisitDivideExpr(const DivideExpr& exp) {
   register_number_++;
 }
 void IrGenVisitor::VisitIntegerExpr(const IntegerExpr& exp) {
-  stack_.push_back(new Register(register_number_));
+  stack_.push_back(new Constant(exp.value()));
+  string main = "push $";
+  main.append(std::to_string(exp.value()));
+  main.append("\n");
   StatementNode* newhead = new StatementNode(
     new Label(labelNum_++),
-    new Register(register_number_++),
-    new Operator(Operator::kRegister),
+    new Text(main),
+    new Operator(Operator::kPrint),
     nullptr,
-    new Constant(exp.value()),
-    nullptr
-  );
+    nullptr,
+    nullptr);
   AddToEnd(newhead);
 }
-void IrGenVisitor::VisitVariableExpr(const VariableExpr& exp) {
-  stack_.push_back(new Register(register_number_));
-  int pos;
-  int stackOffset;
-  bool foundinParams = std::find(paramVariables_.begin(), paramVariables_.end(), (exp.name())) != paramVariables_.end();
-  if (foundinParams) {
-    pos = std::distance(paramVariables_.begin(), std::find(paramVariables_.begin(), paramVariables_.end(), exp.name()));
-    stackOffset = 1 * ((pos + 2) * 8);
-    stack_.back()->SetStackOffset(stackOffset);
-  }
-  else {
-    if (scanningParams_ == false) {
-      bool found = std::find(localVariables_.begin(), localVariables_.end(), (exp.name())) != localVariables_.end();
-      if (!found) { localVariables_.push_back(exp.name()); }
-      else {}
-      pos = std::distance(localVariables_.begin(), std::find(localVariables_.begin(), localVariables_.end(), exp.name()));
-      stackOffset = -1 * ((pos + 1) * 8);
-      stack_.back()->SetStackOffset(stackOffset);
-    }
-    else if (scanningParams_ == true) {
-      if (!foundinParams) { paramVariables_.push_back(exp.name()); }
-      else {}
-      pos = std::distance(paramVariables_.begin(), std::find(paramVariables_.begin(), paramVariables_.end(), exp.name()));
-      stackOffset = 1 * ((pos + 2) * 8);
-      stack_.back()->SetStackOffset(stackOffset);
-    }
-  }
-  if (!scanningParams_) {
-    StatementNode* newhead = new StatementNode(
-      new Label(labelNum_++),
-      new Register(register_number_++),
-      new Operator(Operator::kRegister),
-      nullptr,
-      new Variable(exp.name()),
-      nullptr
-    );
-    newhead->GetOp2()->SetStackOffset(stackOffset);
-    AddToEnd(newhead);
-  }
+
+
+
+
+void IrGenVisitor::VisitDereference(const Dereference& exp) {
+  exp.lhs().Visit(this);
+  Operand* op1 = stack_.back();
+  stack_.pop_back();
+
+  exp.rhs().Visit(this);
+  Operand* op2 = stack_.back();
+  stack_.pop_back();
+
+  stack_.push_back(new DereferenceVar(op1->GetName(), op1->GetOffset(), op2->GetValue()));
+  string main = "#push ";
+  // main.append(op1);
+  // main.append("(%rbp)\n");
+
+  StatementNode* newhead = new StatementNode(
+    new Label(labelNum_++),
+    new Text(main),
+    new Operator(Operator::kPrint),
+    nullptr,
+    nullptr,
+    nullptr);
+  AddToEnd(newhead);
 }
-void IrGenVisitor::VisitAssignment(const Assignment& assignment) {
+
+
+
+void IrGenVisitor::VisitVariableExpr(const VariableExpr& exp) {
+  stack_.push_back(new Variable(exp.name()));
   int pos;
   int stackOffset;
   bool foundinParams = std::find(
     paramVariables_.begin(),
     paramVariables_.end(),
-    (assignment.lhs().name())) != paramVariables_.end();
+    (exp.name())) != paramVariables_.end();
+
+  if (foundinParams) {
+    // This variable is a parameter
+    pos = std::distance(paramVariables_.begin(), std::find(
+      paramVariables_.begin(), paramVariables_.end(), exp.name()));
+    stackOffset = 1 * ((pos + 2) * 8);
+    stack_.back()->SetOffset(stackOffset);
+  } else {
+    // This variable is not a parameter
+    if (scanningParams_ == false) {
+      bool found = std::find(
+        localVariables_.begin(),
+        localVariables_.end(),
+        (exp.name())) != localVariables_.end();
+      if (!found) { localVariables_.push_back(exp.name()); }
+      pos = std::distance(localVariables_.begin(), std::find(
+        localVariables_.begin(),
+        localVariables_.end(),
+        exp.name()));
+      stackOffset = -1 * ((pos + 1) * 8);
+      stack_.back()->SetOffset(stackOffset);
+    } else if (scanningParams_ == true) {
+      // Add variable to parameters vector
+     if (!foundinParams) { paramVariables_.push_back(exp.name()); }
+     pos = std::distance(paramVariables_.begin(), std::find(
+        paramVariables_.begin(),
+        paramVariables_.end(),
+        exp.name()));
+      stackOffset = 1 * ((pos + 2) * 8);
+      stack_.back()->SetOffset(stackOffset);
+    }
+  }
+  if (!scanningParams_) {
+    // TODO(Taylor): move string logic to asm generator
+    string main = "push ";
+    main.append(std::to_string(stackOffset));
+    main.append("(%rbp)\n");
+    StatementNode* newhead = new StatementNode(
+      new Label(labelNum_++),
+      new Text(main),
+      new Operator(Operator::kPrint),
+      nullptr,
+      nullptr,
+      nullptr);
+    AddToEnd(newhead);
+  }
+}
+
+void IrGenVisitor::VisitAssignmentFromArithExp(const AssignmentFromArithExp& assignment) {
+  assignment.lhs().Visit(this);
+  Operand* op1 = stack_.back();
+  stack_.pop_back();
+
+  // pop %rax;
+  // pop %rbx;
+  // mult $8, %rbx;
+  // add %rbx, %rax;
+  // push %rax;
+  // $2(%rsp)
+  // int pos;
+  // int stackOffset = 8;
+  assignment.rhs().Visit(this);
+  Operand* op2 = stack_.back();
+  stack_.pop_back();
+  StatementNode *newtail = new StatementNode(
+    new Label(labelNum_++),
+    op1,
+    new Operator(Operator::kAssign),
+    nullptr,
+    op2,
+    nullptr);
+  // newtail->GetTarget()->SetOffset(stackOffset);
+  AddToEnd(newtail);
+  stack_.push_back(new Register(register_number_));
+}
+
+
+
+
+void IrGenVisitor::VisitProgram(const Program& program) {
+  for (auto& def : program.function_defs()) {
+    def->Visit(this);
+  }
+  CountVisitor varCount;
+  varCount.ScanningParams(false);
+  for (auto& statement : program.statements()) {
+    statement->Visit(&varCount);
+  }
+  // mainVars_ = varCount.LocalVars();
+  mainVars_ = varCount.GetNumMainVars() + varCount.LocalVars();
+  // TODO(Taylor) Check the logic of the above line of code. It may just be a hack.
+  string main = ".global main\n.text\nmain:\nmov %rsp, %rbp\n";
+  // main.append("mov $0x2d, %rax\nmov $0, %rbx\nsyscall\nmov %rax, %rcx\n");
+  StatementNode* newhead = new StatementNode(
+    new Label(labelNum_++),
+    new Text(main),
+    new Operator(Operator::kPrint),
+    nullptr,
+    nullptr,
+    nullptr);
+  AddToEnd(newhead);
+  newhead = new StatementNode(
+    new Label(labelNum_++),
+    new Constant(varCount.LocalVars()),
+    new Operator(Operator::kAllocateVars),
+    nullptr,
+    nullptr,
+    nullptr);
+  AddToEnd(newhead);
+  for (auto& statement : program.statements()) { statement->Visit(this); }
+  program.arithmetic_exp().Visit(this);
+  localVariables_.clear();
+}
+void IrGenVisitor::VisitFunctionCall(const FunctionCall& call) {
+  int numArgs = call.arguments().size();
+
+  for (auto& arg : call.arguments()) {
+    arg->Visit(this);
+  }
+  string main = "";
+  main.append("call ");
+  main.append(call.callee_name());
+  main.append("\n");
+
+  StatementNode* newhead = new StatementNode(
+    new Label(labelNum_++),
+    new Text(main),
+    new Operator(Operator::kPrint),
+    nullptr,
+    nullptr,
+    nullptr);
+  AddToEnd(newhead);
+  int pos;
+  int stackOffset;
+  bool foundinParams = std::find(
+    paramVariables_.begin(),
+    paramVariables_.end(),
+    (call.lhs().name())) != paramVariables_.end();
   if (foundinParams) {
     pos = std::distance(paramVariables_.begin(), std::find(
       paramVariables_.begin(),
       paramVariables_.end(),
-      assignment.lhs().name()));
+      call.lhs().name()));
     stackOffset = 1 * ((pos + 2) * 8);
   } else {
     if (scanningParams_ == false) {
       bool found = std::find(
         localVariables_.begin(),
         localVariables_.end(),
-        (assignment.lhs().name())) != localVariables_.end();
-      if (!found) { localVariables_.push_back(assignment.lhs().name()); }
+        (call.lhs().name())) != localVariables_.end();
+      if (!found) { localVariables_.push_back(call.lhs().name()); }
       pos = std::distance(localVariables_.begin(), std::find(
         localVariables_.begin(),
         localVariables_.end(),
-        assignment.lhs().name()));
+        call.lhs().name()));
       stackOffset = -1 * ((pos + 1) * 8);
     } else if (scanningParams_ == true) {
       bool found = std::find(
         paramVariables_.begin(),
         paramVariables_.end(),
-        (assignment.lhs().name())) != paramVariables_.end();
+        (call.lhs().name())) != paramVariables_.end();
       if (!found) {
-        paramVariables_.push_back(assignment.lhs().name());
-      }
+        paramVariables_.push_back(call.lhs().name());
+      } else {}
       pos = std::distance(paramVariables_.begin(), std::find(
         paramVariables_.begin(),
         paramVariables_.end(),
-        assignment.lhs().name()));
+        call.lhs().name()));
       stackOffset = 1 * ((pos + 2) * 8);
     }
   }
-
-  assignment.rhs().Visit(this);
-  Operand* op2 = stack_.back();
-  stack_.pop_back();
-  StatementNode *newtail = new StatementNode(
-    new Label(labelNum_++),
-    new Variable(assignment.lhs().name()),
-    new Operator(Operator::kAssign),
-    nullptr,
-    op2,
-    nullptr);
-  newtail->GetTarget()->SetStackOffset(stackOffset);
-  AddToEnd(newtail);
-  stack_.push_back(new Register(register_number_));
-}
-void IrGenVisitor::VisitProgram(const Program& program) {
-  for (auto& def : program.function_defs()) { def->Visit(this); }
-  CountVisitor varCount;
-  varCount.ScanningParams(false);
-  for (auto& statement : program.statements()) { statement->Visit(&varCount); }
-  mainVars_ = varCount.LocalVars();
-  StatementNode* newhead = new StatementNode(
-    new Label(labelNum_++),
-    nullptr,
-    new Operator(Operator::kProgramStart),
-    nullptr,
-    new Constant(mainVars_),
-    nullptr
-  );
-  AddToEnd(newhead);
-  for (auto& statement : program.statements()) { statement->Visit(this); }
-  program.arithmetic_exp().Visit(this);
+  main = "";
+  main.append("push ");
+  main.append("%rax\n");
   newhead = new StatementNode(
     new Label(labelNum_++),
-    new Register(register_number_ - 1),
-    new Operator(Operator::kReturn),
+    new Text(main),
+    new Operator(Operator::kPrint),
     nullptr,
     nullptr,
-    nullptr
-  );
-  AddToEnd(newhead);
-  localVariables_.clear();
-}
-void IrGenVisitor::VisitFunctionCall(const FunctionCall& call) {
-  int numArgs = call.arguments().size();
-  for (auto& arg : call.arguments()) { arg->Visit(this);
-  StatementNode* newhead = new StatementNode(
-    new Label(labelNum_++),
-    new Register(register_number_-1),
-    new Operator(Operator::kParam),
-    nullptr,
-    nullptr,
-    nullptr
-  );
-  AddToEnd(newhead);
-  }
-  int pos;
-  int stackOffset;
-  bool foundinParams = std::find(paramVariables_.begin(), paramVariables_.end(), (call.lhs().name())) != paramVariables_.end();
-  if (foundinParams) {
-    pos = std::distance(paramVariables_.begin(), std::find(paramVariables_.begin(), paramVariables_.end(), call.lhs().name()));
-    stackOffset = 1 * ((pos + 2) * 8);
-  }
-  else {
-    if (scanningParams_ == false) {
-      bool found = std::find(localVariables_.begin(), localVariables_.end(), (call.lhs().name())) != localVariables_.end();
-      if (!found) { localVariables_.push_back(call.lhs().name()); }
-      else {}
-      pos = std::distance(localVariables_.begin(), std::find(localVariables_.begin(), localVariables_.end(), call.lhs().name()));
-      stackOffset = -1 * ((pos + 1) * 8);
-    }
-    else if (scanningParams_ == true) {
-      bool found = std::find(paramVariables_.begin(), paramVariables_.end(), (call.lhs().name())) != paramVariables_.end();
-      if (!found) {
-        paramVariables_.push_back(call.lhs().name());
-      }
-      else {}
-      pos = std::distance(paramVariables_.begin(), std::find(paramVariables_.begin(), paramVariables_.end(), call.lhs().name()));
-      stackOffset = 1 * ((pos + 2) * 8);
-    }
-  }
-  StatementNode* newhead = new StatementNode(
-    new Label(labelNum_++),
-    new Variable(call.callee_name()),
-    new Operator(Operator::kCall),
-    new Variable(call.lhs().name()),
-    new Constant(numArgs),
     nullptr);
-  newhead->GetTarget()->SetStackOffset(stackOffset);
+  AddToEnd(newhead);
+
+  main = "";
+  main.append("pop ");
+  main.append(std::to_string(stackOffset));
+  main.append("(%rbp)\n");
+  newhead = new StatementNode(
+    new Label(labelNum_++),
+    new Text(main),
+    new Operator(Operator::kPrint),
+    nullptr,
+    nullptr,
+    nullptr);
+  AddToEnd(newhead);
+
+  main = "";
+  main.append("add $");
+  main.append(std::to_string(8 * numArgs));
+  main.append(", %rsp\n");
+
+  newhead = new StatementNode(
+    new Label(labelNum_++),
+    new Text(main),
+    new Operator(Operator::kPrint),
+    nullptr,
+    nullptr,
+    nullptr);
   AddToEnd(newhead);
 }
 
 void IrGenVisitor::VisitFunctionDef(const FunctionDef& def) {
-  CountVisitor varsCounter;
-  varsCounter.ScanningParams(true);
-  for (auto& param : def.parameters()) { param->Visit(&varsCounter); }
-  varsCounter.ScanningParams(false);
-  for (auto& statement : def.function_body()) { statement->Visit(&varsCounter); }
-  int numLocalVar = varsCounter.LocalVars();
   StatementNode*newhead = new StatementNode(
     new Label(labelNum_++),
-    new Variable(def.function_name()),
-    new Operator(Operator::kFuncBegin),
+    new Text("###BEGIN FUNct DEF###"),
+    new Operator(Operator::kPrint),
     nullptr,
-    new Constant(numLocalVar),
+    nullptr,
     nullptr);
   AddToEnd(newhead);
-  scanningParams_ = true;
-  for (auto& param : def.parameters()) { param->Visit(this); }
-  scanningParams_ = false;
-  for (auto& statement : def.function_body()) { statement->Visit(this); }
-  def.retval().Visit(this);
+  CountVisitor varsCounter;
+  varsCounter.ScanningParams(true);
+  for (auto& param : def.parameters()) {
+    param->Visit(&varsCounter);
+  }
+  varsCounter.ScanningParams(false);
+  for (auto& statement : def.function_body()) {
+    statement->Visit(&varsCounter);
+  }
+  int numLocalVar = varsCounter.LocalVars();
+  string main = "";
+  main.append(".type ");
+  main.append(def.function_name());
+  main.append(", @function\n");
+  main.append(def.function_name());
+  main.append(":\n");
+  main.append("push %rbp\n");
+  main.append("mov %rsp, %rbp\n");
+  main.append("sub $");
+  main.append(std::to_string(8 * numLocalVar));
+  main.append(", %rsp\n");
   newhead = new StatementNode(
     new Label(labelNum_++),
-    new Register(register_number_ - 1),
-    new Operator(Operator::kReturn),
+    new Text(main),
+    new Operator(Operator::kPrint),
     nullptr,
     nullptr,
-    nullptr
-  );
+    nullptr);
   AddToEnd(newhead);
+  // we allocated local vars and know how many parameres and
+  // local vars there are
+
+  scanningParams_ = true;
+  for (auto& param : def.parameters()) {
+    param->Visit(this);
+  }
+  scanningParams_ = false;
+  for (auto& statement : def.function_body()) {
+    statement->Visit(this);
+  }
+  def.retval().Visit(this);
+  main = "";
+  main.append("pop %rax\n");
+
+  main.append("mov %rbp, %rsp\n");
+  main.append("pop %rbp\n");
+  main.append("ret");
   newhead = new StatementNode(
     new Label(labelNum_++),
-    new Variable(def.function_name()),
-    new Operator(Operator::kFuncEnd),
+    new Text(main),
+    new Operator(Operator::kPrint),
     nullptr,
-    new Constant(numLocalVar),
+    nullptr,
+    nullptr);
+  AddToEnd(newhead);
+
+  newhead = new StatementNode(
+    new Label(labelNum_++),
+    new Text("###END FUN DEF###"),
+    new Operator(Operator::kPrint),
+    nullptr,
+    nullptr,
     nullptr);
   AddToEnd(newhead);
   localVariables_.clear();
   paramVariables_.clear();
+}
+
+void IrGenVisitor::VisitAssignmentFromNewTuple(
+    const AssignmentFromNewTuple& assignment) {
+  assignment.lhs().Visit(this);
+  assignment.rhs().Visit(this);
+  // count_++;
 }
 
 void IrGenVisitor::VisitLessThanExpr(const LessThanExpr& exp) {
