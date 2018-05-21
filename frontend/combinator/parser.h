@@ -54,6 +54,8 @@ Parser Range(std::string c, Converter<std::string> ToValue = ToStringValue);
 // the first successful result (or failure)
 Parser Or(Parser parseA, Parser parseB);
 
+Parser Or(std::vector<Parser> p_vec);
+
 //  Returns a function which runs 2 parsers, and returns an array of their
 //  results.  If either fails, it returns failure
 Parser And(
@@ -61,6 +63,9 @@ Parser And(
   Parser parseB,
   std::function<Value(Value, Value)> ToValue = Concat
 );
+
+Parser And(std::vector<Parser> p_vec,
+    std::function<Value(Value, Value)> ToValue = Concat);
 
 Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode);
 

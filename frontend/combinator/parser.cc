@@ -1,6 +1,7 @@
 // Copyright (c) 2018, Team-Chant
 
 #include <utility>
+#include <iostream>
 #include "frontend/combinator/parser.h"
 
 namespace cs160 {
@@ -66,6 +67,21 @@ Parser Or(Parser parseA, Parser parseB) {
   };
 }
 
+Parser Or(std::vector<Parser> p_vec) {
+  return [p_vec](State state) {
+    int size = p_vec.size();
+    for (int i=0; i < size; i++) {
+      auto curr_parser = p_vec.at(i);
+      auto curr_result = curr_parser(state);
+      if (curr_result.success()) {
+        return curr_result;
+      }
+    }
+
+    return Result(state, false, "no match for vector of parsers");
+  };
+}
+
 Parser And(Parser parseA, Parser parseB,
   std::function<Value(Value, Value)> ToValue) {
       return [parseA, parseB, ToValue](State state) {
@@ -85,6 +101,36 @@ Parser And(Parser parseA, Parser parseB,
           resultB.state(),
           ToValue(resultA.value(), resultB.value()));
       };
+}
+
+Parser And(std::vector<Parser> p_vec,
+    std::function<Value(Value, Value)> ToValue) {
+  return[p_vec, ToValue](State state) {
+    int size = p_vec.size();
+    int oldPosition = state.position();
+    auto curr_parser = p_vec.at(0);
+    auto curr_result = curr_parser(state);
+    if (!curr_result.success()) {
+      state.setPosition(oldPosition);
+      return Result(state, false, "No result for vector of parsers");
+    }
+
+    auto curr_value = curr_result.value();
+    for (int i=1; i < size; i++) {
+      curr_parser = p_vec.at(i);
+      curr_result = curr_parser(curr_result.state());
+      if (!curr_result.success()) {
+        state.setPosition(oldPosition);
+        return Result(state, false, "No result for vector of parsers");
+      }
+        curr_value = ToValue(std::move(curr_value), curr_result.value());
+    }
+    // if it does not return in the for loop, then
+    // all of the parsers achieve success
+    // therefore, return a success
+
+    return Result(curr_result.state(), std::move(curr_value));
+  };
 }
 
 Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
