@@ -13,9 +13,17 @@ namespace ast = cs160::abstract_syntax::frontend;
 
 Frontend::~Frontend(void) {}
 
-Result Variable(State s) {
+Parser Variable(State s) {
   auto parse = OnePlus(Range("az"), ConcatVector);
   return parse(s);
+}
+
+Result Frontend::Id(State s) {
+  return Variable(s);
+}
+
+Result Frontend::Assign(State s) {
+  auto parse = Sequence()
 }
 
 Node Frontend::stringToAst(std::string s) {
