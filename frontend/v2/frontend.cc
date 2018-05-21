@@ -11,11 +11,12 @@ namespace frontend {
 namespace Parse {
 
 namespace ast = cs160::abstract_syntax::frontend;
+using ValueVec = std::vector<Value>;
 
 Frontend::~Frontend(void) {}
 
 Parser Variable() {
-  return OnePlus(Range("az"), [](std::vector<Value> values) {
+  return OnePlus(Range("az"), [](ValueVec values) {
     Value v = ConcatVector(std::move(values));
     auto node =
       std::unique_ptr<ast::AstNode>(new ast::VariableExpr(v.GetString()));
@@ -25,9 +26,9 @@ Parser Variable() {
 }
 
 // Parser Frontend::Assign() {
-//   return Sequence(Id(), Literal('='), Expression(), [](std::vector<Value> values) {
+//   return Sequence(Variable(), Literal('='), Expression(), [](ValueVec values) {
 //     auto ret = std::unique_ptr<AstNode>(new Assignment(
-//
+//       std::move()
 //     ))
 //   });
 // }
