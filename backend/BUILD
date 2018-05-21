@@ -1,8 +1,8 @@
 cc_library(
 	name = "intermediate_representation",
 	copts = ["-Wall -g"],
-	hdrs = ["asm_generator_v5.h", "ir_v5.h", "lowerer_v5.h"],
-	srcs = ["lowerer_v5.cc"],
+	hdrs = ["asm_generator_v4.h", "ir_v4.h", "lowerer_v4.h"],
+	srcs = ["lowerer_v4.cc"],
 	deps = [
              "//abstract_syntax",
              "//utility"
@@ -23,7 +23,7 @@ cc_test(
 
 cc_test(
 	name = "integration_test",
-	srcs = ["v5tests.cc"],
+	srcs = ["v4tests.cc"],
 	deps = [
              "@gtest//:main",
              ":intermediate_representation"
