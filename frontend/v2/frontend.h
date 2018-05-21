@@ -19,14 +19,14 @@ class Frontend {
   Node stringToAst(std::string input);
 
  private:
-  Parser Program(State s);
-  Parser Assign(State s);
-  Parser Id(State s);
-  Parser Expression(State s);
-  Parser Add(State s);
-  Parser Multiply(State s);
-  Parser Unary(State s);
-  Parser Primary(State s);
+  Parser Program();
+  Parser Assign();
+  Parser Id();
+  Parser Expression();
+  Parser Add();
+  Parser Multiply();
+  Parser Unary();
+  Parser Primary();
 };
 
 }  // namespace Parse
