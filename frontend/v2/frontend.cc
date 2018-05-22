@@ -28,8 +28,7 @@ Parser Variable() {
     Value v = ConcatVector(std::move(values));
     auto node =
       unique_ptr<ast::AstNode>(new ast::VariableExpr(v.GetString()));
-    return Value(std::move(node));
-    // return v;
+    return Value(move(node));
   });
 }
 
@@ -72,8 +71,8 @@ Node Frontend::stringToAst(std::string s) {
   // std::unique_ptr<ast::AstNode> n(new ast::IntegerExpr(1));
   // std::unique_ptr<ast::IntegerExpr> p = unique_cast<std::unique_ptr<ast::AstNode>, std::unique_ptr<ast::IntegerExpr>> (n);
 
-  std::unique_ptr<ast::AstNode> a(new ast::IntegerExpr(1));
-  std::unique_ptr<ast::IntegerExpr> b = unique_cast<ast::IntegerExpr>(std::move(a));
+  // std::unique_ptr<ast::AstNode> a(new ast::IntegerExpr(1));
+  // std::unique_ptr<ast::IntegerExpr> b = unique_cast<ast::IntegerExpr>(std::move(a));
 
   // auto ptr = result.value().GetNodePointer();
   auto val = result.value();
