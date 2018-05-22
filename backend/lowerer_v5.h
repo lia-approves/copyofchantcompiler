@@ -3,7 +3,6 @@
 #ifndef BACKEND_LOWERER_V5_H_
 #define BACKEND_LOWERER_V5_H_
 
-#include <algorithm>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -11,6 +10,10 @@
 #include "backend/ir_v5.h"
 #include "utility/memory.h"
 #include "abstract_syntax/abstract_syntax_tree_v5.h"
+#include <algorithm>
+
+
+
 
 using cs160::abstract_syntax::version_5::AstVisitor;
 using cs160::abstract_syntax::version_5::ArithmeticExpr;
@@ -38,10 +41,7 @@ using cs160::abstract_syntax::version_5::Loop;
 using cs160::abstract_syntax::version_5::FunctionCall;
 using cs160::abstract_syntax::version_5::FunctionDef;
 using cs160::abstract_syntax::version_5::Program;
-
-
 using cs160::backend::StatementNode;
-using cs160::backend::DereferenceVar;
 using cs160::backend::Constant;
 using cs160::backend::Label;
 using cs160::backend::Operator;
@@ -50,128 +50,118 @@ using cs160::backend::Operand;
 using cs160::backend::Variable;
 using std::cout;
 
-
 namespace cs160 {
-namespace backend {
-class CountVisitor : public AstVisitor {
- public:
-  void VisitIntegerExpr(const IntegerExpr& exp) override;
+  namespace backend {
+    class VarCountVisitor : public AstVisitor {
+    public:
+      VarCountVisitor() {}
+      ~VarCountVisitor() {}
+      void VisitIntegerExpr(const IntegerExpr& exp) override;
+      void VisitVariableExpr(const VariableExpr& exp) override;
 
-  void VisitVariableExpr(const VariableExpr& exp) override;
+      void VisitDereference(const Dereference& exp) override;
 
-  void VisitDereference(const Dereference& exp) override;
+      void VisitAssignmentFromArithExp(
+        const AssignmentFromArithExp& assignment) override;
 
-  void VisitAddExpr(const AddExpr& exp) override;
+      void VisitAssignmentFromNewTuple(
+        const AssignmentFromNewTuple& assignment) override;
 
-  void VisitSubtractExpr(const SubtractExpr& exp) override;
+      void VisitAddExpr(const AddExpr& exp) override;
 
-  void VisitMultiplyExpr(const MultiplyExpr& exp) override;
+      void VisitSubtractExpr(const SubtractExpr& exp) override;
 
-  void VisitDivideExpr(const DivideExpr& exp) override;
+      void VisitMultiplyExpr(const MultiplyExpr& exp) override;
 
-  void VisitLessThanExpr(const LessThanExpr& exp) override;
+      void VisitDivideExpr(const DivideExpr& exp) override;
 
-  void VisitLessThanEqualToExpr(const LessThanEqualToExpr& exp) override;
+      void VisitLessThanExpr(const LessThanExpr& exp) override;
 
-  void VisitGreaterThanExpr(const GreaterThanExpr& exp) override;
+      void VisitLessThanEqualToExpr(const LessThanEqualToExpr& exp) override;
 
-  void VisitGreaterThanEqualToExpr(const GreaterThanEqualToExpr& exp) override;
-  void VisitEqualToExpr(const EqualToExpr& exp) override;
+      void VisitGreaterThanExpr(const GreaterThanExpr& exp) override;
 
-  void VisitLogicalAndExpr(const LogicalAndExpr& exp) override;
+      void VisitGreaterThanEqualToExpr(const GreaterThanEqualToExpr& exp) override;
 
-  void VisitLogicalOrExpr(const LogicalOrExpr& exp) override;
+      void VisitEqualToExpr(const EqualToExpr& exp) override;
 
-  void VisitLogicalNotExpr(const LogicalNotExpr& exp) override;
+      void VisitLogicalAndExpr(const LogicalAndExpr& exp) override;
 
+      void VisitLogicalOrExpr(const LogicalOrExpr& exp) override;
 
-  void VisitConditional(const Conditional& conditional) override;
+      void VisitLogicalNotExpr(const LogicalNotExpr& exp) override;
 
-  void VisitLoop(const Loop& loop) override;
+      void VisitConditional(const Conditional& conditional) override;
 
-  void VisitProgram(const Program& program) override;
-  void VisitFunctionCall(const FunctionCall& call) override;
+      void VisitLoop(const Loop& loop) override;
 
-  void VisitFunctionDef(const FunctionDef& def) override;
+      void VisitProgram(const Program& program) override;
+      void VisitFunctionCall(const FunctionCall& call) override;
 
-  void ScanningParams(bool scanningParams);
-  int LocalVars() { return localVariables_.size(); }
-  int ParamVars() { return paramVariables_.size(); }
-  int GetNumMainVars() { return numMainVars_; }
-  void VisitAssignmentFromArithExp(
-      const AssignmentFromArithExp& assignment) override;
-  void VisitAssignmentFromNewTuple(
-      const AssignmentFromNewTuple& assignment) override;
-
- private:
-  bool scanningParams_ = false;
-  std::vector<string> paramVariables_;
-  std::vector<string> localVariables_;
-  int numMainVars_ = 0;
-};
-class IrGenVisitor : public AstVisitor {
- public:
-  IrGenVisitor() {}
-  ~IrGenVisitor() {
-    StatementNode* tobe_deleted = head_;
-    while (tobe_deleted != nullptr) {
-      delete tobe_deleted;
-      tobe_deleted = tobe_deleted->GetNext();
-    }
-  }
-
-  void VisitAddExpr(const AddExpr& exp);
+      void VisitFunctionDef(const FunctionDef& def) override;
+      void ScanningParams(bool scanningParams);
+      int LocalVars();
+      int ParamVars();
+    private:
+      bool scanningParams_ = false;
+      std::vector<string> paramVariables_;
+      std::vector<string> localVariables_;
+      int count_ = 0;//dummy from transfering v5
+    };
 
 
-  void VisitSubtractExpr(const SubtractExpr& exp);
+    class IrGenVisitor : public AstVisitor {
+    public:
+      IrGenVisitor() {}
+      ~IrGenVisitor() {
+        StatementNode* tobe_deleted = head_;
+        while (tobe_deleted != nullptr) {
+          delete tobe_deleted;
+          tobe_deleted = tobe_deleted->GetNext();
+        }
+      }
+      void VisitIntegerExpr(const IntegerExpr& exp) override;
+      void VisitVariableExpr(const VariableExpr& exp) override;
+      void VisitDereference(const Dereference& exp) override;
+      void VisitAssignmentFromArithExp(const AssignmentFromArithExp& assignment) override;
+      void VisitAssignmentFromNewTuple(const AssignmentFromNewTuple& assignment) override;
+      void VisitAddExpr(const AddExpr& exp) override;
+      void VisitSubtractExpr(const SubtractExpr& exp) override;
+      void VisitMultiplyExpr(const MultiplyExpr& exp) override;
+      void VisitDivideExpr(const DivideExpr& exp) override;
+      void VisitProgram(const Program& program) override;
+      void VisitFunctionCall(const FunctionCall& call) override;
+      void VisitFunctionDef(const FunctionDef& def) override;
+      void VisitLessThanExpr(const LessThanExpr& exp) override;
+      void VisitLessThanEqualToExpr(const LessThanEqualToExpr& exp) override;
+      void VisitGreaterThanExpr(const GreaterThanExpr& exp) override;
+      void VisitGreaterThanEqualToExpr(const GreaterThanEqualToExpr& exp) override;
+      void VisitEqualToExpr(const EqualToExpr& exp) override;
+      void VisitLogicalAndExpr(const LogicalAndExpr& exp) override;
+      void VisitLogicalOrExpr(const LogicalOrExpr& exp) override;
+      void VisitLogicalNotExpr(const LogicalNotExpr& exp) override;
+      void VisitConditional(const Conditional& conditional) override;
+      void VisitLoop(const Loop& loop) override;
+      StatementNode* GetIR() { return head_; }
+      void AddToEnd(StatementNode* newtail);
+      void PrintIR();
+      int NumberOfStatements();
+      int NumberOfMainVars() { return mainVars_; }
+    private:
 
-  void VisitMultiplyExpr(const MultiplyExpr& exp);
+      StatementNode * head_ = nullptr;
+      StatementNode* tail_ = nullptr;
+      int labelNum_ = 1;
+      int register_number_ = 1;
+      std::vector<Operand*> stack_;
+      int mainVars_ = 0;
+      std::vector<string> paramVariables_;
+      std::vector<string> localVariables_;
+      bool scanningParams_ = false;
 
-  void VisitDivideExpr(const DivideExpr& exp);
-  void VisitIntegerExpr(const IntegerExpr& exp);
-  void VisitVariableExpr(const VariableExpr& exp);
-  void VisitProgram(const Program& program);
-  void VisitFunctionCall(const FunctionCall& call) override;
+    };
 
-  void VisitFunctionDef(const FunctionDef& def) override;
-
-  void VisitLessThanExpr(const LessThanExpr& exp);
-  void VisitLessThanEqualToExpr(const LessThanEqualToExpr& exp);
-  void VisitGreaterThanExpr(const GreaterThanExpr& exp);
-  void VisitGreaterThanEqualToExpr(const GreaterThanEqualToExpr& exp);
-  void VisitEqualToExpr(const EqualToExpr& exp);
-  void VisitLogicalAndExpr(const LogicalAndExpr& exp);
-  void VisitLogicalOrExpr(const LogicalOrExpr& exp);
-  void VisitLogicalNotExpr(const LogicalNotExpr& exp);
-  void VisitConditional(const Conditional& conditional);
-  void VisitLoop(const Loop& loop);
-
-  void VisitAssignmentFromArithExp(
-      const AssignmentFromArithExp& assignment) override;
-  void VisitAssignmentFromNewTuple(
-      const AssignmentFromNewTuple& assignment) override;
-  StatementNode* GetIR() { return head_; }
-  void VisitDereference(const Dereference& exp) override;
-
-
-  void AddToEnd(StatementNode* newtail);
-  void PrintIR();
-  int NumberOfStatements();
-  int NumberOfMainVars() { return mainVars_; }
-
- private:
-  StatementNode * head_ = nullptr;
-  StatementNode* tail_ = nullptr;
-  int labelNum_ = 0;
-  int register_number_ = 1;
-  std::vector<Operand*> stack_;
-  int mainVars_ = 0;
-  std::vector<string> paramVariables_;
-  std::vector<string> localVariables_;
-  bool scanningParams_ = false;
-};
-
-}  // namespace backend
+  }  // namespace backend
 }  // namespace cs160
 
 #endif  // BACKEND_LOWERER_V5_H_

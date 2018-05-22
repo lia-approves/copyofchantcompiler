@@ -122,8 +122,9 @@ namespace cs160 {
         if (op_ == kDeallocateVars) return "dealloc";
         if (op_ == kPrint) return "print";
         if (op_ == kPrint) return "";
+        return "error";
       }
-
+        
     private:
       Opcode op_;
     };
