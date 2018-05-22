@@ -98,8 +98,8 @@ namespace cs160 {
     public:
       enum Opcode {
         kAdd, kSubtract, kMultiply, kDivide,
-        kAssign, kLessThan, kLessThanEqualTo, kGreaterThan,
-        kGreaterThanEqualTo, kEqualTo, kGoto, kAllocateVars,
+        kAssignFromArithExp, kAssignFromNewTuple, kLessThan, kLessThanEqualTo,
+        kGreaterThan, kGreaterThanEqualTo, kEqualTo, kGoto, kAllocateVars,
         kDeallocateVars, kPrint, kRegister, kProgramStart,
         kCall, kFuncBegin, kFuncEnd, kReturn, kParam
       };
@@ -111,7 +111,7 @@ namespace cs160 {
         if (op_ == kSubtract) return "-";
         if (op_ == kMultiply) return "*";
         if (op_ == kDivide) return "/";
-        if (op_ == kAssign) return "=";
+        if (op_ == kAssignFromArithExp) return "=";
         if (op_ == kLessThan) return "<";
         if (op_ == kLessThanEqualTo) return "<=";
         if (op_ == kGreaterThan) return ">";
@@ -164,10 +164,15 @@ namespace cs160 {
           if (operand2_ != nullptr) std::cout << GetOp2()->GetName();
           break;
 
-        case Operator::kAssign:
+        case Operator::kAssignFromArithExp:
           if (target_ != nullptr) std::cout << target_->GetName();
           std::cout << " = ";
           if (operand2_ != nullptr) std::cout << GetOp2()->GetName();
+          break;
+        case Operator::kAssignFromNewTuple:
+          if (target_ != nullptr) std::cout << target_->GetName();
+          std::cout << " := ";
+          if (operand2_ != nullptr) std::cout << "(" << GetOp2()->GetName() << ")";
           break;
 
         case Operator::kLessThan:
