@@ -284,7 +284,7 @@ namespace cs160 {
       StatementNode *newtail = new StatementNode(
         new Label(labelNum_++),
         op1,
-        new Operator(Operator::kAssign),
+        new Operator(Operator::kAssignFromArithExp),
         nullptr,
         op2,
         nullptr);
