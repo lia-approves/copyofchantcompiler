@@ -236,8 +236,7 @@ namespace cs160 {
         stackOffset = 1 * ((pos + 2) * 8);
       }
       else {
-<<<<<<< HEAD
-        if (scanningParams_ == false) {
+       if (scanningParams_ == false) {
           bool found = std::find(localVariables_.begin(), localVariables_.end(), (exp.name())) != localVariables_.end();
           if (!found) { localVariables_.push_back(exp.name()); }
           else {}
@@ -250,27 +249,11 @@ namespace cs160 {
             paramVariables_.push_back(exp.name());
           }
           else {}
-=======
-      if (scanningParams_ == false) {
-        bool found = std::find(localVariables_.begin(), localVariables_.end(), (exp.name())) != localVariables_.end();
-        if (!found) { localVariables_.push_back(exp.name()); }
-        else {}
-        pos = std::distance(localVariables_.begin(), std::find(localVariables_.begin(), localVariables_.end(), exp.name()));
-        stackOffset = -1 * ((pos + 1) * 8);
-      }
-      else if (scanningParams_ == true) {
-        bool found = std::find(paramVariables_.begin(), paramVariables_.end(), (exp.name())) != paramVariables_.end();
-        if (!found) {
-          paramVariables_.push_back(exp.name());
-        }
-        else {}
->>>>>>> 39a51a76fe76889d68e1d431582437c749f4fac0
-          pos = std::distance(paramVariables_.begin(), std::find(paramVariables_.begin(), paramVariables_.end(), exp.name()));
+         pos = std::distance(paramVariables_.begin(), std::find(paramVariables_.begin(), paramVariables_.end(), exp.name()));
           stackOffset = 1 * ((pos + 2) * 8);
         }
       }
-<<<<<<< HEAD
-      if (!scanningParams_) {
+     if (!scanningParams_) {
         StatementNode* newhead = new StatementNode(
           new Label(labelNum_++),
           new Register(register_number_++),
@@ -284,31 +267,21 @@ namespace cs160 {
       }
       stack_.push_back(new Variable(exp.name()));
       stack_.back()->SetStackOffset(stackOffset);
-=======
-      stack_.push_back(new Variable(exp.name()));
->>>>>>> 39a51a76fe76889d68e1d431582437c749f4fac0
-    }
+   }
 
     void IrGenVisitor::VisitDereference(const Dereference& exp) {
       //!!
     }
-<<<<<<< HEAD
 
     void IrGenVisitor::VisitAssignmentFromArithExp(const AssignmentFromArithExp& assignment) {
       assignment.lhs().Visit(this);
       Operand* op1 = stack_.back();
       stack_.pop_back();
-=======
-   
-    void IrGenVisitor::VisitAssignmentFromArithmeticExp(const Assignment& assignment) {
-      assignment.lhs().Visit(this);
-      Operand* op1 = stack_.back();
->>>>>>> 39a51a76fe76889d68e1d431582437c749f4fac0
+  
       assignment.rhs().Visit(this);
       Operand* op2 = stack_.back();
       stack_.pop_back();
       StatementNode *newtail = new StatementNode(
-<<<<<<< HEAD
         new Label(labelNum_++),
         op1,
         new Operator(Operator::kAssign),
@@ -316,15 +289,6 @@ namespace cs160 {
         op2,
         nullptr);
       newtail->GetTarget()->SetStackOffset(op1->GetStackOffset());
-=======
-      new Label(labelNum_++),
-      op1,
-      new Operator(Operator::kAssign),
-      nullptr,
-      op2,
-      nullptr);
-      newtail->GetTarget()->SetStackOffset(stackOffset);
->>>>>>> 39a51a76fe76889d68e1d431582437c749f4fac0
       AddToEnd(newtail);
       stack_.push_back(new Register(register_number_));
     }
@@ -764,3 +728,4 @@ namespace cs160 {
 
   }
 }
+
