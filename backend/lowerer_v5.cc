@@ -230,26 +230,26 @@ namespace cs160 {
     void IrGenVisitor::VisitVariableExpr(const VariableExpr& exp) {
       int pos;
       int stackOffset;
-      bool foundinParams = std::find(paramVariables_.begin(), paramVariables_.end(), (assignment.lhs().name())) != paramVariables_.end();
+      bool foundinParams = std::find(paramVariables_.begin(), paramVariables_.end(), (exp.name())) != paramVariables_.end();
       if (foundinParams) {
-        pos = std::distance(paramVariables_.begin(), std::find(paramVariables_.begin(), paramVariables_.end(), assignment.lhs().name()));
+        pos = std::distance(paramVariables_.begin(), std::find(paramVariables_.begin(), paramVariables_.end(), exp.name()));
         stackOffset = 1 * ((pos + 2) * 8);
       }
       else {
       if (scanningParams_ == false) {
-        bool found = std::find(localVariables_.begin(), localVariables_.end(), (assignment.lhs().name())) != localVariables_.end();
-        if (!found) { localVariables_.push_back(assignment.lhs().name()); }
+        bool found = std::find(localVariables_.begin(), localVariables_.end(), (exp.name())) != localVariables_.end();
+        if (!found) { localVariables_.push_back(exp.name()); }
         else {}
-        pos = std::distance(localVariables_.begin(), std::find(localVariables_.begin(), localVariables_.end(), assignment.lhs().name()));
+        pos = std::distance(localVariables_.begin(), std::find(localVariables_.begin(), localVariables_.end(), exp.name()));
         stackOffset = -1 * ((pos + 1) * 8);
       }
       else if (scanningParams_ == true) {
-        bool found = std::find(paramVariables_.begin(), paramVariables_.end(), (assignment.lhs().name())) != paramVariables_.end();
+        bool found = std::find(paramVariables_.begin(), paramVariables_.end(), (exp.name())) != paramVariables_.end();
         if (!found) {
-          paramVariables_.push_back(assignment.lhs().name());
+          paramVariables_.push_back(exp.name());
         }
         else {}
-          pos = std::distance(paramVariables_.begin(), std::find(paramVariables_.begin(), paramVariables_.end(), assignment.lhs().name()));
+          pos = std::distance(paramVariables_.begin(), std::find(paramVariables_.begin(), paramVariables_.end(), exp.name()));
           stackOffset = 1 * ((pos + 2) * 8);
         }
       }
@@ -260,7 +260,7 @@ namespace cs160 {
       //!!
     }
    
-    void VisitAssignmentFromArithmeticExp(const Assignment& assignment) {
+    void IrGenVisitor::VisitAssignmentFromArithmeticExp(const Assignment& assignment) {
       assignment.lhs().Visit(this);
       Operand* op1 = stack_.back();
       assignment.rhs().Visit(this);
