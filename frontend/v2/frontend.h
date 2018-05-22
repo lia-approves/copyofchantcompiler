@@ -32,4 +32,10 @@ class Frontend {
 }  // namespace frontend
 }  // namespace cs160
 
+template<class R, class T>
+std::unique_ptr<R> unique_cast(std::unique_ptr<T> &&p) {
+  T* ptr = p.release();
+  return std::unique_ptr<R>(static_cast<R*>(ptr));
+}
+
 #endif  // FRONTEND_FRONTEND_H_
