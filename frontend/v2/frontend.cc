@@ -51,6 +51,16 @@ Parser Frontend::Expression() {
 
 // Parser Frontend::Add() {
 //   return And(
+//     Mult(),
+//     Star(And(
+//       Or(Literal('-'), Literal('+')),
+//       Mult()
+//     ))
+//   );
+// }
+
+// Parser Frontend::Add() {
+//   return And(
 //     Multiply(),
 //     Star(And(
 //       Or(Literal('-'), Literal('+')),
