@@ -13,6 +13,7 @@ namespace Parse {
 namespace ast = cs160::abstract_syntax::frontend;
 using ValueVec = std::vector<Value>;
 using std::unique_ptr;
+using std::move;
 
 template<typename TO, typename FROM>
 unique_ptr<TO> static_unique_pointer_cast (unique_ptr<FROM>&& old){
@@ -32,24 +33,18 @@ Parser Variable() {
   });
 }
 
-// Parser Frontend::Assign() {
-//   return Sequence(Variable(), Literal('='), Expression(), [](ValueVec values) {
-//     // auto var = values[0].GetNodeUnique();
-//     // auto expr = values[2].GetNodeUnique();
-//     // auto oldVarPointer = values[0].GetNodeUnique();
-//     // unique_ptr<ast::VariableExpr> var =
-//     //   static_unique_pointer_cast<ast::VariableExpr>(std::move(oldVarPointer));
-//     // auto node = std::unique_ptr<ast::AstNode>(new ast::Assignment(
-//     //   std::dynamic_pointer_cast<ast::VariableExpr>(var),
-//     //   std::dynamic_pointer_cast<ast::ArithmeticExpr>(expr)
-//     // ));
-//     // return Value(std::move(node));
-//     return Value("hi");
-//     // auto ret = std::unique_ptr<AstNode>(new Assignment(
-//     //   std::move()
-//     // ))
-//   });
-// }
+Parser Frontend::Assign() {
+  return Sequence(Variable(), Literal('='), Expression(), [](ValueVec values) {
+    auto v = values[0].GetNodeUnique();
+    unique_ptr<const ast::VariableExpr> var =
+      unique_cast<ast::VariableExpr>(move(v));
+    auto e = values[2].GetNodeUnique();
+    unique_ptr<const ast::ArithmeticExpr> expression =
+      unique_cast<ast::VariableExpr>(move(e));
+    unique_ptr<ast::AstNode> ret(new ast::Assignment(move(var), move(expression)));
+    return Value(move(ret));
+  });
+}
 
 Parser Frontend::Expression() {
   return Add();
