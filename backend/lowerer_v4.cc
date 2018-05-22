@@ -721,13 +721,13 @@ void IrGenVisitor::AddToEnd(StatementNode* newtail) {
 
 void IrGenVisitor::PrintIR() {
   StatementNode* itor = head_;
-  std::cout << "/*#### Start of IR ####\n\n";
+  std::cout << "#### Start of IR ####\n\n";
   while (itor != nullptr) {
     itor->Print();
     itor = itor->GetNext();
     std::cout << endl;
   }
-  std::cout << "\n#### End of IR ####*/\n\n";
+  std::cout << "\n#### End of IR ####\n\n";
 }
 
 int IrGenVisitor::NumberOfStatements() {

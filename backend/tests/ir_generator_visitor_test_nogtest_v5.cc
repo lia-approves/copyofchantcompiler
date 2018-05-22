@@ -62,79 +62,31 @@ using cs160::abstract_syntax::version_5::Program;
 
 int main() {
   Statement::Block foo_statements;
-
-  foo_statements.push_back(std::move(make_unique<const Conditional>(
-    make_unique<const LogicalOrExpr>(
-      make_unique<const LogicalAndExpr>(
-        make_unique<const LessThanExpr>(
-          make_unique<const VariableExpr>("bob"),
-          make_unique<const IntegerExpr>(100)),
-        make_unique<const GreaterThanExpr>(
-          make_unique<const VariableExpr>("bob"),
-          make_unique<const IntegerExpr>(0))),
-      make_unique<const LogicalAndExpr>(
-        make_unique<const LessThanEqualToExpr>(
-          make_unique<const VariableExpr>("bob"),
-          make_unique<const IntegerExpr>(100)),
-        make_unique<const GreaterThanEqualToExpr>(
-          make_unique<const VariableExpr>("bob"),
-          make_unique<const IntegerExpr>(0)))),
-    Statement::Block(), Statement::Block())));
-
-  Statement::Block loop_body;
-  loop_body.push_back(std::move(make_unique<const AssignmentFromArithExp>(
-    make_unique<const VariableExpr>("bob"),
-    make_unique<const SubtractExpr>(make_unique<const VariableExpr>("bob"),
-      make_unique<const IntegerExpr>(1)))));
-
-  foo_statements.push_back(std::move(make_unique<const Loop>(
-    make_unique<const LogicalNotExpr>(
-      make_unique<const EqualToExpr>(make_unique<const VariableExpr>("bob"),
-        make_unique<const IntegerExpr>(0))),
-    std::move(loop_body))));
-
-  auto foo_retval = make_unique<const AddExpr>(
-    make_unique<const SubtractExpr>(
-      make_unique<const DivideExpr>(make_unique<const IntegerExpr>(12),
-        make_unique<const IntegerExpr>(3)),
-      make_unique<const IntegerExpr>(4)),
-    make_unique<const MultiplyExpr>(make_unique<const IntegerExpr>(3),
-      make_unique<const IntegerExpr>(2)));
-
+  foo_statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(make_unique<const VariableExpr>("a"), make_unique<const IntegerExpr>(1))));
+  auto foo_retval = make_unique<const AddExpr>(make_unique<const VariableExpr>("p1"), make_unique<const IntegerExpr>(1));
   auto foo_params = std::vector<std::unique_ptr<const VariableExpr>>();
-  foo_params.push_back(std::move(make_unique<const VariableExpr>("bob")));
-
-  auto foo_def = make_unique<const FunctionDef>("foo", std::move(foo_params),
-    std::move(foo_statements),
-    std::move(foo_retval));
-
+  foo_params.push_back(std::move(make_unique<const VariableExpr>("p1")));
+  auto foo_def = make_unique<const FunctionDef>("foo", std::move(foo_params), std::move(foo_statements), std::move(foo_retval));
   FunctionDef::Block function_defs;
   function_defs.push_back(std::move(foo_def));
-
-  Statement::Block statements;
-
-  statements.push_back(std::move(make_unique<const AssignmentFromNewTuple>(
-    make_unique<const VariableExpr>("x"),
-    make_unique<const IntegerExpr>(2))));
-
-  statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(
-    make_unique<const Dereference>(make_unique<const VariableExpr>("x"),
-      make_unique<const IntegerExpr>(1)),
-    make_unique<const IntegerExpr>(42))));
-
   auto arguments = std::vector<std::unique_ptr<const ArithmeticExpr>>();
-  arguments.push_back(std::move(
-    make_unique<const Dereference>(make_unique<const VariableExpr>("x"),
-      make_unique<const IntegerExpr>(1))));
-
-  statements.push_back(std::move(make_unique<const FunctionCall>(
-    make_unique<const VariableExpr>("foo_retval"), "foo",
-    std::move(arguments))));
-
+  arguments.push_back(std::move(make_unique<const MultiplyExpr>(make_unique<const IntegerExpr>(3), make_unique<const IntegerExpr>(2))));
+  Statement::Block statements;
+  statements.push_back(std::move(make_unique<const FunctionCall>(make_unique<const VariableExpr>("foo_retval"), "foo", std::move(arguments))));
   auto ae = make_unique<const VariableExpr>("foo_retval");
+  auto ast = make_unique<const Program>(std::move(function_defs), std::move(statements), std::move(ae));
 
-  auto ast = make_unique<const Program>(std::move(function_defs),
-    std::move(statements), std::move(ae)); 
+
+  /*
+
+  foo(p1){
+   a=1
+   return p1+1
+  }
+  foo_retval=foo(3*2)
+  return foo_retval
+  */
+
 
   IrGenVisitor irGen;
   ast->Visit(&irGen);
