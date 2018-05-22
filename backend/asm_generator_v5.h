@@ -84,7 +84,7 @@ namespace cs160 {
         asm_sstring_ << "idiv %rbx" << endl;
         asm_sstring_ << "push %rax" << endl << endl;
         break;
-      case Operator::kAssign:
+      case Operator::kAssignFromArithExp:
         asm_sstring_ << "pop " << node->GetTarget()->GetStackOffset() << "(%rbp)" << endl;
         break;
       case Operator::kLessThan:
