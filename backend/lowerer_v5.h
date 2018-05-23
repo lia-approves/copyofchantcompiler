@@ -158,6 +158,7 @@ namespace cs160 {
       std::vector<string> paramVariables_;
       std::vector<string> localVariables_;
       bool scanningParams_ = false;
+      bool visitingAssignmentLHS_ = false;
 
     };
 

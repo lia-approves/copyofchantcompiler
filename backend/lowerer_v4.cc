@@ -290,7 +290,7 @@ void IrGenVisitor::VisitIntegerExpr(const IntegerExpr& exp) {
   StatementNode* newhead = new StatementNode(
     new Label(labelNum_++),
     new Register(register_number_++),
-    new Operator(Operator::kRegister),
+    new Operator(Operator::kPushVarValue),
     nullptr,
     new Constant(exp.value()),
     nullptr
@@ -328,7 +328,7 @@ void IrGenVisitor::VisitVariableExpr(const VariableExpr& exp) {
     StatementNode* newhead = new StatementNode(
       new Label(labelNum_++),
       new Register(register_number_++),
-      new Operator(Operator::kRegister),
+      new Operator(Operator::kPushVarValue),
       nullptr,
       new Variable(exp.name()),
       nullptr

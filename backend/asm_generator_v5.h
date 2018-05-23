@@ -60,24 +60,32 @@ namespace cs160 {
     void AsmProgram::GenerateASM(StatementNode* node) {
       switch (node->GetInstruction()->GetOpcode()) {
       case Operator::kAdd:
+        asm_sstring_ << node->GetOp1()->PushValueToStack();
+        asm_sstring_ << node->GetOp2()->PushValueToStack();
         asm_sstring_ << "pop %rax" << endl;
         asm_sstring_ << "pop %rbx" << endl;
         asm_sstring_ << "add %rax, %rbx" << endl;
         asm_sstring_ << "push %rbx" << endl << endl;
         break;
       case Operator::kSubtract:
+        asm_sstring_ << node->GetOp1()->PushValueToStack();
+        asm_sstring_ << node->GetOp2()->PushValueToStack();
         asm_sstring_ << "pop %rax" << endl;
         asm_sstring_ << "pop %rbx" << endl;
         asm_sstring_ << "sub %rax, %rbx" << endl;
         asm_sstring_ << "push %rbx" << endl << endl;
         break;
       case Operator::kMultiply:
+        asm_sstring_ << node->GetOp1()->PushValueToStack();
+        asm_sstring_ << node->GetOp2()->PushValueToStack();
         asm_sstring_ << "pop %rax" << endl;
         asm_sstring_ << "pop %rbx" << endl;
         asm_sstring_ << "imul %rax, %rbx" << endl;
         asm_sstring_ << "push %rbx" << endl << endl;
         break;
       case Operator::kDivide:
+        asm_sstring_ << node->GetOp1()->PushValueToStack();
+        asm_sstring_ << node->GetOp2()->PushValueToStack();
         asm_sstring_ << "pop %rbx" << endl;
         asm_sstring_ << "pop %rax" << endl;
         asm_sstring_ << "mov $0, %rdx" << endl;
@@ -85,7 +93,9 @@ namespace cs160 {
         asm_sstring_ << "push %rax" << endl << endl;
         break;
       case Operator::kAssignFromArithExp:
-        asm_sstring_ << "pop " << node->GetTarget()->GetStackOffset() << "(%rbp)" << endl;
+        asm_sstring_ << node->GetOp2()->PushValueToStack();
+        asm_sstring_ << "pop " << node->GetTarget()->GetOffset()
+        << "(%" << node->GetTarget()->GetBasePtr() << ")" << endl;
         break;
       case Operator::kLessThan:
         asm_sstring_ << "pop %rax" << endl;
@@ -129,12 +139,12 @@ namespace cs160 {
       case Operator::kPrint:
         asm_sstring_ << node->GetTarget()->GetName() << endl;
         break;
-      case Operator::kRegister:
+      case Operator::kPushVarValue:
         if (Constant* regType = dynamic_cast<Constant*>(node->GetOp2())) {
           asm_sstring_ << "push $" << regType->GetValue() << endl;
         }
         else if (Variable* regType = dynamic_cast<Variable*>(node->GetOp2())) {
-          asm_sstring_ << "push " << regType->GetStackOffset() << "(%rbp)" << endl;
+          asm_sstring_ << "push " << regType->GetOffset() << "(%rbp)" << endl;
         }
         break;
       case Operator::kProgramStart:
@@ -143,7 +153,7 @@ namespace cs160 {
         break;
       case Operator::kCall:
         asm_sstring_ << "call " << node->GetTarget()->GetName()
-          << "\npush %rax\npop " << node->GetTarget()->GetStackOffset() << "(%rbp)\nadd $" << 8 * node->GetOp2()->GetValue() << ", %rsp\n";
+          << "\npush %rax\npop " << node->GetTarget()->GetOffset() << "(%rbp)\nadd $" << 8 * node->GetOp2()->GetValue() << ", %rsp\n";
         break;
       case Operator::kFuncBegin:
         asm_sstring_ << ".type " << node->GetTarget()->GetName() << ",@function\n"

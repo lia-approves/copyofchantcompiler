@@ -1,8 +1,8 @@
 cc_library(
 	name = "intermediate_representation",
 	copts = ["-Wall -g"],
-	hdrs = ["asm_generator_v4.h", "ir_v4.h", "lowerer_v4.h"],
-	srcs = ["lowerer_v4.cc"],
+	hdrs = ["asm_generator_v5.h", "ir_v5.h", "lowerer_v5.h"],
+	srcs = ["lowerer_v5.cc"],
 	deps = [
              "//abstract_syntax",
              "//utility"
