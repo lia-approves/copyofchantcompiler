@@ -73,8 +73,27 @@ Parser Frontend::Add() {
         }
         // As long as there are multiple matches, coalesce them into 1.
         while (values.size() > 1) {
-          auto lastValue = std::move(values.back());
+          // We know it has a string because it comes from the And() callback
+          std::string op = values.back().GetString();
+          auto last = values.back().GetNodeUnique();
           values.pop_back();
+          auto curr = values.back().GetNodeUnique();
+          auto lastAsArithExpr = unique_cast<const ast::ArithmeticExpr>(move(last));
+          auto currAsArithExpr = unique_cast<const ast::ArithmeticExpr>(move(curr));
+          unique_ptr<const ast::AstNode> newNodePtr;
+          if (op == "+") {
+            newNodePtr.reset(new ast::AddExpr(
+              move(currAsArithExpr),
+              move(lastAsArithExpr)
+            ));
+          } else if (op == "-") {
+            newNodePtr.reset(new ast::SubtractExpr(
+              move(currAsArithExpr),
+              move(lastAsArithExpr)
+            ));
+          } else {
+            throw std::logic_error("Add() operator is neither a - nor a +");
+          }
         }
         // If there is 1 match, return it and the result of the Or() (casted).
         if (values.size() == 1) {
@@ -86,8 +105,7 @@ Parser Frontend::Add() {
           ret.SetString(op);
           return ret;
         }
-
-        return Value();
+        throw std::logic_error("Couldn't coalesce values into 1 expression");
       }
     )  // End of Star()
   );
