@@ -49,15 +49,49 @@ Parser Frontend::Expression() {
   return Add();
 }
 
-// Parser Frontend::Add() {
-//   return And(
-//     Mult(),
-//     Star(And(
-//       Or(Literal('-'), Literal('+')),
-//       Mult()
-//     ))
-//   );
-// }
+Parser Frontend::Add() {
+  return And(
+    Multiply(),
+    Star(
+      And(
+        Or(Literal('-'), Literal('+')),
+        Multiply(),
+        [](Value v1, Value v2) {
+          // First value will be a literal, second value will be a node
+          auto v2Node = v2.GetNodeUnique();
+          Value ret(move(v2Node));
+          ret.SetString(v1.GetString());
+          return ret;
+        }
+      ),  // end of And()
+
+      // Callback for Star().
+      [](ValueVec values) {
+        // If there are no matches in the Star, return an empty value.
+        if (values.size() == 0) {
+          return Value();
+        }
+        // As long as there are multiple matches, coalesce them into 1.
+        while (values.size() > 1) {
+          auto lastValue = std::move(values.back());
+          values.pop_back();
+        }
+        // If there is 1 match, return it and the result of the Or() (casted).
+        if (values.size() == 1) {
+          // This Value comes from the previous And(), so it contains a string.
+          std::string op = values[0].GetString();
+          auto v = values[0].GetNodeUnique();
+          auto expression = unique_cast<ast::VariableExpr>(move(v));
+          Value ret(std::move(expression));
+          ret.SetString(op);
+          return ret;
+        }
+
+        return Value();
+      }
+    )  // End of Star()
+  );
+}
 
 // Parser Frontend::Add() {
 //   return And(

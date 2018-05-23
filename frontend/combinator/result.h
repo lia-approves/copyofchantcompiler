@@ -15,8 +15,8 @@ namespace frontend {
 
 class Value {
  public:
-  enum type { node, string };
-  Value() {}
+  enum type { node, string, empty };
+  Value(): type_(type::empty) {}
   explicit Value(std::unique_ptr<abstract_syntax::frontend::AstNode> i) :
     type_(type::node),
     node_(std::move(i)) {}
@@ -47,6 +47,7 @@ class Value {
     return std::move(node_);
   }
   std::string GetString() const { return string_; }
+  void SetString(std::string s) { string_ = s; }
   type GetType() const { return type_; }
 
  private:
