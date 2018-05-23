@@ -262,7 +262,17 @@ void IrGenVisitor::VisitVariableExpr(const VariableExpr& exp) {
 }
 
 void IrGenVisitor::VisitDereference(const Dereference& exp) {
-  //!!
+  // visit lhs so that the top of the stack has the Variable we're assigning
+  assignment.lhs().Visit(this);
+  Operand* op1 = stack_.back();
+  stack_.pop_back();
+
+  // visit rhs so that the top of the stack has the ae
+  assignment.rhs().Visit(this);
+  Operand* op2 = stack_.back();
+  stack_.pop_back();
+
+  // Dereference does not contain the name of the 'base' variable
 }
 
 void IrGenVisitor::VisitAssignmentFromArithExp(
