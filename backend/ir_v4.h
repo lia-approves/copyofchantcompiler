@@ -100,7 +100,7 @@ namespace cs160 {
         kAdd, kSubtract, kMultiply, kDivide,
         kAssign, kLessThan, kLessThanEqualTo, kGreaterThan,
         kGreaterThanEqualTo, kEqualTo, kGoto, kAllocateVars,
-        kDeallocateVars, kPrint, kRegister, kProgramStart, 
+        kDeallocateVars, kPrint, kPushVarValue, kProgramStart, 
         kCall, kFuncBegin, kFuncEnd, kReturn,kParam
       };
       explicit Operator(Opcode o) { op_ = (o); }
@@ -204,7 +204,7 @@ namespace cs160 {
             std::cout << "" << target_->GetName() << "";
           }
           break;
-        case Operator::kRegister:
+        case Operator::kPushVarValue:
           if (Constant* regType = dynamic_cast<Constant*>(operand2_)) {
             std::cout << "" << target_->GetName() << " = " << regType->GetName();
           }

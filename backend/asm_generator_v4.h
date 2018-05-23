@@ -129,7 +129,7 @@ namespace cs160 {
       case Operator::kPrint:
         asm_sstring_ << node->GetTarget()->GetName() << endl;
         break;
-      case Operator::kRegister:
+      case Operator::kPushVarValue:
         if (Constant* regType = dynamic_cast<Constant*>(node->GetOp2())) {
           asm_sstring_ << "push $" << regType->GetValue() << endl;
         }
