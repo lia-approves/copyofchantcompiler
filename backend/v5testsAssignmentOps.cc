@@ -53,40 +53,6 @@ using cs160::make_unique;
 using cs160::backend::AsmProgram;
 
 
-TEST(AE, CanAdd) {
-  FunctionDef::Block function_defs;
-  Statement::Block statements;
-  auto ae = make_unique<const AddExpr>(
-    make_unique<const IntegerExpr>(12),
-    make_unique<const IntegerExpr>(30));
-
-  auto ast = make_unique<const Program>(std::move(function_defs),
-  std::move(statements), std::move(ae));
-
-  IrGenVisitor irGen;
-  ast->Visit(&irGen);
-  AsmProgram testasm;
-  testasm.IrToAsm(&irGen);
-  // irGen.PrintIR();
-
-  std::ofstream test_output_file;
-  test_output_file.open("testfile.s");
-  test_output_file << testasm.GetASMString();
-  test_output_file.close();
-  // std::cout << testasm.GetASMString();
-  system("gcc testfile.s && ./a.out > test_output.txt");
-
-  std::ifstream output_file;
-  output_file.open("test_output.txt");
-  std::string output;
-  output_file >> output;
-  // std::cout << output;
-  output_file.close();
-  system("rm testfile.s test_output.txt");
-
-  EXPECT_EQ("42", output);
-}
-
 TEST(Assignment, OfVariable) {
   FunctionDef::Block function_defs;
   Statement::Block statements;

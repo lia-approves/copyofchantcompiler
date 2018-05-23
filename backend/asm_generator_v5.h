@@ -61,6 +61,7 @@ void AsmProgram::IrToAsm(IrGenVisitor* ir) {
 void AsmProgram::GenerateASM(StatementNode* node) {
   switch (node->GetInstruction()->GetOpcode()) {
   case Operator::kAdd:
+    // updated for v5
     asm_sstring_ << node->GetOp1()->PushValueToStack();
     asm_sstring_ << node->GetOp2()->PushValueToStack();
     asm_sstring_ << "pop %rax" << endl;
@@ -69,6 +70,7 @@ void AsmProgram::GenerateASM(StatementNode* node) {
     asm_sstring_ << "push %rbx" << endl << endl;
     break;
   case Operator::kSubtract:
+    // updated for v5
     asm_sstring_ << node->GetOp1()->PushValueToStack();
     asm_sstring_ << node->GetOp2()->PushValueToStack();
     asm_sstring_ << "pop %rax" << endl;
@@ -77,6 +79,7 @@ void AsmProgram::GenerateASM(StatementNode* node) {
     asm_sstring_ << "push %rbx" << endl << endl;
     break;
   case Operator::kMultiply:
+    // updated for v5
     asm_sstring_ << node->GetOp1()->PushValueToStack();
     asm_sstring_ << node->GetOp2()->PushValueToStack();
     asm_sstring_ << "pop %rax" << endl;
@@ -85,6 +88,7 @@ void AsmProgram::GenerateASM(StatementNode* node) {
     asm_sstring_ << "push %rbx" << endl << endl;
     break;
   case Operator::kDivide:
+    // updated for v5
     asm_sstring_ << node->GetOp1()->PushValueToStack();
     asm_sstring_ << node->GetOp2()->PushValueToStack();
     asm_sstring_ << "pop %rbx" << endl;
@@ -95,8 +99,9 @@ void AsmProgram::GenerateASM(StatementNode* node) {
     break;
   case Operator::kAssignFromArithExp:
     asm_sstring_ << node->GetOp2()->PushValueToStack();
-    asm_sstring_ << "pop " << node->GetTarget()->GetOffset()
-    << "(%" << node->GetTarget()->GetBasePtr() << ")" << endl;
+    asm_sstring_ << node->GetTarget()->PushAddrToStack();
+    asm_sstring_ << "pop %rax" << endl;
+    asm_sstring_ << "pop (%rax)" << endl;
     break;
   case Operator::kLessThan:
     asm_sstring_ << "pop %rax" << endl;

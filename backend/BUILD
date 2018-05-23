@@ -11,30 +11,19 @@ cc_library(
 )
 
 cc_test(
-	name = "assembly_test",
-	srcs = ["asm_generator_test.cc"],
-	deps = [
-             "@gtest//:main",
-             ":intermediate_representation"
-        ],
-	timeout = "short",
-	size = "small",
-)
-
-cc_test(
-	name = "integration_test",
-	srcs = ["v4tests.cc"],
-	deps = [
-             "@gtest//:main",
-             ":intermediate_representation"
-        ],
-	timeout = "short",
-	size = "small",
-)
-
-cc_test(
-	name = "test1",
+	name = "arithmetic_expr",
 	srcs = ["v5testsArithmeticOps.cc"],
+	deps = [
+             "@gtest//:main",
+             ":intermediate_representation"
+        ],
+	timeout = "short",
+	size = "small",
+)
+
+cc_test(
+	name = "assignment_ops",
+	srcs = ["v5testsAssignmentOps.cc"],
 	deps = [
              "@gtest//:main",
              ":intermediate_representation"

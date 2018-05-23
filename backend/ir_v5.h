@@ -28,6 +28,7 @@ class Operand {        // abstract class for operand can be constant(integer),
   virtual void SetBasePtr(std::string ptr) = 0;
   virtual std::string GetBasePtr() = 0;
   virtual std::string PushValueToStack() = 0;
+  virtual std::string PushAddrToStack() = 0;
  private:
 };
 
@@ -43,6 +44,9 @@ class Label : public Operand {
   std::string GetBasePtr() { return ""; }
   void SetBasePtr(std::string ptr) { }
   std::string PushValueToStack() {
+    return "";
+  }
+  std::string PushAddrToStack() {
     return "";
   }
  private:
@@ -61,6 +65,9 @@ class Register : public Operand {                        // t1, t2 ,etc
   std::string GetBasePtr() { return ""; }
   void SetBasePtr(std::string ptr) { }
   std::string PushValueToStack() {
+    return "";
+  }
+  std::string PushAddrToStack() {
     return "";
   }
  private:
@@ -96,6 +103,13 @@ class Variable : public Operand {
     res << "push (%rax)" << endl;
     return res.str();
   }
+  std::string PushAddrToStack() {
+    std::stringstream res;
+    res << "mov " << base_ptr_ << ", %rax" << endl;
+    res << "add $" << offset_ << ", %rax" << endl;
+    res << "push %rax" << endl;
+    return res.str();
+  }
 
  private:
   std::string name_;
@@ -118,6 +132,9 @@ class Constant : public Operand {    // 3, 8, 6 etc (integers)
     std::stringstream res;
     res << "push $" << GetName() << endl;
     return res.str();
+  }
+  std::string PushAddrToStack() {
+    return "";
   }
  private:
   int value_;
