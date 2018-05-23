@@ -1,3 +1,4 @@
+// Copyright (c) 2018, Team-Chant
 #include <sstream>
 #include <string>
 
@@ -56,8 +57,8 @@ TEST_F(PrinterTest, AddExprIsVisited) {
 // }
 //
 // TEST_F(PrinterTest, DivideExprIsVisited) {
-//   auto expr = make_unique<const DivideExpr>(make_unique<const IntegerExpr>(7),
-//                                             make_unique<const IntegerExpr>(5));
+// auto expr = make_unique<const DivideExpr>(make_unique<const IntegerExpr>(7),
+//                                           make_unique<const IntegerExpr>(5));
 //
 //   expr->Visit(&printer_);
 //
