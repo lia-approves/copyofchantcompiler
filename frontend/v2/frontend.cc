@@ -13,6 +13,7 @@ namespace Parse {
 namespace ast = cs160::abstract_syntax::frontend;
 using ValueVec = std::vector<Value>;
 using std::unique_ptr;
+using std::string;
 using std::move;
 
 template<typename TO, typename FROM>
@@ -133,8 +134,57 @@ Parser Frontend::Add() {
 //   );
 // }
 
-struct A {};
-struct B : public A {};
+template<class Op1Node, class Op2Node>
+std::function<Value(ValueVec)> makeCoalescer(string op1, string op2) {
+  return [op1, op2](ValueVec values) {
+    // If there are no matches in the Star, return an empty value.
+    if (values.size() == 0) {
+      return Value();
+    }
+    // As long as there are multiple matches, coalesce them into 1.
+    while (values.size() > 1) {
+      // We know it has a string because it comes from the And() callback
+      std::string op = values.back().GetString();
+      auto last = values.back().GetNodeUnique();
+      values.pop_back();
+      auto curr = values.back().GetNodeUnique();
+      auto lastAsArithExpr =
+        unique_cast<const ast::ArithmeticExpr>(move(last));
+      auto currAsArithExpr =
+        unique_cast<const ast::ArithmeticExpr>(move(curr));
+      // Create a node from the last 2 elements (curr and last)
+      unique_ptr<ast::AstNode> newNodePtr;
+      if (op == op1) {
+        newNodePtr.reset(new Op1Node(
+          move(currAsArithExpr),
+          move(lastAsArithExpr)
+        ));
+      } else if (op == op2) {
+        newNodePtr.reset(new Op2Node(
+          move(currAsArithExpr),
+          move(lastAsArithExpr)
+        ));
+      } else {
+        throw std::logic_error("Add() operator is neither a - nor a +");
+      }
+      // Replace the last element with newNodePtr
+      values.pop_back();
+      Value v(move(newNodePtr));
+      values.push_back(move(v));
+    }
+    // If there is 1 match, return it and the result of the Or() (casted).
+    if (values.size() == 1) {
+      // This Value comes from the previous And(), so it contains a string.
+      std::string op = values[0].GetString();
+      auto v = values[0].GetNodeUnique();
+      auto expression = unique_cast<ast::VariableExpr>(move(v));
+      Value ret(std::move(expression));
+      ret.SetString(op);
+      return ret;
+    }
+    throw std::logic_error("Couldn't coalesce values into 1 expression");
+  };
+}
 
 Node Frontend::stringToAst(std::string s) {
   State state(s);
