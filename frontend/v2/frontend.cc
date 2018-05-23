@@ -78,9 +78,12 @@ Parser Frontend::Add() {
           auto last = values.back().GetNodeUnique();
           values.pop_back();
           auto curr = values.back().GetNodeUnique();
-          auto lastAsArithExpr = unique_cast<const ast::ArithmeticExpr>(move(last));
-          auto currAsArithExpr = unique_cast<const ast::ArithmeticExpr>(move(curr));
-          unique_ptr<const ast::AstNode> newNodePtr;
+          auto lastAsArithExpr =
+            unique_cast<const ast::ArithmeticExpr>(move(last));
+          auto currAsArithExpr =
+            unique_cast<const ast::ArithmeticExpr>(move(curr));
+          // Create a node from the last 2 elements (curr and last)
+          unique_ptr<ast::AstNode> newNodePtr;
           if (op == "+") {
             newNodePtr.reset(new ast::AddExpr(
               move(currAsArithExpr),
@@ -94,6 +97,10 @@ Parser Frontend::Add() {
           } else {
             throw std::logic_error("Add() operator is neither a - nor a +");
           }
+          // Replace the last element with newNodePtr
+          values.pop_back();
+          Value v(move(newNodePtr));
+          values.push_back(move(v));
         }
         // If there is 1 match, return it and the result of the Or() (casted).
         if (values.size() == 1) {
@@ -108,6 +115,11 @@ Parser Frontend::Add() {
         throw std::logic_error("Couldn't coalesce values into 1 expression");
       }
     )  // End of Star()
+    // Callback for And():
+    // [](Value multVal, Value starVal) {
+    //   // We know starVal has a string, because it's set in the star callback.
+    //   std::string op
+    // }
   );
 }
 
