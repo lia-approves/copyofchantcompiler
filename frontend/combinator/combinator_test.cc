@@ -1,4 +1,5 @@
 // Copyright (c) 2018, Team-Chant
+#include <vector>
 #include "gtest/gtest.h"
 #include "frontend/combinator/parser.h"
 #include "abstract_syntax/print_visitor_v1.h"
@@ -79,13 +80,35 @@ TEST(CombinatorTest, ParseRange4) {
 }
 
 TEST(CombinatorTest, ParseOr) {
-  State s("hi");
+  State s("h");
   auto parser = Or(Literal('a'), Literal('h'));
   auto successResult = parser(s);
   ASSERT_EQ(successResult.success(), true);
   ASSERT_EQ(successResult.value().GetString(), "h");
 
   auto failResult = parser(successResult.state());
+  ASSERT_EQ(failResult.success(), false);
+}
+
+TEST(CombinatorTest, ParseOrMult) {
+  State s("d");
+  std::vector<Parser> vec1;
+  auto parser1 = Literal('e');
+  auto parser2 = Literal('f');
+  auto parser3 = Literal('g');
+  auto parser4 = Literal('d');
+  vec1.push_back(parser1);
+  vec1.push_back(parser2);
+  vec1.push_back(parser3);
+  vec1.push_back(parser4);
+  auto parser = Or(vec1);
+  auto successResult = parser(s);
+  ASSERT_EQ(successResult.success(), true);
+  ASSERT_EQ(successResult.value().GetString(), "d");
+
+  State s2("a");
+  auto parserFail = Or(vec1);
+  auto failResult = parserFail(s2);
   ASSERT_EQ(failResult.success(), false);
 }
 
@@ -99,6 +122,51 @@ TEST(CombinatorTest, ParseAnd) {
   ASSERT_EQ(result.success(), true);
   auto v = result.value();
   ASSERT_EQ(v.GetString(), "hi");
+}
+
+
+TEST(CombinatorTest, ParseAndMult) {
+  State s1("hi");
+  auto parser1 = Literal('h');
+  auto parser2 = Literal('i');
+  std::vector<Parser> p_vec;
+  p_vec.push_back(parser1);
+  p_vec.push_back(parser2);
+  auto parse = And(p_vec);
+  auto result = parse(s1);
+  ASSERT_EQ(result.success(), true);
+  auto v = result.value();
+  ASSERT_EQ(v.GetString(), "hi");
+
+  State s2("hello");
+  auto parser3 = Literal('e');
+  auto parser4 = Literal('l');
+  auto parser5 = Literal('o');
+  std::vector<Parser> p_vec2;
+  p_vec2.push_back(parser1);
+  p_vec2.push_back(parser3);
+  p_vec2.push_back(parser4);
+  p_vec2.push_back(parser4);
+  p_vec2.push_back(parser5);
+  auto parse2 =  And(p_vec2);
+  auto result2 = parse2(s2);
+  ASSERT_EQ(result2.success(), true);
+  auto v2 = result2.value();
+  ASSERT_EQ(v2.GetString(), "hello");
+}
+
+TEST(CombinatorTest, AndVecFail) {
+  State s("heo");
+  auto parser1 = Literal('h');
+  auto parser2 = Literal('e');
+  auto parser3 = Literal('y');
+  std::vector<Parser> p_vec;
+  p_vec.push_back(parser1);
+  p_vec.push_back(parser2);
+  p_vec.push_back(parser3);
+  auto parseFail = And(p_vec);
+  auto result = parseFail(s);
+  ASSERT_EQ(result.success(), false);
 }
 
 TEST(CombinatorTest, NotTest) {
