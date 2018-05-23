@@ -3,6 +3,7 @@
 
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include "abstract_syntax/abstract_syntax_tree_v2.h"
 
@@ -64,9 +65,11 @@ class PrintVisitor : public AstVisitor {
   }
 
   void VisitProgram(const Program& program) override {
-    std::vector<std::unique_ptr<const Assignment>> assignments = program.assignments();
-    for(std::unique_ptr<const Assignment> p : assignments){
-      p->Visit(this);
+    const std::vector<std::unique_ptr<const Assignment>>& assignments =
+      std::move(program.assignments());
+    for (int i=0; i < assignments.size(); i++) {
+      auto p = std::move(&assignments.at(i));
+      (*p)->Visit(this);
     }
     program.arithmetic_exp().Visit(this);
   }
