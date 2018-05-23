@@ -254,11 +254,9 @@ class StatementNode {
     case Operator::kPushVarValue:
       if (Constant* regType = dynamic_cast<Constant*>(operand2_)) {
         std::cout << "" << target_->GetName() << " = " << regType->GetName();
-      }
-      else if (Variable* regType = dynamic_cast<Variable*>(operand2_)) {
+      } else if (Variable* regType = dynamic_cast<Variable*>(operand2_)) {
         std::cout << target_->GetName() << " = " << regType->GetName();
-      }
-      else if (Register* regType = dynamic_cast<Register*>(operand2_)) {
+      } else if (Register* regType = dynamic_cast<Register*>(operand2_)) {
         std::cout << regType->GetName() << " = " << target_->GetName();
       }
       break;
@@ -266,7 +264,8 @@ class StatementNode {
       std::cout << "program begin";
       break;
     case Operator::kCall:
-      std::cout << "call " << target_->GetName() << "," << operand2_->GetValue() << "  --> " << operand1_->GetName();
+      std::cout << "call " << target_->GetName() << ","
+      << operand2_->GetValue() << "  --> " << operand1_->GetName();
       break;
     case Operator::kParam:
       std::cout << "param " << target_->GetName();
@@ -290,7 +289,8 @@ class StatementNode {
   Operand*& GetTarget() { return target_; }
   Operator*& GetInstruction() { return operator_; }
   StatementNode*& GetNext() { return next_; }
-private:
+
+ private:
   Operand * label_;
   Operand * target_;
   Operator* operator_;
