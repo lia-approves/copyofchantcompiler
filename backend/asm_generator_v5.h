@@ -34,6 +34,11 @@ class AsmProgram {
 void AsmProgram::IrToAsm(IrGenVisitor* ir) {
   ir_ = ir;
   asm_sstring_ << "#### Start of Assembly ####\n\n";
+  asm_sstring_ << "mov $0x2d, %rax" << endl;
+  asm_sstring_ << "mov $0, %rbx" << endl;
+  asm_sstring_ << "syscall" << endl;
+  asm_sstring_ << "mov %rax, %rsi" << endl;
+
   asm_sstring_ << "#### Start of Statements ####\n";
   StatementNode * head = ir_->GetIR();
   while (head != nullptr) {
@@ -102,6 +107,12 @@ void AsmProgram::GenerateASM(StatementNode* node) {
     asm_sstring_ << node->GetTarget()->PushAddrToStack();
     asm_sstring_ << "pop %rax" << endl;
     asm_sstring_ << "pop (%rax)" << endl;
+    break;
+  case Operator::kAssignFromNewTuple:
+    asm_sstring_ << node->GetTarget()->PushAddrToStack();
+    asm_sstring_ << "pop %rax" << endl;
+    asm_sstring_ << "mov %rsi, (%rax)" << endl;
+    asm_sstring_ << "add $" << node->GetOp2()->GetValue() * 8 << ", %rsi" << endl;
     break;
   case Operator::kLessThan:
     asm_sstring_ << "pop %rax" << endl;
