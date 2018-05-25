@@ -4,45 +4,56 @@
 .global main
 .text
 main:
-
-###
-
-mov $12, %rax
-mov $0, %rdi
+mov %rsp, %rbp
+mov $0x2d, %rax
+mov $0, %rbx
 syscall
+mov %rax, -8(%rbp)
+sub $8, %rsp
+#### Start of Statements ####
 
-push %rax
-call fun
+statementnumber_statementnumber_1:
+
+sub $8, %rsp
+statementnumber_statementnumber_2:
+
+push $12
+push %rbp
+push $-8
 pop %rax
-
-add $8, %rax
-
-push %rax
-call fun
+pop %rbx
+add %rax, %rbx
+push %rbx
 pop %rax
+pop (%rax)
 
-mov %rax, %rdi
-mov $12, %rax
-syscall
+statementnumber_statementnumber_3:
 
-push %rax
-call fun
+push $12
+push $30
 pop %rax
+pop %rbx
+add %rax, %rbx
+push %rbx
 
-movq $4, (%rax)
 
+statementnumber_statementnumber_4:
+
+#### End of Statements ####
+
+pop %rax
+mov     $format, %rdi
+mov     %rax, %rsi
+xor     %rax, %rax
+call    printf
+
+##DESTROY LOCAL VARS
+add $16, %rsp
+##end DESTROY LOCAL VARS
 
   ret
-
 format:
   .asciz  "%d\n"
-
-fun:
-  mov     $format, %rdi
-  mov     %rax, %rsi
-  xor     %rax, %rax
-  call    printf
-  ret
 
 .data
 

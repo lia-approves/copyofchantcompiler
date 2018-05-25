@@ -20,16 +20,22 @@ class Operand {        // abstract class for operand can be constant(integer),
  public:               // variable or register or label
   Operand() {}
   virtual ~Operand() {}
-  virtual int GetValue() = 0;
-  virtual void SetValue(int value) = 0;
+
   virtual std::string GetName() = 0;
-  virtual void SetOffset(int offset) = 0;
-  virtual int GetOffset() = 0;
-  virtual void SetBasePtr(std::string ptr) = 0;
-  virtual std::string GetBasePtr() = 0;
+
+  virtual void SetBase(Operand *base) = 0;
+  virtual Operand* GetBase() = 0;
+
+  virtual void SetOffset(Operand *offset) = 0;
+  virtual Operand* GetOffset() = 0;
+
   virtual std::string PushValueToStack() = 0;
   virtual std::string PushAddrToStack() = 0;
+
  private:
+  std::string name_;
+  Operand *offset_;
+  Operand *base_;
 };
 
 class Label : public Operand {
@@ -39,10 +45,10 @@ class Label : public Operand {
   int GetValue() { return value_; }
   void SetValue(int value) { value_ = value; }
   std::string GetName() { return "statementnumber_" + std::to_string(value_); }
-  void SetOffset(int offset) {  }
-  int GetOffset() { return 0; }
-  std::string GetBasePtr() { return ""; }
-  void SetBasePtr(std::string ptr) { }
+  void SetOffset(Operand *offset) {  }
+  void SetBase(Operand *base) {  }
+  Operand* GetOffset() { return offset_; }
+  Operand* GetBase() { return base_; }
   std::string PushValueToStack() {
     return "";
   }
@@ -51,6 +57,8 @@ class Label : public Operand {
   }
  private:
   int value_;
+  Operand *base_;
+  Operand *offset_;
 };
 
 class Register : public Operand {                        // t1, t2 ,etc
@@ -60,10 +68,13 @@ class Register : public Operand {                        // t1, t2 ,etc
   int GetValue() { return value_; }
   void SetValue(int value) { value_ = value; }
   std::string GetName() { return "t" + std::to_string(value_); }
-  void SetOffset(int offset) { }
-  int GetOffset() { return 0; }
-  std::string GetBasePtr() { return ""; }
-  void SetBasePtr(std::string ptr) { }
+  void SetOffset(Operand *offset) {  }
+  void SetBase(Operand *base) {  }
+
+  Operand* GetOffset() { return offset_; }
+
+  Operand* GetBase() { return base_; }
+
   std::string PushValueToStack() {
     return "";
   }
@@ -72,6 +83,8 @@ class Register : public Operand {                        // t1, t2 ,etc
   }
  private:
   int value_;
+  Operand *base_;
+  Operand *offset_;
 };
 
 class Variable : public Operand {
@@ -83,75 +96,127 @@ class Variable : public Operand {
   // a dereference of a tuple)
  public:
   explicit Variable(std::string s) {
-    name_ = (s);
-    base_ptr_ = "%rbp";
+    name_ = s;
+    // base_ = new Constant("%rbp");
+    // offset_ = new Constant("$0");
   }
   ~Variable() {}
-  int GetValue() { return 0; }
+
   std::string GetName() { return name_; }
-  void SetValue(int value) {}
-  void SetOffset(int offset) { offset_ = offset; }
-  int GetOffset() { return offset_; }
-  std::string GetBasePtr() { return base_ptr_; }
-  void SetBasePtr(std::string ptr) {
-    base_ptr_ = ptr;
+
+  void SetOffset(Operand *offset) {
+    offset_ = offset;
   }
+  Operand* GetOffset() { return offset_; }
+
+  void SetBase(Operand *base) {
+    base_ = base;
+  }
+  Operand* GetBase() { return base_; }
+
   std::string PushValueToStack() {
     std::stringstream res;
-    res << "mov " << base_ptr_ << ", %rax" << endl;
-    res << "add $" << offset_ << ", %rax" << endl;
-    res << "push (%rax)" << endl;
+    res << base_->PushAddrToStack();
+    res << offset_->PushValueToStack();
+    res << "pop %rax" << endl;  // rax contains the offset
+    res << "pop %rbx" << endl;  // rbx contains the base addr
+    res << "add %rax, %rbx" << endl;
+    res << "push (%rbx)" << endl;
     return res.str();
   }
   std::string PushAddrToStack() {
     std::stringstream res;
-    res << "mov " << base_ptr_ << ", %rax" << endl;
-    res << "add $" << offset_ << ", %rax" << endl;
-    res << "push %rax" << endl;
+    res << base_->PushAddrToStack();
+    res << offset_->PushValueToStack();
+    res << "pop %rax" << endl;  // rax contains the offset
+    res << "pop %rbx" << endl;  // rbx contains the base addr
+    res << "add %rax, %rbx" << endl;
+    res << "push %rbx" << endl;
     return res.str();
   }
 
  private:
   std::string name_;
-  int offset_;
-  std::string base_ptr_;  // %rbp, 8(%rbp), etc
+  Operand *offset_;
+  Operand *base_;
+};
+
+class Deref : public Operand {
+ public:
+  explicit Deref(std::string s) {
+    name_ = s;
+  }
+  ~Deref() {}
+
+  std::string GetName() { return name_; }
+  void SetOffset(Operand *offset) {
+    offset_ = offset;
+  }
+  void SetBase(Operand *base) {
+    base_ = base;
+  }
+  Operand* GetOffset() { return offset_; }
+  Operand* GetBase() { return base_; }
+
+  std::string PushValueToStack() {
+    std::stringstream res;
+    res << base_->PushAddrToStack();
+    res << offset_->PushValueToStack();
+    res << "pop %rax" << endl;  // rax contains the offset
+    res << "imul $8, %rax" << endl;
+    res << "pop %rbx" << endl;  // rbx contains the base addr
+    res << "add %rax, %rbx" << endl;
+    res << "push (%rbx)" << endl;
+    return res.str();
+  }
+  std::string PushAddrToStack() {
+    std::stringstream res;
+    res << base_->PushAddrToStack();
+    res << offset_->PushValueToStack();
+    res << "pop %rax" << endl;  // rax contains the offset
+    res << "imul $8, %rax" << endl;
+    res << "pop %rbx" << endl;  // rbx contains the base addr
+    res << "add %rax, %rbx" << endl;
+    res << "push %rbx" << endl;
+    return res.str();
+  }
+
+ private:
+  std::string name_;
+  Operand *offset_;
+  Operand *base_;
 };
 
 class Constant : public Operand {    // 3, 8, 6 etc (integers)
  public:
-  explicit Constant(int v) { value_ = (v); }
+  explicit Constant(std::string n) { name_ = (n); }
   ~Constant() {}
-  int GetValue() { return value_; }
-  void SetValue(int value) { value_ = value; }
-  std::string GetName() { return std::to_string(value_); }
-  void SetOffset(int offset) {  }
-  int GetOffset() { return 0; }
-  std::string GetBasePtr() { return ""; }
-  void SetBasePtr(std::string ptr) { }
+
+  std::string GetName() { return name_; }
+
+  void SetOffset(Operand *offset) {  }
+  Operand* GetOffset() { return offset_; }
+
+  Operand* GetBase() { return base_; }
+  void SetBase(Operand *base) {  }
+
   std::string PushValueToStack() {
     std::stringstream res;
-    res << "push $" << GetName() << endl;
+    res << "push $" << name_ << endl;
     return res.str();
   }
   std::string PushAddrToStack() {
-    return "";
+    std::stringstream res;
+    res << "push " << name_ << endl;
+    return res.str();
   }
+
  private:
-  int value_;
+  std::string name_;
+  Operand *offset_;
+  Operand *base_;
 };
-/*
-class Text : public Operand {                       // 3, 8, 6 etc (integers)
-public:
-explicit Text(string text) { text_ = (text); }
-~Text() {}
-int GetValue() { return 0; }
-void SetValue(int value) { text_ = value; }
-std::string GetName() { return text_; }
-void SetOffset(int offset) {}
-int GetOffset() { return 0; }
-private:
-std::string text_;
-};*/
+
 
 class Operator {
  public:
@@ -211,7 +276,7 @@ class StatementNode {
   }
   void Print() {
     std::cout << "#S";
-    if (label_ != nullptr) std::cout << label_->GetValue() << ":\t";
+    if (label_ != nullptr) std::cout << label_->GetName() << ":\t";
     switch (GetInstruction()->GetOpcode()) {
     case Operator::kAdd:
     case Operator::kSubtract:
@@ -245,22 +310,22 @@ class StatementNode {
       std::cout << GetInstruction()->GetSymbol() << " ";
       if (operand2_ != nullptr) std::cout << GetOp2()->GetName() << "";
       std::cout << ") goto S";
-      if (target_ != nullptr) std::cout << target_->GetValue() << ":";
+      if (target_ != nullptr) std::cout << target_->GetName() << ":";
       break;
 
     case Operator::kGoto:
       if (target_ != nullptr) {
-        std::cout << "goto S" << target_->GetValue() << ":";
+        std::cout << "goto S" << target_->GetName() << ":";
       }
       break;
     case Operator::kAllocateVars:
       if (target_ != nullptr) {
-        std::cout << "alloc " << target_->GetValue() << " loc vars:";
+        std::cout << "alloc " << target_->GetName() << " loc vars:";
       }
       break;
     case Operator::kDeallocateVars:
       if (target_ != nullptr) {
-        std::cout << "dealloc " << 8 << "*" << target_->GetValue() << " bytes:";
+        std::cout << "dealloc " << 8 << "*" << target_->GetName() << " bytes:";
       }
       break;
     case Operator::kPrint:
@@ -282,7 +347,7 @@ class StatementNode {
       break;
     case Operator::kCall:
       std::cout << "call " << target_->GetName() << ","
-      << operand2_->GetValue() << "  --> " << operand1_->GetName();
+      << operand2_->GetName() << "  --> " << operand1_->GetName();
       break;
     case Operator::kParam:
       std::cout << "param " << target_->GetName();

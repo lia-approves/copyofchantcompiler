@@ -34,16 +34,19 @@ class AsmProgram {
 void AsmProgram::IrToAsm(IrGenVisitor* ir) {
   ir_ = ir;
   asm_sstring_ << "#### Start of Assembly ####\n\n";
+  asm_sstring_ << ".global main\n.text\nmain:\nmov %rsp, %rbp\n";
+
   asm_sstring_ << "mov $0x2d, %rax" << endl;
   asm_sstring_ << "mov $0, %rbx" << endl;
   asm_sstring_ << "syscall" << endl;
-  asm_sstring_ << "mov %rax, %rsi" << endl;
+  asm_sstring_ << "mov %rax, -8(%rbp)" << endl;
+  asm_sstring_ << "sub $8, %rsp" << endl;
 
   asm_sstring_ << "#### Start of Statements ####\n";
   StatementNode * head = ir_->GetIR();
   while (head != nullptr) {
     asm_sstring_ << endl << "statementnumber_"
-    << head->GetLabel()->GetValue() << ":" << endl << endl;
+    << head->GetLabel()->GetName() << ":" << endl << endl;
     GenerateASM(head);
     head = head->GetNext();
   }
@@ -54,6 +57,7 @@ void AsmProgram::IrToAsm(IrGenVisitor* ir) {
   asm_sstring_ << "xor     %rax, %rax" << endl;
   asm_sstring_ << "call    printf" << endl;
   asm_sstring_ << "\n##DESTROY LOCAL VARS\n";
+  asm_sstring_ << "add $" << 8 << ", %rsp\n";
   asm_sstring_ << "add $" << 8 * ir_->NumberOfMainVars() << ", %rsp\n";
   asm_sstring_ << "##end DESTROY LOCAL VARS\n\n";
   asm_sstring_ << "  ret" << endl;
@@ -111,8 +115,9 @@ void AsmProgram::GenerateASM(StatementNode* node) {
   case Operator::kAssignFromNewTuple:
     asm_sstring_ << node->GetTarget()->PushAddrToStack();
     asm_sstring_ << "pop %rax" << endl;
-    asm_sstring_ << "mov %rsi, (%rax)" << endl;
-    asm_sstring_ << "add $" << node->GetOp2()->GetValue() * 8 << ", %rsi" << endl;
+    asm_sstring_ << "mov (%rbp), %rbx" << endl;
+    asm_sstring_ << "mov %rbx, (%rax)" << endl;
+    asm_sstring_ << "add $" << std::stoi(node->GetOp2()->GetName()) * 8 << ", (%rbp)" << endl;
     break;
   case Operator::kLessThan:
     asm_sstring_ << "pop %rax" << endl;
@@ -148,10 +153,11 @@ void AsmProgram::GenerateASM(StatementNode* node) {
     asm_sstring_ << "jmp " << node->GetTarget()->GetName() << endl;
     break;
   case Operator::kAllocateVars:
-    asm_sstring_ << "sub $" << 8 * node->GetTarget()->GetValue() << ", %rsp\n";
+    asm_sstring_ << "sub $" << 8 * std::stoi(node->GetTarget()->GetName())
+    << ", %rsp\n";
     break;
   case Operator::kDeallocateVars:
-    asm_sstring_ << "add $" << 8 * node->GetTarget()->GetValue() - 8
+    asm_sstring_ << "add $" << 8 * std::stoi(node->GetTarget()->GetName()) - 8
     << ", %rsp\n";
     break;
   case Operator::kPrint:
@@ -159,25 +165,26 @@ void AsmProgram::GenerateASM(StatementNode* node) {
     break;
   case Operator::kPushVarValue:
     if (Constant* regType = dynamic_cast<Constant*>(node->GetOp2())) {
-      asm_sstring_ << "push $" << regType->GetValue() << endl;
+      asm_sstring_ << "push $" << regType->GetName() << endl;
     } else if (Variable* regType = dynamic_cast<Variable*>(node->GetOp2())) {
       asm_sstring_ << "push " << regType->GetOffset() << "(%rbp)" << endl;
     }
     break;
   case Operator::kProgramStart:
-    asm_sstring_ << ".global main\n.text\nmain:\nmov %rsp, %rbp\n" <<
-      "sub $" << 8 * node->GetOp2()->GetValue() << ", %rsp";
+    // asm_sstring_ << ".global main\n.text\nmain:\nmov %rsp, %rbp\n" <<
+    asm_sstring_ << "sub $" << 8 * std::stoi(node->GetOp2()->GetName()) << ", %rsp";
     break;
   case Operator::kCall:
     asm_sstring_ << "call " << node->GetTarget()->GetName()
       << "\npush %rax\npop " << node->GetTarget()->GetOffset()
-      << "(%rbp)\nadd $" << 8 * node->GetOp2()->GetValue() << ", %rsp\n";
+      << "(%rbp)\nadd $" << 8 * std::stoi(node->GetOp2()->GetName())
+      << ", %rsp\n";
     break;
   case Operator::kFuncBegin:
     asm_sstring_ << ".type " << node->GetTarget()->GetName() << ",@function\n"
       << node->GetTarget()->GetName() << ":\n"
       << "push %rbp\nmov %rsp, %rbp\nsub $" <<
-      node->GetOp2()->GetValue() << ", %rsp";
+      node->GetOp2()->GetName() << ", %rsp";
     break;
   case Operator::kFuncEnd:
     asm_sstring_ << "pop %rax\nmov %rbp, %rsp\npop %rbp\nret\n";

@@ -44,7 +44,10 @@ call    printf
   ret
 
 fun:
-  add $3, %rbx
+  mov     $format, %rdi
+  mov     %rax, %rsi
+  xor     %rax, %rax
+  call    printf
   ret
 
 format:
