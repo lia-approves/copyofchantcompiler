@@ -36,8 +36,8 @@ void AsmProgram::IrToAsm(IrGenVisitor* ir) {
   asm_sstring_ << "#### Start of Assembly ####\n\n";
   asm_sstring_ << ".global main\n.text\nmain:\nmov %rsp, %rbp\n";
 
-  asm_sstring_ << "mov $0x2d, %rax" << endl;
-  asm_sstring_ << "mov $0, %rbx" << endl;
+  asm_sstring_ << "mov $12, %rax" << endl;
+  asm_sstring_ << "mov $0, %rdi" << endl;
   asm_sstring_ << "syscall" << endl;
   asm_sstring_ << "mov %rax, -8(%rbp)" << endl;
   asm_sstring_ << "sub $8, %rsp" << endl;
@@ -115,9 +115,9 @@ void AsmProgram::GenerateASM(StatementNode* node) {
   case Operator::kAssignFromNewTuple:
     asm_sstring_ << node->GetTarget()->PushAddrToStack();
     asm_sstring_ << "pop %rax" << endl;
-    asm_sstring_ << "mov (%rbp), %rbx" << endl;
+    asm_sstring_ << "mov -8(%rbp), %rbx" << endl;
     asm_sstring_ << "mov %rbx, (%rax)" << endl;
-    asm_sstring_ << "add $" << std::stoi(node->GetOp2()->GetName()) * 8 << ", (%rbp)" << endl;
+    asm_sstring_ << "add $" << std::stoi(node->GetOp2()->GetName()) * 8 << ", -8(%rbp)" << endl;
     break;
   case Operator::kLessThan:
     asm_sstring_ << "pop %rax" << endl;

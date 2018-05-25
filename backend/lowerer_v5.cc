@@ -235,7 +235,7 @@ void IrGenVisitor::VisitVariableExpr(const VariableExpr& exp) {
   if (foundinParams) {
     pos = std::distance(paramVariables_.begin(), std::find(
       paramVariables_.begin(), paramVariables_.end(), exp.name()));
-    stackOffset = 1 * ((pos + 2) * 8);
+    stackOffset = 1 * ((pos + 3) * 8);
   } else {
     if (scanningParams_ == false) {
       bool found = std::find(
@@ -244,7 +244,7 @@ void IrGenVisitor::VisitVariableExpr(const VariableExpr& exp) {
       if (!found) { localVariables_.push_back(exp.name()); }
       pos = std::distance(localVariables_.begin(), std::find(
         localVariables_.begin(), localVariables_.end(), exp.name()));
-      stackOffset = -1 * ((pos + 1) * 8);
+      stackOffset = -1 * ((pos + 2) * 8);
     } else if (scanningParams_ == true) {
       bool found = std::find(paramVariables_.begin(),
       paramVariables_.end(), (exp.name())) != paramVariables_.end();
@@ -253,7 +253,7 @@ void IrGenVisitor::VisitVariableExpr(const VariableExpr& exp) {
       } else {}
      pos = std::distance(paramVariables_.begin(), std::find(
        paramVariables_.begin(), paramVariables_.end(), exp.name()));
-      stackOffset = 1 * ((pos + 2) * 8);
+      stackOffset = 1 * ((pos + 3) * 8);
     }
   }
   // std::cout << "pushing var to offset " << stackOffset << endl;
@@ -451,7 +451,7 @@ void IrGenVisitor::VisitFunctionCall(const FunctionCall& call) {
   if (foundinParams) {
     pos = std::distance(paramVariables_.begin(), std::find(
       paramVariables_.begin(), paramVariables_.end(), call.lhs().name()));
-    stackOffset = 1 * ((pos + 2) * 8);
+    stackOffset = 1 * ((pos + 3) * 8);
   } else {
     if (scanningParams_ == false) {
       bool found = std::find(localVariables_.begin(), localVariables_.end(),
@@ -459,7 +459,7 @@ void IrGenVisitor::VisitFunctionCall(const FunctionCall& call) {
       if (!found) { localVariables_.push_back(call.lhs().name()); }
       pos = std::distance(localVariables_.begin(), std::find(
         localVariables_.begin(), localVariables_.end(), call.lhs().name()));
-      stackOffset = -1 * ((pos + 1) * 8);
+      stackOffset = -1 * ((pos + 2) * 8);
     } else if (scanningParams_ == true) {
       bool found = std::find(paramVariables_.begin(), paramVariables_.end(),
       (call.lhs().name())) != paramVariables_.end();
@@ -468,7 +468,7 @@ void IrGenVisitor::VisitFunctionCall(const FunctionCall& call) {
       }
       pos = std::distance(paramVariables_.begin(), std::find(
         paramVariables_.begin(), paramVariables_.end(), call.lhs().name()));
-      stackOffset = 1 * ((pos + 2) * 8);
+      stackOffset = 1 * ((pos + 3) * 8);
     }
   }
   StatementNode* newhead = new StatementNode(
