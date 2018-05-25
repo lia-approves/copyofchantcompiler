@@ -222,7 +222,7 @@ int VarCountVisitor::ParamVars() { return paramVariables_.size(); }
 
 
 void IrGenVisitor::VisitIntegerExpr(const IntegerExpr& exp) {
-  stack_.push_back(new Constant(exp.value()));
+  stack_.push_back(new Constant(std::to_string(exp.value())));
 }
 
 void IrGenVisitor::VisitVariableExpr(const VariableExpr& exp) {
@@ -235,7 +235,7 @@ void IrGenVisitor::VisitVariableExpr(const VariableExpr& exp) {
   if (foundinParams) {
     pos = std::distance(paramVariables_.begin(), std::find(
       paramVariables_.begin(), paramVariables_.end(), exp.name()));
-    stackOffset = 1 * ((pos + 2) * 8);
+    stackOffset = 1 * ((pos + 3) * 8);
   } else {
     if (scanningParams_ == false) {
       bool found = std::find(
@@ -244,7 +244,7 @@ void IrGenVisitor::VisitVariableExpr(const VariableExpr& exp) {
       if (!found) { localVariables_.push_back(exp.name()); }
       pos = std::distance(localVariables_.begin(), std::find(
         localVariables_.begin(), localVariables_.end(), exp.name()));
-      stackOffset = -1 * ((pos + 1) * 8);
+      stackOffset = -1 * ((pos + 2) * 8);
     } else if (scanningParams_ == true) {
       bool found = std::find(paramVariables_.begin(),
       paramVariables_.end(), (exp.name())) != paramVariables_.end();
@@ -253,26 +253,32 @@ void IrGenVisitor::VisitVariableExpr(const VariableExpr& exp) {
       } else {}
      pos = std::distance(paramVariables_.begin(), std::find(
        paramVariables_.begin(), paramVariables_.end(), exp.name()));
-      stackOffset = 1 * ((pos + 2) * 8);
+      stackOffset = 1 * ((pos + 3) * 8);
     }
   }
-
+  // std::cout << "pushing var to offset " << stackOffset << endl;
   stack_.push_back(new Variable(exp.name()));
-  stack_.back()->SetOffset(stackOffset);
+  stack_.back()->SetOffset(new Constant(std::to_string(stackOffset)));
+  stack_.back()->SetBase(new Constant("%rbp"));
 }
 
 void IrGenVisitor::VisitDereference(const Dereference& exp) {
-  // visit lhs so that the top of the stack has the Variable we're assigning
-  assignment.lhs().Visit(this);
+  // visit lhs so that the top of the stack has the Variable where the address
+  // we want is
+  exp.lhs().Visit(this);
   Operand* op1 = stack_.back();
   stack_.pop_back();
 
   // visit rhs so that the top of the stack has the ae
-  assignment.rhs().Visit(this);
+  exp.rhs().Visit(this);
   Operand* op2 = stack_.back();
   stack_.pop_back();
 
-  // Dereference does not contain the name of the 'base' variable
+  Operand* new_deref = new Deref(op2->GetName());
+  new_deref->SetBase(op1);
+  new_deref->SetOffset(op2);
+
+  stack_.push_back(new_deref);
 }
 
 void IrGenVisitor::VisitAssignmentFromArithExp(
@@ -409,7 +415,7 @@ void IrGenVisitor::VisitProgram(const Program& program) {
     nullptr,
     new Operator(Operator::kProgramStart),
     nullptr,
-    new Constant(mainVars_),
+    new Constant(std::to_string(mainVars_)),
     nullptr);
 
   AddToEnd(newhead);
@@ -445,7 +451,7 @@ void IrGenVisitor::VisitFunctionCall(const FunctionCall& call) {
   if (foundinParams) {
     pos = std::distance(paramVariables_.begin(), std::find(
       paramVariables_.begin(), paramVariables_.end(), call.lhs().name()));
-    stackOffset = 1 * ((pos + 2) * 8);
+    stackOffset = 1 * ((pos + 3) * 8);
   } else {
     if (scanningParams_ == false) {
       bool found = std::find(localVariables_.begin(), localVariables_.end(),
@@ -453,7 +459,7 @@ void IrGenVisitor::VisitFunctionCall(const FunctionCall& call) {
       if (!found) { localVariables_.push_back(call.lhs().name()); }
       pos = std::distance(localVariables_.begin(), std::find(
         localVariables_.begin(), localVariables_.end(), call.lhs().name()));
-      stackOffset = -1 * ((pos + 1) * 8);
+      stackOffset = -1 * ((pos + 2) * 8);
     } else if (scanningParams_ == true) {
       bool found = std::find(paramVariables_.begin(), paramVariables_.end(),
       (call.lhs().name())) != paramVariables_.end();
@@ -462,7 +468,7 @@ void IrGenVisitor::VisitFunctionCall(const FunctionCall& call) {
       }
       pos = std::distance(paramVariables_.begin(), std::find(
         paramVariables_.begin(), paramVariables_.end(), call.lhs().name()));
-      stackOffset = 1 * ((pos + 2) * 8);
+      stackOffset = 1 * ((pos + 3) * 8);
     }
   }
   StatementNode* newhead = new StatementNode(
@@ -470,9 +476,9 @@ void IrGenVisitor::VisitFunctionCall(const FunctionCall& call) {
     new Variable(call.callee_name()),
     new Operator(Operator::kCall),
     new Variable(call.lhs().name()),
-    new Constant(numArgs),
+    new Constant(std::to_string(numArgs)),
     nullptr);
-  newhead->GetTarget()->SetOffset(stackOffset);
+  newhead->GetTarget()->SetOffset(new Constant(std::to_string(stackOffset)));
   AddToEnd(newhead);
 }
 void IrGenVisitor::VisitFunctionDef(const FunctionDef& def) {
@@ -489,7 +495,7 @@ void IrGenVisitor::VisitFunctionDef(const FunctionDef& def) {
     new Variable(def.function_name()),
     new Operator(Operator::kFuncBegin),
     nullptr,
-    new Constant(numLocalVar),
+    new Constant(std::to_string(numLocalVar)),
     nullptr);
   AddToEnd(newhead);
   scanningParams_ = true;
@@ -510,7 +516,7 @@ void IrGenVisitor::VisitFunctionDef(const FunctionDef& def) {
     new Variable(def.function_name()),
     new Operator(Operator::kFuncEnd),
     nullptr,
-    new Constant(numLocalVar),
+    new Constant(std::to_string(numLocalVar)),
     nullptr);
   AddToEnd(newhead);
   localVariables_.clear();
@@ -617,7 +623,7 @@ void IrGenVisitor::VisitLogicalOrExpr(const LogicalOrExpr& exp) {
   exp.rhs().Visit(&countVisitor);
   int numRhs = countVisitor.NumberOfStatements();
   exp.lhs().Visit(this);
-  tail_->GetTarget()->SetValue(tail_->GetTarget()->GetValue() + numRhs);
+  // tail_->GetTarget()->SetValue(tail_->GetTarget()->GetValue() + numRhs);
   exp.rhs().Visit(this);
   StatementNode *newtail = new StatementNode(
     new Label(labelNum_++),
