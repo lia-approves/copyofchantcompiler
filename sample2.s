@@ -1,14 +1,4 @@
 
-#### Start of IR ####
-
-#Sstatementnumber_1:	program begin
-#Sstatementnumber_2:	b := (3)
-#Sstatementnumber_3:	2 = 30
-#Sstatementnumber_4:	t1 = 12 + 2
-#Sstatementnumber_5:	return t1
-
-#### End of IR ####
-
 #### Start of Assembly ####
 
 .global main

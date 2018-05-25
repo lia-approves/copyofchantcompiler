@@ -118,6 +118,9 @@ void AsmProgram::GenerateASM(StatementNode* node) {
     asm_sstring_ << "mov -8(%rbp), %rbx" << endl;
     asm_sstring_ << "mov %rbx, (%rax)" << endl;
     asm_sstring_ << "add $" << std::stoi(node->GetOp2()->GetName()) * 8 << ", -8(%rbp)" << endl;
+    asm_sstring_ << "mov -8(%rbp), %rdi" << endl;
+    asm_sstring_ << "mov $12, %rax" << endl;
+    asm_sstring_ << "syscall" << endl;
     break;
   case Operator::kLessThan:
     asm_sstring_ << "pop %rax" << endl;

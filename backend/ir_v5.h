@@ -160,7 +160,8 @@ class Deref : public Operand {
 
   std::string PushValueToStack() {
     std::stringstream res;
-    res << base_->PushAddrToStack();
+    res << base_->PushValueToStack();
+    // res << base_->PushAddrToStack();
     res << offset_->PushValueToStack();
     res << "pop %rax" << endl;  // rax contains the offset
     res << "imul $8, %rax" << endl;
@@ -171,7 +172,8 @@ class Deref : public Operand {
   }
   std::string PushAddrToStack() {
     std::stringstream res;
-    res << base_->PushAddrToStack();
+    res << base_->PushValueToStack();
+    // res << base_->PushAddrToStack();
     res << offset_->PushValueToStack();
     res << "pop %rax" << endl;  // rax contains the offset
     res << "imul $8, %rax" << endl;
