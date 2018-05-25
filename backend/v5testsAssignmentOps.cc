@@ -166,13 +166,13 @@ TEST(Access, OfDereference) {
   ast->Visit(&irGen);
   AsmProgram testasm;
   testasm.IrToAsm(&irGen);
-  irGen.PrintIR();
+  // irGen.PrintIR();
 
   std::ofstream test_output_file;
   test_output_file.open("testfile.s");
   test_output_file << testasm.GetASMString();
   test_output_file.close();
-  std::cout << testasm.GetASMString();
+  // std::cout << testasm.GetASMString();
   system("gcc testfile.s && ./a.out > test_output.txt");
 
   std::ifstream output_file;
