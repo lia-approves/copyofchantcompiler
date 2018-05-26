@@ -12,377 +12,207 @@
 using std::stringstream;
 using std::endl;
 using std::string;
+using std::cout;
 
 namespace cs160 {
-namespace backend {
+  namespace backend {
 
-class Operand {        // abstract class for operand can be constant(integer),
- public:               // variable or register or label
-  Operand() {}
-  virtual ~Operand() {}
+    class Operand {        // abstract class for operand can be constant(integer),
+    public:               // variable or register or label
+      Operand() {}
+      virtual ~Operand() {}
+      virtual int GetValue() = 0;
+      virtual void SetValue(int value) = 0;
+      virtual std::string GetName() = 0;
+      virtual void SetStackOffset(int offset) = 0;
+      virtual int GetStackOffset() = 0;
+    private:
+    };
 
-  virtual std::string GetName() = 0;
+    class Label : public Operand {
+    public:
+      explicit Label(int labelNum) { value_ = (labelNum); }
+      ~Label() {}
+      int GetValue() { return value_; }
+      void SetValue(int value) { value_ = value; }
+      std::string GetName() { return "statementnumber_" + std::to_string(value_); }
+      void SetStackOffset(int offset) {  }
+      int GetStackOffset() { return 0; }
+    private:
+      int value_;
+    };
 
-  virtual void SetBase(Operand *base) = 0;
-  virtual Operand* GetBase() = 0;
+    class Register : public Operand {                        // t1, t2 ,etc
+    public:
+      explicit Register(int v) { value_ = (v); }
+      ~Register() {}
+      int GetValue() { return value_; }
+      void SetValue(int value) { value_ = value; }
+      std::string GetName() { return "t" + std::to_string(value_); }
+      void SetStackOffset(int offset) { }
+      int GetStackOffset() { return 0; }
+    private:
+      int value_;
+    };
 
-  virtual void SetOffset(Operand *offset) = 0;
-  virtual Operand* GetOffset() = 0;
+    class Variable : public Operand {     // bob, a, b, height, etc
+    public:
+      explicit Variable(std::string s) { name_ = (s); }
+      ~Variable() {}
+      int GetValue() { return 0; }
+      std::string GetName() { return name_; }
+      void SetValue(int value) {}
+      void SetStackOffset(int offset) { stackOffSet_ = offset; }
+      int GetStackOffset() { return stackOffSet_; }
+    private:
+      std::string name_;
+      int stackOffSet_;
+    };
 
-  virtual std::string PushValueToStack() = 0;
-  virtual std::string PushAddrToStack() = 0;
-
- private:
-  std::string name_;
-  Operand *offset_;
-  Operand *base_;
-};
-
-class Label : public Operand {
- public:
-  explicit Label(int labelNum) { value_ = (labelNum); }
-  ~Label() {}
-  int GetValue() { return value_; }
-  void SetValue(int value) { value_ = value; }
-  std::string GetName() { return "statementnumber_" + std::to_string(value_); }
-  void SetOffset(Operand *offset) {  }
-  void SetBase(Operand *base) {  }
-  Operand* GetOffset() { return offset_; }
-  Operand* GetBase() { return base_; }
-  std::string PushValueToStack() {
-    return "";
-  }
-  std::string PushAddrToStack() {
-    return "";
-  }
- private:
-  int value_;
-  Operand *base_;
-  Operand *offset_;
-};
-
-class Register : public Operand {                        // t1, t2 ,etc
- public:
-  explicit Register(int v) { value_ = (v); }
-  ~Register() {}
-  int GetValue() { return value_; }
-  void SetValue(int value) { value_ = value; }
-  std::string GetName() { return "t" + std::to_string(value_); }
-  void SetOffset(Operand *offset) {  }
-  void SetBase(Operand *base) {  }
-
-  Operand* GetOffset() { return offset_; }
-
-  Operand* GetBase() { return base_; }
-
-  std::string PushValueToStack() {
-    return "";
-  }
-  std::string PushAddrToStack() {
-    return "";
-  }
- private:
-  int value_;
-  Operand *base_;
-  Operand *offset_;
-};
-
-class Variable : public Operand {
-  // A Variable refers to a value stored in memory, either the heap or the stack
-  // It is defined by a base pointer... eg:
-  // for a tuple "-8(%rbp)", for a var "%rbp"
-  // and an offset, which is the location of the value relative to either the
-  // stack (in the case of a local variable) or a tuple address (in the case of
-  // a dereference of a tuple)
- public:
-  explicit Variable(std::string s) {
-    name_ = s;
-    // base_ = new Constant("%rbp");
-    // offset_ = new Constant("$0");
-  }
-  ~Variable() {}
-
-  std::string GetName() { return name_; }
-
-  void SetOffset(Operand *offset) {
-    offset_ = offset;
-  }
-  Operand* GetOffset() { return offset_; }
-
-  void SetBase(Operand *base) {
-    base_ = base;
-  }
-  Operand* GetBase() { return base_; }
-
-  std::string PushValueToStack() {
-    std::stringstream res;
-    res << base_->PushAddrToStack();
-    res << offset_->PushValueToStack();
-    res << "pop %rax" << endl;  // rax contains the offset
-    res << "pop %rbx" << endl;  // rbx contains the base addr
-    res << "add %rax, %rbx" << endl;
-    res << "push (%rbx)" << endl;
-    return res.str();
-  }
-  std::string PushAddrToStack() {
-    std::stringstream res;
-    res << base_->PushAddrToStack();
-    res << offset_->PushValueToStack();
-    res << "pop %rax" << endl;  // rax contains the offset
-    res << "pop %rbx" << endl;  // rbx contains the base addr
-    res << "add %rax, %rbx" << endl;
-    res << "push %rbx" << endl;
-    return res.str();
-  }
-
- private:
-  std::string name_;
-  Operand *offset_;
-  Operand *base_;
-};
-
-class Deref : public Operand {
- public:
-  explicit Deref(std::string s) {
-    name_ = s;
-  }
-  ~Deref() {}
-
-  std::string GetName() { return name_; }
-  void SetOffset(Operand *offset) {
-    offset_ = offset;
-  }
-  void SetBase(Operand *base) {
-    base_ = base;
-  }
-  Operand* GetOffset() { return offset_; }
-  Operand* GetBase() { return base_; }
-
-  std::string PushValueToStack() {
-    std::stringstream res;
-    res << base_->PushValueToStack();
-    // res << base_->PushAddrToStack();
-    res << offset_->PushValueToStack();
-    res << "pop %rax" << endl;  // rax contains the offset
-    res << "imul $8, %rax" << endl;
-    res << "pop %rbx" << endl;  // rbx contains the base addr
-    res << "add %rax, %rbx" << endl;
-    res << "push (%rbx)" << endl;
-    return res.str();
-  }
-  std::string PushAddrToStack() {
-    std::stringstream res;
-    res << base_->PushValueToStack();
-    // res << base_->PushAddrToStack();
-    res << offset_->PushValueToStack();
-    res << "pop %rax" << endl;  // rax contains the offset
-    res << "imul $8, %rax" << endl;
-    res << "pop %rbx" << endl;  // rbx contains the base addr
-    res << "add %rax, %rbx" << endl;
-    res << "push %rbx" << endl;
-    return res.str();
-  }
-
- private:
-  std::string name_;
-  Operand *offset_;
-  Operand *base_;
-};
-
-class Constant : public Operand {    // 3, 8, 6 etc (integers)
- public:
-  explicit Constant(std::string n) { name_ = (n); }
-  ~Constant() {}
-
-  std::string GetName() { return name_; }
-
-  void SetOffset(Operand *offset) {  }
-  Operand* GetOffset() { return offset_; }
-
-  Operand* GetBase() { return base_; }
-  void SetBase(Operand *base) {  }
-
-  std::string PushValueToStack() {
-    std::stringstream res;
-    res << "push $" << name_ << endl;
-    return res.str();
-  }
-  std::string PushAddrToStack() {
-    std::stringstream res;
-    res << "push " << name_ << endl;
-    return res.str();
-  }
-
- private:
-  std::string name_;
-  Operand *offset_;
-  Operand *base_;
-};
-
-
-class Operator {
- public:
-  enum Opcode {
-    kAdd, kSubtract, kMultiply, kDivide,
-    kAssignFromArithExp, kAssignFromNewTuple, kLessThan, kLessThanEqualTo,
-    kGreaterThan, kGreaterThanEqualTo, kEqualTo, kGoto, kAllocateVars,
-    kDeallocateVars, kPrint, kPushVarValue, kProgramStart,
-    kCall, kFuncBegin, kFuncEnd, kReturn, kParam, kPushAddr
-  };
-  explicit Operator(Opcode o) { op_ = (o); }
-  ~Operator() {}
-  Opcode GetOpcode() const { return op_; }
-  std::string GetSymbol() {
-    if (op_ == kAdd) return "+";
-    if (op_ == kSubtract) return "-";
-    if (op_ == kMultiply) return "*";
-    if (op_ == kDivide) return "/";
-    if (op_ == kAssignFromArithExp) return "=";
-    if (op_ == kLessThan) return "<";
-    if (op_ == kLessThanEqualTo) return "<=";
-    if (op_ == kGreaterThan) return ">";
-    if (op_ == kGreaterThanEqualTo) return ">=";
-    if (op_ == kEqualTo) return "==";
-    if (op_ == kGoto) return "-->";
-    if (op_ == kAllocateVars) return "alloc";
-    if (op_ == kDeallocateVars) return "dealloc";
-    if (op_ == kPrint) return "print";
-    if (op_ == kPrint) return "";
-    return "";
-  }
-
- private:
-  Opcode op_;
-};
-class StatementNode {
- public:
-  StatementNode(
-    Operand* label,
-    Operand* target,
-    Operator* instruction,
-    Operand* operand1,
-    Operand* operand2,
-    StatementNode* next)
-    : label_(label),
-    target_(target),
-    operator_(instruction),
-    operand1_(operand1),
-    operand2_(operand2),
-    next_(next) {}
-  ~StatementNode() {
-    delete label_;
-    delete target_;
-    delete operator_;
-    delete operand1_;
-    delete operand2_;
-  }
-  void Print() {
-    std::cout << "#S";
-    if (label_ != nullptr) std::cout << label_->GetName() << ":\t";
-    switch (GetInstruction()->GetOpcode()) {
-    case Operator::kAdd:
-    case Operator::kSubtract:
-    case Operator::kMultiply:
-    case Operator::kDivide:
-      if (target_ != nullptr) std::cout << target_->GetName();
-      std::cout << " = ";
-      if (operand1_ != nullptr) std::cout << GetOp1()->GetName() << " ";
-      std::cout << GetInstruction()->GetSymbol() << " ";
-      if (operand2_ != nullptr) std::cout << GetOp2()->GetName();
-      break;
-
-    case Operator::kAssignFromArithExp:
-      if (target_ != nullptr) std::cout << target_->GetName();
-      std::cout << " = ";
-      if (operand2_ != nullptr) std::cout << GetOp2()->GetName();
-      break;
-    case Operator::kAssignFromNewTuple:
-      if (target_ != nullptr) std::cout << target_->GetName();
-      std::cout << " := ";
-      if (operand2_ != nullptr) std::cout << "(" << GetOp2()->GetName() << ")";
-      break;
-
-    case Operator::kLessThan:
-    case Operator::kLessThanEqualTo:
-    case Operator::kGreaterThan:
-    case Operator::kGreaterThanEqualTo:
-    case Operator::kEqualTo:
-      std::cout << "if (";
-      if (operand1_ != nullptr) std::cout << GetOp1()->GetName() << " ";
-      std::cout << GetInstruction()->GetSymbol() << " ";
-      if (operand2_ != nullptr) std::cout << GetOp2()->GetName() << "";
-      std::cout << ") goto S";
-      if (target_ != nullptr) std::cout << target_->GetName() << ":";
-      break;
-
-    case Operator::kGoto:
-      if (target_ != nullptr) {
-        std::cout << "goto S" << target_->GetName() << ":";
+    class Constant : public Operand {    // 3, 8, 6 etc (integers)
+    public:
+      explicit Constant(int v) { value_ = (v); }
+      ~Constant() {}
+      int GetValue() { return value_; }
+      void SetValue(int value) { value_ = value; }
+      std::string GetName() { return std::to_string(value_); }
+      void SetStackOffset(int offset) {  }
+      int GetStackOffset() { return 0; }
+    private:
+      int value_;
+    };
+    class Operator {
+    public:
+      enum Opcode {
+        kAdd, kSubtract, kMultiply, kDivide,
+        kLessThan, kLessThanEqualTo, kGreaterThan, kGreaterThanEqualTo,
+        kEqualTo, kGoto,
+        kProgramStart, kProgramEnd,
+        kFuncBegin, kFuncEnd, kReturn, kParam, kCall,
+        kPushValueOfInteger, kPushAddressOfVariable, kPushValueOfVariable,
+        kPushAddressOfDereference, kPushValueOfDereference, kAssignmentFromNewTuple,
+        kAssignmentFromArithExp
+      };
+      explicit Operator(Opcode o) { op_ = (o); }
+      ~Operator() {}
+      Opcode GetOpcode() const { return op_; }
+    private:
+      Opcode op_;
+    };
+    class StatementNode {
+    public:
+      StatementNode(
+        Operand* label,
+        Operand* target,
+        Operator* instruction,
+        Operand* operand1,
+        Operand* operand2,
+        StatementNode* next)
+        : label_(label),
+        target_(target),
+        operator_(instruction),
+        operand1_(operand1),
+        operand2_(operand2),
+        next_(next) {}
+      ~StatementNode() {
+        delete label_;
+        delete target_;
+        delete operator_;
+        delete operand1_;
+        delete GetOp2();
       }
-      break;
-    case Operator::kAllocateVars:
-      if (target_ != nullptr) {
-        std::cout << "alloc " << target_->GetName() << " loc vars:";
+      void Print() {
+        cout << "#S" << label_->GetValue() << ":\t";
+        switch (GetInstruction()->GetOpcode()) {
+        case Operator::kAdd:
+          cout << GetTarget()->GetName() << " = " << GetOp1()->GetName() << " + " << GetOp2()->GetName();
+          break;
+        case Operator::kSubtract:
+          cout << GetTarget()->GetName() << " = " << GetOp1()->GetName() << " - " << GetOp2()->GetName();
+          break;
+        case Operator::kMultiply:
+          cout << GetTarget()->GetName() << " = " << GetOp1()->GetName() << " * " << GetOp2()->GetName();
+          break;
+        case Operator::kDivide:
+          cout << GetTarget()->GetName() << " = " << GetOp1()->GetName() << " / " << GetOp2()->GetName();
+          break;
+        case Operator::kAssignmentFromArithExp:
+          cout << GetTarget()->GetName() << " = " << GetOp2()->GetName(); // a=5  a is target 2 is in op2, if theres is a single argument in the Three adress code, we normally put it in the second op field
+          break;
+        case Operator::kAssignmentFromNewTuple:
+          cout << GetTarget()->GetName() << " = newTuple(" << GetOp2()->GetName() << ")";  
+          break;
+        case Operator::kLessThan:
+          cout << "if (" << GetOp1()->GetName() << " < " << GetOp2()->GetName() << ") goto S" << GetTarget()->GetValue() << ":";
+          break;
+        case Operator::kLessThanEqualTo:
+          cout << "if (" << GetOp1()->GetName() << " <= " << GetOp2()->GetName() << ") goto S" << GetTarget()->GetValue() << ":";
+          break;
+        case Operator::kGreaterThan:
+          cout << "if (" << GetOp1()->GetName() << " > " << GetOp2()->GetName() << ") goto S" << GetTarget()->GetValue() << ":";
+          break;
+        case Operator::kGreaterThanEqualTo:
+          cout << "if (" << GetOp1()->GetName() << " >= " << GetOp2()->GetName() << ") goto S" << GetTarget()->GetValue() << ":";
+          break;
+        case Operator::kEqualTo:
+          cout << "if (" << GetOp1()->GetName() << " == " << GetOp2()->GetName() << ") goto S" << GetTarget()->GetValue() << ":";
+          break;
+        case Operator::kGoto:
+          cout << "goto S" << GetTarget()->GetValue() << ":";
+          break;
+        case Operator::kProgramStart:
+          cout << "program begin";
+          break;
+        case Operator::kProgramEnd:
+          cout << "program end";
+          break;
+        case Operator::kCall:
+          cout << "call " << GetTarget()->GetName() << "," << GetOp2()->GetValue() << "  --> " << operand1_->GetName(); //op2 is num of args
+          break;
+        case Operator::kParam:
+          cout << "param " << GetTarget()->GetName();
+          break;
+        case Operator::kFuncBegin:
+          cout << "func begin " << GetTarget()->GetName();
+          break;
+        case Operator::kFuncEnd:
+          cout << "func end " << GetTarget()->GetName();
+          break;
+        case Operator::kReturn:
+          cout << "return " << GetTarget()->GetName();
+          break;
+        case Operator::kPushValueOfInteger:
+          cout << GetTarget()->GetName() << " = " << GetOp2()->GetName();
+          break;
+        case Operator::kPushValueOfVariable:
+          cout << GetTarget()->GetName() << " = " << GetOp2()->GetName();
+          break;
+        case Operator::kPushAddressOfVariable:
+          cout << GetTarget()->GetName() << " = &" << GetOp2()->GetName();
+          break;
+        case Operator::kPushAddressOfDereference:
+          cout << GetTarget()->GetName() << " = &[" << GetOp1()->GetName() << "[" << GetOp2()->GetName() << "]]";
+          break;
+        case Operator::kPushValueOfDereference:
+          cout << GetTarget()->GetName() << " = [" << GetOp1()->GetName() << "[" << GetOp2()->GetName() << "]]";
+          break;
+        }
       }
-      break;
-    case Operator::kDeallocateVars:
-      if (target_ != nullptr) {
-        std::cout << "dealloc " << 8 << "*" << target_->GetName() << " bytes:";
-      }
-      break;
-    case Operator::kPrint:
-      if (target_ != nullptr) {
-        std::cout << "" << target_->GetName() << "";
-      }
-      break;
-    case Operator::kPushVarValue:
-      if (Constant* regType = dynamic_cast<Constant*>(operand2_)) {
-        std::cout << "" << target_->GetName() << " = " << regType->GetName();
-      } else if (Variable* regType = dynamic_cast<Variable*>(operand2_)) {
-        std::cout << target_->GetName() << " = " << regType->GetName();
-      } else if (Register* regType = dynamic_cast<Register*>(operand2_)) {
-        std::cout << regType->GetName() << " = " << target_->GetName();
-      }
-      break;
-    case Operator::kProgramStart:
-      std::cout << "program begin";
-      break;
-    case Operator::kCall:
-      std::cout << "call " << target_->GetName() << ","
-      << operand2_->GetName() << "  --> " << operand1_->GetName();
-      break;
-    case Operator::kParam:
-      std::cout << "param " << target_->GetName();
-      break;
-    case Operator::kFuncBegin:
-      std::cout << "func begin " << target_->GetName();
-      break;
-    case Operator::kFuncEnd:
-      std::cout << "func end " << target_->GetName();
-      break;
-    case Operator::kReturn:
-      std::cout << "return " << target_->GetName();
-      break;
-    default:
-      break;
-    }
-  }
-  Operand*& GetLabel() { return label_; }
-  Operand*& GetOp1() { return operand1_; }
-  Operand*& GetOp2() { return operand2_; }
-  Operand*& GetTarget() { return target_; }
-  Operator*& GetInstruction() { return operator_; }
-  StatementNode*& GetNext() { return next_; }
-
- private:
-  Operand * label_;
-  Operand * target_;
-  Operator* operator_;
-  Operand* operand1_;
-  Operand* operand2_;
-  StatementNode* next_;
-};
-}  // namespace backend
+      Operand*& GetLabel() { return label_; }
+      Operand*& GetOp1() { return operand1_; }
+      Operand*& GetOp2() { return operand2_; }
+      Operand*& GetTarget() { return target_; }
+      Operator*& GetInstruction() { return operator_; }
+      StatementNode*& GetNext() { return next_; }
+    private:
+      Operand * label_;
+      Operand * target_;
+      Operator* operator_;
+      Operand* operand1_;
+      Operand* operand2_;
+      StatementNode* next_;
+    };
+  }  // namespace backend
 }  // namespace cs160
 
 #endif  // BACKEND_IR_V5_H_
