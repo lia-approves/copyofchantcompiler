@@ -1,7 +1,7 @@
 // Copyright(c) 2018, Team Chant
 
-#ifndef BACKEND_IR_V4_H_
-#define BACKEND_IR_V4_H_
+#ifndef BACKEND_IR_V5_H_
+#define BACKEND_IR_V5_H_
 
 #include <iostream>
 #include <string>
@@ -12,6 +12,7 @@
 using std::stringstream;
 using std::endl;
 using std::string;
+using std::cout;
 
 namespace cs160 {
   namespace backend {
@@ -80,51 +81,21 @@ namespace cs160 {
     private:
       int value_;
     };
-    /*
-    class Text : public Operand {                       // 3, 8, 6 etc (integers)
-    public:
-      explicit Text(string text) { text_ = (text); }
-      ~Text() {}
-      int GetValue() { return 0; }
-      void SetValue(int value) { text_ = value; }
-      std::string GetName() { return text_; }
-      void SetStackOffset(int offset) {}
-      int GetStackOffset() { return 0; }
-    private:
-      std::string text_;
-    };*/
-
     class Operator {
     public:
       enum Opcode {
         kAdd, kSubtract, kMultiply, kDivide,
-        kAssign, kLessThan, kLessThanEqualTo, kGreaterThan,
-        kGreaterThanEqualTo, kEqualTo, kGoto, kAllocateVars,
-        kDeallocateVars, kPrint, kPushVarValue, kProgramStart, 
-        kCall, kFuncBegin, kFuncEnd, kReturn,kParam
+        kLessThan, kLessThanEqualTo, kGreaterThan, kGreaterThanEqualTo,
+        kEqualTo, kGoto,
+        kProgramStart, kProgramEnd,
+        kFuncBegin, kFuncEnd, kReturn, kParam, kCall,
+        kPushValueOfInteger, kPushAddressOfVariable, kPushValueOfVariable,
+        kPushAddressOfDereference, kPushValueOfDereference, kAssignmentFromNewTuple,
+        kAssignmentFromArithExp
       };
       explicit Operator(Opcode o) { op_ = (o); }
       ~Operator() {}
       Opcode GetOpcode() const { return op_; }
-      std::string GetSymbol() {
-        if (op_ == kAdd) return "+";
-        if (op_ == kSubtract) return "-";
-        if (op_ == kMultiply) return "*";
-        if (op_ == kDivide) return "/";
-        if (op_ == kAssign) return "=";
-        if (op_ == kLessThan) return "<";
-        if (op_ == kLessThanEqualTo) return "<=";
-        if (op_ == kGreaterThan) return ">";
-        if (op_ == kGreaterThanEqualTo) return ">=";
-        if (op_ == kEqualTo) return "==";
-        if (op_ == kGoto) return "-->";
-        if (op_ == kAllocateVars) return "alloc";
-        if (op_ == kDeallocateVars) return "dealloc";
-        if (op_ == kPrint) return "print";
-        if (op_ == kPrint) return "";
-        return "error";
-      }
-        
     private:
       Opcode op_;
     };
@@ -148,92 +119,82 @@ namespace cs160 {
         delete target_;
         delete operator_;
         delete operand1_;
-        delete operand2_;
+        delete GetOp2();
       }
       void Print() {
-        std::cout << "#S";
-        if (label_ != nullptr) std::cout << label_->GetValue() << ":\t";
+        cout << "#S" << label_->GetValue() << ":\t";
         switch (GetInstruction()->GetOpcode()) {
         case Operator::kAdd:
+          cout << GetTarget()->GetName() << " = " << GetOp1()->GetName() << " + " << GetOp2()->GetName();
+          break;
         case Operator::kSubtract:
+          cout << GetTarget()->GetName() << " = " << GetOp1()->GetName() << " - " << GetOp2()->GetName();
+          break;
         case Operator::kMultiply:
+          cout << GetTarget()->GetName() << " = " << GetOp1()->GetName() << " * " << GetOp2()->GetName();
+          break;
         case Operator::kDivide:
-          if (target_ != nullptr) std::cout << target_->GetName();
-          std::cout << " = ";
-          if (operand1_ != nullptr) std::cout << GetOp1()->GetName() << " ";
-          std::cout << GetInstruction()->GetSymbol() << " ";
-          if (operand2_ != nullptr) std::cout << GetOp2()->GetName();
+          cout << GetTarget()->GetName() << " = " << GetOp1()->GetName() << " / " << GetOp2()->GetName();
           break;
-
-        case Operator::kAssign:
-          if (target_ != nullptr) std::cout << target_->GetName();
-          std::cout << " = ";
-          if (operand2_ != nullptr) std::cout << GetOp2()->GetName();
+        case Operator::kAssignmentFromArithExp:
+          cout << GetTarget()->GetName() << " = " << GetOp2()->GetName(); // a=5  a is target 2 is in op2, if theres is a single argument in the Three adress code, we normally put it in the second op field
           break;
-
+        case Operator::kAssignmentFromNewTuple:
+          cout << GetTarget()->GetName() << " = newTuple(" << GetOp2()->GetName() << ")";  
+          break;
         case Operator::kLessThan:
+          cout << "if (" << GetOp1()->GetName() << " < " << GetOp2()->GetName() << ") goto S" << GetTarget()->GetValue() << ":";
+          break;
         case Operator::kLessThanEqualTo:
+          cout << "if (" << GetOp1()->GetName() << " <= " << GetOp2()->GetName() << ") goto S" << GetTarget()->GetValue() << ":";
+          break;
         case Operator::kGreaterThan:
+          cout << "if (" << GetOp1()->GetName() << " > " << GetOp2()->GetName() << ") goto S" << GetTarget()->GetValue() << ":";
+          break;
         case Operator::kGreaterThanEqualTo:
+          cout << "if (" << GetOp1()->GetName() << " >= " << GetOp2()->GetName() << ") goto S" << GetTarget()->GetValue() << ":";
+          break;
         case Operator::kEqualTo:
-          std::cout << "if (";
-          if (operand1_ != nullptr) std::cout << GetOp1()->GetName() << " ";
-          std::cout << GetInstruction()->GetSymbol() << " ";
-          if (operand2_ != nullptr) std::cout << GetOp2()->GetName() << "";
-          std::cout << ") goto S";
-          if (target_ != nullptr) std::cout << target_->GetValue() << ":";
+          cout << "if (" << GetOp1()->GetName() << " == " << GetOp2()->GetName() << ") goto S" << GetTarget()->GetValue() << ":";
           break;
-
         case Operator::kGoto:
-          if (target_ != nullptr) {
-            std::cout << "goto S" << target_->GetValue() << ":";
-          }
-          break;
-        case Operator::kAllocateVars:
-          if (target_ != nullptr) {
-            std::cout << "alloc " << target_->GetValue() << " loc vars:";
-          }
-          break;
-        case Operator::kDeallocateVars:
-          if (target_ != nullptr) {
-            std::cout << "dealloc " << 8 << "*" << target_->GetValue() << " bytes:";
-          }
-          break;
-        case Operator::kPrint:
-          if (target_ != nullptr) {
-            std::cout << "" << target_->GetName() << "";
-          }
-          break;
-        case Operator::kPushVarValue:
-          if (Constant* regType = dynamic_cast<Constant*>(operand2_)) {
-            std::cout << "" << target_->GetName() << " = " << regType->GetName();
-          }
-          else if (Variable* regType = dynamic_cast<Variable*>(operand2_)) {
-            std::cout << target_->GetName() << " = " << regType->GetName();
-          }
-          else if (Register* regType = dynamic_cast<Register*>(operand2_)) {
-            std::cout << regType->GetName() << " = " << target_->GetName();
-          }
+          cout << "goto S" << GetTarget()->GetValue() << ":";
           break;
         case Operator::kProgramStart:
-          std::cout << "program begin";
+          cout << "program begin";
+          break;
+        case Operator::kProgramEnd:
+          cout << "program end";
           break;
         case Operator::kCall:
-          std::cout << "call " << target_->GetName() << "," << operand2_->GetValue() << "  --> " << operand1_->GetName();
+          cout << "call " << GetTarget()->GetName() << "," << GetOp2()->GetValue() << "  --> " << operand1_->GetName(); //op2 is num of args
           break;
         case Operator::kParam:
-          std::cout << "param " << target_->GetName();
+          cout << "param " << GetTarget()->GetName();
           break;
         case Operator::kFuncBegin:
-          std::cout << "func begin " << target_->GetName();
+          cout << "func begin " << GetTarget()->GetName();
           break;
         case Operator::kFuncEnd:
-          std::cout << "func end " << target_->GetName();
+          cout << "func end " << GetTarget()->GetName();
           break;
         case Operator::kReturn:
-          std::cout << "return " << target_->GetName();
+          cout << "return " << GetTarget()->GetName();
           break;
-        default:
+        case Operator::kPushValueOfInteger:
+          cout << GetTarget()->GetName() << " = " << GetOp2()->GetName();
+          break;
+        case Operator::kPushValueOfVariable:
+          cout << GetTarget()->GetName() << " = " << GetOp2()->GetName();
+          break;
+        case Operator::kPushAddressOfVariable:
+          cout << GetTarget()->GetName() << " = &" << GetOp2()->GetName();
+          break;
+        case Operator::kPushAddressOfDereference:
+          cout << GetTarget()->GetName() << " = &[" << GetOp1()->GetName() << "[" << GetOp2()->GetName() << "]]";
+          break;
+        case Operator::kPushValueOfDereference:
+          cout << GetTarget()->GetName() << " = [" << GetOp1()->GetName() << "[" << GetOp2()->GetName() << "]]";
           break;
         }
       }
@@ -254,4 +215,4 @@ namespace cs160 {
   }  // namespace backend
 }  // namespace cs160
 
-#endif  // BACKEND_IR_V4_H_
+#endif  // BACKEND_IR_V5_H_
