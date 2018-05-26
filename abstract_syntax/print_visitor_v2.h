@@ -1,15 +1,16 @@
 // Copyright (c) 2018, Team-Chant
-#ifndef ABSTRACT_SYNTAX_PRINT_VISITOR_V1_H_
-#define ABSTRACT_SYNTAX_PRINT_VISITOR_V1_H_
+#ifndef ABSTRACT_SYNTAX_PRINT_VISITOR_V2_H_
+#define ABSTRACT_SYNTAX_PRINT_VISITOR_V2_H_
 
 #include <sstream>
 #include <string>
+#include <vector>
 
-#include "abstract_syntax/abstract_syntax_tree_v1.h"
+#include "abstract_syntax/abstract_syntax_tree_v2.h"
 
 namespace cs160 {
 namespace abstract_syntax {
-namespace version_1 {
+namespace version_2 {
 
 class PrintVisitor : public AstVisitor {
  public:
@@ -20,6 +21,10 @@ class PrintVisitor : public AstVisitor {
 
   void VisitIntegerExpr(const IntegerExpr& exp) override {
     output_ << exp.value();
+  }
+
+  void VisitVariableExpr(const VariableExpr& exp) override {
+    output_ << exp.name();
   }
 
   void VisitAddExpr(const AddExpr& exp) override {
@@ -54,12 +59,28 @@ class PrintVisitor : public AstVisitor {
     output_ << ")";
   }
 
+  void VisitAssignment(const Assignment& assignment) override {
+    assignment.lhs().Visit(this);
+    output_ << " := ";
+    assignment.rhs().Visit(this);
+  }
+
+  void VisitProgram(const Program& program) override {
+    const std::vector<std::unique_ptr<const Assignment>>& assignments =
+      std::move(program.assignments());
+    for (int i=0; i < assignments.size(); i++) {
+      auto p = std::move(&assignments.at(i));
+      (*p)->Visit(this);
+    }
+    program.arithmetic_exp().Visit(this);
+  }
+
  private:
   std::stringstream output_;
 };
 
-}  // namespace version_1
+}  // namespace version_2
 }  // namespace abstract_syntax
 }  // namespace cs160
 
-#endif  // ABSTRACT_SYNTAX_PRINT_VISITOR_V1_H_
+#endif  // ABSTRACT_SYNTAX_PRINT_VISITOR_V2_H_

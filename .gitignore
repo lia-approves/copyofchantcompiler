@@ -11,6 +11,10 @@ Debug/team-chant-compiler.vcxprojResolveAssemblyReference.cache
 Debug/team-chant-compiler.log
 gtest.BUILD
 
+
 a.out
 main
 t.s
+
+.bazelrc
+
