@@ -137,7 +137,7 @@ namespace cs160 {
           cout << GetTarget()->GetName() << " = " << GetOp1()->GetName() << " / " << GetOp2()->GetName();
           break;
         case Operator::kAssignmentFromArithExp:
-          cout << GetTarget()->GetName() << " = " << GetOp2()->GetName(); // a=5  a is target 2 is in op2, if theres is a single argument in the Three adress code, we normally put it in the second op field
+          cout << "*" << GetTarget()->GetName() << " = " << GetOp2()->GetName(); // a=5  a is target 2 is in op2, if theres is a single argument in the Three adress code, we normally put it in the second op field
           break;
         case Operator::kAssignmentFromNewTuple:
           cout << GetTarget()->GetName() << " = newTuple(" << GetOp2()->GetName() << ")";  
