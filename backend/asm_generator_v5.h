@@ -110,17 +110,9 @@ namespace cs160 {
         asm_sstring_
           << "jmp " << node->GetTarget()->GetName() << endl;
         break;
-      case Operator::kPushAddressOfVariable:
+      case Operator::kPushValueOfInteger:
         asm_sstring_
-          << "mov %rbp,%rcx" << endl;  //get rbp(start of stack) put in rcx
-        if (node->GetOp2()->GetStackOffset() < 0) {
-          asm_sstring_
-            << "sub $" << -1 * node->GetOp2()->GetStackOffset() << ", %rcx" << endl;   
-        }
-        else { //get exact adress by adding or subtracting the offset
-          asm_sstring_ << "add $" << node->GetOp2()->GetStackOffset() << " ,%rcx" << endl;
-        }
-        asm_sstring_ << "push %rcx" << endl; // address is in rcx we push it
+          << "push $" << node->GetOp2()->GetValue() << endl; //only integer visitor uses this
         break;
       case Operator::kPushValueOfVariable:
         asm_sstring_
@@ -136,24 +128,17 @@ namespace cs160 {
         asm_sstring_
           << "push (%rcx)" << endl; //if we want the value at address we put parenthesis around
         break;
-      case Operator::kAssignmentFromNewTuple: // we store adress of heap at variable directly
+      case Operator::kPushAddressOfVariable:
         asm_sstring_
-          << "#new tuple" << endl //friendly message
-          << "mov $12, %rax" << endl // brk syscall number
-          << "mov $0, %rdi" << endl // arg 0 in rax to get currrent pos of heap
-          << "syscall" << endl // puts adress of heap in rax
-          << "mov %rax, %rsi" << endl //start of heap saved in rsi, this is our pointer
-          << "mov %rax, %rdi" << endl // prepare to move heap start by moving breakpoint we need to put desired address in rdi
-          << "pop %rax" << endl // size of desired tuple in rax
-          << "inc %rax" << endl // allocate one more byte just in case some crazy mofo wants to start arrays at 1
-          << "mov $8, %rbx" << endl //size times 8
-          << "imul %rax, %rbx" << endl //multiply, result in rbx
-          << "add %rbx, %rdi" << endl //move heap breakpoint by 8 * size of tuple, size was in rbx
-          << "mov $12, %rax" << endl // prepare brk syscall number again
-          << "syscall" << endl // new heap breakpoint has been moved
-          << "pop %rcx" << endl // place adress of reference variable into %rcx (lhs), it was on the stack 
-          << "mov %rsi, (%rcx)" << endl;// move heap pointer(the start) into the location of %rcx(address of variable)
-          // at the end, the program break is moved so we dont need to have a new base, every time we request the address of the program break(start of heap), we get a fresh address
+          << "mov %rbp,%rcx" << endl;  //get rbp(start of stack) put in rcx
+        if (node->GetOp2()->GetStackOffset() < 0) {
+          asm_sstring_
+            << "sub $" << -1 * node->GetOp2()->GetStackOffset() << ", %rcx" << endl;
+        }
+        else { //get exact adress by adding or subtracting the offset
+          asm_sstring_ << "add $" << node->GetOp2()->GetStackOffset() << " ,%rcx" << endl;
+        }
+        asm_sstring_ << "push %rcx" << endl; // address is in rcx we push it
         break;
       case Operator::kPushAddressOfDereference: // index is at the top of stack, address is at second to last, which has location of pointer as value
         asm_sstring_
@@ -175,9 +160,24 @@ namespace cs160 {
           << "add %rbx,%rax" << endl //add 8*index to address of rax(base array pointer)
           << "push (%rax)" << endl; //push value of what is at %rax(location of array + index)
         break;
-      case Operator::kPushValueOfInteger:
-          asm_sstring_
-            << "push $" << node->GetOp2()->GetValue() << endl; //only integer visitor uses this
+      case Operator::kAssignmentFromNewTuple: // we store adress of heap at variable directly
+        asm_sstring_
+          << "#new tuple" << endl //friendly message
+          << "mov $12, %rax" << endl // brk syscall number
+          << "mov $0, %rdi" << endl // arg 0 in rax to get currrent pos of heap
+          << "syscall" << endl // puts adress of heap in rax
+          << "mov %rax, %rsi" << endl //start of heap saved in rsi, this is our pointer
+          << "mov %rax, %rdi" << endl // prepare to move heap start by moving breakpoint we need to put desired address in rdi
+          << "pop %rax" << endl // size of desired tuple in rax
+          << "inc %rax" << endl // allocate one more byte just in case some crazy mofo wants to start arrays at 1
+          << "mov $8, %rbx" << endl //size times 8
+          << "imul %rax, %rbx" << endl //multiply, result in rbx
+          << "add %rbx, %rdi" << endl //move heap breakpoint by 8 * size of tuple, size was in rbx
+          << "mov $12, %rax" << endl // prepare brk syscall number again
+          << "syscall" << endl // new heap breakpoint has been moved
+          << "pop %rcx" << endl // place adress of reference variable into %rcx (lhs), it was on the stack 
+          << "mov %rsi, (%rcx)" << endl;// move heap pointer(the start) into the location of %rcx(address of variable)
+          // at the end, the program break is moved so we dont need to have a new base, every time we request the address of the program break(start of heap), we get a fresh address
         break;
       case Operator::kAssignmentFromArithExp:
         asm_sstring_
