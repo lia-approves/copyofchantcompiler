@@ -63,6 +63,8 @@ using cs160::backend::AsmProgram;
 
 int main() {
     Statement::Block foo_statements;
+    FunctionDef::Block function_defs;
+
 
     foo_statements.push_back(std::move(make_unique<const Conditional>(
       make_unique<const LogicalOrExpr>(
@@ -109,7 +111,6 @@ int main() {
       std::move(foo_statements),
       std::move(foo_retval));
 
-    FunctionDef::Block function_defs;
     function_defs.push_back(std::move(foo_def));
 
     Statement::Block statements;
