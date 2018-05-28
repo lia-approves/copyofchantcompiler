@@ -18,8 +18,14 @@
 #S17:	t11 = 6
 #S18:	*t10 = t11
 #S19:	t12 = a
-#S20:	return t12
-#S21:	program end
+#S20:	t13 = b
+#S21:	t14 = t12 + t13
+#S22:	t15 = &c
+#S23:	t16 = 3
+#S24:	t17 = t15[t16]
+#S25:	t18 = t14 + t17
+#S26:	return t18
+#S27:	program end
 #### END of IR ####
 
 
@@ -127,9 +133,43 @@ sub $8, %rcx
 push (%rcx)
 
 statementnumber_20:
-#program prints ae
+mov %rbp,%rcx
+sub $16, %rcx
+push (%rcx)
 
 statementnumber_21:
+pop %rax
+pop %rbx
+add %rax, %rbx
+push %rbx
+
+statementnumber_22:
+mov %rbp,%rcx
+sub $24, %rcx
+push %rcx
+
+statementnumber_23:
+push $3
+
+statementnumber_24:
+pop %rax
+mov $8, %rbx
+imul %rax, %rbx
+pop %rcx
+mov (%rcx), %rax
+add %rbx,%rax
+push (%rax)
+
+statementnumber_25:
+pop %rax
+pop %rbx
+add %rax, %rbx
+push %rbx
+
+statementnumber_26:
+#program prints ae
+
+statementnumber_27:
 #### End of Statements ####
 pop %rax
 GDB_ENDPROG_BREAKPOINT:
