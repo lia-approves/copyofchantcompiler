@@ -80,7 +80,7 @@ namespace cs160 {
       int ParamVars();
       void AddVariable(string variable);
     private:
-      bool scanningParams_ = false;
+      bool readingParams_ = false;
       std::vector<string> paramVariables_; 
       std::vector<string> localVariables_;
     };
@@ -132,7 +132,7 @@ namespace cs160 {
       int mainVars_ = 0; //used only for the main func to know how many local vars we need to allocate otherwise we use the visitor for the functions
       std::vector<string> paramVariables_; // rudimentary symbol table for parameter variables we need to change this to the assemler gen
       std::vector<string> localVariables_;
-      bool scanningParams_ = false;
+      bool readingParams_ = false;
       bool requestAddressFromNextNode = false; //this is how me request address from lhs
     };
   }  // namespace backend

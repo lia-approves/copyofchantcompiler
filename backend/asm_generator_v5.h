@@ -24,11 +24,16 @@ namespace cs160 {
       ~AsmProgram() {}
       void IrToAsm(IrGenVisitor* ir);
       string GetASMString() { return asm_sstring_.str(); }
+      int GetOffSet(string variable);
     private:
       void GenerateASM(StatementNode* node);
       stringstream asm_sstring_;
       stringstream asm_sstring_variables_;
       IrGenVisitor *ir_;
+      void NewSymbolTable() { paramVariables_.clear(); localVariables_.clear(); }
+      std::vector<string> paramVariables_;
+      std::vector<string> localVariables_;
+      int offSet_ = 0; //used by switch so we dont redeclare and dont have to create new scope
     };
     void AsmProgram::IrToAsm(IrGenVisitor* ir) {
       ir_ = ir;
@@ -115,28 +120,31 @@ namespace cs160 {
           << "push $" << node->GetOp2()->GetValue() << endl; //only integer visitor uses this
         break;
       case Operator::kPushValueOfVariable:
+        offSet_ = GetOffSet(node->GetOp2()->GetName());
+        asm_sstring_ << "# offset =" << offSet_ << " nodeoffset = " << offSet_ << endl;
         asm_sstring_
           << "mov %rbp,%rcx" << endl;
-        if (node->GetOp2()->GetStackOffset() < 0) {
+        if (offSet_ < 0) {
           asm_sstring_
-            << "sub $" << -1 * node->GetOp2()->GetStackOffset() << ", %rcx" << endl;
+            << "sub $" << -1 * offSet_ << ", %rcx" << endl;
         }
         else {
           asm_sstring_
-            << "add $" << node->GetOp2()->GetStackOffset() << " ,%rcx" << endl;
+            << "add $" << offSet_ << " ,%rcx" << endl;
         }
         asm_sstring_
           << "push (%rcx)" << endl; //if we want the value at address we put parenthesis around
         break;
       case Operator::kPushAddressOfVariable:
+        offSet_ = GetOffSet(node->GetOp2()->GetName());
         asm_sstring_
           << "mov %rbp,%rcx" << endl;  //get rbp(start of stack) put in rcx
-        if (node->GetOp2()->GetStackOffset() < 0) {
+        if (offSet_ < 0) {
           asm_sstring_
-            << "sub $" << -1 * node->GetOp2()->GetStackOffset() << ", %rcx" << endl;
+            << "sub $" << -1 * offSet_ << ", %rcx" << endl;
         }
         else { //get exact adress by adding or subtracting the offset
-          asm_sstring_ << "add $" << node->GetOp2()->GetStackOffset() << " ,%rcx" << endl;
+          asm_sstring_ << "add $" << offSet_ << " ,%rcx" << endl;
         }
         asm_sstring_ << "push %rcx" << endl; // address is in rcx we push it
         break;
@@ -186,6 +194,7 @@ namespace cs160 {
           << "mov %rbx, (%rax)" << endl; //move value rbx to location at address rax
         break;
       case Operator::kFuncBegin:
+        NewSymbolTable();
         asm_sstring_
           << ".type " << node->GetTarget()->GetName() << ",@function" << endl
           << node->GetTarget()->GetName() << ":" << endl
@@ -199,19 +208,27 @@ namespace cs160 {
           << "mov %rbp, %rsp" << endl
           << "pop %rbp" << endl
           << "ret" << endl;
+        NewSymbolTable();
+        break;
+      case Operator::kArgument:
+        asm_sstring_
+          << "#argument" << endl;
         break;
       case Operator::kParam:
+        paramVariables_.push_back(node->GetTarget()->GetName());
         asm_sstring_
-          << "#Param" << endl;
+          << "#parameter " << node->GetTarget()->GetName() << endl;
         break;
       case Operator::kCall:
+        offSet_ = GetOffSet(node->GetOp1()->GetName());
         asm_sstring_
           << "call " << node->GetTarget()->GetName() << endl //call
           << "push %rax" << endl //after func returns, return value in rax
-          << "pop " << node->GetTarget()->GetStackOffset() << "(%rbp)" << endl // move value to variable( call.lhs.name)
+          << "pop " << offSet_ << "(%rbp)" << endl // move value to variable( call.lhs.name)
           << "add $" << 8 * node->GetOp2()->GetValue() << ", %rsp" << endl;  //should change this whole routine soon it works for now
         break;
       case Operator::kProgramStart:
+        NewSymbolTable();
         asm_sstring_
           << "#### Start of Assembly ####" << endl
           << "#### Start of Statements ####" << endl
@@ -237,7 +254,6 @@ namespace cs160 {
           << "format:" << endl
           << ".asciz  \"%d\\n\"" << endl
           << endl
-          << ".data" << endl
           << "#### End of Assembly ####" << endl;
         break;
       case Operator::kReturn:
@@ -249,6 +265,23 @@ namespace cs160 {
           << "error: no suitable enum found" << endl;
         break;
       }
+    }
+    int AsmProgram::GetOffSet(string variable) {
+      int pos;
+      int stackOffset;
+      bool foundinParams = std::find(paramVariables_.begin(), paramVariables_.end(), (variable)) != paramVariables_.end();
+      if (foundinParams) {
+        pos = std::distance(paramVariables_.begin(), std::find(paramVariables_.begin(), paramVariables_.end(), variable));
+        stackOffset = 1 * ((pos + 2) * 8);
+      }
+      else {
+        bool foundinLocal = std::find(localVariables_.begin(), localVariables_.end(), (variable)) != localVariables_.end();
+        if (!foundinLocal) { localVariables_.push_back(variable); }
+        else {}
+        pos = std::distance(localVariables_.begin(), std::find(localVariables_.begin(), localVariables_.end(), variable));
+        stackOffset = -1 * ((pos + 1) * 8);
+      }
+      return stackOffset;
     }
   }  // namespace backend
 }  // namespace cs160
