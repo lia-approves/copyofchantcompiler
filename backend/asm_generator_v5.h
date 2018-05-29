@@ -121,7 +121,6 @@ namespace cs160 {
         break;
       case Operator::kPushValueOfVariable:
         offSet_ = GetOffSet(node->GetOp2()->GetName());
-        asm_sstring_ << "# offset =" << offSet_ << " nodeoffset = " << offSet_ << endl;
         asm_sstring_
           << "mov %rbp,%rcx" << endl;
         if (offSet_ < 0) {
