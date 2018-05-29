@@ -78,6 +78,7 @@ namespace cs160 {
       void ScanningParams(bool scanningParams);
       int LocalVars();
       int ParamVars();
+      void AddVariable(string variable);
     private:
       bool scanningParams_ = false;
       std::vector<string> paramVariables_; 
@@ -118,6 +119,7 @@ namespace cs160 {
       void VisitLoop(const Loop& loop) override;
       StatementNode* GetIR() { return head_; }
       void AddToEnd(StatementNode* newtail);
+      int GetOffset(string variable);
       void PrintIR();
       int NumberOfStatements();
       int NumberOfMainVars() { return mainVars_; }

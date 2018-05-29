@@ -83,13 +83,11 @@ int main() {
 
   Statement::Block statements;
   FunctionDef::Block function_defs;
-  statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(make_unique<const VariableExpr>("a"), make_unique<const IntegerExpr>(4))));
-  statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(make_unique<const VariableExpr>("b"), make_unique<const IntegerExpr>(5))));
-  statements.push_back(std::move(make_unique<const AssignmentFromNewTuple>(make_unique<const VariableExpr>("c"), make_unique<const IntegerExpr>(5))));
-  statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(make_unique<const VariableExpr>("a"), make_unique<const IntegerExpr>(9))));
-  statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(make_unique<const Dereference>(make_unique<const VariableExpr>("c"), make_unique<const IntegerExpr>(3)), make_unique<const IntegerExpr>(6))));
-  auto ae = make_unique<const AddExpr>(make_unique<const AddExpr>(make_unique<const VariableExpr>("a"), make_unique<const VariableExpr>("b")), make_unique<const Dereference>(make_unique<const VariableExpr>("c"), make_unique<const IntegerExpr>(3)));
+  statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(make_unique<const VariableExpr>("a"), make_unique<const AddExpr>(make_unique<const IntegerExpr>(13), make_unique<const IntegerExpr>(14)))));
+  statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(make_unique<const VariableExpr>("b"), make_unique<const AddExpr>(make_unique<const IntegerExpr>(13), make_unique<const IntegerExpr>(14)))));
+  auto ae = make_unique<const VariableExpr>("a");
   auto ast = make_unique<const Program>(std::move(function_defs), std::move(statements), std::move(ae));
+
 
   IrGenVisitor irGen;
   ast->Visit(&irGen);
