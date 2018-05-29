@@ -147,7 +147,7 @@ namespace cs160 {
           cout << "program begin";
           break;
         case Operator::kParam:
-          cout << "argument " << GetTarget()->GetName();
+          cout << "param " << GetTarget()->GetName();
           break;
         case Operator::kProgramEnd:
           cout << "program end";
