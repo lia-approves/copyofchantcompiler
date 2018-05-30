@@ -81,7 +81,7 @@ namespace cs160 {
       void AddVariable(string variable);
     private:
       bool readingParams_ = false;
-      std::vector<string> paramVariables_; 
+      std::vector<string> paramVariables_;
       std::vector<string> localVariables_;
     };
 
@@ -89,7 +89,7 @@ namespace cs160 {
     public:
       IrGenVisitor() {}
       ~IrGenVisitor() {
-        std::unique_ptr<StatementNode> tobe_deleted = head_;
+        StatementNode* tobe_deleted = head_;
         while (tobe_deleted != nullptr) {
           delete tobe_deleted;
           tobe_deleted = tobe_deleted->GetNext();
@@ -117,15 +117,14 @@ namespace cs160 {
       void VisitLogicalNotExpr(const LogicalNotExpr& exp) override;
       void VisitConditional(const Conditional& conditional) override;
       void VisitLoop(const Loop& loop) override;
-      std::unique_ptr<StatementNode> GetIR() { return head_; }
-      void AddToEnd(std::unique_ptr<StatementNode> newtail);
-      int GetOffset(string variable);
+      StatementNode* GetIR() { return head_; }
+      void AddToEnd(StatementNode* newtail);
       void PrintIR();
       int NumberOfStatements();
       int NumberOfMainVars() { return mainVars_; }
     private:
-      std::unique_ptr<StatementNode> head_ = nullptr;
-      std::unique_ptr<StatementNode> tail_ = nullptr;
+      StatementNode * head_ = nullptr;
+      StatementNode * tail_ = nullptr;
       int labelNum_ = 1; // label number tracker
       int register_number_ = 0; //reg number tracker
       std::vector<std::unique_ptr<Operand>> ir_stack_; //we push registers to this
