@@ -81,7 +81,7 @@ namespace cs160 {
       void AddVariable(string variable);
     private:
       bool readingParams_ = false;
-      std::vector<string> paramVariables_; 
+      std::vector<string> paramVariables_;
       std::vector<string> localVariables_;
     };
 

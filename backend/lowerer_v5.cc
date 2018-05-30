@@ -171,7 +171,7 @@ namespace cs160 {
       AddToEnd(newhead);
       ir_stack_.push_back(make_unique<Register>(register_number_++));
     }
-    void IrGenVisitor::VisitVariableExpr(const VariableExpr& exp) { 
+    void IrGenVisitor::VisitVariableExpr(const VariableExpr& exp) {
       bool returnAddress = false;
       if (requestAddressFromNextNode == true) returnAddress = true; //read request
       StatementNode* newhead;
@@ -211,7 +211,7 @@ namespace cs160 {
       }
       ir_stack_.push_back(make_unique<Register>(register_number_++));
     }
-    void IrGenVisitor::VisitDereference(const Dereference& exp) { 
+    void IrGenVisitor::VisitDereference(const Dereference& exp) {
       bool returnAddress = false;
       if (requestAddressFromNextNode == true) returnAddress = true; //read request
       requestAddressFromNextNode = true;   // we need address from lsh, request adress
@@ -402,7 +402,7 @@ namespace cs160 {
           nullptr
         );
         AddToEnd(newhead);
-      } 
+      }
       StatementNode* newhead = new StatementNode(
         make_unique<Label>(labelNum_++),
         make_unique<Variable>(call.callee_name()),
@@ -412,13 +412,13 @@ namespace cs160 {
         nullptr);
       AddToEnd(newhead);
     }
-    void IrGenVisitor::VisitFunctionDef(const FunctionDef& def) { 
+    void IrGenVisitor::VisitFunctionDef(const FunctionDef& def) {
       VarCountVisitor varsCounter;// we count number of params and local vars
       varsCounter.ScanningParams(true); // count params first we dont want to redeclare var if its in params already
       for (auto& param : def.parameters()) { param->Visit(&varsCounter); }
       varsCounter.ScanningParams(false);
       for (auto& statement : def.function_body()) { statement->Visit(&varsCounter); }
-      int numLocalVar = varsCounter.LocalVars(); 
+      int numLocalVar = varsCounter.LocalVars();
       StatementNode*newhead = new StatementNode(
         make_unique<Label>(labelNum_++),
         make_unique<Variable>(def.function_name()),
@@ -444,7 +444,7 @@ namespace cs160 {
       newhead = new StatementNode(
         make_unique<Label>(labelNum_++),
         make_unique<Variable>(def.function_name()),
-         make_unique<Operator>(Operator::kFuncEnd),
+        make_unique<Operator>(Operator::kFuncEnd),
         nullptr,
         make_unique<Constant>(numLocalVar),
         nullptr);

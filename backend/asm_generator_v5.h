@@ -258,7 +258,7 @@ namespace cs160 {
         break;
       case Operator::kReturn:
         asm_sstring_
-          << "#program prints ae"<<endl;
+          << "#program prints ae" << endl;
         break;
       default:
         asm_sstring_
