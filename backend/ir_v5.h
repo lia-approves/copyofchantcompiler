@@ -91,12 +91,12 @@ namespace cs160 {
     class StatementNode {
     public:
       StatementNode(
-        Operand* label,
-        Operand* target,
-        Operator* instruction,
-        Operand* operand1,
-        Operand* operand2,
-        StatementNode* next)
+        std::unique_ptr<Operand> label,
+        std::unique_ptr<Operand> target,
+        std::unique_ptr<Operator> instruction,
+        std::unique_ptr<Operand> operand1,
+        std::unique_ptr<Operand> operand2,
+        std::unique_ptr<StatementNode> next)
         : label_(label),
         target_(target),
         operator_(instruction),
@@ -183,26 +183,26 @@ namespace cs160 {
           cout << GetTarget()->GetName() << " = " << GetOp1()->GetName() << "[" << GetOp2()->GetName() << "]";
           break;
         case Operator::kAssignmentFromArithExp:
-          cout << "*" << GetTarget()->GetName() << " = " << GetOp2()->GetName(); // a=5  a is target 2 is in op2, if theres is a single argument in the Three adress code, we normally put it in the second op field
+          cout << "*" << GetTarget()->GetName() << " = " << GetOp2()->GetName(); // a=5  a is target 2 is in std::move(op2), if theres is a single argument in the Three adress code, we normally put it in the second op field
           break;
         case Operator::kAssignmentFromNewTuple:
           cout << "*" << GetTarget()->GetName() << " = newTuple(" << GetOp2()->GetName() << ")";
           break;
         }
       }
-      Operand*& GetLabel() { return label_; }
-      Operand*& GetOp1() { return operand1_; }
-      Operand*& GetOp2() { return operand2_; }
-      Operand*& GetTarget() { return target_; }
-      Operator*& GetInstruction() { return operator_; }
-      StatementNode*& GetNext() { return next_; }
+      std::unique_ptr<Operand>& GetLabel() { return label_; }
+      std::unique_ptr<Operand>& GetOp1() { return operand1_; }
+      std::unique_ptr<Operand>& GetOp2() { return operand2_; }
+      std::unique_ptr<Operand>& GetTarget() { return target_; }
+      std::unique_ptr<Operator>& GetInstruction() { return operator_; }
+      std::unique_ptr<StatementNode>& GetNext() { return next_; }
     private:
-      Operand * label_;
-      Operand * target_;
-      Operator* operator_;
-      Operand* operand1_;
-      Operand* operand2_;
-      StatementNode* next_;
+      std::unique_ptr<Operand> label_;
+      std::unique_ptr<Operand> target_;
+      std::unique_ptr<Operator> operator_;
+      std::unique_ptr<Operand> operand1_;
+      std::unique_ptr<Operand> operand2_;
+      std::unique_ptr<StatementNode> next_;
     };
   }  // namespace backend
 }  // namespace cs160

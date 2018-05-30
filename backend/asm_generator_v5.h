@@ -26,7 +26,7 @@ namespace cs160 {
       string GetASMString() { return asm_sstring_.str(); }
       int GetOffSet(string variable);
     private:
-      void GenerateASM(StatementNode* node);
+      void GenerateASM(std::unique_ptr<StatementNode> node);
       stringstream asm_sstring_;
       stringstream asm_sstring_variables_;
       IrGenVisitor *ir_;
@@ -37,7 +37,7 @@ namespace cs160 {
     };
     void AsmProgram::IrToAsm(IrGenVisitor* ir) {
       ir_ = ir;
-      StatementNode * head = ir_->GetIR();
+      std::unique_ptr<StatementNode> head = ir_->GetIR();
       while (head != nullptr) {
         asm_sstring_
           << endl << "statementnumber_" << head->GetLabel()->GetValue() << ":" << endl;
@@ -45,7 +45,7 @@ namespace cs160 {
         head = head->GetNext();
       }
     }
-    void AsmProgram::GenerateASM(StatementNode* node) {
+    void AsmProgram::GenerateASM(std::unique_ptr<StatementNode> node) {
       switch (node->GetInstruction()->GetOpcode()) {
       case Operator::kAdd:
         asm_sstring_
@@ -182,7 +182,7 @@ namespace cs160 {
           << "add %rbx, %rdi" << endl //move heap breakpoint by 8 * size of tuple, size was in rbx
           << "mov $12, %rax" << endl // prepare brk syscall number again
           << "syscall" << endl // new heap breakpoint has been moved
-          << "pop %rcx" << endl // place adress of reference variable into %rcx (lhs), it was on the stack 
+          << "pop %rcx" << endl // place adress of reference variable into %rcx (lhs), it was on the stack
           << "mov %rsi, (%rcx)" << endl;// move heap pointer(the start) into the location of %rcx(address of variable)
           // at the end, the program break is moved so we dont need to have a new base, every time we request the address of the program break(start of heap), we get a fresh address
         break;
