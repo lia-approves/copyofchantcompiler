@@ -46,7 +46,7 @@ namespace cs160 {
       }
     }
     void AsmProgram::GenerateASM(StatementNode* node) {
-      switch (node->GetInstruction()->GetOpcode()) {
+      switch (node->GetInstruction().GetOpcode()) {
       case Operator::kAdd:
         asm_sstring_
           << "pop %rax" << endl

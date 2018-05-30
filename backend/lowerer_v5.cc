@@ -163,7 +163,7 @@ namespace cs160 {
       StatementNode* newhead = new StatementNode(
         make_unique<Label>(labelNum_++),
         new Register(register_number_),
-        new Operator(Operator::kPushValueOfInteger),
+        make_unique<Operator>(Operator::kPushValueOfInteger),
         nullptr,
         new Constant(exp.value()),
         nullptr
@@ -180,7 +180,7 @@ namespace cs160 {
           newhead = new StatementNode(
             make_unique<Label>(labelNum_++),
             new Register(register_number_),
-            new Operator(Operator::kPushAddressOfVariable),
+            make_unique<Operator>(Operator::kPushAddressOfVariable),
             nullptr,
             new Variable(exp.name()),
             nullptr
@@ -190,7 +190,7 @@ namespace cs160 {
           newhead = new StatementNode(
             make_unique<Label>(labelNum_++),
             new Register(register_number_),
-            new Operator(Operator::kPushValueOfVariable),
+            make_unique<Operator>(Operator::kPushValueOfVariable),
             nullptr,
             new Variable(exp.name()),
             nullptr
@@ -202,7 +202,7 @@ namespace cs160 {
         newhead = new StatementNode(
           make_unique<Label>(labelNum_++),
           new Variable(exp.name()),
-          new Operator(Operator::kParam),
+          make_unique<Operator>(Operator::kParam),
           nullptr,
           nullptr,
           nullptr
@@ -226,7 +226,7 @@ namespace cs160 {
         StatementNode* newhead = new StatementNode(
           make_unique<Label>(labelNum_++),
           new Register(register_number_),
-          new Operator(Operator::kPushAddressOfDereference),
+          make_unique<Operator>(Operator::kPushAddressOfDereference),
           address,
           index,
           nullptr
@@ -237,7 +237,7 @@ namespace cs160 {
         StatementNode* newhead = new StatementNode(
           make_unique<Label>(labelNum_++),
           new Register(register_number_),
-          new Operator(Operator::kPushValueOfDereference),
+          make_unique<Operator>(Operator::kPushValueOfDereference),
           address,
           index,
           nullptr
@@ -259,7 +259,7 @@ namespace cs160 {
       StatementNode* newhead = new StatementNode(
         make_unique<Label>(labelNum_++),
         address,
-        new Operator(Operator::kAssignmentFromArithExp),
+        make_unique<Operator>(Operator::kAssignmentFromArithExp),
         nullptr,
         value,
         nullptr
@@ -278,7 +278,7 @@ namespace cs160 {
       StatementNode *newtail = new StatementNode(
         make_unique<Label>(labelNum_++),
         tupleVar,
-        new Operator(Operator::kAssignmentFromNewTuple),
+        make_unique<Operator>(Operator::kAssignmentFromNewTuple),
         nullptr,
         tupleSize,
         nullptr);
@@ -294,7 +294,7 @@ namespace cs160 {
       StatementNode *newtail = new StatementNode(
         make_unique<Label>(labelNum_++),
         new Register(register_number_),
-        new Operator(Operator::kAdd),
+        make_unique<Operator>(Operator::kAdd),
         op1,
         op2,
         nullptr);
@@ -311,7 +311,7 @@ namespace cs160 {
       StatementNode *newtail = new StatementNode(
         make_unique<Label>(labelNum_++),
         new Register(register_number_),
-        new Operator(Operator::kSubtract),
+        make_unique<Operator>(Operator::kSubtract),
         op1,
         op2,
         nullptr);
@@ -328,7 +328,7 @@ namespace cs160 {
       StatementNode *newtail = new StatementNode(
         make_unique<Label>(labelNum_++),
         new Register(register_number_),
-        new Operator(Operator::kMultiply),
+        make_unique<Operator>(Operator::kMultiply),
         op1,
         op2,
         nullptr);
@@ -345,7 +345,7 @@ namespace cs160 {
       StatementNode *newtail = new StatementNode(
         make_unique<Label>(labelNum_++),
         new Register(register_number_),
-        new Operator(Operator::kDivide),
+        make_unique<Operator>(Operator::kDivide),
         op1,
         op2,
         nullptr);
@@ -361,7 +361,7 @@ namespace cs160 {
       StatementNode* newhead = new StatementNode(
         make_unique<Label>(labelNum_++),
         nullptr,
-        new Operator(Operator::kProgramStart), //this is so we know how many local vars to alocate on the stack
+        make_unique<Operator>(Operator::kProgramStart), //this is so we know how many local vars to alocate on the stack
         nullptr,
         new Constant(mainVars_),
         nullptr
@@ -372,7 +372,7 @@ namespace cs160 {
       newhead = new StatementNode(
         make_unique<Label>(labelNum_++),
         new Register(register_number_ - 1),
-        new Operator(Operator::kReturn),
+        make_unique<Operator>(Operator::kReturn),
         nullptr,
         nullptr,
         nullptr
@@ -381,7 +381,7 @@ namespace cs160 {
       newhead = new StatementNode(
         make_unique<Label>(labelNum_++),
         nullptr,
-        new Operator(Operator::kProgramEnd),
+        make_unique<Operator>(Operator::kProgramEnd),
         nullptr,
         nullptr,
         nullptr
@@ -396,7 +396,7 @@ namespace cs160 {
         StatementNode* newhead = new StatementNode(
           make_unique<Label>(labelNum_++),
           new Register(register_number_ - 1),
-          new Operator(Operator::kArgument),
+          make_unique<Operator>(Operator::kArgument),
           nullptr,
           nullptr,
           nullptr
@@ -406,7 +406,7 @@ namespace cs160 {
       StatementNode* newhead = new StatementNode(
         make_unique<Label>(labelNum_++),
         new Variable(call.callee_name()),
-        new Operator(Operator::kCall),
+        make_unique<Operator>(Operator::kCall),
         new Variable(call.lhs().name()),
         new Constant(numArgs),
         nullptr);
@@ -422,7 +422,7 @@ namespace cs160 {
       StatementNode*newhead = new StatementNode(
         make_unique<Label>(labelNum_++),
         new Variable(def.function_name()),
-        new Operator(Operator::kFuncBegin), //call to crate func
+        make_unique<Operator>(Operator::kFuncBegin), //call to crate func
         nullptr,
         new Constant(numLocalVar),
         nullptr);
@@ -435,7 +435,7 @@ namespace cs160 {
       newhead = new StatementNode(
         make_unique<Label>(labelNum_++),
         new Register(register_number_ - 1),
-        new Operator(Operator::kReturn),
+        make_unique<Operator>(Operator::kReturn),
         nullptr,
         nullptr,
         nullptr
@@ -444,7 +444,7 @@ namespace cs160 {
       newhead = new StatementNode(
         make_unique<Label>(labelNum_++),
         new Variable(def.function_name()),
-        new Operator(Operator::kFuncEnd),
+         make_unique<Operator>(Operator::kFuncEnd),
         nullptr,
         new Constant(numLocalVar),
         nullptr);
@@ -462,7 +462,7 @@ namespace cs160 {
       StatementNode *newtail = new StatementNode(
         make_unique<Label>(labelNum_++),
         new Label(labelNum_ + 1),
-        new Operator(Operator::kLessThan),
+        make_unique<Operator>(Operator::kLessThan),
         op1,
         op2,
         nullptr);
@@ -478,7 +478,7 @@ namespace cs160 {
       StatementNode *newtail = new StatementNode(
         make_unique<Label>(labelNum_++),
         new Label(labelNum_ + 1),
-        new Operator(Operator::kLessThanEqualTo),
+        make_unique<Operator>(Operator::kLessThanEqualTo),
         op1,
         op2,
         nullptr);
@@ -494,7 +494,7 @@ namespace cs160 {
       StatementNode *newtail = new StatementNode(
         make_unique<Label>(labelNum_++),
         new Label(labelNum_ + 1),
-        new Operator(Operator::kGreaterThan),
+        make_unique<Operator>(Operator::kGreaterThan),
         op1,
         op2,
         nullptr);
@@ -510,7 +510,7 @@ namespace cs160 {
       StatementNode *newtail = new StatementNode(
         make_unique<Label>(labelNum_++),
         new Label(labelNum_ + 1),
-        new Operator(Operator::kGreaterThanEqualTo),
+        make_unique<Operator>(Operator::kGreaterThanEqualTo),
         op1,
         op2,
         nullptr);
@@ -526,7 +526,7 @@ namespace cs160 {
       StatementNode *newtail = new StatementNode(
         make_unique<Label>(labelNum_++),
         new Label(labelNum_ + 1),
-        new Operator(Operator::kEqualTo),
+        make_unique<Operator>(Operator::kEqualTo),
         op1,
         op2,
         nullptr);
@@ -540,7 +540,7 @@ namespace cs160 {
       StatementNode *newtail = new StatementNode(
         make_unique<Label>(labelNum_++),
         new Label(labelNum_ + numRhs),
-        new Operator(Operator::kGoto),
+        make_unique<Operator>(Operator::kGoto),
         nullptr,
         nullptr,
         nullptr);
@@ -557,7 +557,7 @@ namespace cs160 {
       StatementNode *newtail = new StatementNode(
         make_unique<Label>(labelNum_++),
         new Label(labelNum_ + 1),
-        new Operator(Operator::kGoto),
+        make_unique<Operator>(Operator::kGoto),
         nullptr,
         nullptr,
         nullptr);
@@ -565,7 +565,7 @@ namespace cs160 {
       newtail = new StatementNode(
         make_unique<Label>(labelNum_++),
         new Label(labelNum_ + 1),
-        new Operator(Operator::kGoto),
+        make_unique<Operator>(Operator::kGoto),
         nullptr,
         nullptr,
         nullptr);
@@ -576,7 +576,7 @@ namespace cs160 {
       StatementNode *newtail = new StatementNode(
         make_unique<Label>(labelNum_++),
         new Label(labelNum_ + 1),
-        new Operator(Operator::kGoto),
+        make_unique<Operator>(Operator::kGoto),
         nullptr,
         nullptr,
         nullptr);
@@ -597,7 +597,7 @@ namespace cs160 {
       StatementNode *newtail = new StatementNode(
         make_unique<Label>(labelNum_++),
         new Label(trueStatements + labelNum_ + 1),
-        new Operator(Operator::kGoto),
+        make_unique<Operator>(Operator::kGoto),
         nullptr,
         nullptr,
         nullptr);
@@ -608,7 +608,7 @@ namespace cs160 {
       newtail = new StatementNode(
         make_unique<Label>(labelNum_++),
         new Label(falseStatements + labelNum_),
-        new Operator(Operator::kGoto),
+        make_unique<Operator>(Operator::kGoto),
         nullptr,
         nullptr,
         nullptr);
@@ -630,7 +630,7 @@ namespace cs160 {
       StatementNode *newtail = new StatementNode(
         make_unique<Label>(labelNum_++),
         new Label(bodyStatements + labelNum_ + 1),
-        new Operator(Operator::kGoto),
+        make_unique<Operator>(Operator::kGoto),
         nullptr,
         nullptr,
         nullptr);
@@ -641,7 +641,7 @@ namespace cs160 {
       newtail = new StatementNode(
         make_unique<Label>(labelNum_++),
         new Label(startLabelNum),
-        new Operator(Operator::kGoto),
+        make_unique<Operator>(Operator::kGoto),
         nullptr,
         nullptr,
         nullptr);

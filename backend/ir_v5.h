@@ -93,25 +93,24 @@ namespace cs160 {
       StatementNode(
         std::unique_ptr<Operand> label,
         Operand* target,
-        Operator* instruction,
+        std::unique_ptr<Operator> instruction,
         Operand* operand1,
         Operand* operand2,
         StatementNode* next)
         : label_(std::move(label)),
         target_(target),
-        operator_(instruction),
+        operator_(std::move(instruction)),
         operand1_(operand1),
         operand2_(operand2),
         next_(next) {}
       ~StatementNode() {
         delete target_;
-        delete operator_;
         delete operand1_;
         delete GetOp2();
       }
       void Print() {
         cout << "#S" << GetLabel().GetValue() << ":\t";
-        switch (GetInstruction()->GetOpcode()) {
+        switch (GetInstruction().GetOpcode()) {
         case Operator::kAdd:
           cout << GetTarget()->GetName() << " = " << GetOp1()->GetName() << " + " << GetOp2()->GetName();
           break;
@@ -193,12 +192,12 @@ namespace cs160 {
       Operand*& GetOp1() { return operand1_; }
       Operand*& GetOp2() { return operand2_; }
       Operand*& GetTarget() { return target_; }
-      Operator*& GetInstruction() { return operator_; }
+      Operator& GetInstruction() { return *operator_; }
       StatementNode*& GetNext() { return next_; }
     private:
       std::unique_ptr<Operand> label_;
       Operand* target_;
-      Operator* operator_;
+      std::unique_ptr<Operator> operator_;
       Operand* operand1_;
       Operand* operand2_;
       StatementNode* next_;
