@@ -120,7 +120,7 @@ Parser Frontend::Add() {
     //   std::string op
     // }
 }
- 
+
 Parser Frontend::Multiply() {
   return And(
     Unary(),
@@ -366,7 +366,7 @@ std::function<Value(ValueVec)> makeCoalescer(string op1, string op2) {
 Node Frontend::stringToAst(std::string s) {
   State state(s);
 
-  auto parse = Variable();
+  auto parse = Program();
   auto result = parse(state);
 
   // std::unique_ptr<ast::AstNode> n(new ast::IntegerExpr(1));
