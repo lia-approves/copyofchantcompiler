@@ -31,3 +31,14 @@ cc_test(
 	timeout = "short",
 	size = "small",
 )
+
+cc_test(
+	name = "v5tests2",
+	srcs = ["v5tests2.cc"],
+	deps = [
+             "@gtest//:main",
+             ":intermediate_representation"
+        ],
+	timeout = "short",
+	size = "small",
+)
