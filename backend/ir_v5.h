@@ -24,8 +24,6 @@ namespace cs160 {
       virtual int GetValue() = 0;
       virtual void SetValue(int value) = 0;
       virtual std::string GetName() = 0;
-      virtual void SetStackOffset(int offset) = 0;
-      virtual int GetStackOffset() = 0;
     private:
     };
 
@@ -36,8 +34,6 @@ namespace cs160 {
       int GetValue() { return value_; }
       void SetValue(int value) { value_ = value; }
       std::string GetName() { return "statementnumber_" + std::to_string(value_); }
-      void SetStackOffset(int offset) {  }
-      int GetStackOffset() { return 0; }
     private:
       int value_;
     };
@@ -49,8 +45,6 @@ namespace cs160 {
       int GetValue() { return value_; }
       void SetValue(int value) { value_ = value; }
       std::string GetName() { return "t" + std::to_string(value_); }
-      void SetStackOffset(int offset) { }
-      int GetStackOffset() { return 0; }
     private:
       int value_;
     };
@@ -62,11 +56,8 @@ namespace cs160 {
       int GetValue() { return 0; }
       std::string GetName() { return name_; }
       void SetValue(int value) {}
-      void SetStackOffset(int offset) { stackOffSet_ = offset; }
-      int GetStackOffset() { return stackOffSet_; }
     private:
       std::string name_;
-      int stackOffSet_;
     };
 
     class Constant : public Operand {    // 3, 8, 6 etc (integers)
@@ -76,8 +67,6 @@ namespace cs160 {
       int GetValue() { return value_; }
       void SetValue(int value) { value_ = value; }
       std::string GetName() { return std::to_string(value_); }
-      void SetStackOffset(int offset) {  }
-      int GetStackOffset() { return 0; }
     private:
       int value_;
     };
@@ -88,7 +77,7 @@ namespace cs160 {
         kLessThan, kLessThanEqualTo, kGreaterThan, kGreaterThanEqualTo,
         kEqualTo, kGoto,
         kProgramStart, kProgramEnd,
-        kFuncBegin, kFuncEnd, kReturn, kParam, kCall,
+        kFuncBegin, kParam, kFuncEnd, kReturn, kArgument, kCall,
         kPushValueOfInteger, kPushAddressOfVariable, kPushValueOfVariable,
         kPushAddressOfDereference, kPushValueOfDereference, kAssignmentFromNewTuple,
         kAssignmentFromArithExp
@@ -136,12 +125,6 @@ namespace cs160 {
         case Operator::kDivide:
           cout << GetTarget()->GetName() << " = " << GetOp1()->GetName() << " / " << GetOp2()->GetName();
           break;
-        case Operator::kAssignmentFromArithExp:
-          cout << GetTarget()->GetName() << " = " << GetOp2()->GetName(); // a=5  a is target 2 is in op2, if theres is a single argument in the Three adress code, we normally put it in the second op field
-          break;
-        case Operator::kAssignmentFromNewTuple:
-          cout << GetTarget()->GetName() << " = newTuple(" << GetOp2()->GetName() << ")";  
-          break;
         case Operator::kLessThan:
           cout << "if (" << GetOp1()->GetName() << " < " << GetOp2()->GetName() << ") goto S" << GetTarget()->GetValue() << ":";
           break;
@@ -163,14 +146,17 @@ namespace cs160 {
         case Operator::kProgramStart:
           cout << "program begin";
           break;
+        case Operator::kParam:
+          cout << "param " << GetTarget()->GetName();
+          break;
         case Operator::kProgramEnd:
           cout << "program end";
           break;
         case Operator::kCall:
           cout << "call " << GetTarget()->GetName() << "," << GetOp2()->GetValue() << "  --> " << operand1_->GetName(); //op2 is num of args
           break;
-        case Operator::kParam:
-          cout << "param " << GetTarget()->GetName();
+        case Operator::kArgument:
+          cout << "argument " << GetTarget()->GetName();
           break;
         case Operator::kFuncBegin:
           cout << "func begin " << GetTarget()->GetName();
@@ -191,10 +177,16 @@ namespace cs160 {
           cout << GetTarget()->GetName() << " = &" << GetOp2()->GetName();
           break;
         case Operator::kPushAddressOfDereference:
-          cout << GetTarget()->GetName() << " = &[" << GetOp1()->GetName() << "[" << GetOp2()->GetName() << "]]";
+          cout << GetTarget()->GetName() << " = &" << GetOp1()->GetName() << "[" << GetOp2()->GetName() << "]";
           break;
         case Operator::kPushValueOfDereference:
-          cout << GetTarget()->GetName() << " = [" << GetOp1()->GetName() << "[" << GetOp2()->GetName() << "]]";
+          cout << GetTarget()->GetName() << " = " << GetOp1()->GetName() << "[" << GetOp2()->GetName() << "]";
+          break;
+        case Operator::kAssignmentFromArithExp:
+          cout << "*" << GetTarget()->GetName() << " = " << GetOp2()->GetName(); // a=5  a is target 2 is in op2, if theres is a single argument in the Three adress code, we normally put it in the second op field
+          break;
+        case Operator::kAssignmentFromNewTuple:
+          cout << "*" << GetTarget()->GetName() << " = newTuple(" << GetOp2()->GetName() << ")";
           break;
         }
       }

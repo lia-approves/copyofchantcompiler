@@ -50,20 +50,7 @@ namespace cs160 {
   namespace backend {
     void VarCountVisitor::VisitIntegerExpr(const IntegerExpr& exp) {  }
     void VarCountVisitor::VisitVariableExpr(const VariableExpr& exp) {
-      bool foundinParams = std::find(paramVariables_.begin(), paramVariables_.end(), (exp.name())) != paramVariables_.end();
-      if (foundinParams) {}
-      else {
-        if (scanningParams_ == false) {
-          bool found = std::find(localVariables_.begin(), localVariables_.end(), (exp.name())) != localVariables_.end();
-          if (!found) { localVariables_.push_back(exp.name()); }
-          else {}
-        }
-        else if (scanningParams_ == true) {
-          bool found = std::find(paramVariables_.begin(), paramVariables_.end(), (exp.name())) != paramVariables_.end();
-          if (!found) { paramVariables_.push_back(exp.name()); }
-          else {}
-        }
-      }
+      AddVariable(exp.name());
     }
     void VarCountVisitor::VisitDereference(const Dereference& exp) {
       exp.lhs().Visit(this);
@@ -148,25 +135,28 @@ namespace cs160 {
       program.arithmetic_exp().Visit(this);
     }
     void VarCountVisitor::VisitFunctionCall(const FunctionCall& call) {
-      bool foundinParams = std::find(paramVariables_.begin(), paramVariables_.end(), (call.lhs().name())) != paramVariables_.end();
+      AddVariable(call.lhs().name());
+    }
+    void VarCountVisitor::VisitFunctionDef(const FunctionDef& def) { }
+    void VarCountVisitor::ScanningParams(bool scanningParams) { readingParams_ = scanningParams; }
+    int VarCountVisitor::LocalVars() { return localVariables_.size(); }
+    int VarCountVisitor::ParamVars() { return paramVariables_.size(); }
+    void VarCountVisitor::AddVariable(string variable) {
+      bool foundinParams = std::find(paramVariables_.begin(), paramVariables_.end(), (variable)) != paramVariables_.end();
       if (foundinParams) {}
       else {
-        if (scanningParams_ == false) {
-          bool found = std::find(localVariables_.begin(), localVariables_.end(), (call.lhs().name())) != localVariables_.end();
-          if (!found) { localVariables_.push_back(call.lhs().name()); }
+        if (readingParams_ == false) {
+          bool found = std::find(localVariables_.begin(), localVariables_.end(), (variable)) != localVariables_.end();
+          if (!found) { localVariables_.push_back(variable); }
           else {}
         }
-        else if (scanningParams_ == true) {
-          bool found = std::find(paramVariables_.begin(), paramVariables_.end(), (call.lhs().name())) != paramVariables_.end();
-          if (!found) { paramVariables_.push_back(call.lhs().name()); }
+        else if (readingParams_ == true) {
+          bool found = std::find(paramVariables_.begin(), paramVariables_.end(), (variable)) != paramVariables_.end();
+          if (!found) { paramVariables_.push_back(variable); }
           else {}
         }
       }
     }
-    void VarCountVisitor::VisitFunctionDef(const FunctionDef& def) { }
-    void VarCountVisitor::ScanningParams(bool scanningParams) { scanningParams_ = scanningParams; }
-    int VarCountVisitor::LocalVars() { return localVariables_.size(); }
-    int VarCountVisitor::ParamVars() { return paramVariables_.size(); }
 
 
     void IrGenVisitor::VisitIntegerExpr(const IntegerExpr& exp) { //push value of int
@@ -184,31 +174,10 @@ namespace cs160 {
     void IrGenVisitor::VisitVariableExpr(const VariableExpr& exp) { 
       bool returnAddress = false;
       if (requestAddressFromNextNode == true) returnAddress = true; //read request
-      int pos;
-      int stackOffset;
-      bool foundinParams = std::find(paramVariables_.begin(), paramVariables_.end(), (exp.name())) != paramVariables_.end();
-      if (foundinParams) {
-        pos = std::distance(paramVariables_.begin(), std::find(paramVariables_.begin(), paramVariables_.end(), exp.name()));
-        stackOffset = 1 * ((pos + 2) * 8);
-      }
-      else {
-        if (scanningParams_ == false) {
-          bool found = std::find(localVariables_.begin(), localVariables_.end(), (exp.name())) != localVariables_.end();
-          if (!found) { localVariables_.push_back(exp.name()); }
-          else {}
-          pos = std::distance(localVariables_.begin(), std::find(localVariables_.begin(), localVariables_.end(), exp.name()));
-          stackOffset = -1 * ((pos + 1) * 8);
-        }
-        else if (scanningParams_ == true) {
-          if (!foundinParams) { paramVariables_.push_back(exp.name()); }
-          else {}
-          pos = std::distance(paramVariables_.begin(), std::find(paramVariables_.begin(), paramVariables_.end(), exp.name()));
-          stackOffset = 1 * ((pos + 2) * 8);
-        }
-      }
-      if (!scanningParams_) {
+      StatementNode* newhead;
+      if (!readingParams_) {
         if (returnAddress == true) {   //push value or address depending on request from parent node
-          StatementNode* newhead = new StatementNode(
+          newhead = new StatementNode(
             new Label(labelNum_++),
             new Register(register_number_),
             new Operator(Operator::kPushAddressOfVariable),
@@ -216,11 +185,9 @@ namespace cs160 {
             new Variable(exp.name()),
             nullptr
           );
-          newhead->GetOp2()->SetStackOffset(stackOffset);
-          AddToEnd(newhead);
         }
         else if (returnAddress == false) {
-          StatementNode* newhead = new StatementNode(
+          newhead = new StatementNode(
             new Label(labelNum_++),
             new Register(register_number_),
             new Operator(Operator::kPushValueOfVariable),
@@ -228,9 +195,19 @@ namespace cs160 {
             new Variable(exp.name()),
             nullptr
           );
-          newhead->GetOp2()->SetStackOffset(stackOffset);
-          AddToEnd(newhead);
         }
+        AddToEnd(newhead);
+      }
+      else if (readingParams_) {
+        newhead = new StatementNode(
+          new Label(labelNum_++),
+          new Variable(exp.name()),
+          new Operator(Operator::kParam),
+          nullptr,
+          nullptr,
+          nullptr
+        );
+        AddToEnd(newhead);
       }
       ir_stack_.push_back(new Register(register_number_++));
     }
@@ -287,7 +264,6 @@ namespace cs160 {
         value,
         nullptr
       );
-      newhead->GetTarget()->SetStackOffset(address->GetStackOffset());
       AddToEnd(newhead);
     }
     void IrGenVisitor::VisitAssignmentFromNewTuple(const AssignmentFromNewTuple& assignment) {
@@ -420,38 +396,13 @@ namespace cs160 {
         StatementNode* newhead = new StatementNode(
           new Label(labelNum_++),
           new Register(register_number_ - 1),
-          new Operator(Operator::kParam),
+          new Operator(Operator::kArgument),
           nullptr,
           nullptr,
           nullptr
         );
         AddToEnd(newhead);
       } 
-      int pos;
-      int stackOffset;
-      bool foundinParams = std::find(paramVariables_.begin(), paramVariables_.end(), (call.lhs().name())) != paramVariables_.end();
-      if (foundinParams) {
-        pos = std::distance(paramVariables_.begin(), std::find(paramVariables_.begin(), paramVariables_.end(), call.lhs().name()));
-        stackOffset = 1 * ((pos + 2) * 8);
-      }
-      else {
-        if (scanningParams_ == false) {
-          bool found = std::find(localVariables_.begin(), localVariables_.end(), (call.lhs().name())) != localVariables_.end();
-          if (!found) { localVariables_.push_back(call.lhs().name()); }
-          else {}
-          pos = std::distance(localVariables_.begin(), std::find(localVariables_.begin(), localVariables_.end(), call.lhs().name()));
-          stackOffset = -1 * ((pos + 1) * 8);
-        }
-        else if (scanningParams_ == true) {
-          bool found = std::find(paramVariables_.begin(), paramVariables_.end(), (call.lhs().name())) != paramVariables_.end();
-          if (!found) {
-            paramVariables_.push_back(call.lhs().name());
-          }
-          else {}
-          pos = std::distance(paramVariables_.begin(), std::find(paramVariables_.begin(), paramVariables_.end(), call.lhs().name()));
-          stackOffset = 1 * ((pos + 2) * 8);
-        }
-      } //we get offset
       StatementNode* newhead = new StatementNode(
         new Label(labelNum_++),
         new Variable(call.callee_name()),
@@ -459,7 +410,6 @@ namespace cs160 {
         new Variable(call.lhs().name()),
         new Constant(numArgs),
         nullptr);
-      newhead->GetTarget()->SetStackOffset(stackOffset);
       AddToEnd(newhead);
     }
     void IrGenVisitor::VisitFunctionDef(const FunctionDef& def) { 
@@ -477,9 +427,9 @@ namespace cs160 {
         new Constant(numLocalVar),
         nullptr);
       AddToEnd(newhead);
-      scanningParams_ = true;
+      readingParams_ = true;
       for (auto& param : def.parameters()) { param->Visit(this); }
-      scanningParams_ = false;
+      readingParams_ = false;
       for (auto& statement : def.function_body()) { statement->Visit(this); }
       def.retval().Visit(this);
       newhead = new StatementNode(
