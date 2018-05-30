@@ -124,6 +124,13 @@ Parser Frontend::Add() {
   );
 }
 
+Parser Frontend::Unary() {
+  return Or(And(Literal('-'), Unary()), Primary());
+}
+
+Parser Frontend::Primary() {
+  return Or(Int(), Or(Variable(), And(Literal('('), And(Expression(), Literal(')')))));
+}
 // Parser Frontend::Add() {
 //   return And(
 //     Multiply(),
