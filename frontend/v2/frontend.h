@@ -1,6 +1,6 @@
 // Copyright (c) 2018, Team-Chant
-#ifndef FRONTEND_FRONTEND_H_
-#define FRONTEND_FRONTEND_H_
+#ifndef FRONTEND_V2_FRONTEND_H_
+#define FRONTEND_V2_FRONTEND_H_
 
 #include <vector>
 #include <string>
@@ -38,4 +38,4 @@ std::unique_ptr<R> unique_cast(std::unique_ptr<T> &&p) {
   return std::unique_ptr<R>(static_cast<R*>(ptr));
 }
 
-#endif  // FRONTEND_FRONTEND_H_
+#endif  // FRONTEND_V2_FRONTEND_H_

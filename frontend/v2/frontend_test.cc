@@ -10,7 +10,7 @@ namespace Parse {
 
 class FrontendTest : public ::testing::Test {
  protected:
-   bool test = false;
+  bool test = false;
 };
 
 TEST_F(FrontendTest, BasicTest) {
