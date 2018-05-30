@@ -92,112 +92,115 @@ namespace cs160 {
     public:
       StatementNode(
         std::unique_ptr<Operand> label,
-        std::unique_ptr<Operand> target,
-        std::unique_ptr<Operator> instruction,
-        std::unique_ptr<Operand> operand1,
-        std::unique_ptr<Operand> operand2,
+        Operand* target,
+        Operator* instruction,
+        Operand* operand1,
+        Operand* operand2,
         StatementNode* next)
         : label_(std::move(label)),
-        target_(std::move(target)),
-        operator_(std::move(instruction)),
-        operand1_(std::move(operand1)),
-        operand2_(std::move(operand2)),
+        target_(target),
+        operator_(instruction),
+        operand1_(operand1),
+        operand2_(operand2),
         next_(next) {}
       ~StatementNode() {
-        delete next_;
+        delete target_;
+        delete operator_;
+        delete operand1_;
+        delete GetOp2();
       }
       void Print() {
         cout << "#S" << GetLabel().GetValue() << ":\t";
-        switch (GetInstruction().GetOpcode()) {
+        switch (GetInstruction()->GetOpcode()) {
         case Operator::kAdd:
-          cout << GetTarget().GetName() << " = " << GetOp1().GetName() << " + " << GetOp2().GetName();
+          cout << GetTarget()->GetName() << " = " << GetOp1()->GetName() << " + " << GetOp2()->GetName();
           break;
         case Operator::kSubtract:
-          cout << GetTarget().GetName() << " = " << GetOp1().GetName() << " - " << GetOp2().GetName();
+          cout << GetTarget()->GetName() << " = " << GetOp1()->GetName() << " - " << GetOp2()->GetName();
           break;
         case Operator::kMultiply:
-          cout << GetTarget().GetName() << " = " << GetOp1().GetName() << " * " << GetOp2().GetName();
+          cout << GetTarget()->GetName() << " = " << GetOp1()->GetName() << " * " << GetOp2()->GetName();
           break;
         case Operator::kDivide:
-          cout << GetTarget().GetName() << " = " << GetOp1().GetName() << " / " << GetOp2().GetName();
+          cout << GetTarget()->GetName() << " = " << GetOp1()->GetName() << " / " << GetOp2()->GetName();
           break;
         case Operator::kLessThan:
-          cout << "if (" << GetOp1().GetName() << " < " << GetOp2().GetName() << ") goto S" << GetTarget().GetValue() << ":";
+          cout << "if (" << GetOp1()->GetName() << " < " << GetOp2()->GetName() << ") goto S" << GetTarget()->GetValue() << ":";
           break;
         case Operator::kLessThanEqualTo:
-          cout << "if (" << GetOp1().GetName() << " <= " << GetOp2().GetName() << ") goto S" << GetTarget().GetValue() << ":";
+          cout << "if (" << GetOp1()->GetName() << " <= " << GetOp2()->GetName() << ") goto S" << GetTarget()->GetValue() << ":";
           break;
         case Operator::kGreaterThan:
-          cout << "if (" << GetOp1().GetName() << " > " << GetOp2().GetName() << ") goto S" << GetTarget().GetValue() << ":";
+          cout << "if (" << GetOp1()->GetName() << " > " << GetOp2()->GetName() << ") goto S" << GetTarget()->GetValue() << ":";
           break;
         case Operator::kGreaterThanEqualTo:
-          cout << "if (" << GetOp1().GetName() << " >= " << GetOp2().GetName() << ") goto S" << GetTarget().GetValue() << ":";
+          cout << "if (" << GetOp1()->GetName() << " >= " << GetOp2()->GetName() << ") goto S" << GetTarget()->GetValue() << ":";
           break;
         case Operator::kEqualTo:
-          cout << "if (" << GetOp1().GetName() << " == " << GetOp2().GetName() << ") goto S" << GetTarget().GetValue() << ":";
+          cout << "if (" << GetOp1()->GetName() << " == " << GetOp2()->GetName() << ") goto S" << GetTarget()->GetValue() << ":";
           break;
         case Operator::kGoto:
-          cout << "goto S" << GetTarget().GetValue() << ":";
+          cout << "goto S" << GetTarget()->GetValue() << ":";
           break;
         case Operator::kProgramStart:
           cout << "program begin";
           break;
         case Operator::kParam:
-          cout << "param " << GetTarget().GetName();
+          cout << "param " << GetTarget()->GetName();
           break;
         case Operator::kProgramEnd:
           cout << "program end";
           break;
         case Operator::kCall:
-          cout << "call " << GetTarget().GetName() << "," << GetOp2().GetValue() << "  -. " << GetOp1().GetName(); //op2 is num of args
+          cout << "call " << GetTarget()->GetName() << "," << GetOp2()->GetValue() << "  --> " << GetOp1()->GetName(); //op2 is num of args
           break;
         case Operator::kArgument:
-          cout << "argument " << GetTarget().GetName();
+          cout << "argument " << GetTarget()->GetName();
           break;
         case Operator::kFuncBegin:
-          cout << "func begin " << GetTarget().GetName();
+          cout << "func begin " << GetTarget()->GetName();
           break;
         case Operator::kFuncEnd:
-          cout << "func end " << GetTarget().GetName();
+          cout << "func end " << GetTarget()->GetName();
           break;
         case Operator::kReturn:
-          cout << "return " << GetTarget().GetName();
+          cout << "return " << GetTarget()->GetName();
           break;
         case Operator::kPushValueOfInteger:
-          cout << GetTarget().GetName() << " = " << GetOp2().GetName();
+          cout << GetTarget()->GetName() << " = " << GetOp2()->GetName();
           break;
         case Operator::kPushValueOfVariable:
-          cout << GetTarget().GetName() << " = " << GetOp2().GetName();
+          cout << GetTarget()->GetName() << " = " << GetOp2()->GetName();
           break;
         case Operator::kPushAddressOfVariable:
-          cout << GetTarget().GetName() << " = &" << GetOp2().GetName();
+          cout << GetTarget()->GetName() << " = &" << GetOp2()->GetName();
           break;
         case Operator::kPushAddressOfDereference:
-          cout << GetTarget().GetName() << " = &" << GetOp1().GetName() << "[" << GetOp2().GetName() << "]";
+          cout << GetTarget()->GetName() << " = &" << GetOp1()->GetName() << "[" << GetOp2()->GetName() << "]";
           break;
         case Operator::kPushValueOfDereference:
-          cout << GetTarget().GetName() << " = " << GetOp1().GetName() << "[" << GetOp2().GetName() << "]";
+          cout << GetTarget()->GetName() << " = " << GetOp1()->GetName() << "[" << GetOp2()->GetName() << "]";
           break;
         case Operator::kAssignmentFromArithExp:
-          cout << "*" << GetTarget().GetName() << " = " << GetOp2().GetName(); // a=5  a is target 2 is in op2, if theres is a single argument in the Three adress code, we normally put it in the second op field
+          cout << "*" << GetTarget()->GetName() << " = " << GetOp2()->GetName(); // a=5  a is target 2 is in op2, if theres is a single argument in the Three adress code, we normally put it in the second op field
           break;
         case Operator::kAssignmentFromNewTuple:
-          cout << "*" << GetTarget().GetName() << " = newTuple(" << GetOp2().GetName() << ")";
+          cout << "*" << GetTarget()->GetName() << " = newTuple(" << GetOp2()->GetName() << ")";
           break;
         }
       }
       Operand& GetLabel() { return *label_; }
-      Operand& GetOp1() { return *operand1_; }
-      Operand& GetOp2() { return *operand2_; }
-      Operand& GetTarget() { return *target_; }
-      Operator& GetInstruction() { return *operator_; }
+      Operand*& GetOp1() { return operand1_; }
+      Operand*& GetOp2() { return operand2_; }
+      Operand*& GetTarget() { return target_; }
+      Operator*& GetInstruction() { return operator_; }
       StatementNode*& GetNext() { return next_; }
     private:
       std::unique_ptr<Operand> label_;
-      std::unique_ptr<Operand> target_;
-      std::unique_ptr<Operator> operator_;
-      std::unique_ptr<Operand> operand1_;
-      std::unique_ptr<Operand> operand2_;
+      Operand* target_;
+      Operator* operator_;
+      Operand* operand1_;
+      Operand* operand2_;
       StatementNode* next_;
     };
   }  // namespace backend
