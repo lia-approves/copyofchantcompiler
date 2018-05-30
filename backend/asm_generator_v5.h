@@ -81,46 +81,46 @@ namespace cs160 {
           << "pop %rax" << endl
           << "pop %rbx" << endl
           << "cmp %rax, %rbx" << endl
-          << "jl " << node->GetTarget()->GetName() << endl;
+          << "jl " << node->GetTarget().GetName() << endl;
         break;
       case Operator::kLessThanEqualTo:
         asm_sstring_
           << "pop %rax" << endl
           << "pop %rbx" << endl
           << "cmp %rax, %rbx" << endl
-          << "jle " << node->GetTarget()->GetName() << endl;
+          << "jle " << node->GetTarget().GetName() << endl;
         break;
       case Operator::kGreaterThan:
         asm_sstring_
           << "pop %rax" << endl
           << "pop %rbx" << endl
           << "cmp %rax, %rbx" << endl
-          << "jg " << node->GetTarget()->GetName() << endl;
+          << "jg " << node->GetTarget().GetName() << endl;
         break;
       case Operator::kGreaterThanEqualTo:
         asm_sstring_
           << "pop %rax" << endl
           << "pop %rbx" << endl
           << "cmp %rax, %rbx" << endl
-          << "jge " << node->GetTarget()->GetName() << endl;
+          << "jge " << node->GetTarget().GetName() << endl;
         break;
       case Operator::kEqualTo:
         asm_sstring_
           << "pop %rax" << endl
           << "pop %rbx" << endl
           << "cmp %rax, %rbx" << endl
-          << "je " << node->GetTarget()->GetName() << endl;
+          << "je " << node->GetTarget().GetName() << endl;
         break;
       case Operator::kGoto:
         asm_sstring_
-          << "jmp " << node->GetTarget()->GetName() << endl;
+          << "jmp " << node->GetTarget().GetName() << endl;
         break;
       case Operator::kPushValueOfInteger:
         asm_sstring_
-          << "push $" << node->GetOp2()->GetValue() << endl; //only integer visitor uses this
+          << "push $" << node->GetOp2().GetValue() << endl; //only integer visitor uses this
         break;
       case Operator::kPushValueOfVariable:
-        offSet_ = GetOffSet(node->GetOp2()->GetName());
+        offSet_ = GetOffSet(node->GetOp2().GetName());
         asm_sstring_
           << "mov %rbp,%rcx" << endl;
         if (offSet_ < 0) {
@@ -135,7 +135,7 @@ namespace cs160 {
           << "push (%rcx)" << endl; //if we want the value at address we put parenthesis around
         break;
       case Operator::kPushAddressOfVariable:
-        offSet_ = GetOffSet(node->GetOp2()->GetName());
+        offSet_ = GetOffSet(node->GetOp2().GetName());
         asm_sstring_
           << "mov %rbp,%rcx" << endl;  //get rbp(start of stack) put in rcx
         if (offSet_ < 0) {
@@ -195,11 +195,11 @@ namespace cs160 {
       case Operator::kFuncBegin:
         NewSymbolTable();
         asm_sstring_
-          << ".type " << node->GetTarget()->GetName() << ",@function" << endl
-          << node->GetTarget()->GetName() << ":" << endl
+          << ".type " << node->GetTarget().GetName() << ",@function" << endl
+          << node->GetTarget().GetName() << ":" << endl
           << "push %rbp" << endl
           << "mov %rsp, %rbp" << endl
-          << "sub $" << 8 * node->GetOp2()->GetValue() << ", %rsp";
+          << "sub $" << 8 * node->GetOp2().GetValue() << ", %rsp";
         break;
       case Operator::kFuncEnd:
         asm_sstring_
@@ -214,17 +214,17 @@ namespace cs160 {
           << "#argument" << endl;
         break;
       case Operator::kParam:
-        paramVariables_.push_back(node->GetTarget()->GetName());
+        paramVariables_.push_back(node->GetTarget().GetName());
         asm_sstring_
-          << "#parameter " << node->GetTarget()->GetName() << endl;
+          << "#parameter " << node->GetTarget().GetName() << endl;
         break;
       case Operator::kCall:
-        offSet_ = GetOffSet(node->GetOp1()->GetName());
+        offSet_ = GetOffSet(node->GetOp1().GetName());
         asm_sstring_
-          << "call " << node->GetTarget()->GetName() << endl //call
+          << "call " << node->GetTarget().GetName() << endl //call
           << "push %rax" << endl //after func returns, return value in rax
           << "pop " << offSet_ << "(%rbp)" << endl // move value to variable( call.lhs.name)
-          << "add $" << 8 * node->GetOp2()->GetValue() << ", %rsp" << endl;  //should change this whole routine soon it works for now
+          << "add $" << 8 * node->GetOp2().GetValue() << ", %rsp" << endl;  //should change this whole routine soon it works for now
         break;
       case Operator::kProgramStart:
         NewSymbolTable();
@@ -235,7 +235,7 @@ namespace cs160 {
           << ".text" << endl
           << " main:" << endl
           << "mov %rsp, %rbp" << endl
-          << "sub $" << 8 * node->GetOp2()->GetValue() << ", %rsp" << endl; //allocate local vars
+          << "sub $" << 8 * node->GetOp2().GetValue() << ", %rsp" << endl; //allocate local vars
         break;
       case Operator::kProgramEnd:
         asm_sstring_

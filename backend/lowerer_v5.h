@@ -127,7 +127,7 @@ namespace cs160 {
       StatementNode * tail_ = nullptr;
       int labelNum_ = 1; // label number tracker
       int register_number_ = 0; //reg number tracker
-      std::vector<Operand*> ir_stack_; //we push registers to this
+      std::vector<std::unique_ptr<Operand>> ir_stack_; //we push registers to this
       int mainVars_ = 0; //used only for the main func to know how many local vars we need to allocate otherwise we use the visitor for the functions
       std::vector<string> paramVariables_; // rudimentary symbol table for parameter variables we need to change this to the assemler gen
       std::vector<string> localVariables_;
