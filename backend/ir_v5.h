@@ -103,8 +103,7 @@ namespace cs160 {
         operand1_(std::move(operand1)),
         operand2_(std::move(operand2)),
         next_(next) {}
-      ~StatementNode() {
-      }
+      ~StatementNode() {}
       void Print() {
         cout << "#S" << GetLabel().GetValue() << ":\t";
         switch (GetInstruction().GetOpcode()) {
