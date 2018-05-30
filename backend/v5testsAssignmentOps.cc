@@ -186,214 +186,214 @@ TEST(Access, OfDereference) {
   EXPECT_EQ("42", output);
 }
 
-TEST(Create, Function) {
-  Statement::Block foo_statements;
-  foo_statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(
-    make_unique<const VariableExpr>("local_b"),
-    make_unique<const AddExpr>(
-      make_unique<const VariableExpr>("param_a"),
-      make_unique<const IntegerExpr>(5)))));
+// TEST(Create, Function) {
+//   Statement::Block foo_statements;
+//   foo_statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(
+//     make_unique<const VariableExpr>("local_b"),
+//     make_unique<const AddExpr>(
+//       make_unique<const VariableExpr>("param_a"),
+//       make_unique<const IntegerExpr>(5)))));
+//
+//   auto foo_retval = make_unique<const AddExpr>(
+//     make_unique<const VariableExpr>("local_b"),
+//     make_unique<const IntegerExpr>(5));
+//
+//   auto foo_params = std::vector<std::unique_ptr<const VariableExpr>>();
+//   foo_params.push_back(std::move(make_unique<const VariableExpr>("param_a")));
+//
+//   auto foo_def = make_unique<const FunctionDef>(
+//     "foo", std::move(foo_params),
+//     std::move(foo_statements),
+//     std::move(foo_retval));
+//
+//   FunctionDef::Block function_defs;
+//   function_defs.push_back(std::move(foo_def));
+//   // foo(a)
+//       // b = a + 5;
+//       // return b + 5;
+//   Statement::Block statements;
+//   statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(
+//       make_unique<const VariableExpr>("a"),
+//       make_unique<const IntegerExpr>(12))));
+//
+//   auto ae = make_unique<const AddExpr>(
+//     make_unique<const  VariableExpr>("a"),
+//     make_unique<const IntegerExpr>(30));
+//
+//   auto ast = make_unique<const Program>(std::move(function_defs),
+//   std::move(statements), std::move(ae));
+//
+//   IrGenVisitor irGen;
+//   ast->Visit(&irGen);
+//   AsmProgram testasm;
+//   testasm.IrToAsm(&irGen);
+//
+//
+//   std::ofstream test_output_file;
+//   test_output_file.open("testfile.s");
+//   test_output_file << testasm.GetASMString();
+//   test_output_file.close();
+//   std::cout << testasm.GetASMString();
+//   system("gcc testfile.s && ./a.out > test_output.txt");
+//
+//   std::ifstream output_file;
+//   output_file.open("test_output.txt");
+//   std::string output;
+//   output_file >> output;
+//   // std::cout << output;
+//   output_file.close();
+//   system("rm testfile.s test_output.txt");
+//
+//   EXPECT_EQ("42", output);
+// }
 
-  auto foo_retval = make_unique<const AddExpr>(
-    make_unique<const VariableExpr>("local_b"),
-    make_unique<const IntegerExpr>(5));
-
-  auto foo_params = std::vector<std::unique_ptr<const VariableExpr>>();
-  foo_params.push_back(std::move(make_unique<const VariableExpr>("param_a")));
-
-  auto foo_def = make_unique<const FunctionDef>(
-    "foo", std::move(foo_params),
-    std::move(foo_statements),
-    std::move(foo_retval));
-
-  FunctionDef::Block function_defs;
-  function_defs.push_back(std::move(foo_def));
-  // foo(a)
-      // b = a + 5;
-      // return b + 5;
-  Statement::Block statements;
-  statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(
-      make_unique<const VariableExpr>("a"),
-      make_unique<const IntegerExpr>(12))));
-
-  auto ae = make_unique<const AddExpr>(
-    make_unique<const  VariableExpr>("a"),
-    make_unique<const IntegerExpr>(30));
-
-  auto ast = make_unique<const Program>(std::move(function_defs),
-  std::move(statements), std::move(ae));
-
-  IrGenVisitor irGen;
-  ast->Visit(&irGen);
-  AsmProgram testasm;
-  testasm.IrToAsm(&irGen);
-
-
-  std::ofstream test_output_file;
-  test_output_file.open("testfile.s");
-  test_output_file << testasm.GetASMString();
-  test_output_file.close();
-  // std::cout << testasm.GetASMString();
-  system("gcc testfile.s && ./a.out > test_output.txt");
-
-  std::ifstream output_file;
-  output_file.open("test_output.txt");
-  std::string output;
-  output_file >> output;
-  // std::cout << output;
-  output_file.close();
-  system("rm testfile.s test_output.txt");
-
-  EXPECT_EQ("42", output);
-}
-
-TEST(Call, Function) {
-  Statement::Block foo_statements;
-  foo_statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(
-    make_unique<const VariableExpr>("local_b"),
-    make_unique<const AddExpr>(
-      make_unique<const VariableExpr>("param_a"),
-      make_unique<const IntegerExpr>(5)))));
-
-  auto foo_retval = make_unique<const AddExpr>(
-    make_unique<const VariableExpr>("local_b"),
-    make_unique<const IntegerExpr>(5));
-
-  auto foo_params = std::vector<std::unique_ptr<const VariableExpr>>();
-  foo_params.push_back(std::move(make_unique<const VariableExpr>("param_a")));
-
-  auto foo_def = make_unique<const FunctionDef>(
-    "foo", std::move(foo_params),
-    std::move(foo_statements),
-    std::move(foo_retval));
-
-  FunctionDef::Block function_defs;
-  function_defs.push_back(std::move(foo_def));
-  // foo(a)
-      // b = a + 5;
-      // return b + 5;
-  Statement::Block statements;
-  statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(
-      make_unique<const VariableExpr>("a"),
-      make_unique<const IntegerExpr>(12))));
-
-  auto arguments = std::vector<std::unique_ptr<const ArithmeticExpr>>();
-  arguments.push_back(std::move(make_unique<const IntegerExpr>(12)));
-
-  statements.push_back(std::move(make_unique<const FunctionCall>(
-    make_unique<const VariableExpr>("foo_retval"),
-    "foo",
-    std::move(arguments))));
-
-  auto ae = make_unique<const AddExpr>(
-    make_unique<const VariableExpr>("foo_retval"),
-    make_unique<const IntegerExpr>(20));
-
-  auto ast = make_unique<const Program>(std::move(function_defs),
-  std::move(statements), std::move(ae));
-
-  IrGenVisitor irGen;
-  ast->Visit(&irGen);
-  // irGen.PrintIR();
-  AsmProgram testasm;
-  testasm.IrToAsm(&irGen);
-
-
-  std::ofstream test_output_file;
-  test_output_file.open("testfile.s");
-  test_output_file << testasm.GetASMString();
-  test_output_file.close();
-  // std::cout << testasm.GetASMString();
-  system("gcc testfile.s && ./a.out > test_output.txt");
-
-  std::ifstream output_file;
-  output_file.open("test_output.txt");
-  std::string output;
-  output_file >> output;
-  // std::cout << output;
-  output_file.close();
-  system("rm testfile.s test_output.txt");
-
-  EXPECT_EQ("42", output);
-}
-
-TEST(Call, FunctionTwice) {
-  Statement::Block foo_statements;
-  foo_statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(
-    make_unique<const VariableExpr>("local_b"),
-    make_unique<const AddExpr>(
-      make_unique<const VariableExpr>("param_a"),
-      make_unique<const IntegerExpr>(5)))));
-
-  auto foo_retval = make_unique<const AddExpr>(
-    make_unique<const VariableExpr>("local_b"),
-    make_unique<const IntegerExpr>(5));
-
-  auto foo_params = std::vector<std::unique_ptr<const VariableExpr>>();
-  foo_params.push_back(std::move(make_unique<const VariableExpr>("param_a")));
-
-  auto foo_def = make_unique<const FunctionDef>(
-    "foo", std::move(foo_params),
-    std::move(foo_statements),
-    std::move(foo_retval));
-
-  FunctionDef::Block function_defs;
-  function_defs.push_back(std::move(foo_def));
-  // foo(a)
-      // b = a + 5;
-      // return b + 5;
-  Statement::Block statements;
-  statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(
-      make_unique<const VariableExpr>("a"),
-      make_unique<const IntegerExpr>(12))));
-  statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(
-      make_unique<const VariableExpr>("B"),
-      make_unique<const IntegerExpr>(12))));
-
-  auto arguments = std::vector<std::unique_ptr<const ArithmeticExpr>>();
-  arguments.push_back(std::move(make_unique<const IntegerExpr>(12)));
-
-  statements.push_back(std::move(make_unique<const FunctionCall>(
-    make_unique<const VariableExpr>("foo_retval"),
-    "foo",
-    std::move(arguments))));
-
-  auto arguments2 = std::vector<std::unique_ptr<const ArithmeticExpr>>();
-  arguments2.push_back(std::move(make_unique<const IntegerExpr>(22)));
-
-  statements.push_back(std::move(make_unique<const FunctionCall>(
-    make_unique<const VariableExpr>("foo_retval"),
-    "foo",
-    std::move(arguments2))));
-
-  auto ae = make_unique<const AddExpr>(
-    make_unique<const VariableExpr>("foo_retval"),
-    make_unique<const IntegerExpr>(20));
-
-  auto ast = make_unique<const Program>(std::move(function_defs),
-  std::move(statements), std::move(ae));
-
-  IrGenVisitor irGen;
-  ast->Visit(&irGen);
-  // irGen.PrintIR();
-  AsmProgram testasm;
-  testasm.IrToAsm(&irGen);
-
-
-  std::ofstream test_output_file;
-  test_output_file.open("testfile.s");
-  test_output_file << testasm.GetASMString();
-  test_output_file.close();
-  // std::cout << testasm.GetASMString();
-  system("gcc testfile.s && ./a.out > test_output.txt");
-
-  std::ifstream output_file;
-  output_file.open("test_output.txt");
-  std::string output;
-  output_file >> output;
-  // std::cout << output;
-  output_file.close();
-  system("rm testfile.s test_output.txt");
-
-  EXPECT_EQ("52", output);
-}
+// TEST(Call, Function) {
+//   Statement::Block foo_statements;
+//   foo_statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(
+//     make_unique<const VariableExpr>("local_b"),
+//     make_unique<const AddExpr>(
+//       make_unique<const VariableExpr>("param_a"),
+//       make_unique<const IntegerExpr>(5)))));
+//
+//   auto foo_retval = make_unique<const AddExpr>(
+//     make_unique<const VariableExpr>("local_b"),
+//     make_unique<const IntegerExpr>(5));
+//
+//   auto foo_params = std::vector<std::unique_ptr<const VariableExpr>>();
+//   foo_params.push_back(std::move(make_unique<const VariableExpr>("param_a")));
+//
+//   auto foo_def = make_unique<const FunctionDef>(
+//     "foo", std::move(foo_params),
+//     std::move(foo_statements),
+//     std::move(foo_retval));
+//
+//   FunctionDef::Block function_defs;
+//   function_defs.push_back(std::move(foo_def));
+//   // foo(a)
+//       // b = a + 5;
+//       // return b + 5;
+//   Statement::Block statements;
+//   statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(
+//       make_unique<const VariableExpr>("a"),
+//       make_unique<const IntegerExpr>(12))));
+//
+//   auto arguments = std::vector<std::unique_ptr<const ArithmeticExpr>>();
+//   arguments.push_back(std::move(make_unique<const IntegerExpr>(12)));
+//
+//   statements.push_back(std::move(make_unique<const FunctionCall>(
+//     make_unique<const VariableExpr>("foo_retval"),
+//     "foo",
+//     std::move(arguments))));
+//
+//   auto ae = make_unique<const AddExpr>(
+//     make_unique<const VariableExpr>("foo_retval"),
+//     make_unique<const IntegerExpr>(20));
+//
+//   auto ast = make_unique<const Program>(std::move(function_defs),
+//   std::move(statements), std::move(ae));
+//
+//   IrGenVisitor irGen;
+//   ast->Visit(&irGen);
+//   // irGen.PrintIR();
+//   AsmProgram testasm;
+//   testasm.IrToAsm(&irGen);
+//
+//
+//   std::ofstream test_output_file;
+//   test_output_file.open("testfile.s");
+//   test_output_file << testasm.GetASMString();
+//   test_output_file.close();
+//   // std::cout << testasm.GetASMString();
+//   system("gcc testfile.s && ./a.out > test_output.txt");
+//
+//   std::ifstream output_file;
+//   output_file.open("test_output.txt");
+//   std::string output;
+//   output_file >> output;
+//   // std::cout << output;
+//   output_file.close();
+//   system("rm testfile.s test_output.txt");
+//
+//   EXPECT_EQ("42", output);
+// }
+//
+// TEST(Call, FunctionTwice) {
+//   Statement::Block foo_statements;
+//   foo_statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(
+//     make_unique<const VariableExpr>("local_b"),
+//     make_unique<const AddExpr>(
+//       make_unique<const VariableExpr>("param_a"),
+//       make_unique<const IntegerExpr>(5)))));
+//
+//   auto foo_retval = make_unique<const AddExpr>(
+//     make_unique<const VariableExpr>("local_b"),
+//     make_unique<const IntegerExpr>(5));
+//
+//   auto foo_params = std::vector<std::unique_ptr<const VariableExpr>>();
+//   foo_params.push_back(std::move(make_unique<const VariableExpr>("param_a")));
+//
+//   auto foo_def = make_unique<const FunctionDef>(
+//     "foo", std::move(foo_params),
+//     std::move(foo_statements),
+//     std::move(foo_retval));
+//
+//   FunctionDef::Block function_defs;
+//   function_defs.push_back(std::move(foo_def));
+//   // foo(a)
+//       // b = a + 5;
+//       // return b + 5;
+//   Statement::Block statements;
+//   statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(
+//       make_unique<const VariableExpr>("a"),
+//       make_unique<const IntegerExpr>(12))));
+//   statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(
+//       make_unique<const VariableExpr>("B"),
+//       make_unique<const IntegerExpr>(12))));
+//
+//   auto arguments = std::vector<std::unique_ptr<const ArithmeticExpr>>();
+//   arguments.push_back(std::move(make_unique<const IntegerExpr>(12)));
+//
+//   statements.push_back(std::move(make_unique<const FunctionCall>(
+//     make_unique<const VariableExpr>("foo_retval"),
+//     "foo",
+//     std::move(arguments))));
+//
+//   auto arguments2 = std::vector<std::unique_ptr<const ArithmeticExpr>>();
+//   arguments2.push_back(std::move(make_unique<const IntegerExpr>(22)));
+//
+//   statements.push_back(std::move(make_unique<const FunctionCall>(
+//     make_unique<const VariableExpr>("foo_retval"),
+//     "foo",
+//     std::move(arguments2))));
+//
+//   auto ae = make_unique<const AddExpr>(
+//     make_unique<const VariableExpr>("foo_retval"),
+//     make_unique<const IntegerExpr>(20));
+//
+//   auto ast = make_unique<const Program>(std::move(function_defs),
+//   std::move(statements), std::move(ae));
+//
+//   IrGenVisitor irGen;
+//   ast->Visit(&irGen);
+//   // irGen.PrintIR();
+//   AsmProgram testasm;
+//   testasm.IrToAsm(&irGen);
+//
+//
+//   std::ofstream test_output_file;
+//   test_output_file.open("testfile.s");
+//   test_output_file << testasm.GetASMString();
+//   test_output_file.close();
+//   // std::cout << testasm.GetASMString();
+//   system("gcc testfile.s && ./a.out > test_output.txt");
+//
+//   std::ifstream output_file;
+//   output_file.open("test_output.txt");
+//   std::string output;
+//   output_file >> output;
+//   // std::cout << output;
+//   output_file.close();
+//   system("rm testfile.s test_output.txt");
+//
+//   EXPECT_EQ("52", output);
+// }

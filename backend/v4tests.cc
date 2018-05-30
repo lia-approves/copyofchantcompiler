@@ -41,6 +41,7 @@ using cs160::backend::Register;
 using cs160::backend::StatementNode;
 using cs160::backend::AsmProgram;
 using cs160::backend::IrGenVisitor;
+//using cs160::backend::Text;
 using cs160::backend::Label;
 using cs160::backend::Constant;
 using cs160::backend::Variable;
