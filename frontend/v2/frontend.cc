@@ -300,18 +300,19 @@ Parser Frontend::Program() {
 }
 
 Parser Frontend::Primary() {
-  return Or(Int(), Or(Variable(), And(Literal('('), And(Expression(),
-      Literal(')')))));
+  std::vector<Parser> p_vec;
+  p_vec.push_back(Int());
+  p_vec.push_back(Variable());
+  p_vec.push_back(And(Literal('('),
+      And(Expression(),  Literal(')'))));
+  // return Or(
+  //     Int(),
+  //     Or(
+  //         Variable(),
+  //           And(Literal('('),
+  //               And(Expression(),  Literal(')')))));
+  return Or(p_vec);
 }
-// Parser Frontend::Add() {
-//   return And(
-//     Multiply(),
-//     Star(And(
-//       Or(Literal('-'), Literal('+')),
-//       Multiply()
-//     ))
-//   );
-// }
 
 template<class Op1Node, class Op2Node>
 std::function<Value(ValueVec)> makeCoalescer(string op1, string op2) {
@@ -365,8 +366,7 @@ std::function<Value(ValueVec)> makeCoalescer(string op1, string op2) {
 
 Node Frontend::stringToAst(std::string s) {
   State state(s);
-
-  auto parse = Program();
+  auto parse = Primary();
   auto result = parse(state);
 
   // std::unique_ptr<ast::AstNode> n(new ast::IntegerExpr(1));

@@ -3,7 +3,7 @@ cc_library(
   copts = ["-Wall -g"],
   srcs = ["frontend.cc"],
   hdrs = ["frontend.h"],
-  deps = ["//frontend/combinator:combinator", "//abstract_syntax", "//utility"],
+  deps = ["//frontend/combinator:combinator", "//abstract_syntax", "//utility", "//abstract_syntax:print_visitor_v2"],
   visibility = ["//visibility:public"],
 )
 
