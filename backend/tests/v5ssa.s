@@ -3,26 +3,26 @@
 #S2:	param bob
 #S3:	t1 = bob
 #S4:	t2 = 100
-#S5:	if (t1 < t2) goto S7:
+#S5:	if (t1 < t2) goto S6:
 #S6:	goto S10:
 #S7:	t3 = bob
 #S8:	t4 = 0
 #S9:	if (t3 > t4) goto S18:
 #S10:	t5 = bob
 #S11:	t6 = 100
-#S12:	if (t5 <= t6) goto S14:
+#S12:	if (t5 <= t6) goto S13:
 #S13:	goto S17:
 #S14:	t7 = bob
 #S15:	t8 = 0
-#S16:	if (t7 >= t8) goto S18:
-#S17:	goto S19:
-#S18:	goto S20:
+#S16:	if (t7 >= t8) goto S17:
+#S17:	goto S18:
+#S18:	goto S19:
 #S19:	goto S21:
 #S20:	goto S21:
 #S21:	t9 = bob
 #S22:	t10 = 0
-#S23:	if (t9 == t10) goto S25:
-#S24:	goto S26:
+#S23:	if (t9 == t10) goto S24:
+#S24:	goto S25:
 #S25:	goto S32:
 #S26:	t11 = &bob
 #S27:	t12 = bob
@@ -172,7 +172,7 @@ statementnumber_5:
 pop %rax
 pop %rbx
 cmp %rax, %rbx
-jl statementnumber_7
+jl statementnumber_6
 
 statementnumber_6:
 jmp statementnumber_10
@@ -203,7 +203,7 @@ statementnumber_12:
 pop %rax
 pop %rbx
 cmp %rax, %rbx
-jle statementnumber_14
+jle statementnumber_13
 
 statementnumber_13:
 jmp statementnumber_17
@@ -220,13 +220,13 @@ statementnumber_16:
 pop %rax
 pop %rbx
 cmp %rax, %rbx
-jge statementnumber_18
+jge statementnumber_17
 
 statementnumber_17:
-jmp statementnumber_19
+jmp statementnumber_18
 
 statementnumber_18:
-jmp statementnumber_20
+jmp statementnumber_19
 
 statementnumber_19:
 jmp statementnumber_21
@@ -246,10 +246,10 @@ statementnumber_23:
 pop %rax
 pop %rbx
 cmp %rax, %rbx
-je statementnumber_25
+je statementnumber_24
 
 statementnumber_24:
-jmp statementnumber_26
+jmp statementnumber_25
 
 statementnumber_25:
 jmp statementnumber_32

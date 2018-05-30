@@ -96,13 +96,13 @@ namespace cs160 {
         std::unique_ptr<Operator> instruction,
         std::unique_ptr<Operand> operand1,
         std::unique_ptr<Operand> operand2,
-        StatementNode* next)
+        std::shared_ptr<StatementNode> next)
         : label_(std::move(label)),
         target_(std::move(target)),
         operator_(std::move(instruction)),
         operand1_(std::move(operand1)),
         operand2_(std::move(operand2)),
-        next_(next) {}
+        next_(std::move(next)) {}
       ~StatementNode() {}
       void Print() {
         cout << "#S" << GetLabel().GetValue() << ":\t";
@@ -189,14 +189,14 @@ namespace cs160 {
       Operand& GetOp2() { return *operand2_; }
       Operand& GetTarget() { return *target_; }
       Operator& GetInstruction() { return *operator_; }
-      StatementNode*& GetNext() { return next_; }
+      std::shared_ptr<StatementNode>& GetNext() { return next_; }
     private:
       std::unique_ptr<Operand> label_;
       std::unique_ptr<Operand> target_;
       std::unique_ptr<Operator> operator_;
       std::unique_ptr<Operand> operand1_;
       std::unique_ptr<Operand> operand2_;
-      StatementNode* next_;
+      std::shared_ptr<StatementNode> next_;
     };
   }  // namespace backend
 }  // namespace cs160

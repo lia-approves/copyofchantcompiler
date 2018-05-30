@@ -88,13 +88,7 @@ namespace cs160 {
     class IrGenVisitor : public AstVisitor {
     public:
       IrGenVisitor() {}
-      ~IrGenVisitor() {
-        StatementNode* tobe_deleted = head_;
-        while (tobe_deleted != nullptr) {
-          delete tobe_deleted;
-          tobe_deleted = tobe_deleted->GetNext();
-        }
-      }
+      ~IrGenVisitor() {}
       void VisitIntegerExpr(const IntegerExpr& exp) override;
       void VisitVariableExpr(const VariableExpr& exp) override;
       void VisitDereference(const Dereference& exp) override;
@@ -117,14 +111,14 @@ namespace cs160 {
       void VisitLogicalNotExpr(const LogicalNotExpr& exp) override;
       void VisitConditional(const Conditional& conditional) override;
       void VisitLoop(const Loop& loop) override;
-      StatementNode* GetIR() { return head_; }
-      void AddToEnd(StatementNode* newtail);
+      std::shared_ptr<StatementNode> GetIR() { return head_; }
+      void AddToEnd(std::shared_ptr<StatementNode> newtail);
       void PrintIR();
       int NumberOfStatements();
       int NumberOfMainVars() { return mainVars_; }
     private:
-      StatementNode * head_ = nullptr;
-      StatementNode * tail_ = nullptr;
+      std::shared_ptr<StatementNode> head_ = nullptr;
+      std::shared_ptr<StatementNode> tail_ = nullptr;
       int labelNum_ = 1; // label number tracker
       int register_number_ = 0; //reg number tracker
       std::vector<std::unique_ptr<Operand>> ir_stack_; //we push registers to this

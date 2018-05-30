@@ -26,7 +26,7 @@ namespace cs160 {
       string GetASMString() { return asm_sstring_.str(); }
       int GetOffSet(string variable);
     private:
-      void GenerateASM(StatementNode* node);
+      void GenerateASM(std::shared_ptr<StatementNode> node);
       stringstream asm_sstring_;
       stringstream asm_sstring_variables_;
       IrGenVisitor *ir_;
@@ -37,7 +37,7 @@ namespace cs160 {
     };
     void AsmProgram::IrToAsm(IrGenVisitor* ir) {
       ir_ = ir;
-      StatementNode * head = ir_->GetIR();
+      std::shared_ptr<StatementNode> head = ir_->GetIR();
       while (head != nullptr) {
         asm_sstring_
           << endl << "statementnumber_" << head->GetLabel().GetValue() << ":" << endl;
@@ -45,7 +45,7 @@ namespace cs160 {
         head = head->GetNext();
       }
     }
-    void AsmProgram::GenerateASM(StatementNode* node) {
+    void AsmProgram::GenerateASM(std::shared_ptr<StatementNode> node) {
       switch (node->GetInstruction().GetOpcode()) {
       case Operator::kAdd:
         asm_sstring_
