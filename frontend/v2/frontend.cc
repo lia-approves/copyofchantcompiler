@@ -322,8 +322,32 @@ Parser Frontend::Primary() {
   // return Or(p_vec);
 }
 
-Parser Frontend::A() {
-  return Or(And(Literal('-'), A()), Int());
+Parser Frontend::Test_Function() {
+// void (MyClass::*func)(int);
+// func = &MyClass::buttonClickedEvent;
+
+//  Parser (*a_ptr)() = Test_Function;
+  Parser (Frontend::*func)();
+  func = &Frontend::Test_Function;
+
+  std::cout << "in A()" << std::endl;
+  return Or(And(Literal('-'), Lazy(func)), Int());
+}
+
+// void (aClass::*function)(int, int), aClass& a
+Parser Frontend::Lazy(Parser (Frontend::*function)() ) {
+  // takes a pointer to a parser function
+  // returns a parser which, when called, calls the function pointer
+
+return [function]{
+  Frontend f;
+  Parser p = (f.*function)();
+  return p;
+};
+
+  // Frontend f;
+  // Parser p = (f.*function)();
+  // return p;
 }
 
 template<class Op1Node, class Op2Node>
@@ -378,7 +402,7 @@ std::function<Value(ValueVec)> makeCoalescer(string op1, string op2) {
 
 Node Frontend::stringToAst(std::string s) {
   State state(s);
-  auto parse = A();
+  auto parse = Test_Function();
   auto result = parse(state);
 
   // std::unique_ptr<ast::AstNode> n(new ast::IntegerExpr(1));

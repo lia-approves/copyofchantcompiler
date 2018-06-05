@@ -26,7 +26,8 @@ class Frontend {
   Parser Multiply();
   Parser Unary();
   Parser Primary();
-  Parser A();
+  Parser Test_Function();
+  Parser Lazy(Parser (Frontend::*function)());
 };
 
 }  // namespace Parse
