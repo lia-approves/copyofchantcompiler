@@ -28,6 +28,7 @@ class Frontend {
   Parser Primary();
   Parser Test_Function();
   Parser Lazy(Parser (Frontend::*function)());
+  Parser Test2();
 };
 
 }  // namespace Parse

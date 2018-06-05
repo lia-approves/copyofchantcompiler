@@ -334,20 +334,29 @@ Parser Frontend::Test_Function() {
   return Or(And(Literal('-'), Lazy(func)), Int());
 }
 
+Parser Frontend::Test2() {
+  Parser x = []() -> Parser {
+    return Literal('a');
+  };
+
+  return x;
+}
+
 // void (aClass::*function)(int, int), aClass& a
 Parser Frontend::Lazy(Parser (Frontend::*function)() ) {
-  // takes a pointer to a parser function
-  // returns a parser which, when called, calls the function pointer
-
-return [function]{
-  Frontend f;
-  Parser p = (f.*function)();
-  return p;
-};
-
-  // Frontend f;
-  // Parser p = (f.*function)();
-  // return p;
+//   // takes a pointer to a parser function
+//   // returns a parser which, when called, calls the function pointer
+//
+// return[]() -> Parser{
+//   // Frontend f;
+//   // Parser p = (f.*function)();
+//   // return p;
+//   return Literal('a');
+// };
+//
+//   // Frontend f;
+//   // Parser p = (f.*function)();
+//   // return p;
 }
 
 template<class Op1Node, class Op2Node>
@@ -402,7 +411,7 @@ std::function<Value(ValueVec)> makeCoalescer(string op1, string op2) {
 
 Node Frontend::stringToAst(std::string s) {
   State state(s);
-  auto parse = Test_Function();
+  auto parse = Test2();
   auto result = parse(state);
 
   // std::unique_ptr<ast::AstNode> n(new ast::IntegerExpr(1));
