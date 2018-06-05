@@ -194,73 +194,14 @@ Parser Frontend::Multiply() {
 
 Parser Frontend::Unary() {
   std::cout << "making unary" << std::endl;
-  return Or(
-    Star(Literal('-'),
-    // Callback for Star().
-    [](ValueVec values) {
-      // If there are no matches in the Star, return an empty value.
-      if (values.size() == 0) {
-        return Value();
-      }
-      int counter = 0;
-      // As long as there are multiple matches, coalesce them into 1.
-      while (values.size() > 1) {
-        // We know it has a string because it comes from the
-        // And() callback
-        std::string op = values.back().GetString();
-        auto last = values.back().GetNodeUnique();
-        values.pop_back();
-        // auto curr = values.back().GetNodeUnique();
-        // auto lastAsArithExpr =
-        //  unique_cast<const ast::ArithmeticExpr>(move(last));
-        // auto currAsArithExpr =
-        //  unique_cast<const ast::ArithmeticExpr>(move(curr));
-        // Create a node from the last 2 elements (curr and last)
-        // unique_ptr<ast::AstNode> newNodePtr;
-        if (op == "-") {
-          counter++;
-        } else {
-          throw std::logic_error("Improper operator is not a -");
-        }
-        // Replace the last element with newNodePtr
-        // values.pop_back();
-        // Value v(move(newNodePtr));
-        // values.push_back(move(v));
-      }
-
-      // If there is 1 match, return it and the
-      // result of the Or() (casted).
-      if (values.size() == 1) {
-        if (counter % 2 != 0) {
-          std::string op = values[0].GetString();
-          int convertedOp = std::stoi(op);
-          convertedOp *= -1;
-
-          // auto v = values[0].GetNodeUnique();
-          auto expression1 = new ast::IntegerExpr(convertedOp);
-          auto expression2 = make_unique<ast::IntegerExpr>(*expression1);
-          Value ret(std::move(expression2));
-          std::string op2 = std::to_string(convertedOp);
-          ret.SetString(op2);
-          return ret;
-        } else {
-          std::string op = values[0].GetString();
-          int convertedOp = std::stoi(op);
-
-          // auto v = values[0].GetNodeUnique();
-          auto expression1 = new ast::IntegerExpr(convertedOp);
-          auto expression2 = make_unique
-          <ast::IntegerExpr>(*expression1);
-          Value ret(std::move(expression2));
-          std::string op2 = std::to_string(convertedOp);
-          ret.SetString(op2);
-          return ret;
-        }
-      }
-      throw std::logic_error
-      ("Couldn't coalesce values into 1 expression");
-    }),
-    Lazy(&Frontend::Primary));
+  return
+    Or(
+      Lazy(&Frontend::Primary),
+      And(
+        Literal('-'),
+        Lazy(&Frontend::Unary)
+      )
+    );
 }
 
 
