@@ -5,6 +5,7 @@
 #include <iostream>
 #include "frontend/v2/frontend.h"
 #include "abstract_syntax/abstract_syntax.h"
+#include "abstract_syntax/print_visitor_v2.h"
 
 namespace cs160 {
 namespace frontend {
@@ -16,6 +17,8 @@ using std::unique_ptr;
 using std::string;
 using std::move;
 using Parser = std::function<Result(State)>;
+
+abstract_syntax::frontend::PrintVisitor printer_;
 
 template<typename TO, typename FROM>
 unique_ptr<TO> static_unique_pointer_cast(unique_ptr<FROM>&& old) {
@@ -194,14 +197,102 @@ Parser Frontend::Multiply() {
 
 Parser Frontend::Unary() {
   std::cout << "making unary" << std::endl;
-  return
-    Or(
-      Lazy(&Frontend::Primary),
-      And(
-        Literal('-'),
-        Lazy(&Frontend::Unary)
-      )
-    );
+  // return
+  //   Or(
+  //     Lazy(&Frontend::Primary),
+  //     And(
+  //       Literal('-'),
+  //       Lazy(&Frontend::Unary),
+  //     // Callback for And()
+  //     [](Value v1, Value v2) -> Value{
+  //       std::cout << "in unary callback" << std::endl;
+  // // Concatenate a Subtract expression containing 0 and the second value
+  //       std::string s1 = v1.GetString();
+  //       std::string s2 = v2.GetString();
+  //
+  //       auto Zero = Value("0");
+  //
+  //       auto n1 = v1.GetNodeUnique();
+  //       auto n2 = v2.GetNodeUnique();
+  //       auto zero_node = Zero.GetNodeUnique();
+  //
+  //       std::cout << "made nodes" << std::endl;
+  //
+  //       auto ArithExpr2 =
+  //         unique_cast<const ast::ArithmeticExpr>(move(n2));
+  //       auto ZeroArithExpr =
+  //         unique_cast<const ast::ArithmeticExpr>(move(zero_node));
+  //
+  //       std::cout << "made arithmetic expressions" << std::endl;
+  //       std::cout << s1 << ", " << s2 << std::endl;
+  //       unique_ptr<ast::AstNode> newNodePtr;
+  //       newNodePtr.reset(new ast::SubtractExpr(
+  //         move(ZeroArithExpr),
+  //         move(ArithExpr2)));
+  //
+  //       Value ret(std::move(newNodePtr));
+  //       return ret;
+  //     }));
+  return And(Star(Literal('-'),
+    [](ValueVec values) {
+      std::cout << "in star callback" << std::endl;
+      if (values.size() == 0) {
+        return Value("+");
+      }
+      int counter = values.size();
+      // counter tells us how many - signs there are
+      if (counter % 2 == 0) {
+        // there is an even number of negative signs
+        // return an add expression (?)
+        Value ret("+");
+        return ret;
+      } else {
+        std::cout << "odd number of -" << std::endl;
+        // there is an odd number of negative signs
+        // should be a negative number in the end
+        Value ret("-");
+        return ret;
+      }
+    }
+), Int(),
+  [](Value v1, Value v2) {
+    std::cout << "in and callback" << std::endl;
+    // And callback
+    // v1 should be '-' or '+' depending on the output of star
+    // get value
+    std::string v1_str = v1.GetString();
+    auto v2_ptr = v2.GetNodeUnique();
+    auto v2_int_expr = unique_cast
+      <ast::IntegerExpr, ast::AstNode>(move(v2_ptr));
+
+    // make Zero Int value
+    auto zero = Value("0");
+    auto zero_node = zero.GetNodeUnique();
+    auto ZeroArithExpr =
+        unique_cast<const ast::IntegerExpr>(move(zero_node));
+
+    //
+    // auto v2_ArithExpr =
+    //     unique_cast<const ast::ArithmeticExpr>(move(v2_ptr));
+
+    unique_ptr<ast::AstNode> newNodePtr;
+
+    if (v1_str.at(0) == '+') {
+      // make an add expression
+      newNodePtr.reset(new ast::AddExpr(
+        move(ZeroArithExpr),
+        move(v2_int_expr)));
+    } else {
+      // make a sub expression
+      newNodePtr.reset(new ast::SubtractExpr(
+        move(ZeroArithExpr),
+        move(v2_int_expr)));
+    }
+
+    Value v(std::move(newNodePtr));
+    return v;
+  }
+);
 }
 
 
@@ -209,7 +300,7 @@ Parser Frontend::Unary() {
 Parser Frontend::Program() {
   std::cout << "making program" << std::endl;
   return And(
-  Star(Assign(),
+  Star(Lazy(&Frontend::Assign),
   // Callback for Star().
   [](ValueVec values) {
     // If there are no matches in the Star, return an empty value.
@@ -245,22 +336,17 @@ Parser Frontend::Program() {
       return ret;
     }
     throw std::logic_error("Couldn't coalesce values into 1 expression");
-  }), Expression());
+  }), Lazy(&Frontend::Expression));
 }
 
 Parser Frontend::Primary() {
   std::cout << "making primary" << std::endl;
-  // std::vector<Parser> p_vec;
-  // p_vec.push_back(Int());
-  // p_vec.push_back(Variable());
-  // p_vec.push_back(And(Literal('('),
-  //     And(Expression(),  Literal(')'))));
   return Or(
       Int(),
       Or(
           Variable(),
             And(Literal('('),
-                And(Expression(),  Literal(')')))));
+                And(Lazy(&Frontend::Expression),  Literal(')')))));
   // return Or(p_vec);
 }
 
@@ -350,7 +436,6 @@ Node Frontend::stringToAst(std::string s) {
   State state(s);
   auto parse = Unary();
   auto result = parse(state);
-
   // std::unique_ptr<ast::AstNode> n(new ast::IntegerExpr(1));
   // std::unique_ptr<ast::IntegerExpr> p = unique_cast<std::unique_ptr
   // <ast::AstNode>, std::unique_ptr<ast::IntegerExpr>> (n);
@@ -360,6 +445,7 @@ Node Frontend::stringToAst(std::string s) {
   // (std::move(a));
 
   // auto ptr = result.value().GetNodePointer();
+
   auto val = result.value();
   return val.GetNodeUnique();
 }

@@ -14,13 +14,31 @@ class FrontendTest : public ::testing::Test {
   bool test = false;
   abstract_syntax::frontend::PrintVisitor printer_;
 };
+//
+// TEST_F(FrontendTest, BasicTest) {
+//   // make a basic expression and parse
+//   Frontend f;
+//   auto ret = f.stringToAst("a");
+//   ret->Visit(&printer_);
+//   ASSERT_EQ(printer_.GetOutput(), "a");
+// }
 
-TEST_F(FrontendTest, BasicTest) {
+// TEST_F(FrontendTest, BasicUnaryTest) {
+//   // make a basic expression and parse
+//   Frontend f;
+//   auto ret = f.stringToAst("1");
+//   ret->Visit(&printer_);
+//   ASSERT_EQ(printer_.GetOutput(), "1");
+// }
+//
+TEST_F(FrontendTest, BasicUnary2Test) {
   // make a basic expression and parse
   Frontend f;
-  auto ret = f.stringToAst("1");
+  auto ret = f.stringToAst("-1");
+  std::cout << "done with stringToAst" << std::endl;
   ret->Visit(&printer_);
-  // ASSERT_EQ(printer_.GetOutput(), "a");
+  std::cout << "done with print visitor" << std::endl;
+  ASSERT_EQ(printer_.GetOutput(), "-1");
 }
 
 // TEST_F(FrontendTest, BasicAdditionTest) {
