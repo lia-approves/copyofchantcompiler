@@ -22,21 +22,77 @@ TEST_F(FrontendTest, BasicTest) {
   ret->Visit(&printer_);
   ASSERT_EQ(printer_.GetOutput(), "a");
 }
-//
-// TEST_F(FrontendTest, BasicAdditionTest) {
-//   // make a basic expression and parse
-//   Frontend f;
-//   auto ret = f.stringToAst("1+2");
-//   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "(+ 1 2)");
-// }
 
-// TEST_F(FrontendTest, BasicParenthesisTest) {
-//   Frontend f;
-//   auto ret = f.stringToAst("(1+2)");
-//   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "(+ 1 2)");
-// }
+TEST_F(FrontendTest, BasicAdditionTest) {
+  // make a basic expression and parse
+  Frontend f;
+  auto ret = f.stringToAst("1+2");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(+ 1 2)");
+}
+
+TEST_F(FrontendTest, BasicParenthesisTest) {
+  Frontend f;
+  auto ret = f.stringToAst("(1+2)");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(+ 1 2)");
+}
+
+TEST_F(FrontendTest, BasicSubtractionTest) {
+  // make a basic expression and parse
+  Frontend f;
+  auto ret = f.stringToAst("1-2");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(- 1 2)");
+}
+
+TEST_F(FrontendTest, BasicMultiplicationTest) {
+  // make a basic expression and parse
+  Frontend f;
+  auto ret = f.stringToAst("1*2");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(* 1 2)");
+}
+
+TEST_F(FrontendTest, BasicDivisionTest) {
+  // make a basic expression and parse
+  Frontend f;
+  auto ret = f.stringToAst("2/1");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(/ 2 1)");
+}
+
+TEST_F(FrontendTest, AdvancedAdditionTest) {
+  // make a basic expression and parse
+  Frontend f;
+  auto ret = f.stringToAst("2+2+3+4");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(+ (+ (+ 2 2) 3) 4)");
+}
+
+TEST_F(FrontendTest, AdvancedEquation1Test) {
+  // make a basic expression and parse
+  Frontend f;
+  auto ret = f.stringToAst("2+3-4");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(- (+ 2 3) 4)");
+}
+
+TEST_F(FrontendTest, AdvancedEquation2Test) {
+  // make a basic expression and parse
+  Frontend f;
+  auto ret = f.stringToAst("(4+5)*6");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(* (+ 4 5) 6)");
+}
+
+TEST_F(FrontendTest, AdvancedEquation3Test) {
+  // make a basic expression and parse
+  Frontend f;
+  auto ret = f.stringToAst("(2+2)/(10-2)");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(/ (+ 2 2) (- 10 2))");
+}
 
 }  // namespace Parse
 }  // namespace frontend

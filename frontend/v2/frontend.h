@@ -26,6 +26,7 @@ class Frontend {
   Parser Multiply();
   Parser Unary();
   Parser Primary();
+  Parser A();
 };
 
 }  // namespace Parse

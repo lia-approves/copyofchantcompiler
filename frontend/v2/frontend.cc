@@ -25,6 +25,7 @@ unique_ptr<TO> static_unique_pointer_cast(unique_ptr<FROM>&& old) {
 Frontend::~Frontend(void) {}
 
 Parser Variable() {
+  std::cout << "making variable" << std::endl;
   return OnePlus(Range("az"), [](ValueVec values) {
     Value v = ConcatVector(std::move(values));
     auto node =
@@ -34,6 +35,7 @@ Parser Variable() {
 }
 
 Parser Frontend::Assign() {
+  std::cout << "making assign" << std::endl;
   return Sequence(Variable(), Literal('='), Expression(), [](ValueVec values) {
     auto v = values[0].GetNodeUnique();
     unique_ptr<const ast::VariableExpr> var =
@@ -48,10 +50,12 @@ Parser Frontend::Assign() {
 }
 
 Parser Frontend::Expression() {
+  std::cout << "making expression" << std::endl;
   return Add();
 }
 
 Parser Frontend::Add() {
+  std::cout << "making add" << std::endl;
   return And(
     Multiply(),
     Star(
@@ -122,6 +126,7 @@ Parser Frontend::Add() {
 }
 
 Parser Frontend::Multiply() {
+  std::cout << "making multiply" << std::endl;
   return And(
     Unary(),
     Star(
@@ -187,6 +192,7 @@ Parser Frontend::Multiply() {
 }
 
 Parser Frontend::Unary() {
+  std::cout << "making unary" << std::endl;
   return Or(
           Star(Literal('-'),
           // Callback for Star().
@@ -259,6 +265,7 @@ Parser Frontend::Unary() {
 
 // Creates a Program
 Parser Frontend::Program() {
+  std::cout << "making program" << std::endl;
   return And(
   Star(Assign(),
   // Callback for Star().
@@ -300,18 +307,23 @@ Parser Frontend::Program() {
 }
 
 Parser Frontend::Primary() {
-  std::vector<Parser> p_vec;
-  p_vec.push_back(Int());
-  p_vec.push_back(Variable());
-  p_vec.push_back(And(Literal('('),
-      And(Expression(),  Literal(')'))));
-  // return Or(
-  //     Int(),
-  //     Or(
-  //         Variable(),
-  //           And(Literal('('),
-  //               And(Expression(),  Literal(')')))));
-  return Or(p_vec);
+  std::cout << "making primary" << std::endl;
+  // std::vector<Parser> p_vec;
+  // p_vec.push_back(Int());
+  // p_vec.push_back(Variable());
+  // p_vec.push_back(And(Literal('('),
+  //     And(Expression(),  Literal(')'))));
+  return Or(
+      Int(),
+      Or(
+          Variable(),
+            And(Literal('('),
+                And(Expression(),  Literal(')')))));
+  // return Or(p_vec);
+}
+
+Parser Frontend::A() {
+  return Or(And(Literal('-'), A()), Int());
 }
 
 template<class Op1Node, class Op2Node>
@@ -366,7 +378,7 @@ std::function<Value(ValueVec)> makeCoalescer(string op1, string op2) {
 
 Node Frontend::stringToAst(std::string s) {
   State state(s);
-  auto parse = Primary();
+  auto parse = A();
   auto result = parse(state);
 
   // std::unique_ptr<ast::AstNode> n(new ast::IntegerExpr(1));
