@@ -12,6 +12,7 @@
 namespace cs160 {
 namespace frontend {
 namespace Parse {
+  using Parser = std::function<Result(State)>;
 
 class Frontend {
  public:
@@ -28,7 +29,6 @@ class Frontend {
   Parser Primary();
   Parser Test_Function();
   Parser Lazy(Parser (Frontend::*function)());
-  Parser Test2();
 };
 
 }  // namespace Parse

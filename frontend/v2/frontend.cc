@@ -15,6 +15,7 @@ using ValueVec = std::vector<Value>;
 using std::unique_ptr;
 using std::string;
 using std::move;
+using Parser = std::function<Result(State)>;
 
 template<typename TO, typename FROM>
 unique_ptr<TO> static_unique_pointer_cast(unique_ptr<FROM>&& old) {
@@ -334,29 +335,21 @@ Parser Frontend::Test_Function() {
   return Or(And(Literal('-'), Lazy(func)), Int());
 }
 
-Parser Frontend::Test2() {
-  Parser x = []() -> Parser {
-    return Literal('a');
-  };
-
-  return x;
-}
-
-// void (aClass::*function)(int, int), aClass& a
 Parser Frontend::Lazy(Parser (Frontend::*function)() ) {
-//   // takes a pointer to a parser function
-//   // returns a parser which, when called, calls the function pointer
-//
-// return[]() -> Parser{
-//   // Frontend f;
-//   // Parser p = (f.*function)();
-//   // return p;
-//   return Literal('a');
-// };
-//
-//   // Frontend f;
-//   // Parser p = (f.*function)();
-//   // return p;
+  // takes a pointer to a parser function
+  // returns a parser which, when called, calls the function pointer
+  return [function](State state) -> Result{
+  Frontend f;
+  std::cout << "lazy is running" << std::endl;
+  Parser p = (f.*function)();
+
+  auto result = p(state);
+  if (result.success()) {
+    return result;
+  } else {
+    return Result(state, false, "no match");
+  }
+  };
 }
 
 template<class Op1Node, class Op2Node>
@@ -411,7 +404,7 @@ std::function<Value(ValueVec)> makeCoalescer(string op1, string op2) {
 
 Node Frontend::stringToAst(std::string s) {
   State state(s);
-  auto parse = Test2();
+  auto parse = Test_Function();
   auto result = parse(state);
 
   // std::unique_ptr<ast::AstNode> n(new ast::IntegerExpr(1));
