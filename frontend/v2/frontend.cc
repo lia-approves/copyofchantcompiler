@@ -264,16 +264,26 @@ Parser Frontend::Unary() {
     auto v2_ptr = v2.GetNodeUnique();
     auto v2_int_expr = unique_cast
       <ast::IntegerExpr, ast::AstNode>(move(v2_ptr));
+    std::cout << "v2: " << v2_int_expr->value() << std::endl;
 
     // make Zero Int value
-    auto zero = Value("0");
+    // auto zero = Value("0");
+    // auto zero_node = zero.GetNodeUnique();
+    // auto ZeroArithExpr =
+    //     unique_cast<const ast::IntegerExpr>(move(zero_node));
+    // std::cout << "zero: " << ZeroArithExpr->value() << std::endl;
+    auto parse_zero = Int();
+    State state("0");
+    auto result = parse_zero(state);
+    Value zero = result.value();
+    // result should be a Value
     auto zero_node = zero.GetNodeUnique();
     auto ZeroArithExpr =
         unique_cast<const ast::IntegerExpr>(move(zero_node));
+    std::cout << "zero: " << ZeroArithExpr->value() << std::endl;
 
-    //
-    // auto v2_ArithExpr =
-    //     unique_cast<const ast::ArithmeticExpr>(move(v2_ptr));
+    auto v2_ArithExpr =
+        unique_cast<const ast::ArithmeticExpr>(move(v2_ptr));
 
     unique_ptr<ast::AstNode> newNodePtr;
 
