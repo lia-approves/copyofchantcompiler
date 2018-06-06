@@ -70,29 +70,64 @@ class FrontendTest : public ::testing::Test {
 //   ASSERT_EQ(printer_.GetOutput(), "1");
 // }
 
-// TEST_F(FrontendTest, BasicAdditionTest) {
-//   // make a basic expression and parse
-//   Frontend f;
-//   auto ret = f.stringToAst("1+2");
-//   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "(+ 1 2)");
-// }
-//
+TEST_F(FrontendTest, BasicAdditionTest) {
+  // make a basic expression and parse
+  Frontend f;
+  auto ret = f.stringToAst("1+2");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(+ 1 2)");
+}
+
+TEST_F(FrontendTest, BasicSubtractionTest) {
+  // make a basic expression and parse
+  Frontend f;
+  auto ret = f.stringToAst("1-2");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(- 1 2)");
+}
+
+TEST_F(FrontendTest, HardAdditionTest) {
+  // make a basic expression and parse
+  Frontend f;
+  auto ret = f.stringToAst("1+2+3+4+5");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(+ 1 (+ 2 (+ 3 (+ 4 5))))");
+}
+
+TEST_F(FrontendTest, HardSubtractionTest) {
+  // make a basic expression and parse
+  Frontend f;
+  auto ret = f.stringToAst("1-2-3-4-5");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(- 1 (- 2 (- 3 (- 4 5))))");
+}
+
+TEST_F(FrontendTest, MultAdditionTest) {
+  // make a basic expression and parse
+  Frontend f;
+  auto ret = f.stringToAst("5*4+6*7");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(+ (* 5 4) (* 6 7))");
+}
+
+TEST_F(FrontendTest, DivAdditionTest) {
+  // make a basic expression and parse
+  Frontend f;
+  auto ret = f.stringToAst("5/4+6-7/8");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(+ (/ 5 4) (- 6 (/ 7 8)))");
+}
+
+
 // TEST_F(FrontendTest, BasicParenthesisTest) {
 //   Frontend f;
 //   auto ret = f.stringToAst("(1+2)");
 //   ret->Visit(&printer_);
 //   ASSERT_EQ(printer_.GetOutput(), "(+ 1 2)");
 // }
-//
-// TEST_F(FrontendTest, BasicSubtractionTest) {
-//   // make a basic expression and parse
-//   Frontend f;
-//   auto ret = f.stringToAst("1-2");
-//   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "(- 1 2)");
-// }
-//
+
+
+
 TEST_F(FrontendTest, BasicMultiplicationTest) {
   // make a basic expression and parse
   Frontend f;
@@ -137,37 +172,22 @@ TEST_F(FrontendTest, MultDivCombinedTest) {
   ASSERT_EQ(printer_.GetOutput(), "(* 1 (/ 2 (* 3 5)))");
 }
 
-// TEST_F(FrontendTest, AdvancedAdditionTest) {
-//   // make a basic expression and parse
-//   Frontend f;
-//   auto ret = f.stringToAst("2+2+3+4");
-//   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "(+ (+ (+ 2 2) 3) 4)");
-// }
-//
-// TEST_F(FrontendTest, AdvancedEquation1Test) {
-//   // make a basic expression and parse
-//   Frontend f;
-//   auto ret = f.stringToAst("2+3-4");
-//   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "(- (+ 2 3) 4)");
-// }
-//
-// TEST_F(FrontendTest, AdvancedEquation2Test) {
-//   // make a basic expression and parse
-//   Frontend f;
-//   auto ret = f.stringToAst("(4+5)*6");
-//   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "(* (+ 4 5) 6)");
-// }
-//
-// TEST_F(FrontendTest, AdvancedEquation3Test) {
-//   // make a basic expression and parse
-//   Frontend f;
-//   auto ret = f.stringToAst("(2+2)/(10-2)");
-//   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "(/ (+ 2 2) (- 10 2))");
-// }
+TEST_F(FrontendTest, AdvancedAdditionTest) {
+  // make a basic expression and parse
+  Frontend f;
+  auto ret = f.stringToAst("2+2+3+4");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(+ 2 (+ 2 (+ 3 4)))");
+}
+
+TEST_F(FrontendTest, AdvancedEquation1Test) {
+  // make a basic expression and parse
+  Frontend f;
+  auto ret = f.stringToAst("2+3-4");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(+ 2 (- 3 4))");
+}
+
 
 }  // namespace Parse
 }  // namespace frontend
