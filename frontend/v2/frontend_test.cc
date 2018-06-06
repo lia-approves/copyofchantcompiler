@@ -14,53 +14,61 @@ class FrontendTest : public ::testing::Test {
   bool test = false;
   abstract_syntax::frontend::PrintVisitor printer_;
 };
-//
-// TEST_F(FrontendTest, BasicTest) {
+
+// TEST_F(FrontendTest, VariableTest1) {
 //   // make a basic expression and parse
 //   Frontend f;
 //   auto ret = f.stringToAst("a");
 //   ret->Visit(&printer_);
 //   ASSERT_EQ(printer_.GetOutput(), "a");
 // }
+//
+// TEST_F(FrontendTest, VariableTest2) {
+//   // make a basic expression and parse
+//   Frontend f;
+//   auto ret = f.stringToAst("abcd");
+//   ret->Visit(&printer_);
+//   ASSERT_EQ(printer_.GetOutput(), "abcd");
+// }
 
-TEST_F(FrontendTest, BasicUnaryTest) {
-  // make a basic expression and parse
-  Frontend f;
-  auto ret = f.stringToAst("1");
-  ret->Visit(&printer_);
-  ASSERT_EQ(printer_.GetOutput(), "(+ 0 1)");
-}
-
-TEST_F(FrontendTest, BasicUnary2Test) {
-  // make a basic expression and parse
-  Frontend f;
-  auto ret = f.stringToAst("-1");
-  std::cout << "done with stringToAst" << std::endl;
-  ret->Visit(&printer_);
-  std::cout << "done with print visitor" << std::endl;
-  ASSERT_EQ(printer_.GetOutput(), "(- 0 1)");
-}
-
-TEST_F(FrontendTest, NegativeUnaryTest) {
-  // make a basic expression and parse
-  Frontend f;
-  auto ret = f.stringToAst("---1");
-  std::cout << "done with stringToAst" << std::endl;
-  ret->Visit(&printer_);
-  std::cout << "done with print visitor" << std::endl;
-  ASSERT_EQ(printer_.GetOutput(), "(- 0 1)");
-}
-
-
-TEST_F(FrontendTest, PositiveUnaryTest) {
-  // make a basic expression and parse
-  Frontend f;
-  auto ret = f.stringToAst("----1");
-  std::cout << "done with stringToAst" << std::endl;
-  ret->Visit(&printer_);
-  std::cout << "done with print visitor" << std::endl;
-  ASSERT_EQ(printer_.GetOutput(), "(+ 0 1)");
-}
+// TEST_F(FrontendTest, BasicUnaryTest) {
+//   // make a basic expression and parse
+//   Frontend f;
+//   auto ret = f.stringToAst("1");
+//   ret->Visit(&printer_);
+//   ASSERT_EQ(printer_.GetOutput(), "1");
+// }
+//
+// TEST_F(FrontendTest, BasicUnary2Test) {
+//   // make a basic expression and parse
+//   Frontend f;
+//   auto ret = f.stringToAst("-1");
+//   std::cout << "done with stringToAst" << std::endl;
+//   ret->Visit(&printer_);
+//   std::cout << "done with print visitor" << std::endl;
+//   ASSERT_EQ(printer_.GetOutput(), "(- 0 1)");
+// }
+//
+// TEST_F(FrontendTest, NegativeUnaryTest) {
+//   // make a basic expression and parse
+//   Frontend f;
+//   auto ret = f.stringToAst("---1");
+//   std::cout << "done with stringToAst" << std::endl;
+//   ret->Visit(&printer_);
+//   std::cout << "done with print visitor" << std::endl;
+//   ASSERT_EQ(printer_.GetOutput(), "(- 0 1)");
+// }
+//
+//
+// TEST_F(FrontendTest, PositiveUnaryTest) {
+//   // make a basic expression and parse
+//   Frontend f;
+//   auto ret = f.stringToAst("----1");
+//   std::cout << "done with stringToAst" << std::endl;
+//   ret->Visit(&printer_);
+//   std::cout << "done with print visitor" << std::endl;
+//   ASSERT_EQ(printer_.GetOutput(), "1");
+// }
 
 // TEST_F(FrontendTest, BasicAdditionTest) {
 //   // make a basic expression and parse
@@ -85,14 +93,15 @@ TEST_F(FrontendTest, PositiveUnaryTest) {
 //   ASSERT_EQ(printer_.GetOutput(), "(- 1 2)");
 // }
 //
-// TEST_F(FrontendTest, BasicMultiplicationTest) {
-//   // make a basic expression and parse
-//   Frontend f;
-//   auto ret = f.stringToAst("1*2");
-//   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "(* 1 2)");
-// }
-//
+TEST_F(FrontendTest, BasicMultiplicationTest) {
+  // make a basic expression and parse
+  Frontend f;
+  auto ret = f.stringToAst("1*2");
+  std::cout << "done with stringToAST" << std::endl;
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(* 1 2)");
+}
+
 // TEST_F(FrontendTest, BasicDivisionTest) {
 //   // make a basic expression and parse
 //   Frontend f;

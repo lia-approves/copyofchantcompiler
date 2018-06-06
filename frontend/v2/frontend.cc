@@ -7,6 +7,9 @@
 #include "abstract_syntax/abstract_syntax.h"
 #include "abstract_syntax/print_visitor_v2.h"
 
+// Unary works
+// Variable works
+
 namespace cs160 {
 namespace frontend {
 namespace Parse {
@@ -19,6 +22,7 @@ using std::move;
 using Parser = std::function<Result(State)>;
 
 abstract_syntax::frontend::PrintVisitor printer_;
+ValueVec mult_vec;
 
 template<typename TO, typename FROM>
 unique_ptr<TO> static_unique_pointer_cast(unique_ptr<FROM>&& old) {
@@ -61,7 +65,7 @@ Parser Frontend::Expression() {
 Parser Frontend::Add() {
   std::cout << "making add" << std::endl;
   return And(
-    Multiply(),
+    Unary(),
     Star(
       And(
         Or(Literal('-'), Literal('+')),
@@ -129,6 +133,7 @@ Parser Frontend::Add() {
     // }
 }
 
+
 Parser Frontend::Multiply() {
   std::cout << "making multiply" << std::endl;
   return And(
@@ -140,59 +145,73 @@ Parser Frontend::Multiply() {
         [](Value v1, Value v2) {
           // First value will be a literal, second value will be a node
           auto v2Node = v2.GetNodeUnique();
-          Value ret(move(v2Node));
-          ret.SetString(v1.GetString());
+          v2Node->Visit(&printer_);
+          std::string v2_str = printer_.GetOutput();
+          std::string v1_str = v1.GetString();
+
+          Value ret(v1_str + v2_str);
+          std::cout << v1_str + v2_str << std::endl;
           return ret;
         }),  // end of And()
 
       // Callback for Star().
       [](ValueVec values) {
+        std::cout << "in star callback mult" << std::endl;
         // If there are no matches in the Star, return an empty value.
+        // values[0] is the single unary
+        mult_vec = std::move(values);
+        std::cout << "done star return" << std::endl;
+        return Value();
+    }),
+
+      [](Value v1, Value v2) {
+        std::cout << "in and callback" << std::endl;
+        ValueVec values = std::move(mult_vec);
+
         if (values.size() == 0) {
-          return Value();
-        }
-        // As long as there are multiple matches, coalesce them into 1.
-        while (values.size() > 1) {
-          // We know it has a string because it comes from the And() callback
-          std::string op = values.back().GetString();
-          auto last = values.back().GetNodeUnique();
-          values.pop_back();
-          auto curr = values.back().GetNodeUnique();
-          auto lastAsArithExpr =
-            unique_cast<const ast::ArithmeticExpr>(move(last));
-          auto currAsArithExpr =
-            unique_cast<const ast::ArithmeticExpr>(move(curr));
-          // Create a node from the last 2 elements (curr and last)
+          return v1;
+        } else if (values.size() == 1) {
+          auto last = std::move(values.back());
+          std::string last_str = last.GetString();
+          char op = last_str[0];
+          last_str = last_str.substr(1, last_str.size()-1);
+
+          // parse the Unary string
+          State state(last_str);
+          Frontend f;
+          auto parse = f.Unary();
+          auto result = parse(state);
+          std::cout << "parsed unary" << std::endl;
+
+          auto val = result.value();
+          auto val_node = val.GetNodeUnique();
+          auto ValArithExpr =
+              unique_cast<const ast::ArithmeticExpr>(move(val_node));
+          auto v1_node = v1.GetNodeUnique();
+          auto v1_ArithExpr =
+              unique_cast<const ast::ArithmeticExpr>(move(v1_node));
+
+          std::cout << "MADE ARITH EXPRESSIONS" << std::endl;
+          // val hows the value of the unary
+          // make expression
           unique_ptr<ast::AstNode> newNodePtr;
-          if (op == "*") {
+          if (op == '*') {
             newNodePtr.reset(new ast::MultiplyExpr(
-              move(currAsArithExpr),
-              move(lastAsArithExpr)));
-          } else if (op == "/") {
-            newNodePtr.reset(new ast::DivideExpr(
-              move(currAsArithExpr),
-              move(lastAsArithExpr)));
+              move(v1_ArithExpr),
+              move(ValArithExpr)));
           } else {
-            throw std::logic_error("Mult() operator is neither a / nor a *");
+            // division expression
+            newNodePtr.reset(new ast::DivideExpr(
+              move(v1_ArithExpr),
+              move(ValArithExpr)));
           }
-          // Replace the last element with newNodePtr
-          values.pop_back();
-          Value v(move(newNodePtr));
-          values.push_back(move(v));
+          Value v(std::move(newNodePtr));
+          return v;
         }
-        // If there is 1 match, return it and the result of the Or() (casted).
-        if (values.size() == 1) {
-          // This Value comes from the previous And(), so it contains a string.
-          std::string op = values[0].GetString();
-          auto v = values[0].GetNodeUnique();
-          auto expression = unique_cast
-            <ast::VariableExpr, ast::AstNode>(move(v));
-          Value ret(std::move(expression));
-          ret.SetString(op);
-          return ret;
-        }
-        throw std::logic_error("Couldn't coalesce values into 1 expression");
-      }));  // End of Star()
+
+        // v1 is the unary for the front of the rule
+        // values are all of the strings that are concatenated to the back
+      });  // End of Star()
 }
 
 Parser Frontend::Unary() {
@@ -243,9 +262,8 @@ Parser Frontend::Unary() {
 
     if (v1_str.at(0) == '+') {
       // make an add expression
-      newNodePtr.reset(new ast::AddExpr(
-        move(ZeroArithExpr),
-        move(v2_int_expr)));
+      newNodePtr.reset(new ast::IntegerExpr(
+        move(v2_int_expr->value())));
     } else {
       // make a sub expression
       newNodePtr.reset(new ast::SubtractExpr(
@@ -384,8 +402,10 @@ std::function<Value(ValueVec)> makeCoalescer(string op1, string op2) {
 
 Node Frontend::stringToAst(std::string s) {
   State state(s);
-  auto parse = Unary();
+  auto parse = Multiply();
+  std::cout << "parser made" << std::endl;
   auto result = parse(state);
+  std::cout << "parsing done" << std::endl;
   // std::unique_ptr<ast::AstNode> n(new ast::IntegerExpr(1));
   // std::unique_ptr<ast::IntegerExpr> p = unique_cast<std::unique_ptr
   // <ast::AstNode>, std::unique_ptr<ast::IntegerExpr>> (n);
@@ -397,6 +417,7 @@ Node Frontend::stringToAst(std::string s) {
   // auto ptr = result.value().GetNodePointer();
 
   auto val = result.value();
+  std::cout << "almost returning" << std::endl;
   return val.GetNodeUnique();
 }
 
