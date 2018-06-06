@@ -102,14 +102,41 @@ TEST_F(FrontendTest, BasicMultiplicationTest) {
   ASSERT_EQ(printer_.GetOutput(), "(* 1 2)");
 }
 
-// TEST_F(FrontendTest, BasicDivisionTest) {
-//   // make a basic expression and parse
-//   Frontend f;
-//   auto ret = f.stringToAst("2/1");
-//   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "(/ 2 1)");
-// }
-//
+TEST_F(FrontendTest, BasicDivisionTest) {
+  // make a basic expression and parse
+  Frontend f;
+  auto ret = f.stringToAst("2/1");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(/ 2 1)");
+}
+
+TEST_F(FrontendTest, TripleMultiplicationTest) {
+  // make a basic expression and parse
+  Frontend f;
+  auto ret = f.stringToAst("1*2*3");
+  std::cout << "done with stringToAST" << std::endl;
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(* 1 (* 2 3))");
+}
+
+TEST_F(FrontendTest, TripleDivideTest) {
+  // make a basic expression and parse
+  Frontend f;
+  auto ret = f.stringToAst("1/2/3");
+  std::cout << "done with stringToAST" << std::endl;
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(/ 1 (/ 2 3))");
+}
+
+TEST_F(FrontendTest, MultDivCombinedTest) {
+  // make a basic expression and parse
+  Frontend f;
+  auto ret = f.stringToAst("1*2/3*5");
+  std::cout << "done with stringToAST" << std::endl;
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(* 1 (/ 2 (* 3 5)))");
+}
+
 // TEST_F(FrontendTest, AdvancedAdditionTest) {
 //   // make a basic expression and parse
 //   Frontend f;

@@ -20,6 +20,7 @@ using std::unique_ptr;
 using std::string;
 using std::move;
 using Parser = std::function<Result(State)>;
+using Printer = abstract_syntax::frontend::PrintVisitor;
 
 abstract_syntax::frontend::PrintVisitor printer_;
 ValueVec mult_vec;
@@ -33,7 +34,7 @@ unique_ptr<TO> static_unique_pointer_cast(unique_ptr<FROM>&& old) {
 Frontend::~Frontend(void) {}
 
 Parser Variable() {
-  std::cout << "making variable" << std::endl;
+  // std::cout << "making variable" << std::endl;
   return OnePlus(Range("az"), [](ValueVec values) {
     Value v = ConcatVector(std::move(values));
     auto node =
@@ -43,7 +44,7 @@ Parser Variable() {
 }
 
 Parser Frontend::Assign() {
-  std::cout << "making assign" << std::endl;
+  // std::cout << "making assign" << std::endl;
   return Sequence(Variable(), Literal('='), Expression(), [](ValueVec values) {
     auto v = values[0].GetNodeUnique();
     unique_ptr<const ast::VariableExpr> var =
@@ -58,12 +59,12 @@ Parser Frontend::Assign() {
 }
 
 Parser Frontend::Expression() {
-  std::cout << "making expression" << std::endl;
+  // std::cout << "making expression" << std::endl;
   return Add();
 }
 
 Parser Frontend::Add() {
-  std::cout << "making add" << std::endl;
+  // std::cout << "making add" << std::endl;
   return And(
     Unary(),
     Star(
@@ -135,7 +136,7 @@ Parser Frontend::Add() {
 
 
 Parser Frontend::Multiply() {
-  std::cout << "making multiply" << std::endl;
+//   std::cout << "making multiply" << std::endl;
   return And(
     Unary(),
     Star(
@@ -145,27 +146,24 @@ Parser Frontend::Multiply() {
         [](Value v1, Value v2) {
           // First value will be a literal, second value will be a node
           auto v2Node = v2.GetNodeUnique();
-          v2Node->Visit(&printer_);
-          std::string v2_str = printer_.GetOutput();
+          Printer p;
+          v2Node->Visit(&p);
+          std::string v2_str = p.GetOutput();
           std::string v1_str = v1.GetString();
 
           Value ret(v1_str + v2_str);
-          std::cout << v1_str + v2_str << std::endl;
           return ret;
         }),  // end of And()
 
       // Callback for Star().
       [](ValueVec values) {
-        std::cout << "in star callback mult" << std::endl;
         // If there are no matches in the Star, return an empty value.
         // values[0] is the single unary
         mult_vec = std::move(values);
-        std::cout << "done star return" << std::endl;
         return Value();
     }),
 
       [](Value v1, Value v2) {
-        std::cout << "in and callback" << std::endl;
         ValueVec values = std::move(mult_vec);
 
         if (values.size() == 0) {
@@ -181,17 +179,21 @@ Parser Frontend::Multiply() {
           Frontend f;
           auto parse = f.Unary();
           auto result = parse(state);
-          std::cout << "parsed unary" << std::endl;
+          Printer p1;
+          Printer p2;
 
           auto val = result.value();
           auto val_node = val.GetNodeUnique();
+          val_node->Visit(&p1);
+          std::string val_str = p1.GetOutput();
           auto ValArithExpr =
               unique_cast<const ast::ArithmeticExpr>(move(val_node));
           auto v1_node = v1.GetNodeUnique();
+          v1_node->Visit(&p2);
+          std::string v1_str = p2.GetOutput();
           auto v1_ArithExpr =
               unique_cast<const ast::ArithmeticExpr>(move(v1_node));
 
-          std::cout << "MADE ARITH EXPRESSIONS" << std::endl;
           // val hows the value of the unary
           // make expression
           unique_ptr<ast::AstNode> newNodePtr;
@@ -208,6 +210,102 @@ Parser Frontend::Multiply() {
           Value v(std::move(newNodePtr));
           return v;
         }
+        // if it gets down here than size > 1
+
+        auto last = std::move(values.back());
+        values.pop_back();
+        std::string last_str = last.GetString();
+        std::string op = last_str.substr(0, 1);
+        Value op_val(op);
+        last_str = last_str.substr(1, last_str.size());
+
+        unique_ptr<ast::AstNode> NodePtr;
+
+        Frontend f;
+        auto parse = f.Unary();
+        State s(last_str);
+        auto result = parse(s);
+        auto last_val = result.value();
+        auto last_node = last_val.GetNodeUnique();
+        auto last_ArithExpr =
+          unique_cast<const ast::ArithmeticExpr>(move(last_node));
+        values.push_back(move(op_val));
+
+
+        while (values.size() > 1) {
+          // last element has the operator
+          // second to last element is the number
+          // Concatenate with last_ArithExpr
+          std::cout << "in while loop" << std::endl;
+          Printer print;
+          last_ArithExpr->Visit(&print);
+          std::string print_str = print.GetOutput();
+          std::cout << print_str << std::endl;
+
+          last = std::move(values.back());
+          values.pop_back();
+          // get op
+          std::string op_str = last.GetString();
+          std::cout << "operation string is: " << op_str << std::endl;
+          char op_char = op_str[0];
+
+          // get number
+          auto s_last = std::move(values.back());
+          values.pop_back();
+          std::string num_str = s_last.GetString();
+          std::string next_op = num_str.substr(0, 1);
+          Value push_back_op(next_op);
+          std::string next_num = num_str.substr(1, num_str.size());
+
+          // parse the Unary
+          Frontend f1;
+          auto parse1 = f1.Unary();
+          State s1(next_num);
+          auto result_num = parse1(s1);
+          auto number_val = result_num.value();
+          auto number_node = number_val.GetNodeUnique();
+          auto num_expr =
+              unique_cast<const ast::ArithmeticExpr>(move(number_node));
+
+          std::cout << "OPERATOR IS: " << op_char << std::endl;
+          if (op_char == '*') {
+            NodePtr.reset(new ast::MultiplyExpr(
+              move(num_expr), move(last_ArithExpr)));
+          } else {
+            // division expression
+            NodePtr.reset(new ast::DivideExpr(
+              move(num_expr), move(last_ArithExpr)));
+          }
+
+          // update last_ArithExpr
+          // push_back the operator to values
+          last_ArithExpr = unique_cast<const ast::ArithmeticExpr>
+            (move(NodePtr));
+          values.push_back(move(push_back_op));
+        }
+
+        // use the last op and the resulting ArithmeticExpr
+        // with v1 to make the retval
+
+        // get op
+        Value last_op = move(values.back());
+        std::string last_op_str = last_op.GetString();
+
+        auto first_unary_node = v1.GetNodeUnique();
+        auto first_unary_expr =
+          unique_cast<const ast::ArithmeticExpr>(move(first_unary_node));
+
+          std::cout << "OPERATOR IS: " << last_op_str[0] << std::endl;
+        if (last_op_str[0] == '*') {
+          NodePtr.reset(new ast::MultiplyExpr(
+            move(first_unary_expr), move(last_ArithExpr)));
+        } else {
+          NodePtr.reset(new ast::DivideExpr(
+            move(first_unary_expr), move(last_ArithExpr)));
+        }
+
+        Value v(std::move(NodePtr));
+        return v;
 
         // v1 is the unary for the front of the rule
         // values are all of the strings that are concatenated to the back
@@ -215,7 +313,7 @@ Parser Frontend::Multiply() {
 }
 
 Parser Frontend::Unary() {
-  std::cout << "making unary" << std::endl;
+  // std::cout << "making unary" << std::endl;
   return And(Star(Literal('-'),
     [](ValueVec values) {
       if (values.size() == 0) {
@@ -242,6 +340,7 @@ Parser Frontend::Unary() {
     // get value
     std::string v1_str = v1.GetString();
     auto v2_ptr = v2.GetNodeUnique();
+
     auto v2_int_expr = unique_cast
       <ast::IntegerExpr, ast::AstNode>(move(v2_ptr));
 
@@ -280,7 +379,7 @@ Parser Frontend::Unary() {
 
 // Creates a Program
 Parser Frontend::Program() {
-  std::cout << "making program" << std::endl;
+  // std::cout << "making program" << std::endl;
   return And(
   Star(Lazy(&Frontend::Assign),
   // Callback for Star().
@@ -322,7 +421,7 @@ Parser Frontend::Program() {
 }
 
 Parser Frontend::Primary() {
-  std::cout << "making primary" << std::endl;
+  // std::cout << "making primary" << std::endl;
   return Or(
       Int(),
       Or(
@@ -338,7 +437,7 @@ Parser Frontend::Lazy(Parser (Frontend::*function)() ) {
   // returns a parser which, when called, calls the function pointer
   return [function](State state) -> Result{
     Frontend f;
-    std::cout << "lazy is running" << std::endl;
+    // std::cout << "lazy is running" << std::endl;
     Parser p = (f.*function)();
 
     auto result = p(state);
@@ -401,6 +500,7 @@ std::function<Value(ValueVec)> makeCoalescer(string op1, string op2) {
 }
 
 Node Frontend::stringToAst(std::string s) {
+  std::cout << "STRING 1: " << s << std::endl;
   State state(s);
   auto parse = Multiply();
   std::cout << "parser made" << std::endl;
