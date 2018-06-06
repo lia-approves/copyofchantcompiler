@@ -8,7 +8,10 @@
 #include "abstract_syntax/print_visitor_v2.h"
 
 // Unary works
-// Variable works
+// Add works
+// Multiply works
+// Expression works
+// Assign works
 
 namespace cs160 {
 namespace frontend {
@@ -35,12 +38,50 @@ Frontend::~Frontend(void) {}
 
 Parser Variable() {
   // std::cout << "making variable" << std::endl;
-  return OnePlus(Range("az"), [](ValueVec values) {
-    Value v = ConcatVector(std::move(values));
-    auto node =
-      unique_ptr<ast::AstNode>(new ast::VariableExpr(v.GetString()));
-    return Value(move(node));
-  });
+  std::vector<Parser> p_vec;
+  p_vec.push_back(Range("az"));
+  p_vec.push_back(Range("09"));
+  p_vec.push_back(Literal('_'));
+
+  return And(Range("az"),  Star(Or(p_vec),
+  [](ValueVec values) {
+    // star callback
+    if (values.size() == 0) {
+      std::cout << "size is 0" << std::endl;
+      return Value("");
+    }
+    // values.size() >=1
+    std::string ret = "";
+
+    while (values.size() > 0) {
+      // push value to string
+      auto last = move(values.back());
+      values.pop_back();
+
+      std::string last_str = last.GetString();
+      ret = last_str + ret;
+    }
+    Value v(ret);
+    return v;
+  }  // end star callback
+),
+[](Value v1, Value v2) {
+  // Callback for and
+  std::string v1_str = v1.GetString();
+  std::string v2_str = v2.GetString();
+  unique_ptr<ast::AstNode> NodePtr;
+  NodePtr.reset(new ast::VariableExpr(v1_str+v2_str));
+
+  Value v(move(NodePtr));
+  v.SetString(v1_str+v2_str);
+  return v;
+});
+  // return OnePlus(Range("az"), [](ValueVec values) {
+  //   Value v = ConcatVector(std::move(values));
+  //   auto node =
+  //     unique_ptr<ast::AstNode>(new ast::VariableExpr(v.GetString()));
+  //   return Value(move(node));
+  // });
 }
 
 Parser Frontend::Assign() {
@@ -569,9 +610,8 @@ std::function<Value(ValueVec)> makeCoalescer(string op1, string op2) {
 }
 
 Node Frontend::stringToAst(std::string s) {
-  std::cout << "STRING 1: " << s << std::endl;
   State state(s);
-  auto parse = Add();
+  auto parse = Variable();
   auto result = parse(state);
   // std::unique_ptr<ast::AstNode> n(new ast::IntegerExpr(1));
   // std::unique_ptr<ast::IntegerExpr> p = unique_cast<std::unique_ptr
