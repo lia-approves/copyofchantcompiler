@@ -569,7 +569,6 @@ Parser Frontend::Lazy(std::function<Result(State)> &function) {
     // std::cout << "lazy is running" << std::endl;
     auto result = function(state);
 
-    result.set_value("it's working");
     // auto result = parse(state);
     // auto res_val = result.value();
     // auto res_node = res_val.GetNodeUnique();
