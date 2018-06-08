@@ -32,25 +32,17 @@ namespace Frontend {
   ValueVec mult_vec;
   ValueVec add_vec;
 
-  // Parser Program();
-  // Parser Assign();
-  // Parser Expression();
-  // Parser Add();
-  // Parser Multiply();
-  // Parser Unary();
-  // Parser Primary();
-  // Parser Test_Function();
   Parser Lazy(std::function<Result(State)> &function);
   void Test_Function();
 struct Grammar {
   Parser Program_;
-  Parser Assign_;
-  Parser Expression_;
-  Parser Add_;
-  Parser Multiply_;
-  Parser Unary_;
-  Parser Primary_;
-  Parser Variable_;
+  Parser Assign_;  // done
+  Parser Expression_;  // done
+  Parser Add_;  // done
+  Parser Multiply_;  // done
+  Parser Unary_;  // done
+  Parser Primary_;  // done
+  Parser Variable_;  // done
 };
 
   void InitializeParsers(Grammar *g) {
@@ -183,7 +175,9 @@ struct Grammar {
               std::cout << "in and callback " << values.size() << std::endl;
 
               if (values.size() == 0) {
-                return v1;
+                auto v1_node = v1.GetNodeUnique();
+                Value ret(std::move(v1_node));
+                return ret;
               } else if (values.size() == 1) {
                 auto last = std::move(values.back());
                 std::cout << "got last" << std::endl;
@@ -337,11 +331,10 @@ struct Grammar {
 
             if (values.size() == 0) {
               Printer p;
+              std::unique_ptr<ast::AstNode> newNodePtr;
               auto v1_node = v1.GetNodeUnique();
-              v1_node->Visit(&p);
-              v1.SetString("OUT OF ADD CALLBACK");
-              std::cout << "v1 is : " << p.GetOutput() << std::endl;
-              return v1;
+              Value ret(std::move(v1_node));
+              return ret;
             } else if (values.size() == 1) {
               auto last = std::move(values.back());
               std::cout << "got last" << std::endl;
@@ -468,6 +461,53 @@ struct Grammar {
             // v1 is the unary for the front of the rule
             // values are all of the strings that are concatenated to the back
           });
+
+          g-> Expression_ = Frontend::Lazy(g->Add_);
+
+    g->Assign_ = Sequence(Frontend::Lazy(g->Variable_), Literal('='),
+      Frontend::Lazy(g->Expression_),
+      [](ValueVec values) {
+        auto v = values[0].GetNodeUnique();
+        std::unique_ptr<const ast::VariableExpr> var =
+          unique_cast<ast::VariableExpr>(move(v));
+        auto e = values[2].GetNodeUnique();
+        std::unique_ptr<const ast::ArithmeticExpr> expression =
+          unique_cast<ast::VariableExpr>(move(e));
+        std::unique_ptr<ast::AstNode> ret(new ast::Assignment(move(var),
+          move(expression)));
+        return Value(move(ret));
+      });
+
+    g->Primary_ = Or(
+          Int(),
+          Or(
+              Frontend::Lazy(g->Variable_),
+              And(Literal('('),
+                    And(Frontend::Lazy(g->Expression_),  Literal(')'),
+                    [] (Value v1, Value v2) {
+                      // Printer p1;
+                      // auto v1_node = v1.GetNodeUnique();
+                      // v1_node->Visit(&p1);
+                      // std::cout << "v1_node output: "
+                      //   << p1.GetOutput() << std::endl;
+                        std::unique_ptr<ast::AstNode> newNodePtr;
+                        auto v1_node = v1.GetNodeUnique();
+                        Value ret(std::move(v1_node));
+                        return ret;
+                    }),
+                  [] (Value v1, Value v2) {
+                    std::unique_ptr<ast::AstNode> newNodePtr;
+                    auto v2_node = v2.GetNodeUnique();
+                    Value ret(std::move(v2_node));
+                    return ret;
+                  })));
+    //   // prog --> ( assign )* expr
+    //   g->Program_ = And(Star(Frontend::Lazy(g->Assign),
+    //       [] (ValueVec values) {
+    //
+    //       }
+    // ),
+    //     Frontend::Lazy(g->Expression));
   }
 
 
@@ -482,7 +522,7 @@ Node test_function(std::string s) {
     //     std::cout << v2.GetString() << std::endl;
     //     return v1;
     //   }), Int());
-    auto result = g.Add_(state);
+    auto result = g.Primary_(state);
     std::cout << "parsed!" << std::endl;
     auto val = result.value();
     return val.GetNodeUnique();
