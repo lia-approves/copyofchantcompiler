@@ -106,16 +106,24 @@ struct Grammar {
 
             return ret;
           }
-        }), Int(),
+        }), Frontend::Lazy(g->Primary_),
       [](Value v1, Value v2) {
+        std::cout << "in unary callback" << std::endl;
         // And callback
         // v1 should be '-' or '+' depending on the output of star
         // get value
         std::string v1_str = v1.GetString();
+        if (v1_str[0] == '+') {
+          auto v2_ptr = v2.GetNodeUnique();
+          Value ret(std::move(v2_ptr));
+          return ret;
+        }
+
         auto v2_ptr = v2.GetNodeUnique();
 
-        auto v2_int_expr = unique_cast
-          <ast::IntegerExpr, ast::AstNode>(move(v2_ptr));
+
+        // auto v2_arith_expr = unique_cast
+        //   <ast::ArithmeticExpr, ast::AstNode>(move(v2_ptr));
 
         // make Zero Int value
         auto parse_zero = Int();
@@ -132,19 +140,12 @@ struct Grammar {
 
         std::unique_ptr<ast::AstNode> newNodePtr;
 
-        if (v1_str.at(0) == '+') {
-          // make an add expression
-          newNodePtr.reset(new ast::IntegerExpr(
-            std::move(v2_int_expr->value())));
-        } else {
           // make a sub expression
           newNodePtr.reset(new ast::SubtractExpr(
             std::move(ZeroArithExpr),
-            std::move(v2_int_expr)));
-        }
-
-        Value v(std::move(newNodePtr));
-        return v;
+            std::move(v2_ArithExpr)));
+          Value v(std::move(newNodePtr));
+          return v;
       });
 
       g->Multiply_ =  And(
@@ -332,7 +333,6 @@ struct Grammar {
 
             if (values.size() == 0) {
               Printer p;
-              std::unique_ptr<ast::AstNode> newNodePtr;
               auto v1_node = v1.GetNodeUnique();
               Value ret(std::move(v1_node));
               return ret;
@@ -584,7 +584,7 @@ Node test_function(std::string s) {
     //     std::cout << v2.GetString() << std::endl;
     //     return v1;
     //   }), Int());
-    auto result = g.Primary_(state);
+    auto result = g.Unary_(state);
     std::cout << "parsed!" << std::endl;
     auto val = result.value();
     return val.GetNodeUnique();

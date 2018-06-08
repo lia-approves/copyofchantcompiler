@@ -45,34 +45,47 @@ class FrontendTest : public ::testing::Test {
 
 
 
-// TEST_F(FrontendTest, BasicUnaryTest) {
-//   // make a basic expression and parse
-//   auto ret = Frontend::test_function("1");
-//   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "1");
-// }
-//
-// TEST_F(FrontendTest, BasicUnary2Test) {
-//   // make a basic expression and parse
-//   auto ret = Frontend::test_function("-1");
-//   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "(- 0 1)");
-// }
-//
-// TEST_F(FrontendTest, NegativeUnaryTest) {
-//   // make a basic expression and parse
-//   auto ret = Frontend::test_function("---1");
-//   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "(- 0 1)");
-// }
-//
-//
-// TEST_F(FrontendTest, PositiveUnaryTest) {
-//   // make a basic expression and parse
-//   auto ret = Frontend::test_function("----1");
-//   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "1");
-// }
+TEST_F(FrontendTest, BasicUnaryTest) {
+  // make a basic expression and parse
+  auto ret = Frontend::test_function("1");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "1");
+}
+
+TEST_F(FrontendTest, BasicUnary2Test) {
+  // make a basic expression and parse
+  auto ret = Frontend::test_function("-1");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(- 0 1)");
+}
+
+TEST_F(FrontendTest, NegativeUnaryTest) {
+  // make a basic expression and parse
+  auto ret = Frontend::test_function("---1");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(- 0 1)");
+}
+
+
+TEST_F(FrontendTest, PositiveUnaryTest) {
+  // make a basic expression and parse
+  auto ret = Frontend::test_function("----1");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "1");
+}
+
+TEST_F(FrontendTest, VariableUnaryTest) {
+  // make a basic expression and parse
+  auto ret = Frontend::test_function("-a");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(- 0 a)");
+}
+
+TEST_F(FrontendTest, ExpressionUnaryTest) {
+  auto ret = Frontend::test_function("-(2*1)");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(- 0 (* 2 1))");
+}
 
 // TEST_F(FrontendTest, BasicAdditionTest) {
 //   // make a basic expression and parse
