@@ -536,6 +536,7 @@ void InitializeParsers(Frontend::Grammar *g) {
         throw std::logic_error("Couldn't coalesce values into 1 expression");
       }), Frontend::Lazy(g->Expression_),
       [] (Value v1, Value v2) {
+        // Callback for And
         // v1 is a Prog expression already
         // v2 is an expression
 
@@ -625,17 +626,15 @@ std::function<Value(ValueVec)> makeCoalescer(string op1, string op2) {
   };
 }
 
+// Takes string, creates AST Node
 Node stringToAst(std::string s) {
     State state(s);
+    // Make and initialize grammar
     Frontend::Grammar g;
     InitializeParsers(&g);
-    // A = Or(And(Literal('-'), Frontend::Lazy(A),
-    //   [](Value v1, Value v2) {
-    //     std::cout << v2.GetString() << std::endl;
-    //     return v1;
-    //   }), Int());
+
+    // Parse
     auto result = g.Multiply_(state);
-    std::cout << "parsed!" << std::endl;
     auto val = result.value();
     return val.GetNodeUnique();
   }
