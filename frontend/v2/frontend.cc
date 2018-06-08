@@ -634,31 +634,15 @@ Node stringToAst(std::string s) {
     InitializeParsers(&g);
 
     // Parse
-    auto result = g.Multiply_(state);
+    auto result = g.Program_(state);
     auto val = result.value();
     return val.GetNodeUnique();
   }
 
 }  // namespace Frontend
 
-// Node Frontend::stringToAst(std::string s) {
-//   State state(s);
-//   // auto parse = A(state);
-//   // auto result = parse(state);
-//   // std::unique_ptr<ast::AstNode> n(new ast::IntegerExpr(1));
-//   // std::unique_ptr<ast::IntegerExpr> p = unique_cast<std::unique_ptr
-//   // <ast::AstNode>, std::unique_ptr<ast::IntegerExpr>> (n);
-//
-//   // std::unique_ptr<ast::AstNode> a(new ast::IntegerExpr(1));
-//   // std::unique_ptr<ast::IntegerExpr> b = unique_cast<ast::IntegerExpr>
-//   // (std::move(a));
-//
-//   // auto ptr = result.value().GetNodePointer();
-//
-//
-//   auto val = parse.value();
-//   return val.GetNodeUnique();
-// }
+
+
 
 }  // namespace Parse
 }  // namespace frontend
