@@ -64,7 +64,8 @@ struct Grammar {
         // star callback
         if (values.size() == 0) {
           std::cout << "size is 0" << std::endl;
-          return Value("");
+          Value v("");
+          return v.GetNodeUnique();
         }
         // values.size() >=1
         std::string ret = "";
@@ -78,7 +79,7 @@ struct Grammar {
           ret = last_str + ret;
         }
         Value v(ret);
-        return v;
+        return v.GetNodeUnique();
       }),
     [](Value v1, Value v2) {
       // Callback for and
@@ -89,7 +90,7 @@ struct Grammar {
 
       Value v(move(NodePtr));
       v.SetString(v1_str+v2_str);
-      return v;
+      return v.GetNodeUnique();
     });
 
     // g->Unary_ = And(Star(Literal('-'),
