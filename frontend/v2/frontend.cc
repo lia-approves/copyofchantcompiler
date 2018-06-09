@@ -517,7 +517,10 @@ void InitializeParsers(Frontend::Grammar *g) {
           auto v_node = v.GetNodeUnique();
 
           auto assignment_v = unique_cast<const ast::Assignment>(move(v_node));
-          assignments_.push_back(std::move(assignment_v));
+
+          std::vector<std::unique_ptr<const ast::Assignment>>::iterator it =
+                  assignments_.begin();
+          assignments_.insert(it, std::move(assignment_v));
         }
         // As long as there are multiple matches, coalesce them into 1.
         // std::vector<std::unique_ptr<const ast::Assignment>> assignments;

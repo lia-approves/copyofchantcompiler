@@ -211,6 +211,12 @@ TEST_F(FrontendTest, AssignTest2) {
     ASSERT_EQ(printer_.GetOutput(), "abcd_123 := 2(* 1 2)");
 }
 
+TEST_F(FrontendTest, AssignTest3) {
+    auto ret = Frontend::stringToAst("abcd_123=2a=3(1*2)");
+    ret->Visit(&printer_);
+    ASSERT_EQ(printer_.GetOutput(), "abcd_123 := 2a := 3(* 1 2)");
+}
+
 }  // namespace Parse
 }  // namespace frontend
 }  // namespace cs160
