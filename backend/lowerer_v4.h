@@ -36,8 +36,6 @@ using cs160::abstract_syntax::version_4::Conditional;
 using cs160::abstract_syntax::version_4::Loop;
 using cs160::abstract_syntax::version_4::FunctionCall;
 using cs160::abstract_syntax::version_4::FunctionDef;
-
-
 using cs160::backend::StatementNode;
 using cs160::backend::Constant;
 using cs160::backend::Label;
@@ -47,8 +45,8 @@ using cs160::backend::Operand;
 using cs160::backend::Variable;
 using std::cout;
 
-
 namespace cs160 {
+// <<<<<<< HEAD
 namespace backend {
 class CountVisitor : public AstVisitor {
  public:
@@ -155,8 +153,7 @@ class IrGenVisitor : public AstVisitor {
   std::vector<string> localVariables_;
   bool scanningParams_ = false;
 };
-
-}  // namespace backend
+} // namespace backend
 }  // namespace cs160
 
 #endif  // BACKEND_LOWERER_V4_H_

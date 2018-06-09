@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+
 #include "abstract_syntax/abstract_syntax_tree_v2.h"
 
 namespace cs160 {

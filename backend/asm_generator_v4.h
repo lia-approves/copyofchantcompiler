@@ -18,7 +18,6 @@ using cs160::backend::IrGenVisitor;
 
 namespace cs160 {
   namespace backend {
-
     class AsmProgram {
     public:
       AsmProgram() {}
@@ -35,56 +34,30 @@ namespace cs160 {
     void AsmProgram::IrToAsm(IrGenVisitor* ir) {
       ir_ = ir;
       asm_sstring_ << "#### Start of Assembly ####\n\n";
-
-      //asm_sstring_ << ".global main" << endl;
-      //asm_sstring_ << ".text" << endl;
-      //asm_sstring_ << "main:" << endl << endl;
       asm_sstring_ << "#### Start of Statements ####\n";
-     // asm_sstring_ << "mov %rsp, %rbp\n";
-
-
       StatementNode * head = ir_->GetIR();
       while (head != nullptr) {
-        asm_sstring_
-          << endl
-          << "statementnumber_"
-          << head->GetLabel()->GetValue()
-          << ":"
-          << endl
-          << endl;
-
+        asm_sstring_ << endl << "statementnumber_" << head->GetLabel()->GetValue() << ":" << endl << endl;
         GenerateASM(head);
-
         head = head->GetNext();
       }
-
       asm_sstring_ << "#### End of Statements ####\n\n";
       asm_sstring_ << "pop %rax" << endl;
       asm_sstring_ << "mov     $format, %rdi" << endl;
       asm_sstring_ << "mov     %rax, %rsi" << endl;
       asm_sstring_ << "xor     %rax, %rax" << endl;
       asm_sstring_ << "call    printf" << endl;
-
       asm_sstring_ << "\n##DESTROY LOCAL VARS\n";
-      asm_sstring_ << "add $" << 8*ir_->NumberOfMainVars()<<", %rsp\n";
+      asm_sstring_ << "add $" << 8 * ir_->NumberOfMainVars() << ", %rsp\n";
       asm_sstring_ << "##end DESTROY LOCAL VARS\n\n";
-
-
       asm_sstring_ << "  ret" << endl;
-
       asm_sstring_ << "format:" << endl;
       asm_sstring_ << "  .asciz  \"%d\\n\"" << endl;
       asm_sstring_ << endl;
       asm_sstring_ << ".data" << endl;
-      //asm_sstring_ << asm_sstring_variables_.str();
-
       asm_sstring_ << "\n#### End of Assembly ####\n";
     }
-
     void AsmProgram::GenerateASM(StatementNode* node) {
-      if (node->GetOp1() != nullptr) node->GetOp1()->PushToAsmSS(asm_sstring_);
-      if (node->GetOp2() != nullptr) node->GetOp2()->PushToAsmSS(asm_sstring_);
-
       switch (node->GetInstruction()->GetOpcode()) {
       case Operator::kAdd:
         asm_sstring_ << "pop %rax" << endl;
@@ -148,20 +121,43 @@ namespace cs160 {
         asm_sstring_ << "jmp " << node->GetTarget()->GetName() << endl;
         break;
       case Operator::kAllocateVars:
-        asm_sstring_ << "sub $" << 8*node->GetTarget()->GetValue() << ", %rsp\n";
+        asm_sstring_ << "sub $" << 8 * node->GetTarget()->GetValue() << ", %rsp\n";
         break;
       case Operator::kDeallocateVars:
-        asm_sstring_ << "add $" << 8 * node->GetTarget()->GetValue() -8<< ", %rsp\n";
+        asm_sstring_ << "add $" << 8 * node->GetTarget()->GetValue() - 8 << ", %rsp\n";
         break;
-        case Operator::kPrint:
-          asm_sstring_ << node->GetTarget()->GetName() << endl;
+      case Operator::kPrint:
+        asm_sstring_ << node->GetTarget()->GetName() << endl;
+        break;
+      case Operator::kPushVarValue:
+        if (Constant* regType = dynamic_cast<Constant*>(node->GetOp2())) {
+          asm_sstring_ << "push $" << regType->GetValue() << endl;
+        }
+        else if (Variable* regType = dynamic_cast<Variable*>(node->GetOp2())) {
+          asm_sstring_ << "push " << regType->GetStackOffset() << "(%rbp)" << endl;
+        }
+        break;
+      case Operator::kProgramStart:
+        asm_sstring_ << ".global main\n.text\nmain:\nmov %rsp, %rbp\n" <<
+          "sub $" << 8 * node->GetOp2()->GetValue() << ", %rsp";
+        break;
+      case Operator::kCall:
+        asm_sstring_ << "call " << node->GetTarget()->GetName()
+          << "\npush %rax\npop " << node->GetTarget()->GetStackOffset() << "(%rbp)\nadd $" << 8 * node->GetOp2()->GetValue() << ", %rsp\n";
+        break;
+      case Operator::kFuncBegin:
+        asm_sstring_ << ".type " << node->GetTarget()->GetName() << ",@function\n"
+          << node->GetTarget()->GetName() << ":\n" << "push %rbp\nmov %rsp, %rbp\nsub $" <<
+          node->GetOp2()->GetValue() << ", %rsp";
+        break;
+      case Operator::kFuncEnd:
+        asm_sstring_ << "pop %rax\nmov %rbp, %rsp\npop %rbp\nret\n";
+        break;
 
       default:
         break;
       }
     }
-
-
   }  // namespace backend
 }  // namespace cs160
 
