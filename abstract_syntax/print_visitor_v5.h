@@ -136,9 +136,9 @@ class PrintVisitor : public AstVisitor {
   void VisitAssignmentFromNewTuple(const AssignmentFromNewTuple& assignment) override {
     output_ << "(:= ";
     assignment.lhs().Visit(this);
-    output_ << " ";
+    output_ << " tuple(";
     assignment.rhs().Visit(this);
-    output_ << ")";
+    output_ << "))";
   }
 
   void VisitStatementBlock(const std::vector<std::unique_ptr<const Statement>>& block) {

@@ -217,11 +217,31 @@ TEST_F(PrinterTest, LogicalNotExprIsVisited) {
 }
 
 TEST_F(PrinterTest, AssignmentFromArithExpIsVisited) {
+  auto expr = std::make_unique<const AssignmentFromArithExp>(
+    std::unique_ptr<const Dereference> (new Dereference(
+      std::unique_ptr<const VariableExpr> (new VariableExpr("var_123")),
+      std::unique_ptr<const AddExpr> (new AddExpr(
+        std::unique_ptr<const IntegerExpr> (new IntegerExpr(7)),
+        std::unique_ptr<const IntegerExpr> (new IntegerExpr(5)))))),
+    std::make_unique<const VariableExpr>("var_456"));
 
+  expr->Visit(&printer_);
+
+  EXPECT_EQ(printer_GetOutput(), "(:= var_123->(+ 7 5) var_456)");
 }
 
 TEST_F(PrinterTest, AssignmentFromNewTupleIsVisited) {
+  auto expr = std::make_unique<const AssignmentFromNewTuple>(
+    std::unique_ptr<const Dereference> (new Dereference(
+      std::unique_ptr<const VariableExpr> (new VariableExpr("var_123")),
+      std::unique_ptr<const AddExpr> (new AddExpr(
+        std::unique_ptr<const IntegerExpr> (new IntegerExpr(7)),
+        std::unique_ptr<const IntegerExpr> (new IntegerExpr(5)))))),
+    std::make_unique<const VariableExpr>("var_456"));
 
+  expr->Visit(&printer_);
+
+  EXPECT_EQ(printer_GetOutput(), "(:= var_123->(+ 7 5) tuple(var_456))");
 }
 
 // TEST_F(PrinterTest, ProgramIsVisited) {
