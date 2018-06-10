@@ -32,6 +32,7 @@ namespace Frontend {
 
 ValueVec mult_vec_;
 ValueVec add_vec_;
+std::vector<ValueVec> re_vec_;
     // Object containing Parsers for all of the rules in v2 Grammar
 struct Grammar {
       Parser N;  // done, tested

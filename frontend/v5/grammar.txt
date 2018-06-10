@@ -1,0 +1,45 @@
+//top level production, ae is return val
+prog --> fundef* "main(){" stmt* "return " ae "}"
+
+//function definition, ae is return val
+fundef --> "def " fn "(" v* ")" "{" stmt* "return " ae "}" 
+
+//block
+block --> "{" stmt* "}"
+//four kinds of statements                 
+stmt -->  assign | cond | loop | call         
+
+//assignment statement
+assign --> lhs ":=" ae | lhs ":= tuple(" ae ")"     
+//conditional (if/else) statement
+cond --> "if(" re ")" block1 "else" block2     
+//loop statement
+loop --> "while(" re ")" block
+//function call statement             
+call --> v ":=" fn "(" expr* ")"         
+
+//relational expression
+re --> ae (("&&" | "||") re)* | ae rop ae | "!" re 
+//relational operator
+rop --> "<" | "<=" | ">" | ">=" | "="             
+
+//these should be identical from v2
+//arithmetic expression, same as expr from v2 grammar
+ae --> add                     
+add --> mult ( ("-" | "+") mult )*
+mult --> unary ( ("/" | "*") unary )*
+unary --> ("-") primary
+primary --> n | v | lhs | "(" expr ")"    
+
+//assignable, either variable or dereferenced variable
+lhs --> v | deref
+//for accessing tuple elements (on heap)                 
+deref --> lhs "->" ae                 
+
+//leaf level productions
+//number
+n --> integer
+//variable name string                     
+v --> variable                     
+//function name string
+fn --> function name              

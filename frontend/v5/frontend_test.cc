@@ -232,35 +232,53 @@ class FrontendTest : public ::testing::Test {
 //     ASSERT_EQ(printer_.GetOutput(), "abc_123->(+ (* 1 2) (* 4 3))");
 // }
 
-TEST_F(FrontendTest, RopTestGeq) {
-    auto ret = Frontend::stringToAst(">=");
+// TEST_F(FrontendTest, RopTestGeq) {
+//     auto ret = Frontend::stringToAst(">=");
+//     ret->Visit(&printer_);
+//     ASSERT_EQ(printer_.GetOutput(), ">=");
+// }
+//
+// TEST_F(FrontendTest, RopTestLeq) {
+//     auto ret = Frontend::stringToAst("<=");
+//     ret->Visit(&printer_);
+//     ASSERT_EQ(printer_.GetOutput(), "<=");
+// }
+//
+// TEST_F(FrontendTest, RopTestEq) {
+//     auto ret = Frontend::stringToAst("=");
+//     ret->Visit(&printer_);
+//     ASSERT_EQ(printer_.GetOutput(), "=");
+// }
+//
+// TEST_F(FrontendTest, RopTestLess) {
+//     auto ret = Frontend::stringToAst(">");
+//     ret->Visit(&printer_);
+//     ASSERT_EQ(printer_.GetOutput(), ">");
+// }
+//
+// TEST_F(FrontendTest, RopTestGreater) {
+//     auto ret = Frontend::stringToAst("<");
+//     ret->Visit(&printer_);
+//     ASSERT_EQ(printer_.GetOutput(), "<");
+// }
+
+TEST_F(FrontendTest, ReTest1) {
+    auto ret = Frontend::stringToAst("(1+2)>(3+4)");
     ret->Visit(&printer_);
-    ASSERT_EQ(printer_.GetOutput(), ">=");
+    ASSERT_EQ(printer_.GetOutput(), "(> (+ 1 2) (+ 3 4))");
 }
 
-TEST_F(FrontendTest, RopTestLeq) {
-    auto ret = Frontend::stringToAst("<=");
+TEST_F(FrontendTest, ReTest2) {
+    auto ret = Frontend::stringToAst("!(1+2)>(3+4)");
     ret->Visit(&printer_);
-    ASSERT_EQ(printer_.GetOutput(), "<=");
+    ASSERT_EQ(printer_.GetOutput(), "!(> (+ 1 2) (+ 3 4))");
+}
+TEST_F(FrontendTest, ReTest3) {
+    auto ret = Frontend::stringToAst("(1+2)&&(1+2)<(3+4)");
+    ret->Visit(&printer_);
+    ASSERT_EQ(printer_.GetOutput(), "(&& (+ 1 2) (< (+ 1 2) (+ 3 4)))");
 }
 
-TEST_F(FrontendTest, RopTestEq) {
-    auto ret = Frontend::stringToAst("=");
-    ret->Visit(&printer_);
-    ASSERT_EQ(printer_.GetOutput(), "=");
-}
-
-TEST_F(FrontendTest, RopTestLess) {
-    auto ret = Frontend::stringToAst(">");
-    ret->Visit(&printer_);
-    ASSERT_EQ(printer_.GetOutput(), ">");
-}
-
-TEST_F(FrontendTest, RopTestGreater) {
-    auto ret = Frontend::stringToAst("<");
-    ret->Visit(&printer_);
-    ASSERT_EQ(printer_.GetOutput(), "<");
-}
 
 
 }  // namespace Parse
