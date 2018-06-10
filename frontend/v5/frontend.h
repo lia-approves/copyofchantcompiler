@@ -44,7 +44,7 @@ struct Grammar {
       Parser multiply;  // done, tested
       Parser add;  // done, tested
       Parser ae;  // done, tested
-      Parser rop;
+      Parser rop;  // done, tested
       Parser re;
       Parser call;
       Parser loop;

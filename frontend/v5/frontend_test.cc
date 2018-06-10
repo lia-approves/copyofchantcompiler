@@ -214,23 +214,54 @@ class FrontendTest : public ::testing::Test {
 //     ASSERT_EQ(printer_.GetOutput(), "abc");
 // }
 
-TEST_F(FrontendTest, DrefTest1) {
-    auto ret = Frontend::stringToAst("abc->12");
+// TEST_F(FrontendTest, DrefTest1) {
+//     auto ret = Frontend::stringToAst("abc->12");
+//     ret->Visit(&printer_);
+//     ASSERT_EQ(printer_.GetOutput(), "abc->12");
+// }
+//
+// TEST_F(FrontendTest, DrefTest2) {
+//     auto ret = Frontend::stringToAst("abc->(1*2)");
+//     ret->Visit(&printer_);
+//     ASSERT_EQ(printer_.GetOutput(), "abc->(* 1 2)");
+// }
+//
+// TEST_F(FrontendTest, DrefTest3) {
+//     auto ret = Frontend::stringToAst("abc_123->(1*2+4*3)");
+//     ret->Visit(&printer_);
+//     ASSERT_EQ(printer_.GetOutput(), "abc_123->(+ (* 1 2) (* 4 3))");
+// }
+
+TEST_F(FrontendTest, RopTestGeq) {
+    auto ret = Frontend::stringToAst(">=");
     ret->Visit(&printer_);
-    ASSERT_EQ(printer_.GetOutput(), "abc->12");
+    ASSERT_EQ(printer_.GetOutput(), ">=");
 }
 
-TEST_F(FrontendTest, DrefTest2) {
-    auto ret = Frontend::stringToAst("abc->(1*2)");
+TEST_F(FrontendTest, RopTestLeq) {
+    auto ret = Frontend::stringToAst("<=");
     ret->Visit(&printer_);
-    ASSERT_EQ(printer_.GetOutput(), "abc->(* 1 2)");
+    ASSERT_EQ(printer_.GetOutput(), "<=");
 }
 
-TEST_F(FrontendTest, DrefTest3) {
-    auto ret = Frontend::stringToAst("abc_123->(1*2+4*3)");
+TEST_F(FrontendTest, RopTestEq) {
+    auto ret = Frontend::stringToAst("=");
     ret->Visit(&printer_);
-    ASSERT_EQ(printer_.GetOutput(), "abc_123->(+ (* 1 2) (* 4 3))");
+    ASSERT_EQ(printer_.GetOutput(), "=");
 }
+
+TEST_F(FrontendTest, RopTestLess) {
+    auto ret = Frontend::stringToAst(">");
+    ret->Visit(&printer_);
+    ASSERT_EQ(printer_.GetOutput(), ">");
+}
+
+TEST_F(FrontendTest, RopTestGreater) {
+    auto ret = Frontend::stringToAst("<");
+    ret->Visit(&printer_);
+    ASSERT_EQ(printer_.GetOutput(), "<");
+}
+
 
 }  // namespace Parse
 }  // namespace frontend

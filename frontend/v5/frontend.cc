@@ -575,6 +575,58 @@ g->multiply = And(
           });
 
     g->ae = Frontend::Lazy(g->add);
+
+    // rop --> "<" | "<=" | ">" | ">=" | "="
+    std::vector<Parser> rop_vec;
+    rop_vec.push_back(And(Literal('>'), Literal('='),
+    [] (Value v1, Value v2) {
+      // And callback for >=
+      unique_ptr<ast::AstNode> NodePtr;
+
+      NodePtr.reset(new ast::VariableExpr(">="));
+      Value ret(std::move(NodePtr));
+      ret.SetString(">=");
+      return ret;
+    }));
+    rop_vec.push_back(And(Literal('<'), Literal('='),
+    [] (Value v1, Value v2) {
+      // And callback for >=
+      unique_ptr<ast::AstNode> NodePtr;
+
+      NodePtr.reset(new ast::VariableExpr("<="));
+      Value ret(std::move(NodePtr));
+      ret.SetString("<=");
+      return ret;
+    }));
+    rop_vec.push_back(Literal('=',
+    [] (std::string s) {
+      unique_ptr<ast::AstNode> NodePtr;
+
+      NodePtr.reset(new ast::VariableExpr("="));
+      Value ret(std::move(NodePtr));
+      ret.SetString("=");
+      return ret;
+    }));
+    rop_vec.push_back(Literal('>',
+    [] (std::string s) {
+      unique_ptr<ast::AstNode> NodePtr;
+
+      NodePtr.reset(new ast::VariableExpr(">"));
+      Value ret(std::move(NodePtr));
+      ret.SetString(">");
+      return ret;
+    }));
+    rop_vec.push_back(Literal('<',
+    [] (std::string s) {
+      unique_ptr<ast::AstNode> NodePtr;
+
+      NodePtr.reset(new ast::VariableExpr("<"));
+      Value ret(std::move(NodePtr));
+      ret.SetString("<");
+      return ret;
+    }));
+
+    g->rop = Or(rop_vec);
 }
 
 
@@ -655,8 +707,7 @@ unique_ptr<ast::AstNode> stringToAst(std::string s) {
     InitializeParsers(&g);
 
     // Parse
-    std::cout << "parse state: " << s << std::endl;
-    auto result = g.dref(state);
+    auto result = g.rop(state);
     auto val = result.value();
     return val.GetNodeUnique();
   }
