@@ -26,14 +26,20 @@ namespace Parse {
   using Printer = abstract_syntax::version_5::PrintVisitor;
   namespace ast = cs160::abstract_syntax::frontend;
 
+  template<class T>
+  using Converter = std::function<Value(T)>;
+
 namespace Frontend {
+
+
 
   Parser Lazy(std::function<Result(State)> &function);
 
 ValueVec mult_vec_;
 ValueVec add_vec_;
-std::vector<ValueVec> re_vec_;
 ValueVec call_vec_;
+std::vector<ValueVec> re_vec_;
+std::vector<std::vector<std::unique_ptr<const ast::Statement>>> block_vec_;
     // Object containing Parsers for all of the rules in v2 Grammar
 struct Grammar {
       Parser N;  // done, tested
@@ -48,12 +54,12 @@ struct Grammar {
       Parser ae;  // done, tested
       Parser rop;  // done, tested
       Parser re;  // done, tested
-      Parser call;
-      Parser loop;
-      Parser cond;
+      Parser call;  // done
+      Parser loop;  // done
+      Parser cond;  // done
       Parser assign;  // done
       Parser stmt;  // done
-      Parser block;
+      Parser block;  // done
       Parser fundef;
       Parser program;
 };
