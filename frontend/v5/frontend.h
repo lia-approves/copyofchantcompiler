@@ -33,6 +33,7 @@ namespace Frontend {
 ValueVec mult_vec_;
 ValueVec add_vec_;
 std::vector<ValueVec> re_vec_;
+ValueVec call_vec_;
     // Object containing Parsers for all of the rules in v2 Grammar
 struct Grammar {
       Parser N;  // done, tested
@@ -46,12 +47,12 @@ struct Grammar {
       Parser add;  // done, tested
       Parser ae;  // done, tested
       Parser rop;  // done, tested
-      Parser re;
+      Parser re;  // done, tested
       Parser call;
       Parser loop;
       Parser cond;
-      Parser assign;
-      Parser stmt;
+      Parser assign;  // done
+      Parser stmt;  // done
       Parser block;
       Parser fundef;
       Parser program;
@@ -59,6 +60,7 @@ struct Grammar {
 
 // Function initializes all of the parsers in Grammar g
 void InitializeParsers(Frontend::Grammar *g);
+void InitializeParsers2(Frontend::Grammar *g);
 
 // Takes a string, outputs the root node for the resulting AST Tree
 Node stringToAst(std::string s);

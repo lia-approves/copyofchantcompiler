@@ -631,204 +631,412 @@ g->multiply = And(
 
     g->rop = Or(rop_vec);
 
-    // re --> ae (("&&" | "||") re)* | ae rop ae | "!" re
-    std::vector<Parser> re_vec;
+  InitializeParsers2(g);
+}
 
-    // "!" re
-    re_vec.push_back(And(Literal('!',
-    [] (std::string str) {
-      std::cout << "in literal callback" << str << std::endl;
-      return Value("!");
-    }), Frontend::Lazy(g->re),
-    [] (Value v1, Value v2) {
-      // Makes a LogicalNotExpr
-      // Get node from v2
-      // v1 is not used in this function
-      std::cout << "in ! callback" << std::endl;
+void InitializeParsers2(Frontend::Grammar *g) {
+  // re --> ae (("&&" | "||") re)* | ae rop ae | "!" re
+  std::vector<Parser> re_vec;
 
-      auto v2_node = v2.GetNodeUnique();
-      Printer p;
-      v2_node->Visit(&p);
-      std::cout << "v2_node is: " << p.GetOutput() << std::endl;
-      auto v2_relational_expr = unique_cast<const ast::RelationalExpr>
-            (std::move(v2_node));
+  // "!" re
+  re_vec.push_back(And(Literal('!',
+  [] (std::string str) {
+    std::cout << "in literal callback" << str << std::endl;
+    return Value("!");
+  }), Frontend::Lazy(g->re),
+  [] (Value v1, Value v2) {
+    // Makes a LogicalNotExpr
+    // Get node from v2
+    // v1 is not used in this function
+    std::cout << "in ! callback" << std::endl;
 
+    auto v2_node = v2.GetNodeUnique();
+    Printer p;
+    v2_node->Visit(&p);
+    std::cout << "v2_node is: " << p.GetOutput() << std::endl;
+    auto v2_relational_expr = unique_cast<const ast::RelationalExpr>
+          (std::move(v2_node));
+
+    unique_ptr<ast::AstNode> NodePtr;
+    NodePtr.reset(new ast::LogicalNotExpr(
+      std::move(v2_relational_expr)));
+    Value ret(std::move(NodePtr));
+    return ret;
+  }));
+
+  re_vec.push_back(Sequence(Frontend::Lazy(g->ae), Frontend::Lazy(g->rop),
+                Frontend::Lazy(g->ae),
+      [] (ValueVec values) {
+        // concatenate into one relational expression
+        // depends on rop output
+        auto ae1 = std::move(values[0]);
+        auto rop = std::move(values[1]);
+        auto ae2 = std::move(values[2]);
+
+        // make nodes for ae1 & ae2
+        auto ae1_node = ae1.GetNodeUnique();
+        auto ae2_node = ae2.GetNodeUnique();
+        auto ae1_arith_expr = unique_cast<const ast::ArithmeticExpr>
+            (std::move(ae1_node));
+        auto ae2_arith_expr = unique_cast<const ast::ArithmeticExpr>
+              (std::move(ae2_node));
+
+        std::string op = rop.GetString();
       unique_ptr<ast::AstNode> NodePtr;
-      NodePtr.reset(new ast::LogicalNotExpr(
-        std::move(v2_relational_expr)));
-      Value ret(std::move(NodePtr));
-      return ret;
-    }));
 
-    re_vec.push_back(Sequence(Frontend::Lazy(g->ae), Frontend::Lazy(g->rop),
-                  Frontend::Lazy(g->ae),
-        [] (ValueVec values) {
-          // concatenate into one relational expression
-          // depends on rop output
-          auto ae1 = std::move(values[0]);
-          auto rop = std::move(values[1]);
-          auto ae2 = std::move(values[2]);
-
-          // make nodes for ae1 & ae2
-          auto ae1_node = ae1.GetNodeUnique();
-          auto ae2_node = ae2.GetNodeUnique();
-          auto ae1_arith_expr = unique_cast<const ast::ArithmeticExpr>
-              (std::move(ae1_node));
-          auto ae2_arith_expr = unique_cast<const ast::ArithmeticExpr>
-                (std::move(ae2_node));
-
-          std::string op = rop.GetString();
-        unique_ptr<ast::AstNode> NodePtr;
-
-          if (op.size() == 2) {
-            // either >= or <=
-            if (op[0] == '>') {
-              // op is >=
-              NodePtr.reset(new ast::GreaterThanEqualToExpr(
-                std::move(ae1_arith_expr), std::move(ae2_arith_expr)));
-            } else {
-              // op is <=
-              NodePtr.reset(new ast::LessThanEqualToExpr(
-                std::move(ae1_arith_expr), std::move(ae2_arith_expr)));
-            }
+        if (op.size() == 2) {
+          // either >= or <=
+          if (op[0] == '>') {
+            // op is >=
+            NodePtr.reset(new ast::GreaterThanEqualToExpr(
+              std::move(ae1_arith_expr), std::move(ae2_arith_expr)));
           } else {
-            // op is either >, <, =
-            if (op[0] == '=') {
-              // op is =
-              NodePtr.reset(new ast::EqualToExpr(
-                std::move(ae1_arith_expr), std::move(ae2_arith_expr)));
-           } else if (op[0] == '>') {
-             // op is >
-             NodePtr.reset(new ast::GreaterThanExpr(
-               std::move(ae1_arith_expr), std::move(ae2_arith_expr)));
-           } else {
-             // op is <
-             NodePtr.reset(new ast::LessThanExpr(
-               std::move(ae1_arith_expr), std::move(ae2_arith_expr)));
-           }
+            // op is <=
+            NodePtr.reset(new ast::LessThanEqualToExpr(
+              std::move(ae1_arith_expr), std::move(ae2_arith_expr)));
+          }
+        } else {
+          // op is either >, <, =
+          if (op[0] == '=') {
+            // op is =
+            NodePtr.reset(new ast::EqualToExpr(
+              std::move(ae1_arith_expr), std::move(ae2_arith_expr)));
+         } else if (op[0] == '>') {
+           // op is >
+           NodePtr.reset(new ast::GreaterThanExpr(
+             std::move(ae1_arith_expr), std::move(ae2_arith_expr)));
+         } else {
+           // op is <
+           NodePtr.reset(new ast::LessThanExpr(
+             std::move(ae1_arith_expr), std::move(ae2_arith_expr)));
+         }
+        }
+
+        Value ret(std::move(NodePtr));
+        return ret;
+      }));
+      re_vec.push_back(And(Frontend::Lazy(g->ae),
+                Star(And(
+                      Or(And(Literal('&'), Literal('&'),
+                      [] (Value v1, Value v2) {
+                        // && callback
+                        unique_ptr<ast::AstNode> NodePtr;
+
+                        NodePtr.reset(new ast::VariableExpr("&&"));
+                        Value ret(std::move(NodePtr));
+                        ret.SetString("&&");
+                        return ret;
+                      }),
+                      And(Literal('|'), Literal('|'),
+                      [] (Value v1, Value v2) {
+                        // || callback
+                        unique_ptr<ast::AstNode> NodePtr;
+
+                        NodePtr.reset(new ast::VariableExpr("||"));
+                        Value ret(std::move(NodePtr));
+                        ret.SetString("||");
+                        return ret;
+                      })),
+                    Frontend::Lazy(g->re),
+                  [] (Value v1, Value v2) {
+                    // Callback for (("&&" | "||") re) And statement
+                    // Get re AstNode from v2
+                    auto v2_node = v2.GetNodeUnique();
+                    Value ret(std::move(v2_node));
+                    // Get string from v1
+                    auto v1_str = v1.GetString();
+                    // Set string of ret
+                    ret.SetString(v1_str);
+                    return ret;
+                  }),
+            [] (ValueVec values) {
+              // Star Callback for (("&&" | "||") re)
+              // For all values, the node is the re expression,
+              // the string has the operator
+              re_vec_.push_back(std::move(values));
+              return Value();
+            }),
+      [](Value v1, Value v2) {
+        // v1 contains the ae expression
+        // v2 is junk, doesn't matter
+
+        ValueVec values = std::move(re_vec_.back());
+        re_vec_.pop_back();
+
+        if (values.size() == 0) {
+          // Just the ae expression in v1
+          auto v1_node = v1.GetNodeUnique();
+          Value ret(std::move(v1_node));
+          return ret;
+        }
+        // Else, there are values in re_vec_, make Logical Operator(s)
+
+        auto last = std::move(values.back());
+        values.pop_back();
+        // return pointer
+        std::unique_ptr<ast::AstNode> NodePtr;
+        // Get pointer to the last node and make into arith expression
+        auto last_node = last.GetNodeUnique();
+        auto last_RelationalExpr =
+          unique_cast<const ast::RelationalExpr>(move(last_node));
+      // Get operator on last node
+        std::string op_str = last.GetString();
+
+
+        while (values.size() > 0) {
+          // last element has the operator & last re
+          // Concatenate the next value with last_ArithExpr
+
+          // get op
+          char op_char = op_str[0];
+
+        // make lhs RelationalExpr
+        auto next = std::move(values.back());
+        values.pop_back();
+        auto next_node = next.GetNodeUnique();
+        auto next_relational_expr = unique_cast<const ast::RelationalExpr>
+              (std::move(next_node));
+
+        // Make new add/sub expression & put in NodePtr
+          if (op_char == '&') {
+            NodePtr.reset(new ast::LogicalAndExpr(
+              std::move(next_relational_expr), move(last_RelationalExpr)));
+          } else {
+            // division expression
+            NodePtr.reset(new ast::LogicalOrExpr(
+              std::move(next_relational_expr), move(last_RelationalExpr)));
           }
 
-          Value ret(std::move(NodePtr));
-          return ret;
-        }));
-        re_vec.push_back(And(Frontend::Lazy(g->ae),
-                  Star(And(
-                        Or(And(Literal('&'), Literal('&'),
-                        [] (Value v1, Value v2) {
-                          // && callback
-                          unique_ptr<ast::AstNode> NodePtr;
+          // update last_ArithExpr
+          last_RelationalExpr = unique_cast<const ast::RelationalExpr>
+            (move(NodePtr));
+          // update op_str
+          op_str = next.GetString();
+        }
 
-                          NodePtr.reset(new ast::VariableExpr("&&"));
-                          Value ret(std::move(NodePtr));
-                          ret.SetString("&&");
-                          return ret;
-                        }),
-                        And(Literal('|'), Literal('|'),
-                        [] (Value v1, Value v2) {
-                          // || callback
-                          unique_ptr<ast::AstNode> NodePtr;
+        // now, concatenate the last_ArithExpr with v1
+        auto v1_node = v1.GetNodeUnique();
+        auto v1_relational_expr = unique_cast<const ast::RelationalExpr>
+              (std::move(v1_node));
+        char op_char = op_str[0];
 
-                          NodePtr.reset(new ast::VariableExpr("||"));
-                          Value ret(std::move(NodePtr));
-                          ret.SetString("||");
-                          return ret;
-                        })),
-                      Frontend::Lazy(g->re),
-                    [] (Value v1, Value v2) {
-                      // Callback for (("&&" | "||") re) And statement
-                      // Get re AstNode from v2
-                      auto v2_node = v2.GetNodeUnique();
-                      Value ret(std::move(v2_node));
-                      // Get string from v1
-                      auto v1_str = v1.GetString();
-                      // Set string of ret
-                      ret.SetString(v1_str);
-                      return ret;
-                    }),
-              [] (ValueVec values) {
-                // Star Callback for (("&&" | "||") re)
-                // For all values, the node is the re expression,
-                // the string has the operator
-                re_vec_.push_back(std::move(values));
-                return Value();
-              }),
-        [](Value v1, Value v2) {
-          // v1 contains the ae expression
-          // v2 is junk, doesn't matter
+        if (op_char == '&') {
+            NodePtr.reset(new ast::LogicalAndExpr(
+            move(v1_relational_expr), move(last_RelationalExpr)));
+        } else {
+          NodePtr.reset(new ast::LogicalOrExpr(
+            move(v1_relational_expr), move(last_RelationalExpr)));
+        }
 
-          ValueVec values = std::move(re_vec_.back());
-          re_vec_.pop_back();
+        Value ret(std::move(NodePtr));
+        return ret;
+      }));
 
-          if (values.size() == 0) {
-            // Just the ae expression in v1
+  g->re = Or(re_vec);
+
+  // // make call statement rule
+  // And(Frontend::Lazy(g->V),
+  //     And(And(Literal(':'), Literal('=')
+  //           [] (Value v1, Value v2) {
+  //             // doesn't really matter what this does
+  //             return Value("");
+  //           }),
+  //         And(Frontend::Lazy(g->Fn),
+  //             Sequence(Literal('('), Star(And(Frontend::Lazy(g->ae),
+  //                     Literal(';'),
+  //                     [] (Value v1, Value v2) {
+  //                         // And ae; callback
+  //                         // only need the value of v1
+  //                         auto v1_node = v1.GetNodeUnique();
+  //                         Value ret(std::move(v1_node));
+  //                         return ret;
+  //                     })
+  //                   [] (ValueVec values) {
+  //                       // Star (ae;) Callback
+  //                       // put in call_vec_ global, this will make it available
+  //                       // when I need to make a FunctionCall ast node
+  //                       call_vec_ = std::move(values);
+  //                       return Value("");
+  //                   }),
+  //                      Literal(')'),
+  //                    [] (ValueVec values) {
+  //                      // Sequence callback
+  //                      // this isn't important, the arguments are already
+  //                      // in call_vec_, so just return a junk string
+  //                      return Value("");
+  //                    })
+  //             [] (Value v1, Value v2) {
+  //               // And Fn, Sequence callback
+  //               // v1 contains the function name, return that
+  //               // v2 is full of junk
+  //               auto v1_node = v1.GetNodeUnique();
+  //               Value ret(std::move(v1_node));
+  //               return ret;
+  //             })
+  //         [] (Value v1, Value v2) {
+  //           // And callback for ";=" and (Fn, sequence)
+  //           // return the Fn name in v2
+  //           auto v2_node = v2.GetNodeUnique();
+  //           Value ret(std::move(v2_node));
+  //           return ret;
+  //         })
+  //         [] (Value v1, Value v2) {
+  //           // And for V, everything else
+  //           // v1 contains the variable name
+  //           // v2 contains the function name
+  //           // call_vec_ contains the arguments
+  //           // Make and return a FunctionCall pointer
+  //           ValueVec arguments = std::move(call_vec_);
+  //
+  //           // Get lhs argument
+  //           auto v1_node = v1.GetNodeUnique();
+  //           auto lhs = unique_cast<ast::VariableExpr>
+  //         }
+  //       );
+
+// stmt -->  assign | cond | loop | call
+std::vector<Parser> stmt_vec;
+stmt_vec.push_back(Frontend::Lazy(g->assign));
+stmt_vec.push_back(Frontend::Lazy(g->cond));
+stmt_vec.push_back(Frontend::Lazy(g->loop));
+stmt_vec.push_back(Frontend::Lazy(g->call));
+g->stmt = Or(stmt_vec);
+
+// g->block = Sequence(Literal('{'),
+//               Star(And(Frontend::Lazy(g->stmt),
+//                         Literal(';')),
+//                   [] (ValueVec values) {
+//                     return Value("");
+//                   }),
+//                 Literal('}')
+//               [] (ValueVec values) {
+//                 return Value("");
+//               });
+
+// assign --> lhs ":=" ae | lhs ":= tuple(" ae ")"
+g->assign = Or(
+  And(Frontend::Lazy(g->lhs),
+    And(Literal(':'),
+        And(Literal('='),
+        And(Literal('t'),
+        And(Literal('u'),
+        And(Literal('p'),
+        And(Literal('l'),
+        And(Literal('e'),
+        And(Literal('('),
+            And(Frontend::Lazy(g->ae), Literal(')'),
+            [] (Value v1, Value v2) {
+              // v1 is ae, pass this up the tree
+              auto v1_node = v1.GetNodeUnique();
+              Value ret(std::move(v1_node));
+              return ret;
+            }),
+          [] (Value v1, Value v2) {
+            // ( ae )
+            auto v2_node = v2.GetNodeUnique();
+            Value ret(std::move(v2_node));
+            return ret;
+          }),
+          [] (Value v1, Value v2) {
+            // e(ae)
+            auto v2_node = v2.GetNodeUnique();
+            Value ret(std::move(v2_node));
+            return ret;
+          }),
+          [] (Value v1, Value v2) {
+            // le(ae)
+            auto v2_node = v2.GetNodeUnique();
+            Value ret(std::move(v2_node));
+            return ret;
+          }),
+          [] (Value v1, Value v2) {
+            // ple( ae )
+            auto v2_node = v2.GetNodeUnique();
+            Value ret(std::move(v2_node));
+            return ret;
+          }),
+          [] (Value v1, Value v2) {
+            // uple( ae )
+            auto v2_node = v2.GetNodeUnique();
+            Value ret(std::move(v2_node));
+            return ret;
+          }),
+          [] (Value v1, Value v2) {
+            // tuple( ae )
+            auto v2_node = v2.GetNodeUnique();
+            Value ret(std::move(v2_node));
+            return ret;
+          }),
+          [] (Value v1, Value v2) {
+            // =tuple( ae )
+            auto v2_node = v2.GetNodeUnique();
+            Value ret(std::move(v2_node));
+            return ret;
+          }),
+          [] (Value v1, Value v2) {
+            // :=tuple( ae )
+            auto v2_node = v2.GetNodeUnique();
+            Value ret(std::move(v2_node));
+            return ret;
+          }),
+          [] (Value v1, Value v2) {
+            // Make AssignmentFromNewTuple
+            // v1 has the tuple
+            // v2 has the arithmetic expression
+
+            // make lhs into Assignable
+            auto v1_node = v1.GetNodeUnique();
+            auto v1_assignable = unique_cast<const ast::Assignable>
+                (std::move(v1_node));
+            // make v2 into Arithmetic Expr
+            auto v2_node = v2.GetNodeUnique();
+            auto v2_arith = unique_cast<const ast::ArithmeticExpr>
+              (std::move(v2_node));
+
+            unique_ptr<ast::AstNode> NodePtr;
+            NodePtr.reset(new ast::AssignmentFromNewTuple(
+            std::move(v1_assignable), std::move(v2_arith)));
+
+            Value ret(std::move(NodePtr));
+            return ret;
+          }),  // End New Tuple And
+    And(Frontend::Lazy(g->lhs),
+        And(Literal(':'),
+          And(Literal('='), Frontend::Lazy(g->ae),
+          [] (Value v1, Value v2) {
+            // v1 has the =
+            // v2 is the ae, pass this up the chain
             auto v1_node = v1.GetNodeUnique();
             Value ret(std::move(v1_node));
             return ret;
-          }
-          // Else, there are values in re_vec_, make Logical Operator(s)
-
-          auto last = std::move(values.back());
-          values.pop_back();
-          // return pointer
-          std::unique_ptr<ast::AstNode> NodePtr;
-          // Get pointer to the last node and make into arith expression
-          auto last_node = last.GetNodeUnique();
-          auto last_RelationalExpr =
-            unique_cast<const ast::RelationalExpr>(move(last_node));
-        // Get operator on last node
-          std::string op_str = last.GetString();
-
-
-          while (values.size() > 0) {
-            // last element has the operator & last re
-            // Concatenate the next value with last_ArithExpr
-
-            // get op
-            char op_char = op_str[0];
-
-          // make lhs RelationalExpr
-          auto next = std::move(values.back());
-          values.pop_back();
-          auto next_node = next.GetNodeUnique();
-          auto next_relational_expr = unique_cast<const ast::RelationalExpr>
-                (std::move(next_node));
-
-          // Make new add/sub expression & put in NodePtr
-            if (op_char == '&') {
-              NodePtr.reset(new ast::LogicalAndExpr(
-                std::move(next_relational_expr), move(last_RelationalExpr)));
-            } else {
-              // division expression
-              NodePtr.reset(new ast::LogicalOrExpr(
-                std::move(next_relational_expr), move(last_RelationalExpr)));
-            }
-
-            // update last_ArithExpr
-            last_RelationalExpr = unique_cast<const ast::RelationalExpr>
-              (move(NodePtr));
-            // update op_str
-            op_str = next.GetString();
-          }
-
-          // now, concatenate the last_ArithExpr with v1
+          }),
+        [] (Value v1, Value v2) {
+          // v1 has ':', v2 has ae
+          auto v2_node = v2.GetNodeUnique();
+          Value ret(std::move(v2_node));
+          return ret;
+        }),
+        [] (Value v1, Value v2) {
+          // lhs and ":=ae"
+          // Return AssignmentFromArithExpr
+          // make lhs into Assignable
           auto v1_node = v1.GetNodeUnique();
-          auto v1_relational_expr = unique_cast<const ast::RelationalExpr>
-                (std::move(v1_node));
-          char op_char = op_str[0];
+          auto v1_assignable = unique_cast<const ast::Assignable>
+              (std::move(v1_node));
+          // make v2 into Arithmetic Expr
+          auto v2_node = v2.GetNodeUnique();
+          auto v2_arith = unique_cast<const ast::ArithmeticExpr>
+            (std::move(v2_node));
 
-          if (op_char == '&') {
-              NodePtr.reset(new ast::LogicalAndExpr(
-              move(v1_relational_expr), move(last_RelationalExpr)));
-          } else {
-            NodePtr.reset(new ast::LogicalOrExpr(
-              move(v1_relational_expr), move(last_RelationalExpr)));
-          }
+          unique_ptr<ast::AstNode> NodePtr;
+          NodePtr.reset(new ast::AssignmentFromNewTuple(
+          std::move(v1_assignable), std::move(v2_arith)));
 
           Value ret(std::move(NodePtr));
           return ret;
         }));
 
-    g->re = Or(re_vec);
+    
 }
 
 

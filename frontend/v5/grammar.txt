@@ -2,44 +2,44 @@
 prog --> fundef* "main(){" stmt* "return " ae "}"
 
 //function definition, ae is return val
-fundef --> "def " fn "(" v* ")" "{" stmt* "return " ae "}" 
+fundef --> "def " fn "(" v* ")" "{" stmt* "return " ae "}"
 
 //block
 block --> "{" stmt* "}"
-//four kinds of statements                 
-stmt -->  assign | cond | loop | call         
+//four kinds of statements
+stmt -->  assign | cond | loop | call
 
 //assignment statement
-assign --> lhs ":=" ae | lhs ":= tuple(" ae ")"     
+assign --> lhs ":=" ae | lhs ":= tuple(" ae ")"
 //conditional (if/else) statement
-cond --> "if(" re ")" block1 "else" block2     
+cond --> "if(" re ")" block1 "else" block2
 //loop statement
 loop --> "while(" re ")" block
-//function call statement             
-call --> v ":=" fn "(" expr* ")"         
+//function call statement
+call --> v ":=" fn "(" (expr';')* ")"  
 
 //relational expression
-re --> ae (("&&" | "||") re)* | ae rop ae | "!" re 
+re --> ae (("&&" | "||") re)* | ae rop ae | "!" re
 //relational operator
-rop --> "<" | "<=" | ">" | ">=" | "="             
+rop --> "<" | "<=" | ">" | ">=" | "="
 
 //these should be identical from v2
 //arithmetic expression, same as expr from v2 grammar
-ae --> add                     
+ae --> add
 add --> mult ( ("-" | "+") mult )*
 mult --> unary ( ("/" | "*") unary )*
 unary --> ("-") primary
-primary --> n | v | lhs | "(" expr ")"    
+primary --> n | v | lhs | "(" expr ")"
 
 //assignable, either variable or dereferenced variable
 lhs --> v | deref
-//for accessing tuple elements (on heap)                 
-deref --> lhs "->" ae                 
+//for accessing tuple elements (on heap)
+deref --> lhs "->" ae
 
 //leaf level productions
 //number
 n --> integer
-//variable name string                     
-v --> variable                     
+//variable name string
+v --> variable
 //function name string
-fn --> function name              
+fn --> function name
