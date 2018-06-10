@@ -88,6 +88,7 @@ Parser And(Parser parseA, Parser parseB,
         // Save position so we can reset later.
         int oldPosition = state.position();
         auto resultA = parseA(state);
+
         if (!resultA.success()) {
           state.setPosition(oldPosition);
           return Result(state, false, "no match for A and B");
@@ -292,8 +293,6 @@ Parser Int(Converter<std::string> ToNode) {
     }
     // auto result = Result(res.state(), ToNode(res.value().String()));
     auto v = ToNode(res.value().GetString());
-    std::cout << "node pointer after callback "
-      << v.GetNodePointer() << std::endl;
     return Result(res.state(), std::move(v));
   };
 }
@@ -330,7 +329,6 @@ Parser Sequence(Parser parseA, Parser parseB, Parser parseC,
     results.push_back(std::move(v1) );
     results.push_back(std::move(v2) );
     results.push_back(std::move(v3) );
-
     return Result(resultC.state(), ToNode(std::move(results)));
   };
 }

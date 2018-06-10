@@ -12,7 +12,7 @@ namespace Parse {
 class FrontendTest : public ::testing::Test {
  protected:
   bool test = false;
-  abstract_syntax::frontend::PrintVisitor printer_;
+  abstract_syntax::version_2::PrintVisitor printer_;
 };
 
 TEST_F(FrontendTest, VariableTest1) {

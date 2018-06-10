@@ -7,11 +7,6 @@
 #include "abstract_syntax/abstract_syntax.h"
 #include "abstract_syntax/print_visitor_v2.h"
 
-// Unary works
-// Add works
-// Multiply works
-// Expression works
-// Assign works
 
 namespace cs160 {
 namespace frontend {
@@ -23,7 +18,7 @@ using std::unique_ptr;
 using std::string;
 using std::move;
 using Parser = std::function<Result(State)>;
-using Printer = abstract_syntax::frontend::PrintVisitor;
+using Printer = abstract_syntax::version_2::PrintVisitor;
 
 ValueVec mult_vec;
 ValueVec add_vec;

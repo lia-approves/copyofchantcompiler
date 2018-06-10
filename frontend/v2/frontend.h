@@ -23,7 +23,7 @@ namespace frontend {
 namespace Parse {
   using Parser = std::function<Result(State)>;
   using ValueVec = std::vector<Value>;
-  using Printer = abstract_syntax::frontend::PrintVisitor;
+  using Printer = abstract_syntax::version_2::PrintVisitor;
   namespace ast = cs160::abstract_syntax::frontend;
 
 namespace Frontend {

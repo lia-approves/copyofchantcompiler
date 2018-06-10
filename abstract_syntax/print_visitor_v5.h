@@ -125,7 +125,8 @@ class PrintVisitor : public AstVisitor {
     exp.operand().Visit(this);
   }
 
-  void VisitAssignmentFromArithExp(const AssignmentFromArithExp& assignment) override {
+  void VisitAssignmentFromArithExp(const AssignmentFromArithExp& assignment)
+          override {
     output_ << "(:= ";
     assignment.lhs().Visit(this);
     output_ << " ";
@@ -133,7 +134,8 @@ class PrintVisitor : public AstVisitor {
     output_ << ")";
   }
 
-  void VisitAssignmentFromNewTuple(const AssignmentFromNewTuple& assignment) override {
+  void VisitAssignmentFromNewTuple(const AssignmentFromNewTuple& assignment)
+        override {
     output_ << "(:= ";
     assignment.lhs().Visit(this);
     output_ << " ";
@@ -141,7 +143,8 @@ class PrintVisitor : public AstVisitor {
     output_ << ")";
   }
 
-  void VisitStatementBlock(const std::vector<std::unique_ptr<const Statement>>& block) {
+  void VisitStatementBlock(const std::vector<std::unique_ptr<const
+          Statement>>& block) {
     for (int i = 0; i < block.size(); i++) {
       auto s = std::move(&block.at(i));
       (*s)->Visit(this);
@@ -173,7 +176,7 @@ class PrintVisitor : public AstVisitor {
     output_ << "(";
     const std::vector<std::unique_ptr<const ArithmeticExpr>>& arguments =
       std::move(call.arguments());
-    for (int i = 0; i < arguments.size(); i++){
+    for (int i = 0; i < arguments.size(); i++) {
       auto a = std::move(&arguments.at(i));
       (*a)->Visit(this);
     }
@@ -186,7 +189,7 @@ class PrintVisitor : public AstVisitor {
     output_ << "(";
     const std::vector<std::unique_ptr<const VariableExpr>>& parameters =
       std::move(def.parameters());
-    for (int i = 0; i < parameters.size(); i++){
+    for (int i = 0; i < parameters.size(); i++) {
       auto a = std::move(&parameters.at(i));
       (*a)->Visit(this);
     }
@@ -210,7 +213,7 @@ class PrintVisitor : public AstVisitor {
 
     const std::vector<std::unique_ptr<const FunctionDef>>& defs =
       std::move(program.function_defs());
-    for (int i = 0; i < defs.size(); i++){
+    for (int i = 0; i < defs.size(); i++) {
       auto d = std::move(&defs.at(i));
       (*d)->Visit(this);
     }
