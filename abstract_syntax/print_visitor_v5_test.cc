@@ -59,8 +59,7 @@ TEST_F(PrinterTest, DereferenceIsVisited) {
     std::unique_ptr<const VariableExpr> (new VariableExpr("var_123")),
     std::unique_ptr<const AddExpr> (new AddExpr(
       std::unique_ptr<const IntegerExpr> (new IntegerExpr(7)),
-      std::unique_ptr<const IntegerExpr> (new IntegerExpr(5))))
-  ));
+      std::unique_ptr<const IntegerExpr> (new IntegerExpr(5))))));
 
   deref->Visit(&printer_);
 
@@ -107,6 +106,68 @@ TEST_F(PrinterTest, DivideExprIsVisited) {
   expr->Visit(&printer_);
 
   EXPECT_EQ(printer_.GetOutput(), "(/ 7 5)");
+}
+
+TEST_F(PrinterTest, LessThanExprIsVisited) {
+  auto expr = std::make_unique<const LessThanExpr>(
+    std::make_unique<const DivideExpr>(
+      std::make_unique<const IntegerExpr>(3),
+      std::make_unique<const IntegerExpr>(19)),
+    std::make_unique<const MultiplyExpr>(
+      std::make_unique<const IntegerExpr>(27),
+      std::make_unique<const IntegerExpr>(5)));
+
+    expr->Visit(&printer_);
+
+    EXPECT_EQ(printer_.GetOutput(), "(/ 3 19)<(* 27 5)");
+}
+
+TEST_F(PrinterTest, LessThanEqualToExprIsVisited) {
+  auto expr = std::make_unique<const LessThanEqualToExpr>(
+  std::make_unique<const AddExpr>(
+    std::make_unique<const IntegerExpr>(123),
+    std::make_unique<const IntegerExpr>(42)),
+  std::make_unique<const VariableExpr>("var_123"));
+
+  expr->Visit(&printer_);
+
+  EXPECT_EQ(printer_.GetOutput(), "(+ 123 42)<=var_123");
+}
+
+TEST_F(PrinterTest, GreaterThanExprIsVisited) {
+  auto expr = std::make_unique<const GreaterThanExpr>(
+    std::make_unique<const SubtractExpr>(
+      std::make_unique<const IntegerExpr>(44),
+      std::make_unique<const IntegerExpr>(12)),
+    std::make_unique<const IntegerExpr>(7));
+
+  expr->Visit(&printer_);
+
+  EXPECT_EQ(printer_.GetOutput(), "(- 44 12)>7");
+}
+
+TEST_F(PrinterTest, GreaterThanEqualToExprIsVisited) {
+  auto expr = std::make_unique<const GreaterThanEqualToExpr>(
+    std::make_unique<const IntegerExpr>(3),
+    std::make_unique<const MultiplyExpr>(
+      std::make_unique<const IntegerExpr>(27),
+      std::make_unique<const IntegerExpr>(5)));
+
+  expr->Visit(&printer_);
+
+  EXPECT_EQ(printer_.GetOutput(), "3>=(* 27 5)");
+}
+
+TEST_F(PrinterTest, EqualToExprIsVisited) {
+  auto expr = std::make_unique<const EqualToExpr>(
+    std::unique_ptr<const VariableExpr> (new VariableExpr("var_123")),
+    std::make_unique<const SubtractExpr>(
+      std::make_unique<const IntegerExpr>(27),
+      std::make_unique<const IntegerExpr>(5)));
+
+  expr->Visit(&printer_);
+
+  EXPECT_EQ(printer_GetOutput(), "var_123=(- 27 5)");
 }
 
 // TEST_F(PrinterTest, ProgramIsVisited) {
