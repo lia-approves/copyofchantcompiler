@@ -31,10 +31,10 @@ namespace Frontend {
   Parser Lazy(std::function<Result(State)> &function);
 
     // Object containing Parsers for all of the rules in v2 Grammar
-    struct Grammar {
-      Parser N;
-      Parser V;
-      Parser Fn;
+struct Grammar {
+      Parser N;  // done
+      Parser V;  // done
+      Parser Fn;  // done
       Parser dref;
       Parser lhs;
       Parser primary;
@@ -52,7 +52,7 @@ namespace Frontend {
       Parser block;
       Parser fundef;
       Parser program;
-    };
+};
 
 // Function initializes all of the parsers in Grammar g
 void InitializeParsers(Frontend::Grammar *g);

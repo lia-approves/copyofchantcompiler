@@ -5,6 +5,7 @@
 #include <iostream>
 #include "frontend/v5/frontend.h"
 #include "abstract_syntax/abstract_syntax.h"
+#include "abstract_syntax/print_visitor_v5.h"
 
 
 namespace cs160 {
@@ -37,17 +38,17 @@ void InitializeParsers(Frontend::Grammar *g) {
 
       while (values.size() > 0) {
         // get value
+        std::cout << "counting size: " << values.size() << std::endl;
         auto v = std::move(values.back());
         values.pop_back();
 
-        std::string last_str = v.GetString();
+        auto v_node = v.GetNodeUnique();
+        auto v_int_expr = unique_cast
+            <ast::IntegerExpr, ast::AstNode>(std::move(v_node));
+        // get integer value
+        int v_int = v_int_expr->value();
 
-        // check that it's a digit
-        if (!std::isdigit(last_str.at(0))) {
-          throw std::logic_error("Tried to put non digit in an int");
-        }
-
-        ret = last_str + ret;
+        ret = std::to_string(v_int) + ret;
       }  // end while loop
 
       int ret_int = std::stoi(ret);
@@ -110,6 +111,122 @@ void InitializeParsers(Frontend::Grammar *g) {
       v.SetString(v1_str+v2_str);
       return v;
     });
+
+    g->Fn = And(Range("az"),  Star(Or(variable_vec),
+      [](ValueVec values) {
+        // star callback
+
+        if (values.size() == 0) {
+          // The variable is only 1 char long
+          std::cout << "size is 0" << std::endl;
+          Value v("");
+          return v;
+        }
+        // values.size() >=1
+        std::string ret = "";
+
+        // While concatenates all of the variable chars into one string, ret
+        while (values.size() > 0) {
+          // push value to string
+          auto last = std::move(values.back());
+          values.pop_back();
+
+          std::string last_str = last.GetString();
+          ret = last_str + ret;
+        }
+
+        // now that ret contains all of the chars,
+        // make it into a Value and return
+        Value v(ret);
+        return v;
+      }),
+
+    [](Value v1, Value v2) {
+      // Callback for and
+
+      // v1_str contains the string for the leading char
+      std::string v1_str = v1.GetString();
+      // v2_str contains ret from the Star callback
+      std::string v2_str = v2.GetString();
+
+      // make a new AstNode with the concatenated strings
+      std::unique_ptr<ast::AstNode> NodePtr;
+      NodePtr.reset(new ast::VariableExpr(v1_str+v2_str));
+
+      Value v(move(NodePtr));
+      v.SetString(v1_str+v2_str);
+      return v;
+    });
+
+// rop --> "<" | "<=" | ">" | ">=" | "="
+    // std::vector<Parser> rop_vec;
+    // rop_vec.push_back(Literal('<'));
+    // rop_vec.push_back(Literal('>'));
+    // rop_vec.push_back(Literal('='));
+    // rop_vec.push_back(And(Literal('<'), Literal('='),
+    //   [] (Value v1, Value v2) {
+    //     // And callback for '<='
+    //     std::string leq = "<=";
+    //     Value ret(leq);
+    //     return ret;
+    //   }));
+    // rop_vec.push_back(And(Literal('>'), Literal('='),
+    //   [] (Value v1, Value v2) {
+    //     // And callback for '>='
+    //     std::string geq = ">=";
+    //     Value ret(geq);
+    //     return ret;
+    //   }));
+
+    // g->rop = And(Literal('<'), Literal('='),
+    //     [] (Value v1, Value v2) {
+    //       std::cout << "in callback" << std::endl;
+    //       auto v1_node = v1.GetNodeUnique();
+    //       auto v2_node = v2.GetNodeUnique();
+    //
+    //       Printer p1;
+    //       Printer p2;
+    //       v1_node->Visit(&p1);
+    //       v2_node->Visit(&p2);
+    //       std::cout << p1.GetOutput() << ", " << p2.GetOutput() << std::endl;
+    //       return Value("12");
+    //     });
+
+//     //assignable, either variable or dereferenced variable
+// lhs --> v | deref
+// //for accessing tuple elements (on heap)
+// deref --> lhs "->" ae
+g-> lhs = Or(Frontend::Lazy(g->V), Frontend::Lazy(g->dref));
+g->dref = Sequence(Frontend::Lazy(g->lhs),
+              And(Literal('-'), Literal('>'),
+                [] (Value v1, Value v2) {
+                  return Value("->");
+                }),
+              Frontend::Lazy(g->ae),
+            [] (ValueVec values) {
+              auto v1 = std::move(values.at(0));
+              auto v2 = std::move(values.at(2));
+
+              // return Dereference Expression with
+              // v1 as the lhs and v2 as the rhs
+
+              // make v1 into an Assignable
+              auto v1_node = v1.GetNodeUnique();
+              auto v1_assignable = unique_cast
+                  <ast::Assignable, ast::AstNode>(std::move(v1_node));
+                  // make v2 into an Assignable
+              auto v2_node = v2.GetNodeUnique();
+              auto v2_arith = unique_cast
+                  <ast::ArithmeticExpr, ast::AstNode>(std::move(v1_node));
+
+              // Make Dereference Node
+              std::unique_ptr<ast::AstNode> NodePtr;
+              NodePtr.reset(new ast::Dereference(std::move(v1_assignable),
+                            std::move(v2_arith)));
+
+              Value retval(std::move(NodePtr));
+              return retval;
+            });
 }
 
 
@@ -189,6 +306,7 @@ unique_ptr<ast::AstNode> stringToAst(std::string s) {
     InitializeParsers(&g);
 
     // Parse
+    std::cout << "parse state: " << s << std::endl;
     auto result = g.N(state);
     auto val = result.value();
     return val.GetNodeUnique();
