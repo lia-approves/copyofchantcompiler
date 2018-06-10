@@ -145,6 +145,7 @@ class PrintVisitor : public AstVisitor {
     for (int i = 0; i < block.size(); i++) {
       auto s = std::move(&block.at(i));
       (*s)->Visit(this);
+      output_ << ";";
     }
   }
 
@@ -189,6 +190,7 @@ class PrintVisitor : public AstVisitor {
     for (int i = 0; i < parameters.size(); i++){
       auto a = std::move(&parameters.at(i));
       (*a)->Visit(this);
+      output_ << ",";
     }
     output_ << "){";
     VisitStatementBlock(def.function_body());
