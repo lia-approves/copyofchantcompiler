@@ -54,6 +54,19 @@ TEST_F(PrinterTest, VariableExprIsVisited) {
   EXPECT_EQ(printer_.GetOutput(), "var");
 }
 
+TEST_F(PrinterTest, DereferenceIsVisited) {
+  std::unique_ptr<const Dereference> deref(new Dereference(
+    std::unique_ptr<const VariableExpr> (new VariableExpr("var_123")),
+    std::unique_ptr<const AddExpr> (new AddExpr(
+      std::unique_ptr<const IntegerExpr> (new IntegerExpr(7)),
+      std::unique_ptr<const IntegerExpr> (new IntegerExpr(5))))
+  ));
+
+  deref->Visit(&printer_);
+
+  EXPECT_EQ(printer_.GetOutput(), "var_123->(+ 7 5)");
+}
+
 TEST_F(PrinterTest, AddExprIsVisited) {
 std::unique_ptr<const AddExpr> expr(new AddExpr
         (std::unique_ptr<const IntegerExpr> (new IntegerExpr(7)),
