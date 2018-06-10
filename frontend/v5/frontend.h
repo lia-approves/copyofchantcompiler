@@ -30,18 +30,20 @@ namespace Frontend {
 
   Parser Lazy(std::function<Result(State)> &function);
 
+ValueVec mult_vec_;
+ValueVec add_vec_;
     // Object containing Parsers for all of the rules in v2 Grammar
 struct Grammar {
-      Parser N;  // done
-      Parser V;  // done
-      Parser Fn;  // done
-      Parser dref;
-      Parser lhs;
-      Parser primary;
-      Parser unary;
-      Parser multiply;
-      Parser add;
-      Parser ae;
+      Parser N;  // done, tested
+      Parser V;  // done, tested
+      Parser Fn;  // done, tested
+      Parser dref;  // done, tested
+      Parser lhs;  // done, tested
+      Parser primary;  // done, tested
+      Parser unary;  // done, tested
+      Parser multiply;  // done, tested
+      Parser add;  // done, tested
+      Parser ae;  // done, tested
       Parser rop;
       Parser re;
       Parser call;
