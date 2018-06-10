@@ -88,7 +88,7 @@ class PrintVisitor : public AstVisitor {
     output_ << ")";
   }
 
-  void VisitGreaterThanEqualToExpr(const GreaterThanExpr& exp) override {
+  void VisitGreaterThanEqualToExpr(const GreaterThanEqualToExpr& exp) override {
     output_ << "(>= ";
     exp.lhs().Visit(this);
     output_ << " ";
@@ -162,7 +162,7 @@ class PrintVisitor : public AstVisitor {
     output_ << "while(";
     loop.guard().Visit(this);
     output_ << "){";
-    loop.body().Visit(this);
+    VisitStatementBlock(loop.body());
     output_ << "}";
   }
 
@@ -185,13 +185,13 @@ class PrintVisitor : public AstVisitor {
     output_ << def.function_name();
     output_ << "(";
     const std::vector<std::unique_ptr<const VariableExpr>>& parameters =
-      std::move(call.parameters());
+      std::move(def.parameters());
     for (int i = 0; i < parameters.size(); i++){
       auto a = std::move(&parameters.at(i));
       (*a)->Visit(this);
     }
     output_ << "){";
-    VisitStatementBlock(call.function_body());
+    VisitStatementBlock(def.function_body());
     output_ << "return ";
     def.retval().Visit(this);
     output_ << "}";
@@ -218,7 +218,7 @@ class PrintVisitor : public AstVisitor {
     VisitStatementBlock(program.statements());
     output_ << "return ";
     program.arithmetic_exp().Visit(this);
-    output_ << "}"
+    output_ << "}";
   }
 
  private:

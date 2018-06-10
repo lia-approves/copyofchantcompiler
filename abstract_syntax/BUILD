@@ -75,6 +75,17 @@ cc_library(
         visibility = ["//visibility:public"],
 )
 
+cc_library(
+        name = "print_visitor_v5",
+        copts = ["-Wall -g"],
+        hdrs = ["print_visitor_v5.h"],
+        deps = [
+             ":abstract_syntax_tree_v5",
+             "//utility"
+        ],
+        visibility = ["//visibility:public"],
+)
+
 cc_test(
         name = "abstract_syntax_tree_v1_test",
         srcs = ["abstract_syntax_tree_v1_test.cc"],
@@ -126,6 +137,7 @@ cc_test(
 cc_test(
         name = "abstract_syntax_tree_v5_test",
         srcs = ["abstract_syntax_tree_v5_test.cc"],
+				copts = ["-Iexternal/gtest/googletest-release-1.8.0/googletest/include"],
         deps = [
              ":abstract_syntax_tree_v5",
              "//utility",
@@ -140,6 +152,30 @@ cc_test(
 	srcs = ["print_visitor_v1_test.cc"],
 	deps = [
              ":print_visitor_v1",
+             "@gtest//:main",
+        ],
+	timeout = "short",
+	size = "small",
+)
+
+cc_test(
+	name = "print_visitor_v2_test",
+	srcs = ["print_visitor_v2_test.cc"],
+	copts = ["-Iexternal/gtest/googletest-release-1.8.0/googletest/include"],
+	deps = [
+             ":print_visitor_v2",
+             "@gtest//:main",
+        ],
+	timeout = "short",
+	size = "small",
+)
+
+cc_test(
+	name = "print_visitor_v5_test",
+	srcs = ["print_visitor_v5_test.cc"],
+	copts = ["-Iexternal/gtest/googletest-release-1.8.0/googletest/include"],
+	deps = [
+             ":print_visitor_v5",
              "@gtest//:main",
         ],
 	timeout = "short",
