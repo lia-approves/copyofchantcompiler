@@ -305,10 +305,9 @@ class FrontendTest : public ::testing::Test {
 //   ASSERT_EQ(printer_.GetOutput(), "4");
 // }
 TEST_F(FrontendTest, BlockTest) {
-  auto ret = Frontend::stringToAst("a:=hello(1234;5;6;)");
-  std::cout << "we got: " << std::endl;
+  auto ret = Frontend::stringToAst("1;5;6;");
   ret->Visit(&printer_);
-  ASSERT_EQ(printer_.GetOutput(), "hello");
+  ASSERT_EQ(printer_.GetOutput(), "a:=hello()");
 }
 
 

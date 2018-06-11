@@ -54,12 +54,12 @@ struct Grammar {
       Parser ae;  // done, tested
       Parser rop;  // done, tested
       Parser re;  // done, tested
-      Parser call;  // done
-      Parser loop;  // done
-      Parser cond;  // done
+      Parser call;
+      Parser loop;
+      Parser cond;
       Parser assign;  // done, tested
-      Parser stmt;  // done
-      Parser block;  // done
+      Parser stmt;  // done, should work
+      Parser block;
       Parser fundef;
       Parser program;
 };
