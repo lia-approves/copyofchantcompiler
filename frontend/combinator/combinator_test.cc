@@ -271,15 +271,8 @@ TEST(CombinatorTest, CaptureIntNode) {
 
 TEST(CombinatorTest, Star) {
   State s("1112");
-  Converter<std::vector<Value>> concat = [](std::vector<Value> values) {
-    std::string s;
-    for (auto it = values.begin(); it != values.end(); ++it) {
-      s += it->GetString();
-    }
-    return Value(s);
-  };
-  auto parseOnes = Star(Literal('1'), concat);
-  auto parseZeroes = Star(Literal('0'), concat);
+  auto parseOnes = Star(Literal('1'), ConcatVector);
+  auto parseZeroes = Star(Literal('0'), ConcatVector);
   auto zr = parseZeroes(s);
   auto result = parseOnes(s);
   ASSERT_EQ(result.success(), true);
@@ -290,15 +283,8 @@ TEST(CombinatorTest, Star) {
 
 TEST(CombinatorTest, OnePlus) {
   State s("1112");
-  Converter<std::vector<Value>> concat = [](std::vector<Value> values) {
-    std::string s;
-    for (auto it = values.begin(); it != values.end(); ++it) {
-      s += it->GetString();
-    }
-    return Value(s);
-  };
-  auto parseOnes = OnePlus(Literal('1'), concat);
-  auto parseZeroes = OnePlus(Literal('0'), concat);
+  auto parseOnes = OnePlus(Literal('1'), ConcatVector);
+  auto parseZeroes = OnePlus(Literal('0'), ConcatVector);
   auto result = parseOnes(s);
   auto zr = parseZeroes(s);
   ASSERT_EQ(result.success(), true);  // multiple matches is OK
