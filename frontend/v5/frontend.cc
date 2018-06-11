@@ -889,7 +889,7 @@ g->assign = And(Frontend::Lazy(g->lhs),
     // And(Literal(':'),
     // And(Literal('='),
     // And(Frontend::Lazy(g->Fn),
-    // Sequence(Literal('('),
+    Sequence(Literal('('),
     Star(And(Frontend::Lazy(g->ae), Literal(';'),
     [] (Value v1, Value v2) {
       auto v1_node = v1.GetNodeUnique();
@@ -905,15 +905,15 @@ g->assign = And(Frontend::Lazy(g->lhs),
       Value ret(std::move(v_node));
       call_vec_ = std::move(values);
       return ret;
+    }),
+     Literal(')'),
+    [] (ValueVec values) {
+      // sequence callback
+      std::cout << "size is: " << values.size() << std::endl;
+      auto v_node = values.at(1).GetNodeUnique();
+      Value ret(std::move(v_node));
+      return ret;
     });
-    // Literal(')'),
-    // [] (ValueVec values) {
-    //   // sequence callback
-    //   std::cout << "size is: " << values.size() << std::endl;
-    //   auto v_node = values.at(1).GetNodeUnique();
-    //   Value ret(std::move(v_node));
-    //   return ret;
-    // });
     // [](Value v1, Value v2) {
     //   // Get name from Fn
     //   auto v1_node = v1.GetNodeUnique();
