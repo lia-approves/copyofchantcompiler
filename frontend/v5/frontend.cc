@@ -637,7 +637,6 @@ g->multiply = And(
 void InitializeParsers2(Frontend::Grammar *g) {
   // re --> ae (("&&" | "||") re)* | ae rop ae | "!" re
   std::vector<Parser> re_vec;
-
   // "!" re
   re_vec.push_back(And(Literal('!',
   [] (std::string str) {
@@ -834,66 +833,6 @@ void InitializeParsers2(Frontend::Grammar *g) {
 
   g->re = Or(re_vec);
 
-  // // make call statement rule
-  // And(Frontend::Lazy(g->V),
-  //     And(And(Literal(':'), Literal('=')
-  //           [] (Value v1, Value v2) {
-  //             // doesn't really matter what this does
-  //             return Value("");
-  //           }),
-  //         And(Frontend::Lazy(g->Fn),
-  //             Sequence(Literal('('), Star(And(Frontend::Lazy(g->ae),
-  //                     Literal(';'),
-  //                     [] (Value v1, Value v2) {
-  //                         // And ae; callback
-  //                         // only need the value of v1
-  //                         auto v1_node = v1.GetNodeUnique();
-  //                         Value ret(std::move(v1_node));
-  //                         return ret;
-  //                     })
-  //                   [] (ValueVec values) {
-  //                       // Star (ae;) Callback
-  //                       // put in call_vec_ global, this will make it available
-  //                       // when I need to make a FunctionCall ast node
-  //                       call_vec_ = std::move(values);
-  //                       return Value("");
-  //                   }),
-  //                      Literal(')'),
-  //                    [] (ValueVec values) {
-  //                      // Sequence callback
-  //                      // this isn't important, the arguments are already
-  //                      // in call_vec_, so just return a junk string
-  //                      return Value("");
-  //                    })
-  //             [] (Value v1, Value v2) {
-  //               // And Fn, Sequence callback
-  //               // v1 contains the function name, return that
-  //               // v2 is full of junk
-  //               auto v1_node = v1.GetNodeUnique();
-  //               Value ret(std::move(v1_node));
-  //               return ret;
-  //             })
-  //         [] (Value v1, Value v2) {
-  //           // And callback for ";=" and (Fn, sequence)
-  //           // return the Fn name in v2
-  //           auto v2_node = v2.GetNodeUnique();
-  //           Value ret(std::move(v2_node));
-  //           return ret;
-  //         })
-  //         [] (Value v1, Value v2) {
-  //           // And for V, everything else
-  //           // v1 contains the variable name
-  //           // v2 contains the function name
-  //           // call_vec_ contains the arguments
-  //           // Make and return a FunctionCall pointer
-  //           ValueVec arguments = std::move(call_vec_);
-  //
-  //           // Get lhs argument
-  //           auto v1_node = v1.GetNodeUnique();
-  //           auto lhs = unique_cast<ast::VariableExpr>
-  //         }
-  //       );
-
 // stmt -->  assign | cond | loop | call
 std::vector<Parser> stmt_vec;
 stmt_vec.push_back(Frontend::Lazy(g->assign));
@@ -941,230 +880,92 @@ g->assign = And(Frontend::Lazy(g->lhs),
             Value ret(std::move(NodePtr));
             return ret;
           });
-  // And(Frontend::Lazy(g->lhs),
-  //     And(Match(":="), Frontend::Lazy(g->ae),
-  //         [] (Value v1, Value v2) {
-  //             std::cout << ":=, ae callback" << std::endl;
-  //             // v1 has the =
-  //             // v2 is the ae, pass this up the chain
-  //             // this is not getting output from ae
-  //             auto v1_node = v1.GetNodeUnique();
-  //             Value ret(std::move(v1_node));
-  //             Printer p;
-  //             v1_node->Visit(&p);
-  //             std::cout << "p is: " << p.GetOutput() << std::endl;
-  //             return ret;
-  //         }),
-  //     [] (Value v1, Value v2) {
-  //         // lhs and ":=ae"
-  //         // Return AssignmentFromArithExpr
-  //         // make lhs into Assignable
-  //         auto v1_node = v1.GetNodeUnique();
-  //         auto v1_assignable = unique_cast<const ast::Assignable>
-  //         (std::move(v1_node));
-  //         // make v2 into Arithmetic Expr
-  //         auto v2_node = v2.GetNodeUnique();
-  //         auto v2_arith = unique_cast<const ast::ArithmeticExpr>
-  //         (std::move(v2_node));
-  //
-  //         unique_ptr<ast::AstNode> NodePtr;
-  //         NodePtr.reset(new ast::AssignmentFromNewTuple(
-  //         std::move(v1_assignable), std::move(v2_arith)));
-  //
-  //         Value ret(std::move(NodePtr));
-  //         return ret;
-  //     });
+    g->call = And(Frontend::Lazy(g->V),
+    And(Literal(':'),
+    And(Literal('='),
+    And(Frontend::Lazy(g->Fn),
+    Sequence(Literal('('),
+    Star(And(Frontend::Lazy(g->N), Literal(';'),
+    [] (Value v1, Value v2) {
+      auto v1_node = v1.GetNodeUnique();
+      Printer p;
+      v1_node->Visit(&p);
+      std::cout << p.GetOutput() << std::endl;
+      Value ret(std::move(v1_node));
+      return ret;
+    }),
+    [](ValueVec values) {
+      std::cout << "size is: " << values.size() << std::endl;
+      auto v_node = values.at(0).GetNodeUnique();
+      Value ret(std::move(v_node));
+      call_vec_ = std::move(values);
+      return ret;
+    }),
+    Literal(')'),
+    [] (ValueVec values) {
+      // sequence callback
+      std::cout << "size is: " << values.size() << std::endl;
+      auto v_node = values.at(1).GetNodeUnique();
+      Value ret(std::move(v_node));
+      return ret;
+    }),
+    [](Value v1, Value v2) {
+      // Get name from Fn
+      auto v1_node = v1.GetNodeUnique();
+      Value ret(std::move(v1_node));
+      ret.SetString(v1.GetString());
+      return ret;
+    }),
+    [](Value v1, Value v2) {
+      // pass fn up the ladder
+      auto v2_node = v2.GetNodeUnique();
+      Value ret(std::move(v2_node));
+      ret.SetString(v2.GetString());
+      return ret;
+    }),
+    [](Value v1, Value v2) {
+      auto v2_node = v2.GetNodeUnique();
+      Value ret(std::move(v2_node));
+      ret.SetString(v2.GetString());
+      return ret;
+    }),
+    [](Value v1, Value v2) {
+      // make FunctionCall
+      // v1 has the variable name
+      // v2 has the function name
+      // call_vec_ has the vector of arguments
 
-  // make block
-  // block --> "{" (stmt ";")* "}"
-  g->block =
-  Sequence(Literal('{'),
-           And(Frontend::Lazy(g->stmt),
-               Literal(';'),
-               [] (Value v1, Value v2) {
-                   // return stmt (from v1)
-                   auto v1_node = v1.GetNodeUnique();
-                   Value ret(std::move(v1_node));
-                   return ret;
-               }),
-           Literal('}'),
-           [] (ValueVec values) {
-               // save to block_vec_
-               std::vector<std::unique_ptr<const ast::Statement>> local_block;
+      // make lhs VariableExpr
+      auto v1_node = v1.GetNodeUnique();
+      auto var = unique_cast<const ast::VariableExpr>(
+        std::move(v1_node));
 
-               while (values.size() > 0) {
-                   auto curr = std::move(values.back());
-                   values.pop_back();
+      // make callee_name string parameter
+      std::string name = v2.GetString();
 
-                   auto curr_node = curr.GetNodeUnique();
-                   auto curr_statement = unique_cast<ast::Statement>
-                   (std::move(curr_node));
-                   local_block.push_back(std::move(curr_statement));
-               }
+      ValueVec values = std::move(call_vec_);
 
-               block_vec_.push_back(std::move(local_block));
-               return Value("");
-           });
+      // make values into a vector of ArithmeticExpr
+      std::vector<std::unique_ptr<const ast::ArithmeticExpr>> arguments;
 
-  g-> loop = And(Match("while("),
-                 And(Frontend::Lazy(g->re),
-                     And(Literal(')'), Frontend::Lazy(g->block),
-                         [](Value v1, Value v2) {
-                             // block should be saved in block_vec_
-                             // don't need to return anything
-                             return Value("");
-                         }),
-                     [](Value v1, Value v2) {
-                         // re expression is in v1
-                         // use block_vec_ and re expression to make Loop
-                         // return Loop
+      while (values.size() > 0) {
+        std::cout << "size of values is: " << values.size() << std::endl;
+        auto curr = std::move(values.back());
+        values.pop_back();
 
-                         // use v1 to make relationalExpr
-                         auto v1_node = v1.GetNodeUnique();
-                         auto lhs = unique_cast<ast::RelationalExpr>
-                         (std::move(v1_node));
+        auto curr_node = curr.GetNodeUnique();
+        auto curr_arg = unique_cast<const ast::ArithmeticExpr>
+          (std::move(curr_node));
+      }
 
-                         // get block_vec_
-                         std::vector<std::unique_ptr<const ast::Statement>>
-                         block = std::move(block_vec_.back());
-                         block_vec_.pop_back();
+      // make FunctionCall
+      unique_ptr<ast::AstNode> NodePtr;
+      NodePtr.reset(new ast::FunctionCall(
+        std::move(var), name, std::move(arguments)));
 
-                         unique_ptr<ast::AstNode> NodePtr;
-                         NodePtr.reset(new ast::Loop(
-                          std::move(lhs), std::move(block)));
-                         Value ret(std::move(NodePtr));
-                         return ret;
-                     }),
-                 [](Value v1, Value v2) {
-                     // return v2, which is the loop Value
-                     auto v2_node = v2.GetNodeUnique();
-                     Value ret(std::move(v2_node));
-                     return ret;
-                 });
-
-  And(Match("if("),
-      And(Frontend::Lazy(g->re),
-          And(Literal(')'),
-              And(Frontend::Lazy(g->block),
-                  And(Match("else"), Frontend::Lazy(g->block),
-                      [] (Value v1, Value v2) {
-                          return Value("");
-                      }),
-                  [] (Value v1, Value v2) {
-                      return Value("");
-                  }),
-              [] (Value v1, Value v2) {
-                  return Value("");
-              }),
-          [] (Value v1, Value v2) {
-              // make conditional ptr with v1
-              // the first pop from block_vec_ is block1
-              // the second pop from block_vec_ is block2
-              std::vector<std::unique_ptr<const ast::Statement>> block1 =
-              std::move(block_vec_.back());
-              block_vec_.pop_back();
-              std::vector<std::unique_ptr<const ast::Statement>> block2 =
-              std::move(block_vec_.back());
-              block_vec_.pop_back();
-
-              // these will be the 2nd and 3rd inputs to the Conditional ptr
-              // Get v1 and change to relational expr for the 1st argument
-              auto v1_node = v1.GetNodeUnique();
-              auto relational = unique_cast<ast::RelationalExpr>
-              (std::move(v1_node));
-
-              unique_ptr<ast::AstNode> NodePtr;
-              NodePtr.reset(new ast::Conditional(
-                 std::move(relational), std::move(block1), std::move(block2)));
-
-              Value ret(std::move(NodePtr));
-              return ret;
-          }),
-      [] (Value v1, Value v2) {
-          // pass the conditional ptr up the ladder
-          auto v2_node = v2.GetNodeUnique();
-          Value ret(std::move(v2_node));
-          return ret;
-      });
-
-  // call --> v ":=" fn "(" (expr';')* ")"
-  // using Name = std::string;
-  g->call = And(Frontend::Lazy(g->V),
-      And(Match(":="),
-          And(Frontend::Lazy(g->Fn),
-              And(Literal('('),
-                  And(Star(And(Frontend::Lazy(g->ae), Literal(';'),
-                               [](Value v1, Value v2) {
-                                   // pass ae unique_ptr up
-                                   auto v1_node = v1.GetNodeUnique();
-                                   Value ret(std::move(v1_node));
-                                   return ret;
-                               }),
-                           [] (ValueVec values) {
-                               // star all of the ae expressions together
-                               // save to ValueVec call_vec_;
-                               call_vec_ = std::move(values);
-                               return Value("");
-                           }), Literal(')')),
-                  [] (Value v1, Value v2) {
-                      return Value("");
-                  }),
-              [] (Value v1, Value v2) {
-                  // put the string in the string portion of the value
-                  auto v1_node = v1.GetNodeUnique();
-                  Printer p;
-                  v1_node->Visit(&p);
-                  std::string function_name = p.GetOutput();
-
-                  return Value(function_name);
-              }),
-          [] (Value v1, Value v2) {
-              // put the string in the string portion of the value
-              auto v2_node = v2.GetNodeUnique();
-              Printer p;
-              v2_node->Visit(&p);
-              std::string function_name = p.GetOutput();
-
-              return Value(function_name);
-          }),
-      [] (Value v1, Value v2) {
-          // Make functioncall pointer and return that
-          // v1 has the Variable Expr
-
-          // Make lhs using v1
-          auto v1_node = v1.GetNodeUnique();
-          auto variable = unique_cast<const ast::VariableExpr>
-          (std::move(v1_node));
-
-          // Get Function name from v2
-          std::string function_name = v2.GetString();
-
-          // Get ArithmeticExpr vector from call_vec_
-          ValueVec values = std::move(call_vec_);
-          // make values into an ArithmeticExpr vector
-          std::vector<std::unique_ptr<const ast::ArithmeticExpr>>  arith_expr;
-
-          while (values.size() > 0) {
-              auto curr = std::move(values.back());
-              values.pop_back();
-
-              // make into an ArithmeticExpr pointer and push to arith_expr
-              auto curr_node = curr.GetNodeUnique();
-              auto curr_arith = unique_cast<const ast::ArithmeticExpr>
-              (std::move(curr_node));
-              arith_expr.push_back(std::move(curr_arith));
-          }
-
-          // arith_expr now has all of the ae's
-          // make FunctionCall and return it
-          unique_ptr<ast::AstNode> NodePtr;
-          NodePtr.reset(new ast::FunctionCall(
-                                              std::move(variable),
-                                              std::move(function_name), std::move(arith_expr)));
-          Value ret(std::move(NodePtr));
-          return ret;
-      });
-
+      Value ret(std::move(NodePtr));
+      return ret;
+    });
 }
 
 
@@ -1246,7 +1047,7 @@ unique_ptr<ast::AstNode> stringToAst(std::string s) {
 
     // Parse
     std::cout << "parse " << s << std::endl;
-    auto result = g.assign(state);
+    auto result = g.call(state);
     auto val = result.value();
     return val.GetNodeUnique();
   }

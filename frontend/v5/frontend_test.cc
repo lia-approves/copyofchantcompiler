@@ -101,7 +101,7 @@ class FrontendTest : public ::testing::Test {
 //   ASSERT_EQ(printer_.GetOutput(), "(- 0 a)");
 // }
 //
-
+//
 // TEST_F(FrontendTest, BasicAdditionTest) {
 //   // make a basic expression and parse
 //   auto ret = Frontend::stringToAst("1+2");
@@ -278,24 +278,37 @@ class FrontendTest : public ::testing::Test {
 //     ret->Visit(&printer_);
 //     ASSERT_EQ(printer_.GetOutput(), "(&& (+ 1 2) (< (+ 1 2) (+ 3 4)))");
 // }
+//
+// TEST_F(FrontendTest, AssignTest1) {
+//   auto ret = Frontend::stringToAst("a:=1");
+//   ret->Visit(&printer_);
+//   ASSERT_EQ(printer_.GetOutput(), "(:= a 1)");
+// }
+//
+// TEST_F(FrontendTest, AssignTest2) {
+//   auto ret = Frontend::stringToAst("abc_123:=1*2");
+//   ret->Visit(&printer_);
+//   ASSERT_EQ(printer_.GetOutput(), "(:= abc_123 (* 1 2))");
+// }
+//
+//
+// TEST_F(FrontendTest, AssignTest3) {
+//   auto ret = Frontend::stringToAst("abc_123:=1*2+3*4");
+//   ret->Visit(&printer_);
+//   ASSERT_EQ(printer_.GetOutput(), "(:= abc_123 (+ (* 1 2) (* 3 4)))");
+// }
 
-TEST_F(FrontendTest, AssignTest1) {
-  auto ret = Frontend::stringToAst("a:=1");
+// TEST_F(FrontendTest, CallTest) {
+//   auto ret = Frontend::stringToAst("4;");
+//   std::cout << "we got: " << std::endl;
+//   ret->Visit(&printer_);
+//   ASSERT_EQ(printer_.GetOutput(), "4");
+// }
+TEST_F(FrontendTest, BlockTest) {
+  auto ret = Frontend::stringToAst("a:=hello(1234;5;6;)");
+  std::cout << "we got: " << std::endl;
   ret->Visit(&printer_);
-  ASSERT_EQ(printer_.GetOutput(), "(:= a 1)");
-}
-
-TEST_F(FrontendTest, AssignTest2) {
-  auto ret = Frontend::stringToAst("abc_123:=1*2");
-  ret->Visit(&printer_);
-  ASSERT_EQ(printer_.GetOutput(), "(:= abc_123 (* 1 2))");
-}
-
-
-TEST_F(FrontendTest, AssignTest3) {
-  auto ret = Frontend::stringToAst("abc_123:=1*2+3*4");
-  ret->Visit(&printer_);
-  ASSERT_EQ(printer_.GetOutput(), "(:= abc_123 (+ (* 1 2) (* 3 4)))");
+  ASSERT_EQ(printer_.GetOutput(), "hello");
 }
 
 

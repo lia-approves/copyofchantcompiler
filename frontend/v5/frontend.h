@@ -57,7 +57,7 @@ struct Grammar {
       Parser call;  // done
       Parser loop;  // done
       Parser cond;  // done
-      Parser assign;  // done
+      Parser assign;  // done, tested
       Parser stmt;  // done
       Parser block;  // done
       Parser fundef;
