@@ -884,36 +884,36 @@ g->assign = And(Frontend::Lazy(g->lhs),
           });
 
 
-    g->call =
+    // g->call =
     // And(Frontend::Lazy(g->V),
     // And(Literal(':'),
     // And(Literal('='),
     // And(Frontend::Lazy(g->Fn),
-    Sequence(Literal('('),
-    Star(And(Frontend::Lazy(g->ae), Literal(';'),
-    [] (Value v1, Value v2) {
-      auto v1_node = v1.GetNodeUnique();
-      Printer p;
-      v1_node->Visit(&p);
-      std::cout << "print: " << p.GetOutput() << std::endl;
-      Value ret(std::move(v1_node));
-      return ret;
-    }),
-    [](ValueVec values) {
-      std::cout << "size is: " << values.size() << std::endl;
-      auto v_node = values.at(0).GetNodeUnique();
-      Value ret(std::move(v_node));
-      call_vec_ = std::move(values);
-      return ret;
-    }),
-     Literal(')'),
-    [] (ValueVec values) {
-      // sequence callback
-      std::cout << "size is: " << values.size() << std::endl;
-      auto v_node = values.at(1).GetNodeUnique();
-      Value ret(std::move(v_node));
-      return ret;
-    });
+    // Sequence(Literal('('),
+    // Star(And(Int(), Literal(';'),
+    // [] (Value v1, Value v2) {
+    //   auto v1_node = v1.GetNodeUnique();
+    //   Printer p;
+    //   v1_node->Visit(&p);
+    //   std::cout << "print: " << p.GetOutput() << std::endl;
+    //   Value ret(std::move(v1_node));
+    //   return ret;
+    // }),
+    // [](ValueVec values) {
+    //   std::cout << "size is: " << values.size() << std::endl;
+    //   auto v_node = values.at(0).GetNodeUnique();
+    //   Value ret(std::move(v_node));
+    //   call_vec_ = std::move(values);
+    //   return ret;
+    // }),
+    //  Literal(')'),
+    // [] (ValueVec values) {
+    //   // sequence callback
+    //   std::cout << "size is: " << values.size() << std::endl;
+    //   auto v_node = values.at(1).GetNodeUnique();
+    //   Value ret(std::move(v_node));
+    //   return ret;
+    // }),
     // [](Value v1, Value v2) {
     //   // Get name from Fn
     //   auto v1_node = v1.GetNodeUnique();
@@ -959,6 +959,9 @@ g->assign = And(Frontend::Lazy(g->lhs),
     //     values.pop_back();
     //
     //     auto curr_node = curr.GetNodeUnique();
+    //     Printer p;
+    //     curr_node->Visit(&p);
+    //     std::cout << "p is: " << p.GetOutput() << std::endl;
     //     auto curr_arg = unique_cast<const ast::ArithmeticExpr>
     //       (std::move(curr_node));
     //   }
@@ -971,6 +974,99 @@ g->assign = And(Frontend::Lazy(g->lhs),
     //   Value ret(std::move(NodePtr));
     //   return ret;
     // });
+
+    g->call = And(Frontend::Lazy(g->V),
+    And(Literal(':'),
+    And(Literal('='),
+    And(Frontend::Lazy(g->Fn),
+    And(Literal(':'),
+          Star(And(Frontend::Lazy(g->ae), Literal(';'),
+          [] (Value v1, Value v2){
+            Printer p;
+            auto v1_node = v1.GetNodeUnique();
+            v1_node->Visit(&p);
+            std::cout << "v1 in  and is " << p.GetOutput() << std::endl;
+            Value ret(std::move(v1_node));
+            return ret;
+          }),
+        [](ValueVec values) {
+          std::cout << "star callback values size is: " << values.size()
+              << std::endl;
+
+          call_vec_ = std::move(values);
+          // std::cout << "print values :" << std::endl;
+          // while (values.size() > 0) {
+          //   auto curr = std::move(values.back());
+          //   // call_vec_.push_back(std::move(curr));
+          //   values.pop_back();
+          //   auto curr_node = curr.GetNodeUnique();
+          //
+          //   Printer p;
+          //   curr_node->Visit(&p);
+          //   std::cout << "this value is " << p.GetOutput() << std::endl;
+          // }
+
+
+          return Value("");
+        }),
+        [](Value v1, Value v2) {
+          std::cout << "in and callback" << std::endl;
+          return Value("");
+        }),
+        [](Value v1, Value v2) {
+          std::cout << "in fn callback" << std::endl;
+          // print v1
+          Printer p;
+          auto v1_node = v1.GetNodeUnique();
+          v1_node->Visit(&p);
+          std::cout << "Fn is " << p.GetOutput() << std::endl;
+
+          return Value(p.GetOutput());
+        }),
+      [](Value v1, Value v2){
+        // get fn name from v2
+        std::string name = v2.GetString();
+        return Value(name);
+      }),
+      [](Value v1, Value v2) {
+        std::string name = v2.GetString();
+        return Value(name);
+      }),
+      [](Value v1, Value v2) {
+        // v1 is the variable
+        auto v1_node = v1.GetNodeUnique();
+        auto var = unique_cast<const ast::VariableExpr>
+          (std::move(v1_node));
+        // v2 is the name
+        std::string name = v2.GetString();
+
+        // call_vec_ has the arguments
+        ValueVec args_v = std::move(call_vec_);
+
+        std::vector<std::unique_ptr<const ast::ArithmeticExpr>> args;
+
+        while (args_v.size() > 0) {
+          // make into Arithmetic Expr, push to args
+          auto curr = std::move(args_v.back());
+          args_v.pop_back();
+
+          auto curr_node = curr.GetNodeUnique();
+          auto arith = unique_cast<const ast::ArithmeticExpr>
+            (std::move(curr_node));
+
+          std::vector<std::unique_ptr<const ast::ArithmeticExpr>>::iterator it;
+          it = args.begin();
+          args.insert(it, std::move(arith));
+        }
+
+        // make FunctionCall
+        unique_ptr<ast::AstNode> NodePtr;
+        NodePtr.reset(new ast::FunctionCall(std::move(var),
+        name, std::move(args)));
+
+        Value ret(std::move(NodePtr));
+        return ret;
+      });
 }
 
 
@@ -1052,7 +1148,7 @@ unique_ptr<ast::AstNode> stringToAst(std::string s) {
 
     // Parse
     std::cout << "parse " << s << std::endl;
-    auto result = g.call(state);
+    auto result = g.ae(state);
     auto val = result.value();
     return val.GetNodeUnique();
   }
