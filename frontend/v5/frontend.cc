@@ -1002,6 +1002,7 @@ g->assign = And(Frontend::Lazy(g->lhs),
       // auto node = values.at(0).GetNodeUnique();
       // Value ret(std::move(node));
       // block_vec_ = std::move(values);
+      ValueVec vec;
       while (values.size() > 0) {
         std::cout << "in values" << std::endl;
         auto curr = std::move(values.back());
@@ -1012,8 +1013,9 @@ g->assign = And(Frontend::Lazy(g->lhs),
         std::cout << p.GetOutput() << std::endl;
         Value v(std::move(curr_node));
 
-        block_vec_.push_back(std::move(v));
+        vec.push_back(std::move(v));
       }
+      block_vec_.push_back(std::move(vec));
 
        return Value("");
     }), Literal('}'),
@@ -1078,7 +1080,8 @@ g->assign = And(Frontend::Lazy(g->lhs),
       [](Value v1, Value v2){
         std::cout << "in last callback" << std::endl;
         // make the loop ast node
-        ValueVec values = std::move(block_vec_);
+        ValueVec values = std::move(block_vec_.back());
+        block_vec_.pop_back();
         std::vector<std::unique_ptr<const ast::Statement>> stats;
         std::cout << "got block_vec_ " << values.size() << std::endl;
 
