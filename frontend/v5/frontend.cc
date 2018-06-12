@@ -844,26 +844,16 @@ void InitializeParsers2(Frontend::Grammar *g) {
   // g->stmt = Or(stmt_vec);
   // g->stmt = Int();
 
-<<<<<<< HEAD
-  g->stmt = Or(std::vector<Parser>{
-    // Frontend::Lazy(g->assign),
-    // Frontend::Lazy(g->cond),
-    // Frontend::Lazy(g->loop),
-    // Frontend::Lazy(g->call)
-    Debug(Int(), "INTEGER")
-  });
-=======
   // g->stmt = Or(std::vector<Parser>{
   //   Frontend::Lazy(g->assign),
   //   Frontend::Lazy(g->cond),
   //   Frontend::Lazy(g->loop),
   //   Frontend::Lazy(g->call)
   // });
->>>>>>> 37ed1000d0bcc3ee276b5885e897cc709b5ceba5
 
 g->assign = And(Frontend::Lazy(g->lhs),
   And(Literal(':'),
-        And(Debug(Literal('='), "equal sign"), Frontend::Lazy(g->ae),
+        And(Literal('='), Frontend::Lazy(g->ae),
             [] (Value v1, Value v2) {
                 auto v2_node = v2.GetNodeUnique();
                 Printer p;
