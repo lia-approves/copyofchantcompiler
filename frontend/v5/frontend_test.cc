@@ -351,12 +351,28 @@ class FrontendTest : public ::testing::Test {
 // }
 
 
-TEST_F(FrontendTest, ProgramTest) {
+TEST_F(FrontendTest, ProgramTest1) {
   auto ret = Frontend::stringToAst(
     "def hello(a;b;){{if(5<4){while(!5<4){a:=hello(5;);};}else{a:=5;};}return 4*1}main(){{b:=4;}return 3+1}");
   ret->Visit(&printer_);
   ASSERT_EQ(printer_.GetOutput(),
 "def hello(a,b,){if((< 5 4)){while(!(< 5 4)){a:=hello(5);};}else{(:= a 5);};return (* 4 1)}main(){(:= b 4);return (+ 3 1)}");
+}
+
+TEST_F(FrontendTest, ProgramTest2) {
+  auto ret = Frontend::stringToAst(
+    "main(){{b:=4;}return 3+1}");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(),
+"main(){(:= b 4);return (+ 3 1)}");
+}
+
+TEST_F(FrontendTest, ProgramTest3) {
+  auto ret = Frontend::stringToAst(
+    "def hello(a;b;){{if(5<4){while(!5<4){a:=hello(5;);};}else{a:=5;};}return 4*1}def goodbye(c;d;){{if(5<4){while(!5<4){a:=hello(5;);};}else{a:=5;};}return 4*1}main(){{b:=4;}return 3+1}");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(),
+"def hello(a,b,){if((< 5 4)){while(!(< 5 4)){a:=hello(5);};}else{(:= a 5);};return (* 4 1)}def goodbye(c,d,){if((< 5 4)){while(!(< 5 4)){a:=hello(5);};}else{(:= a 5);};return (* 4 1)}main(){(:= b 4);return (+ 3 1)}");
 }
 
 }  // namespace Parse
