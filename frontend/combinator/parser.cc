@@ -2,7 +2,6 @@
 
 #include <utility>
 #include <iostream>
-#include <execinfo.h> // TODO: remove this header, may not compile on certain G++
 #include "frontend/combinator/parser.h"
 
 namespace cs160 {
@@ -61,8 +60,8 @@ Parser Or(Parser parseA, Parser parseB) {
   // Note: we don't need to rewind the input here.  Since at most ONE parser
   // will successfully run, the input parsers will can rewind for us
   return [parseA, parseB](State state) {
-    std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
-    exit(0);
+    // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
+    // exit(0);
 
     auto resultA = parseA(state);
     if (resultA.success()) {
@@ -124,8 +123,8 @@ Parser And(Parser parseA, Parser parseB,
 Parser And(std::vector<Parser> p_vec,
     std::function<Value(Value, Value)> ToValue) {
   return[p_vec, ToValue](State state) {
-    std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
-    exit(0);
+    // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
+    // exit(0);
 
     int size = p_vec.size();
     int oldPosition = state.position();
@@ -177,8 +176,8 @@ Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
 
 Parser Not(Parser parse, Converter<std::string> ToValue) {
   return [parse, ToValue](State state) {
-    std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
-    exit(0);
+    // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
+    // exit(0);
 
     auto result = parse(state);
     if (result.success()) {
@@ -192,8 +191,8 @@ Parser Not(Parser parse, Converter<std::string> ToValue) {
 // Returns a function which runs a parser 1 or more times, returning all results
 Parser OnePlus(Parser parse, Converter<std::vector<Value>> ToNode) {
   return [parse, ToNode](State state) {
-    std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
-    exit(0);
+    // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
+    // exit(0);
 
     std::vector<Value> results;
     auto currentResult = parse(state);
@@ -214,8 +213,8 @@ Parser OnePlus(Parser parse, Converter<std::vector<Value>> ToNode) {
 Parser ExactMatch(std::string str,
     Converter<std::string> ToValue) {
   return [str, ToValue](State state) {
-    std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
-    exit(0);
+    // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
+    // exit(0);
 
     if (state.atEnd()) {
       return Result(state, false, "end of file");
@@ -253,8 +252,8 @@ Parser ExactMatch(std::string str,
 // AKA this function ignores whitespace in either state or string
 Parser Match(std::string str, Converter<std::string> ToValue) {
   return [str, ToValue](State state) {
-    std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
-    exit(0);
+    // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
+    // exit(0);
 
     if (state.atEnd()) {
       return Result(state, false, "end of file");
@@ -298,8 +297,8 @@ Parser Match(std::string str, Converter<std::string> ToValue) {
 Parser Between(Parser parseA, Parser parseB,
     Parser parseC, Converter<std::string> ToValue) {
   return [parseA, parseB, parseC, ToValue](State state) {
-    std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
-    exit(0);
+    // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
+    // exit(0);
 
     // Save position so we can reset later.
     int oldPosition = state.position();
@@ -348,8 +347,8 @@ struct SequenceLambda {
   Converter<std::vector<Value>> ToNode;
 
   Result operator()(State state) {
-    std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
-    exit(0);
+    // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
+    // exit(0);
 
     // Save position so we can reset later.
     std::cout << "in sequence" << std::endl;

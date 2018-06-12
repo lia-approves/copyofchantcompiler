@@ -1290,7 +1290,7 @@ unique_ptr<ast::AstNode> stringToAst(std::string s) {
 
     // Parse
     std::cout << "parse " << s << std::endl;
-    auto result = g.stmt(state);
+    auto result = g.assign(state);
     auto val = result.value();
     return val.GetNodeUnique();
   }
