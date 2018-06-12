@@ -836,17 +836,17 @@ void InitializeParsers2(Frontend::Grammar *g) {
   g->re = Or(re_vec);
 
   // stmt -->  assign | cond | loop | call
-  // std::vector<Parser> stmt_vec;
-  // stmt_vec.push_back(Frontend::Lazy(g->assign));
-  // stmt_vec.push_back(Frontend::Lazy(g->cond));
-  // stmt_vec.push_back(Frontend::Lazy(g->loop));
-  // stmt_vec.push_back(Frontend::Lazy(g->call));
-  // g->stmt = Or(stmt_vec);
+  std::vector<Parser> stmt_vec;
+  stmt_vec.push_back(Frontend::Lazy(g->call));
+  stmt_vec.push_back(Frontend::Lazy(g->assign));
+  stmt_vec.push_back(Frontend::Lazy(g->cond));
+  stmt_vec.push_back(Frontend::Lazy(g->loop));
+  g->stmt = Or(stmt_vec);
   // g->stmt = Int();
 
-  g->stmt = Or(std::vector<Parser>{
-    Int()
-  });
+  // g->stmt = Or(std::vector<Parser>{
+  //   Int()
+  // });
 
 g->assign = And(Frontend::Lazy(g->lhs),
   And(Literal(':'),
@@ -909,17 +909,6 @@ g->assign = And(Frontend::Lazy(g->lhs),
               << std::endl;
 
           call_vec_ = std::move(values);
-          // std::cout << "print values :" << std::endl;
-          // while (values.size() > 0) {
-          //   auto curr = std::move(values.back());
-          //   // call_vec_.push_back(std::move(curr));
-          //   values.pop_back();
-          //   auto curr_node = curr.GetNodeUnique();
-          //
-          //   Printer p;
-          //   curr_node->Visit(&p);
-          //   std::cout << "this value is " << p.GetOutput() << std::endl;
-          // }
           return Value("");
         }), Literal(')'),
         [](Value v1, Value v2) {
@@ -988,7 +977,7 @@ g->assign = And(Frontend::Lazy(g->lhs),
   g->block = And(Literal('{'),
   And(
     Star(
-      And(Frontend::Lazy(g->stmt), Literal(';'),
+      And(Frontend::Lazy(g->N), Literal(';'),
       [] (Value v1, Value v2) {
         auto v1_node = v1.GetNodeUnique();
         Value ret(std::move(v1_node));
@@ -1204,8 +1193,6 @@ g->assign = And(Frontend::Lazy(g->lhs),
               (std::move(c_node));
             false_branch.push_back(std::move(s));
           }
-
-
           // Get re expression
           auto node = v2.GetNodeUnique();
           auto ret = unique_cast<const ast::RelationalExpr>
@@ -1300,7 +1287,7 @@ unique_ptr<ast::AstNode> stringToAst(std::string s) {
 
     // Parse
     std::cout << "parse " << s << std::endl;
-    auto result = g.cond(state);
+    auto result = g.stmt(state);
     auto val = result.value();
     return val.GetNodeUnique();
   }

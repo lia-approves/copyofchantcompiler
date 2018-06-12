@@ -59,7 +59,7 @@ struct Grammar {
       Parser re;  // done, tested
       Parser call;  // done, works with N but not with ae
       Parser loop;  // done, tested
-      Parser cond;
+      Parser cond;  // done, tested
       Parser assign;  // done, tested
       Parser stmt;
       Parser block;  // done, works with N
