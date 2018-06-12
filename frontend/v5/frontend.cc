@@ -980,12 +980,14 @@ g->assign = And(Frontend::Lazy(g->lhs),
     //   return ret;
     // });
 
-    g->call = And( Frontend::Lazy(g->V),
+    g->call =
+    And( Frontend::Lazy(g->V),
     And(Literal(':'),
     And(Literal('='),
     And(Frontend::Lazy(g->Fn),
-    And(Literal(':'),
-          Star(And(Frontend::Lazy(g->ae), Literal(';'),
+    And(Literal('('),
+    And(
+          Star(And(Frontend::Lazy(g->N), Literal(';'),
           [] (Value v1, Value v2){
             Printer p;
             auto v1_node = v1.GetNodeUnique();
@@ -1011,11 +1013,15 @@ g->assign = And(Frontend::Lazy(g->lhs),
           //   std::cout << "this value is " << p.GetOutput() << std::endl;
           // }
           return Value("");
-        }),
+        }), Literal(')'),
         [](Value v1, Value v2) {
           std::cout << "in and callback" << std::endl;
           return Value("");
         }),
+      [](Value v1, Value v2) {
+        std::cout << "in second and callback" << std::endl;
+        return Value("");
+      }),
         [](Value v1, Value v2) {
           std::cout << "in fn callback" << std::endl;
           // print v1

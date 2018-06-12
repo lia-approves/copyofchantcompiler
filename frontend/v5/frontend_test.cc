@@ -299,18 +299,19 @@ class FrontendTest : public ::testing::Test {
 // }
 
 // TEST_F(FrontendTest, CallTest1) {
-//   auto ret = Frontend::stringToAst("a:=hello:4;5;6;");
+//   auto ret = Frontend::stringToAst("a:=hello(4;5;6;)");
 //   std::cout << "we got: " << std::endl;
 //   ret->Visit(&printer_);
 //   ASSERT_EQ(printer_.GetOutput(), "a:=hello(456)");
 // }
 //
 // TEST_F(FrontendTest, CallTest2) {
-//   auto ret = Frontend::stringToAst("abc_123:=hello:4*3;5;6-1;");
+//   auto ret = Frontend::stringToAst("a:=hello(45;500;61;)");
 //   std::cout << "we got: " << std::endl;
 //   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "abc_123:=hello((* 4 3)5(- 6 1))");
+//   ASSERT_EQ(printer_.GetOutput(), "a:=hello(4550061)");
 // }
+
 // TEST_F(FrontendTest, BlockTest) {
 //   auto ret = Frontend::stringToAst("{4;5;}");
 //   ret->Visit(&printer_);

@@ -51,10 +51,10 @@ struct Grammar {
       Parser unary;  // done, tested
       Parser multiply;  // done, tested
       Parser add;  // done, tested
-      Parser ae;  // done, tested
+      Parser ae;  // needs fixing
       Parser rop;  // done, tested
       Parser re;  // done, tested
-      Parser call;  // done, tested
+      Parser call;  // done, works with N but not with ae
       Parser loop;
       Parser cond;
       Parser assign;  // done, tested
