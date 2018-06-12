@@ -397,6 +397,13 @@ Parser Sequence(Parser parseA, Parser parseB, Parser parseC,
   // };
 }
 
+Parser Debug(Parser parser, std::string text) {
+  return [parser, text](State state) {
+      std::cout << text << std::endl;
+      return parser(state);
+  };
+}
+
 }  // namespace Parse
 }  // namespace frontend
 }  // namespace cs160

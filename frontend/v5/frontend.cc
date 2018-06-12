@@ -836,24 +836,25 @@ void InitializeParsers2(Frontend::Grammar *g) {
   g->re = Or(re_vec);
 
   // stmt -->  assign | cond | loop | call
-  std::vector<Parser> stmt_vec;
-  stmt_vec.push_back(Frontend::Lazy(g->call));
-  stmt_vec.push_back(Frontend::Lazy(g->assign));
-  stmt_vec.push_back(Frontend::Lazy(g->cond));
-  stmt_vec.push_back(Frontend::Lazy(g->loop));
-  g->stmt = Or(stmt_vec);
+  // std::vector<Parser> stmt_vec;
+  // stmt_vec.push_back(Frontend::Lazy(g->call));
+  // stmt_vec.push_back(Frontend::Lazy(g->assign));
+  // stmt_vec.push_back(Frontend::Lazy(g->cond));
+  // stmt_vec.push_back(Frontend::Lazy(g->loop));
+  // g->stmt = Or(stmt_vec);
   // g->stmt = Int();
 
   g->stmt = Or(std::vector<Parser>{
-    Frontend::Lazy(g->assign),
-    Frontend::Lazy(g->cond),
-    Frontend::Lazy(g->loop),
-    Frontend::Lazy(g->call)
+    // Frontend::Lazy(g->assign),
+    // Frontend::Lazy(g->cond),
+    // Frontend::Lazy(g->loop),
+    // Frontend::Lazy(g->call)
+    Debug(Int(), "INTEGER")
   });
 
 g->assign = And(Frontend::Lazy(g->lhs),
   And(Literal(':'),
-        And(Literal('='), Frontend::Lazy(g->ae),
+        And(Debug(Literal('='), "equal sign"), Frontend::Lazy(g->ae),
             [] (Value v1, Value v2) {
                 auto v2_node = v2.GetNodeUnique();
                 Printer p;
