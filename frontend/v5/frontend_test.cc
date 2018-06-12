@@ -298,19 +298,19 @@ TEST_F(FrontendTest, AssignTest3) {
   ASSERT_EQ(printer_.GetOutput(), "(:= abc_123 (+ (* 1 2) (* 3 4)))");
 }
 
-// TEST_F(FrontendTest, CallTest1) {
-//   auto ret = Frontend::stringToAst("a:=hello(4;5;6;)");
-//   std::cout << "we got: " << std::endl;
-//   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "a:=hello(456)");
-// }
-//
-// TEST_F(FrontendTest, CallTest2) {
-//   auto ret = Frontend::stringToAst("a:=hello(45;500;61;)");
-//   std::cout << "we got: " << std::endl;
-//   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "a:=hello(4550061)");
-// }
+TEST_F(FrontendTest, CallTest1) {
+  auto ret = Frontend::stringToAst("a:=hello(4;5;6;)");
+  std::cout << "we got: " << std::endl;
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "a:=hello(456)");
+}
+
+TEST_F(FrontendTest, CallTest2) {
+  auto ret = Frontend::stringToAst("a:=hello(45;500;61;)");
+  std::cout << "we got: " << std::endl;
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "a:=hello(4550061)");
+}
 //
 // TEST_F(FrontendTest, BlockTest) {
 //   auto ret = Frontend::stringToAst("{4;5;}");
@@ -318,30 +318,30 @@ TEST_F(FrontendTest, AssignTest3) {
 //   ASSERT_EQ(printer_.GetOutput(), "4");
 // }
 
-// TEST_F(FrontendTest, LoopTest1) {
-//   auto ret = Frontend::stringToAst("while(4<5){4;5;}");
-//   std::cout << "in test" << std::endl;
-//   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "while((< 4 5)){4;5;}");
-// }
-//
-// TEST_F(FrontendTest, LoopTest2) {
-//   auto ret = Frontend::stringToAst("while(!5<4){4;5;}");
-//   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "while(!(< 5 4)){4;5;}");
-// }
+TEST_F(FrontendTest, LoopTest1) {
+  auto ret = Frontend::stringToAst("while(4<5){4;5;}");
+  std::cout << "in test" << std::endl;
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "while((< 4 5)){4;5;}");
+}
 
-// TEST_F(FrontendTest, CondTest1) {
-//   auto ret = Frontend::stringToAst("if(5<4){3;4;}else{4;5;}");
-//   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "if((< 5 4)){4;5;}else{3;4;}");
-// }
-//
-// TEST_F(FrontendTest, CondTest2) {
-//   auto ret = Frontend::stringToAst("if(!5<4){3;4;}else{4;5;}");
-//   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "if(!(< 5 4)){4;5;}else{3;4;}");
-// }
+TEST_F(FrontendTest, LoopTest2) {
+  auto ret = Frontend::stringToAst("while(!5<4){4;5;}");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "while(!(< 5 4)){4;5;}");
+}
+
+TEST_F(FrontendTest, CondTest1) {
+  auto ret = Frontend::stringToAst("if(5<4){3;4;}else{4;5;}");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "if((< 5 4)){4;5;}else{3;4;}");
+}
+
+TEST_F(FrontendTest, CondTest2) {
+  auto ret = Frontend::stringToAst("if(!5<4){3;4;}else{4;5;}");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "if(!(< 5 4)){4;5;}else{3;4;}");
+}
 
 
 
