@@ -318,6 +318,24 @@ class FrontendTest : public ::testing::Test {
 //   ASSERT_EQ(printer_.GetOutput(), "4");
 // }
 
+TEST_F(FrontendTest, LoopTest1) {
+  auto ret = Frontend::stringToAst("while(4<5){4;5;}");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(< 4 5)");
+}
+
+TEST_F(FrontendTest, LoopTest2) {
+  auto ret = Frontend::stringToAst("while(4<5){4;5;}");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "(< 4 5)");
+}
+
+TEST_F(FrontendTest, LoopTest3) {
+  auto ret = Frontend::stringToAst("while(!5<4){4;5;}");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "!(< 5 4)");
+}
+
 
 }  // namespace Parse
 }  // namespace frontend

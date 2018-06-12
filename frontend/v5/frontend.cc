@@ -888,100 +888,8 @@ g->assign = And(Frontend::Lazy(g->lhs),
             return ret;
           });
 
-
-    // g->call =
-    // And(Frontend::Lazy(g->V),
-    // And(Literal(':'),
-    // And(Literal('='),
-    // And(Frontend::Lazy(g->Fn),
-    // Sequence(Literal('('),
-    // Star(And(Int(), Literal(';'),
-    // [] (Value v1, Value v2) {
-    //   auto v1_node = v1.GetNodeUnique();
-    //   Printer p;
-    //   v1_node->Visit(&p);
-    //   std::cout << "print: " << p.GetOutput() << std::endl;
-    //   Value ret(std::move(v1_node));
-    //   return ret;
-    // }),
-    // [](ValueVec values) {
-    //   std::cout << "size is: " << values.size() << std::endl;
-    //   auto v_node = values.at(0).GetNodeUnique();
-    //   Value ret(std::move(v_node));
-    //   call_vec_ = std::move(values);
-    //   return ret;
-    // }),
-    //  Literal(')'),
-    // [] (ValueVec values) {
-    //   // sequence callback
-    //   std::cout << "size is: " << values.size() << std::endl;
-    //   auto v_node = values.at(1).GetNodeUnique();
-    //   Value ret(std::move(v_node));
-    //   return ret;
-    // }),
-    // [](Value v1, Value v2) {
-    //   // Get name from Fn
-    //   auto v1_node = v1.GetNodeUnique();
-    //   Value ret(std::move(v1_node));
-    //   ret.SetString(v1.GetString());
-    //   return ret;
-    // }),
-    // [](Value v1, Value v2) {
-    //   // pass fn up the ladder
-    //   auto v2_node = v2.GetNodeUnique();
-    //   Value ret(std::move(v2_node));
-    //   ret.SetString(v2.GetString());
-    //   return ret;
-    // }),
-    // [](Value v1, Value v2) {
-    //   auto v2_node = v2.GetNodeUnique();
-    //   Value ret(std::move(v2_node));
-    //   ret.SetString(v2.GetString());
-    //   return ret;
-    // }),
-    // [](Value v1, Value v2) {
-    //   // make FunctionCall
-    //   // v1 has the variable name
-    //   // v2 has the function name
-    //   // call_vec_ has the vector of arguments
-    //
-    //   // make lhs VariableExpr
-    //   auto v1_node = v1.GetNodeUnique();
-    //   auto var = unique_cast<const ast::VariableExpr>(
-    //     std::move(v1_node));
-    //
-    //   // make callee_name string parameter
-    //   std::string name = v2.GetString();
-    //
-    //   ValueVec values = std::move(call_vec_);
-    //
-    //   // make values into a vector of ArithmeticExpr
-    //   std::vector<std::unique_ptr<const ast::ArithmeticExpr>> arguments;
-    //
-    //   while (values.size() > 0) {
-    //     std::cout << "size of values is: " << values.size() << std::endl;
-    //     auto curr = std::move(values.back());
-    //     values.pop_back();
-    //
-    //     auto curr_node = curr.GetNodeUnique();
-    //     Printer p;
-    //     curr_node->Visit(&p);
-    //     std::cout << "p is: " << p.GetOutput() << std::endl;
-    //     auto curr_arg = unique_cast<const ast::ArithmeticExpr>
-    //       (std::move(curr_node));
-    //   }
-    //
-    //   // make FunctionCall
-    //   unique_ptr<ast::AstNode> NodePtr;
-    //   NodePtr.reset(new ast::FunctionCall(
-    //     std::move(var), name, std::move(arguments)));
-    //
-    //   Value ret(std::move(NodePtr));
-    //   return ret;
-    // });
-
     g->call =
-    And( Frontend::Lazy(g->V),
+    And(Frontend::Lazy(g->V),
     And(Literal(':'),
     And(Literal('='),
     And(Frontend::Lazy(g->Fn),
@@ -1122,6 +1030,55 @@ g->assign = And(Frontend::Lazy(g->lhs),
     Value ret(std::move(node));
     return ret;
   });
+
+  g->loop =
+  And(Literal('w'),
+  And(Literal('h'),
+  And(Literal('i'),
+  And(Literal('l'),
+  And(Literal('e'),
+  And(Literal('('),
+  And(Frontend::Lazy(g->re),
+    And(Literal(')'), Frontend::Lazy(g->block),
+        [] (Value v1, Value v2) {
+          std::cout << "in loop callback" << std::endl;
+          return Value("");
+        }),
+      [](Value v1, Value v2) {
+        auto node = v1.GetNodeUnique();
+        Value ret(std::move(node));
+        return ret;
+      }),
+      [](Value v1, Value v2){
+        auto node = v2.GetNodeUnique();
+        Value ret(std::move(node));
+        return ret;
+      }),
+      [](Value v1, Value v2){
+        auto node = v2.GetNodeUnique();
+        Value ret(std::move(node));
+        return ret;
+      }),
+      [](Value v1, Value v2){
+        auto node = v2.GetNodeUnique();
+        Value ret(std::move(node));
+        return ret;
+      }),
+      [](Value v1, Value v2){
+        auto node = v2.GetNodeUnique();
+        Value ret(std::move(node));
+        return ret;
+      }),
+      [](Value v1, Value v2){
+        auto node = v2.GetNodeUnique();
+        Value ret(std::move(node));
+        return ret;
+      }),
+      [](Value v1, Value v2){
+        auto node = v2.GetNodeUnique();
+        Value ret(std::move(node));
+        return ret;
+      });
 }
 
 
@@ -1203,7 +1160,7 @@ unique_ptr<ast::AstNode> stringToAst(std::string s) {
 
     // Parse
     std::cout << "parse " << s << std::endl;
-    auto result = g.assign(state);
+    auto result = g.loop(state);
     auto val = result.value();
     return val.GetNodeUnique();
   }
