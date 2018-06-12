@@ -315,6 +315,12 @@ TEST(CombinatorTest, SequenceTest) {
   ASSERT_EQ(fail.success(), false);
 }
 
+TEST(CombinatorTest, DebugTest) {
+  State s("1");
+  auto parse = Debug(Int(), "hi");
+  auto res = parse(s);
+}
+
 }  // namespace Parse
 }  // namespace frontend
 }  // namespace cs160

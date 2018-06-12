@@ -101,6 +101,8 @@ Parser Int(Converter<std::string> ToNode = [](std::string s) {
 Parser Sequence(Parser parseA, Parser parseB, Parser parseC,
   Converter<std::vector<Value>> ToNode);
 
+Parser Debug(Parser parser, std::string text);
+
 }  // namespace Parse
 }  // namespace frontend
 }  // namespace cs160
