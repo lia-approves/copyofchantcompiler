@@ -313,48 +313,50 @@ class FrontendTest : public ::testing::Test {
 // }
 //
 // TEST_F(FrontendTest, BlockTest) {
-//   auto ret = Frontend::stringToAst("{4;5;}");
+//   auto ret = Frontend::stringToAst("{a:=4;b:=5;}");
 //   ret->Visit(&printer_);
 //   ASSERT_EQ(printer_.GetOutput(), "4");
 // }
 
 // TEST_F(FrontendTest, LoopTest1) {
-//   auto ret = Frontend::stringToAst("while(4<5){4;5;}");
+//   auto ret = Frontend::stringToAst("while(4<5){a:=5;}");
 //   std::cout << "in test" << std::endl;
 //   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "while((< 4 5)){4;5;}");
+//   ASSERT_EQ(printer_.GetOutput(), "while((< 4 5)){(:= a 5);}");
 // }
 //
 // TEST_F(FrontendTest, LoopTest2) {
-//   auto ret = Frontend::stringToAst("while(!5<4){4;5;}");
+//   auto ret = Frontend::stringToAst("while(!5<4){a:=hello(5;);}");
 //   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "while(!(< 5 4)){4;5;}");
+//   ASSERT_EQ(printer_.GetOutput(), "while(!(< 5 4)){a:=hello(5);}");
 // }
-//
+
 // TEST_F(FrontendTest, CondTest1) {
-//   auto ret = Frontend::stringToAst("if(5<4){3;4;}else{4;5;}");
+//   auto ret = Frontend::stringToAst("if(5<4){while(!5<4){a:=hello(5;);};}else{a:=5;}");
 //   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "if((< 5 4)){3;4;}else{4;5;}");
+//   ASSERT_EQ(printer_.GetOutput(), "if((< 5 4)){while(!(< 5 4)){a:=hello(5);};}else{(:= a 5);}");
 // }
 //
 // TEST_F(FrontendTest, CondTest2) {
-//   auto ret = Frontend::stringToAst("if(!5<4){3;4;}else{4;5;}");
+//   auto ret = Frontend::stringToAst("if(!5<4){a:=hello(4;);}else{b:=6;}");
 //   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "if(!(< 5 4)){3;4;}else{4;5;}");
+//   ASSERT_EQ(printer_.GetOutput(), "if(!(< 5 4)){a:=hello(4);}else{(:= b 6);}");
 // }
 
 
 // TEST_F(FrontendTest, FunDefTest) {
-//   auto ret = Frontend::stringToAst("def hello(a;b;){{3;}return 4*1}");
+//   auto ret = Frontend::stringToAst("def hello(a;b;){{if(5<4){while(!5<4){a:=hello(5;);};}else{a:=5;};}return 4*1}");
 //   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "def hello(a,b,){3;return (* 4 1)}");
+//   ASSERT_EQ(printer_.GetOutput(), "def hello(a,b,){if((< 5 4)){while(!(< 5 4)){a:=hello(5);};}else{(:= a 5);};return (* 4 1)}");
 // }
 
 
 TEST_F(FrontendTest, ProgramTest) {
-  auto ret = Frontend::stringToAst("def hello(a;b;){{3;}return 4*1}main(){{4;}return 3+1}");
+  auto ret = Frontend::stringToAst(
+    "def hello(a;b;){{if(5<4){while(!5<4){a:=hello(5;);};}else{a:=5;};}return 4*1}main(){{b:=4;}return 3+1}");
   ret->Visit(&printer_);
-  ASSERT_EQ(printer_.GetOutput(), "def hello(a,b,){3;return (* 4 1)}main(){4;return (+ 3 1)}");
+  ASSERT_EQ(printer_.GetOutput(),
+"def hello(a,b,){if((< 5 4)){while(!(< 5 4)){a:=hello(5);};}else{(:= a 5);};return (* 4 1)}main(){(:= b 4);return (+ 3 1)}");
 }
 
 }  // namespace Parse

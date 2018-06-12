@@ -8,7 +8,7 @@ namespace cs160 {
 namespace frontend {
 namespace Parse {
 
-bool debug_next = false;
+bool done_with_star = false;
 
 
 Parser Literal(char c, Converter<std::string> ToValue) {
@@ -95,21 +95,20 @@ Parser Or(std::vector<Parser> p_vec) {
 Parser And(Parser parseA, Parser parseB,
   std::function<Value(Value, Value)> ToValue) {
       return [parseA, parseB, ToValue](State state) {
+         std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
         // Save position so we can reset later.
-        int oldPosition = state.position();
-        std::cout << "running A" << std::endl;
-        auto resultA = parseA(state);
-        std::cout << "got resultA" << std::endl;
-        if (!resultA.success()) {
-          std::cout << "not a success" << std::endl;
-          state.setPosition(oldPosition);
-          std::cout << "return result" << std::endl;
+        std::string curr_s = state.getString();
+        int pos = state.position();
+        std::cout << "current position is: " << curr_s.at(pos) << std::endl;
 
+        int oldPosition = state.position();
+        auto resultA = parseA(state);
+        if (!resultA.success()) {
+          std::cout << "FAILURE" << std::endl;
+          state.setPosition(oldPosition);
           return Result(state, false, "no match for A and B");
         }
-        std::cout << "running B" << std::endl;
         auto resultB = parseB(resultA.state());
-        std::cout << "got resultB" << std::endl;
         if (!resultB.success()) {
           state.setPosition(oldPosition);
           return Result(state, false, "no match for A and B");
@@ -157,6 +156,7 @@ Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
   return [Parse, ToNode](State state) {
 
     std::cout << "in star" << std::endl;
+
     std::vector<Value> results;
     auto currentResult = Parse(state);
     // Parse first element before the loop
@@ -349,6 +349,14 @@ struct SequenceLambda {
   Result operator()(State state) {
     // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
     // exit(0);
+
+    std::string curr_s = state.getString();
+    int pos = state.position();
+    std::cout << "current position is: " << curr_s.at(pos) << std::endl;
+    if (curr_s.at(pos) == '}') {
+      state.setPosition(pos);
+      return Result(state, false, "no match for A, B, and C");
+    }
 
     // Save position so we can reset later.
     std::cout << "in sequence" << std::endl;

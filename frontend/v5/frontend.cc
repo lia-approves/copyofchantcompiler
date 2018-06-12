@@ -969,54 +969,112 @@ g->assign = And(Frontend::Lazy(g->lhs),
         return ret;
       });
 
-  g->block = And(Literal('{'),
+  g->block =
+  And(Literal('{'),
   And(
-    Star(
-      And(Frontend::Lazy(g->N), Literal(';'),
-      [] (Value v1, Value v2) {
-        auto v1_node = v1.GetNodeUnique();
-        Value ret(std::move(v1_node));
-        std::cout << "in statement callback" << std::endl;
-        return ret;
-      }),
-    [] (ValueVec values) {
-      std::cout << "in star callback " << values.size() << std::endl;
-      // PUt the ints in statement
+  Star(
+  And(Frontend::Lazy(g->stmt), Literal(';'),
+  [] (Value v1, Value v2) {
+    auto v1_node = v1.GetNodeUnique();
+    Value ret(std::move(v1_node));
+    std::cout << "in statement callback" << std::endl;
+    return ret;
+  }),
+[] (ValueVec values) {
+  std::cout << "in star callback " << values.size() << std::endl;
+  // PUt the ints in statement
 
-      // auto node = values.at(0).GetNodeUnique();
-      // Value ret(std::move(node));
-      // block_vec_ = std::move(values);
-      ValueVec vec;
-      while (values.size() > 0) {
-        std::cout << "in values" << std::endl;
-        auto curr = std::move(values.back());
-        values.pop_back();
-        auto curr_node = curr.GetNodeUnique();
-        Printer p;
-        curr_node->Visit(&p);
-        std::cout << p.GetOutput() << std::endl;
-        Value v(std::move(curr_node));
+  // auto node = values.at(0).GetNodeUnique();
+  // Value ret(std::move(node));
+  // block_vec_ = std::move(values);
+  ValueVec vec;
+  while (values.size() > 0) {
+    std::cout << "in values" << std::endl;
+    auto curr = std::move(values.back());
+    values.pop_back();
+    auto curr_node = curr.GetNodeUnique();
+    Printer p;
+    curr_node->Visit(&p);
+    std::cout << p.GetOutput() << std::endl;
+    Value v(std::move(curr_node));
 
-        vec.push_back(std::move(v));
-      }
-      block_vec_.push_back(std::move(vec));
+    vec.push_back(std::move(v));
+  }
+  block_vec_.push_back(std::move(vec));
 
-       return Value("");
-    }), Literal('}'),
-    [] (Value v1, Value v2) {
-      std::cout << "in and callback" << std::endl;
-      // auto node = v1.GetNodeUnique();
-      // Value ret(std::move(node));
-      // return ret;
-      return Value("");
-    }),
-  [](Value v1, Value v2) {
-    std::cout << "in and callback {" << std::endl;
-    // auto node = v2.GetNodeUnique();
-    // Value ret(std::move(node));
-    // return ret;
-    return Value("");
-  });
+  std::cout << "right before return" << std::endl;
+  return Value("");
+}), Literal('}'),
+[] (Value v1, Value v2) {
+  std::cout << "in and callback" << std::endl;
+  // ValueVec values = std::move(block_vec_.back());
+  // block_vec_.pop_back();
+  // std::cout << "values size is " << values.size() << std::endl;
+  //
+  // // print
+  // while (values.size() > 0) {
+  //   auto curr = std::move(values.back());
+  //   auto curr_n = curr.GetNodeUnique();
+  //   values.pop_back();
+  //
+  //   Printer p;
+  //   curr_n->Visit(&p);
+  //   std::cout << "output of block is: " << p.GetOutput() << std::endl;
+  // }
+
+  return Value("");
+}),
+[](Value v1, Value v2) {
+  return Value("");
+});
+  // And(Literal('{'),
+  // And(
+  //   Star(
+  //     And(Frontend::Lazy(g->stmt), Literal(';'),
+  //     [] (Value v1, Value v2) {
+  //       auto v1_node = v1.GetNodeUnique();
+  //       Value ret(std::move(v1_node));
+  //       std::cout << "in statement callback" << std::endl;
+  //       return ret;
+  //     }),
+  //   [] (ValueVec values) {
+  //     std::cout << "in star callback " << values.size() << std::endl;
+  //     // PUt the ints in statement
+  //
+  //     // auto node = values.at(0).GetNodeUnique();
+  //     // Value ret(std::move(node));
+  //     // block_vec_ = std::move(values);
+  //     ValueVec vec;
+  //     while (values.size() > 0) {
+  //       std::cout << "in values" << std::endl;
+  //       auto curr = std::move(values.back());
+  //       values.pop_back();
+  //       auto curr_node = curr.GetNodeUnique();
+  //       Printer p;
+  //       curr_node->Visit(&p);
+  //       std::cout << p.GetOutput() << std::endl;
+  //       Value v(std::move(curr_node));
+  //
+  //       vec.push_back(std::move(v));
+  //     }
+  //     block_vec_.push_back(std::move(vec));
+  //
+  //      return Value("");
+  //   }), Literal('}'),
+  //   [] (Value v1, Value v2) {
+  //     std::cout << "in and callback" << std::endl;
+  //     // auto node = v1.GetNodeUnique();
+  //     // Value ret(std::move(node));
+  //     // return ret;
+  //     return Value("");
+  //   }),
+  // [](Value v1, Value v2) {
+  //   std::cout << "in and callback {" << std::endl;
+  //   // auto node = v2.GetNodeUnique();
+  //   // Value ret(std::move(node));
+  //   // return ret;
+  //   return Value("");
+  // });
 
   g->loop =
   And(Literal('w'),
