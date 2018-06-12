@@ -1118,38 +1118,107 @@ g->assign = And(Frontend::Lazy(g->lhs),
         return ret;
       });
 
-      // g->cond =
-      // And(Frontend::Lazy(g->re),
-      // And(Literal(')'),
-      // And(Frontend::Lazy(g->block),
-      // And(Literal('e'),
-      // And(Literal('l'),
-      // And(Literal('s'),
-      // And(Literal('e'), Frontend::Lazy(g->block),
-      //   [](Value v1, Value v2) {
-      //     return Value("");
-      //   }),
-      //   [](Value v1, Value v2) {
-      //     return Value("");
-      //   }),
-      //   [](Value v1, Value v2) {
-      //     return Value("");
-      //   }), [](Value v1, Value v2) {
-      //     std::cout << "in last callback" << std::endl;
-      //     return Value("");
-      //   }),
-      //   [](Value v1, Value v2) {
-      //     std::cout << "in last callback" << std::endl;
-      //     return Value("");
-      //   }),
-      //   [](Value v1, Value v2) {
-      //     std::cout << "in last callback" << std::endl;
-      //     return Value("");
-      //   }),
-      //   [](Value v1, Value v2) {
-      //     auto node = v1.GetNodeUnique();
-      //
-      //   });
+      g->cond =
+      And(Literal('i'),
+      And(Literal('f'),
+      And(Literal('('),
+      And(Frontend::Lazy(g->re),
+      And(Literal(')'),
+      And(Frontend::Lazy(g->block),
+      And(Literal('e'),
+      And(Literal('l'),
+      And(Literal('s'),
+      And(Literal('e'), Frontend::Lazy(g->block),
+        [](Value v1, Value v2) {
+          return Value("");
+        }),
+        [](Value v1, Value v2) {
+          return Value("");
+        }),
+        [](Value v1, Value v2) {
+          return Value("");
+        }), [](Value v1, Value v2) {
+          std::cout << "in last callback" << std::endl;
+          return Value("");
+        }),
+        [](Value v1, Value v2) {
+          std::cout << "in last callback" << std::endl;
+          return Value("");
+        }),
+        [](Value v1, Value v2) {
+          std::cout << "in last callback" << std::endl;
+          return Value("");
+        }),
+        [](Value v1, Value v2) {
+          auto node = v1.GetNodeUnique();
+          Value ret(std::move(node));
+          return ret;
+        }),
+        [](Value v1, Value v2) {
+          auto node = v2.GetNodeUnique();
+          Value ret(std::move(node));
+          return ret;
+        }),
+        [](Value v1, Value v2) {
+          auto node = v2.GetNodeUnique();
+          Value ret(std::move(node));
+          return ret;
+        }),
+        [](Value v1, Value v2) {
+          // return cond astNode
+          std::cout << "in last callback that i have written here" << std::endl;
+          ValueVec block1 = std::move(block_vec_.back());
+          block_vec_.pop_back();
+          std::cout << "got block1 " << block1.size() << std::endl;
+
+          ValueVec block2 = std::move(block_vec_.back());
+          block_vec_.pop_back();
+          std::cout << "got block2 " << block2.size() <<  std::endl;
+
+          std::vector<std::unique_ptr<const ast::Statement>> true_branch;
+          std::vector<std::unique_ptr<const ast::Statement>> false_branch;
+
+          // change both block1 & block2 into Statement::Block s
+          while (block1.size() > 0) {
+            auto curr = std::move(block1.back());
+            block1.pop_back();
+
+            auto c_node = curr.GetNodeUnique();
+            // Printer p;
+            // c_node->Visit(&p);
+            // std::cout << p.GetOutput() << std::endl;
+            auto s = unique_cast<const ast::Statement>
+              (std::move(c_node));
+            true_branch.push_back(std::move(s));
+          }
+
+          while (block2.size() > 0) {
+            auto curr = std::move(block2.back());
+            block2.pop_back();
+
+            auto c_node = curr.GetNodeUnique();
+            // Printer p;
+            // c_node->Visit(&p);
+            // std::cout << p.GetOutput() << std::endl;
+            auto s = unique_cast<const ast::Statement>
+              (std::move(c_node));
+            false_branch.push_back(std::move(s));
+          }
+
+
+          // Get re expression
+          auto node = v2.GetNodeUnique();
+          auto ret = unique_cast<const ast::RelationalExpr>
+              (std::move(node));
+
+          // make conditional
+          unique_ptr<ast::AstNode> NodePtr;
+          NodePtr.reset(new ast::Conditional(std::move(ret),
+            std::move(true_branch), std::move(false_branch)));
+
+          Value retval(std::move(NodePtr));
+          return retval;
+        });
 }
 
 
@@ -1231,7 +1300,7 @@ unique_ptr<ast::AstNode> stringToAst(std::string s) {
 
     // Parse
     std::cout << "parse " << s << std::endl;
-    auto result = g.loop(state);
+    auto result = g.cond(state);
     auto val = result.value();
     return val.GetNodeUnique();
   }
