@@ -312,11 +312,11 @@ class FrontendTest : public ::testing::Test {
 //   ASSERT_EQ(printer_.GetOutput(), "a:=hello(4550061)");
 // }
 
-// TEST_F(FrontendTest, BlockTest) {
-//   auto ret = Frontend::stringToAst("{4;5;}");
-//   ret->Visit(&printer_);
-//   ASSERT_EQ(printer_.GetOutput(), "4");
-// }
+TEST_F(FrontendTest, BlockTest) {
+  auto ret = Frontend::stringToAst("{4;5;}");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(), "4");
+}
 
 TEST_F(FrontendTest, LoopTest1) {
   auto ret = Frontend::stringToAst("while(4<5){4;5;}");

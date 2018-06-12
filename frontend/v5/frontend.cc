@@ -845,7 +845,10 @@ void InitializeParsers2(Frontend::Grammar *g) {
   // g->stmt = Int();
 
   g->stmt = Or(std::vector<Parser>{
-    Int()
+    Frontend::Lazy(g->assign),
+    Frontend::Lazy(g->cond),
+    Frontend::Lazy(g->loop),
+    Frontend::Lazy(g->call)
   });
 
 g->assign = And(Frontend::Lazy(g->lhs),
