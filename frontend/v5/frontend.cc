@@ -1338,7 +1338,6 @@ g->assign = And(Frontend::Lazy(g->lhs),
           return ret;
       }),
       [](Value v1, Value v2) {
-        std::cout << "IN THE LAST CALLBACK AYYYYYYYYYYYYYYYYYY" << std::endl;
         // make the function definition node and return that
         // v2 has the ae node in the node
         // v2 has the function name in the string
@@ -1394,6 +1393,164 @@ g->assign = And(Frontend::Lazy(g->lhs),
 
       Value ret(std::move(NodePtr));
       return ret;
+      });
+
+    g->program =
+    And(Star(Frontend::Lazy(g->fundef),
+        [](ValueVec values) {
+          function_vec_ = std::move(values);
+          return Value("");
+        }),
+    And(Literal('m'),
+    And(Literal('a'),
+    And(Literal('i'),
+    And(Literal('n'),
+    And(Literal('('),
+    And(Literal(')'),
+    And(Literal('{'),
+    And(Frontend::Lazy(g->block),
+    And(Literal('r'),
+    And(Literal('e'),
+    And(Literal('t'),
+    And(Literal('u'),
+    And(Literal('r'),
+    And(Literal('n'),
+    And(Literal(' '),
+    And(Frontend::Lazy(g->ae), Literal('}'),
+      [](Value v1, Value v2) {
+        auto curr = v1.GetNodeUnique();
+        Value ret(std::move(curr));
+        return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2){
+        // create the program
+        // v2 has the arithmetic expression
+        // get block of statements from block_vec_
+        // get function defs from function_vec_
+        std::cout << "IN THE LAST CALLBACK AYYYYYYYYYYYYYYYYYY" << std::endl;
+        auto v2_node = v2.GetNodeUnique();
+        auto arith_expr = unique_cast<const ast::ArithmeticExpr>
+          (std::move(v2_node));
+
+        std::cout << "got v2 node" << std::endl;
+        ValueVec block = std::move(block_vec_.back());
+        block_vec_.pop_back();
+        std::cout << "got block" << std::endl;
+        ValueVec functions = std::move(function_vec_);
+        std::cout << "got functions" << std::endl;
+        // Turn block into a vector of FunctionDefs
+        std::vector<std::unique_ptr<const ast::FunctionDef>> funcs;
+
+        while (functions.size() > 0) {
+          auto curr = std::move(functions.back());
+          auto c_node = curr.GetNodeUnique();
+          functions.pop_back();
+
+          // make into FunctionDef
+          auto fd = unique_cast<const ast::FunctionDef>
+            (std::move(c_node));
+          std::vector<std::unique_ptr<const ast::FunctionDef>>::iterator it;
+          it = funcs.begin();
+          funcs.insert(it, std::move(fd));
+        }
+        std::cout << "got funcs" << std::endl;
+
+        std::vector<std::unique_ptr<const ast::Statement>> stats;
+        while (block.size() > 0) {
+          auto curr = std::move(block.back());
+          auto c_node = curr.GetNodeUnique();
+          block.pop_back();
+
+          // make into statement
+          auto s = unique_cast<const ast::Statement>
+            (std::move(c_node));
+          std::vector<std::unique_ptr<const ast::Statement>>::iterator it;
+          it = stats.begin();
+          stats.insert(it, std::move(s));
+        }
+        std::cout << "got stats" << std::endl;
+        // make Program node
+        unique_ptr<ast::AstNode> NodePtr;
+        NodePtr.reset(new ast::Program(std::move(funcs), std::move(stats),
+            std::move(arith_expr)));
+            std::cout << "made nodeptr" << std::endl;
+        Value retval(std::move(NodePtr));
+        return retval;
       });
 }
 
@@ -1476,7 +1633,7 @@ unique_ptr<ast::AstNode> stringToAst(std::string s) {
 
     // Parse
     std::cout << "parse " << s << std::endl;
-    auto result = g.fundef(state);
+    auto result = g.program(state);
     auto val = result.value();
     return val.GetNodeUnique();
   }

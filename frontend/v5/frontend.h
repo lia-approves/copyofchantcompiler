@@ -41,6 +41,7 @@ ValueVec call_vec_;
 std::vector<ValueVec> re_vec_;
 std::vector<ValueVec> block_vec_;
 ValueVec var_vec_;
+ValueVec function_vec_;
     // Object containing Parsers for all of the rules in v2 Grammar
 struct Grammar {
   // As a general note, a lot of the stmt functions work with N but not
@@ -64,7 +65,7 @@ struct Grammar {
       Parser assign;  // done, tested
       Parser stmt;  // done as a top level production
       Parser block;  // done, works with N
-      Parser fundef;
+      Parser fundef;  // done, tested
       Parser program;
 };
 

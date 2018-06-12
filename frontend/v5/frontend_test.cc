@@ -344,10 +344,17 @@ class FrontendTest : public ::testing::Test {
 // }
 
 
-TEST_F(FrontendTest, FunDefTest) {
-  auto ret = Frontend::stringToAst("def hello(a;b;){{3;}return 4*1}");
+// TEST_F(FrontendTest, FunDefTest) {
+//   auto ret = Frontend::stringToAst("def hello(a;b;){{3;}return 4*1}");
+//   ret->Visit(&printer_);
+//   ASSERT_EQ(printer_.GetOutput(), "def hello(a,b,){3;return (* 4 1)}");
+// }
+
+
+TEST_F(FrontendTest, ProgramTest) {
+  auto ret = Frontend::stringToAst("def hello(a;b;){{3;}return 4*1}main(){{4;}return 3+1}");
   ret->Visit(&printer_);
-  ASSERT_EQ(printer_.GetOutput(), "def hello(a,b,){3;return (* 4 1)}");
+  ASSERT_EQ(printer_.GetOutput(), "def hello(a,b,){3;return (* 4 1)}main(){4;return (+ 3 1)}");
 }
 
 }  // namespace Parse
