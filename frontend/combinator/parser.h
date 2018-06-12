@@ -18,6 +18,8 @@ namespace frontend {
 
 namespace Parse {
 
+extern bool debug_next;
+
 // Represents a 'parse function': a function which takes a state and returns
 // a result.  Just an alias for convenience; this type does not ever change.
 using Parser = std::function<Result(State)>;

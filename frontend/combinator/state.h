@@ -28,7 +28,7 @@ class State {
   }
   int position() const { return position_; }
   void setPosition(int p) { position_ = p; }
-
+  std::string getString() {return input_; }
  private:
   std::string input_;
   int position_;

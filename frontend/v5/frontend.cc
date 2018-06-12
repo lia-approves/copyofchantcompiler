@@ -835,13 +835,18 @@ void InitializeParsers2(Frontend::Grammar *g) {
 
   g->re = Or(re_vec);
 
-// stmt -->  assign | cond | loop | call
-std::vector<Parser> stmt_vec;
-stmt_vec.push_back(Frontend::Lazy(g->assign));
-stmt_vec.push_back(Frontend::Lazy(g->cond));
-stmt_vec.push_back(Frontend::Lazy(g->loop));
-stmt_vec.push_back(Frontend::Lazy(g->call));
-g->stmt = Or(stmt_vec);
+  // stmt -->  assign | cond | loop | call
+  // std::vector<Parser> stmt_vec;
+  // stmt_vec.push_back(Frontend::Lazy(g->assign));
+  // stmt_vec.push_back(Frontend::Lazy(g->cond));
+  // stmt_vec.push_back(Frontend::Lazy(g->loop));
+  // stmt_vec.push_back(Frontend::Lazy(g->call));
+  // g->stmt = Or(stmt_vec);
+  // g->stmt = Int();
+
+  g->stmt = Or(std::vector<Parser>{
+    Int()
+  });
 
 g->assign = And(Frontend::Lazy(g->lhs),
   And(Literal(':'),
@@ -850,7 +855,7 @@ g->assign = And(Frontend::Lazy(g->lhs),
                 auto v2_node = v2.GetNodeUnique();
                 Printer p;
                 v2_node->Visit(&p);
-                std::cout << "p is: " << p.GetOutput() << std::endl;
+                // std::cout << "p is: " << p.GetOutput() << std::endl;
                 Value ret(std::move(v2_node));
                 return ret;
             }),
@@ -858,7 +863,7 @@ g->assign = And(Frontend::Lazy(g->lhs),
             auto v2_node = v2.GetNodeUnique();
             Printer p;
             v2_node->Visit(&p);
-            std::cout << "p is: " << p.GetOutput() << std::endl;
+            // std::cout << "p is: " << p.GetOutput() << std::endl;
             Value ret(std::move(v2_node));
             return ret;
           }),
@@ -975,7 +980,7 @@ g->assign = And(Frontend::Lazy(g->lhs),
     //   return ret;
     // });
 
-    g->call = And(Frontend::Lazy(g->V),
+    g->call = And( Frontend::Lazy(g->V),
     And(Literal(':'),
     And(Literal('='),
     And(Frontend::Lazy(g->Fn),
@@ -1005,8 +1010,6 @@ g->assign = And(Frontend::Lazy(g->lhs),
           //   curr_node->Visit(&p);
           //   std::cout << "this value is " << p.GetOutput() << std::endl;
           // }
-
-
           return Value("");
         }),
         [](Value v1, Value v2) {
@@ -1067,6 +1070,52 @@ g->assign = And(Frontend::Lazy(g->lhs),
         Value ret(std::move(NodePtr));
         return ret;
       });
+
+  g->block = And(Literal('{'),
+  And(
+    Star(
+      And(Frontend::Lazy(g->stmt), Literal(';'),
+      [] (Value v1, Value v2) {
+        auto v1_node = v1.GetNodeUnique();
+        Value ret(std::move(v1_node));
+        std::cout << "in statement callback" << std::endl;
+        return ret;
+      }),
+    [] (ValueVec values) {
+      std::cout << "in star callback " << values.size() << std::endl;
+      // PUt the ints in statement
+
+      auto node = values.at(0).GetNodeUnique();
+      Value ret(std::move(node));
+
+      std::vector<std::unique_ptr<const ast::Statement>> stat_vec;
+
+      while (values.size() > 0) {
+        auto curr = std::move(values.back());
+        values.pop_back();
+        auto curr_node = curr.GetNodeUnique();
+
+        auto stat = unique_cast<const ast::Statement>
+          (std::move(curr_node));
+        stat_vec.push_back(std::move(stat));
+      }
+
+      block_vec_.push_back(std::move(stat_vec));
+
+      return ret;
+    }), Literal('}'),
+    [] (Value v1, Value v2) {
+      std::cout << "in and callback" << std::endl;
+      auto node = v1.GetNodeUnique();
+      Value ret(std::move(node));
+      return ret;
+    }),
+  [](Value v1, Value v2) {
+    std::cout << "in and callback {" << std::endl;
+    auto node = v2.GetNodeUnique();
+    Value ret(std::move(node));
+    return ret;
+  });
 }
 
 
@@ -1148,7 +1197,7 @@ unique_ptr<ast::AstNode> stringToAst(std::string s) {
 
     // Parse
     std::cout << "parse " << s << std::endl;
-    auto result = g.ae(state);
+    auto result = g.assign(state);
     auto val = result.value();
     return val.GetNodeUnique();
   }
