@@ -320,21 +320,22 @@ class FrontendTest : public ::testing::Test {
 
 TEST_F(FrontendTest, LoopTest1) {
   auto ret = Frontend::stringToAst("while(4<5){4;5;}");
+  std::cout << "in test" << std::endl;
   ret->Visit(&printer_);
-  ASSERT_EQ(printer_.GetOutput(), "(< 4 5)");
+  ASSERT_EQ(printer_.GetOutput(), "while((< 4 5)){4;5;}");
 }
 
 TEST_F(FrontendTest, LoopTest2) {
-  auto ret = Frontend::stringToAst("while(4<5){4;5;}");
-  ret->Visit(&printer_);
-  ASSERT_EQ(printer_.GetOutput(), "(< 4 5)");
-}
-
-TEST_F(FrontendTest, LoopTest3) {
   auto ret = Frontend::stringToAst("while(!5<4){4;5;}");
   ret->Visit(&printer_);
-  ASSERT_EQ(printer_.GetOutput(), "!(< 5 4)");
+  ASSERT_EQ(printer_.GetOutput(), "while(!(< 5 4)){4;5;}");
 }
+
+// TEST_F(FrontendTest, LoopTest3) {
+//   auto ret = Frontend::stringToAst("){3;4;}else{4;5;}");
+//   ret->Visit(&printer_);
+//   ASSERT_EQ(printer_.GetOutput(), "!(< 5 4)");
+// }
 
 
 }  // namespace Parse

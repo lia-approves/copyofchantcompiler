@@ -39,12 +39,12 @@ ValueVec mult_vec_;
 ValueVec add_vec_;
 ValueVec call_vec_;
 std::vector<ValueVec> re_vec_;
-std::vector<std::vector<std::unique_ptr<const ast::Statement>>> block_vec_;
+ValueVec block_vec_;
     // Object containing Parsers for all of the rules in v2 Grammar
 struct Grammar {
   // As a general note, a lot of the stmt functions work with N but not
   // with ae or any other parser
-  
+
       Parser N;  // done, tested
       Parser V;  // done, tested
       Parser Fn;  // done, tested
@@ -61,8 +61,8 @@ struct Grammar {
       Parser loop;
       Parser cond;
       Parser assign;  // done, tested
-      Parser stmt;  // done
-      Parser block;  // done, tested
+      Parser stmt;
+      Parser block;  // done, doesn't really work
       Parser fundef;
       Parser program;
 };

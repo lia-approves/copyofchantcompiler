@@ -999,36 +999,37 @@ g->assign = And(Frontend::Lazy(g->lhs),
       std::cout << "in star callback " << values.size() << std::endl;
       // PUt the ints in statement
 
-      auto node = values.at(0).GetNodeUnique();
-      Value ret(std::move(node));
-
-      std::vector<std::unique_ptr<const ast::Statement>> stat_vec;
-
+      // auto node = values.at(0).GetNodeUnique();
+      // Value ret(std::move(node));
+      // block_vec_ = std::move(values);
       while (values.size() > 0) {
+        std::cout << "in values" << std::endl;
         auto curr = std::move(values.back());
         values.pop_back();
         auto curr_node = curr.GetNodeUnique();
+        Printer p;
+        curr_node->Visit(&p);
+        std::cout << p.GetOutput() << std::endl;
+        Value v(std::move(curr_node));
 
-        auto stat = unique_cast<const ast::Statement>
-          (std::move(curr_node));
-        stat_vec.push_back(std::move(stat));
+        block_vec_.push_back(std::move(v));
       }
 
-      block_vec_.push_back(std::move(stat_vec));
-
-      return ret;
+       return Value("");
     }), Literal('}'),
     [] (Value v1, Value v2) {
       std::cout << "in and callback" << std::endl;
-      auto node = v1.GetNodeUnique();
-      Value ret(std::move(node));
-      return ret;
+      // auto node = v1.GetNodeUnique();
+      // Value ret(std::move(node));
+      // return ret;
+      return Value("");
     }),
   [](Value v1, Value v2) {
     std::cout << "in and callback {" << std::endl;
-    auto node = v2.GetNodeUnique();
-    Value ret(std::move(node));
-    return ret;
+    // auto node = v2.GetNodeUnique();
+    // Value ret(std::move(node));
+    // return ret;
+    return Value("");
   });
 
   g->loop =
@@ -1075,10 +1076,77 @@ g->assign = And(Frontend::Lazy(g->lhs),
         return ret;
       }),
       [](Value v1, Value v2){
+        std::cout << "in last callback" << std::endl;
+        // make the loop ast node
+        ValueVec values = std::move(block_vec_);
+        std::vector<std::unique_ptr<const ast::Statement>> stats;
+        std::cout << "got block_vec_ " << values.size() << std::endl;
+
+
+        // make Relational Expr from v2
         auto node = v2.GetNodeUnique();
-        Value ret(std::move(node));
+        auto rela = unique_cast<const ast::RelationalExpr>
+            (std::move(node));
+        std::cout << "made relationalexpr" << std::endl;
+        Printer p;
+        rela->Visit(&p);
+        std::cout << p.GetOutput() << std::endl;
+
+        // fill stats array
+        while (values.size() > 0) {
+          std::cout << "top of while" << std::endl;
+          auto curr = std::move(values.back());
+          values.pop_back();
+
+          auto c_node = curr.GetNodeUnique();
+          Printer p;
+          c_node->Visit(&p);
+          std::cout << p.GetOutput() << std::endl;
+          auto s = unique_cast<const ast::Statement>
+            (std::move(c_node));
+          stats.push_back(std::move(s));
+        }
+
+        unique_ptr<ast::AstNode> NodePtr;
+        NodePtr.reset(new ast::Loop(std::move(rela), std::move(stats)));
+
+        std::cout << "made new node ptr" << std::endl;
+        Value ret(std::move(NodePtr));
         return ret;
       });
+
+      // g->cond =
+      // And(Frontend::Lazy(g->re),
+      // And(Literal(')'),
+      // And(Frontend::Lazy(g->block),
+      // And(Literal('e'),
+      // And(Literal('l'),
+      // And(Literal('s'),
+      // And(Literal('e'), Frontend::Lazy(g->block),
+      //   [](Value v1, Value v2) {
+      //     return Value("");
+      //   }),
+      //   [](Value v1, Value v2) {
+      //     return Value("");
+      //   }),
+      //   [](Value v1, Value v2) {
+      //     return Value("");
+      //   }), [](Value v1, Value v2) {
+      //     std::cout << "in last callback" << std::endl;
+      //     return Value("");
+      //   }),
+      //   [](Value v1, Value v2) {
+      //     std::cout << "in last callback" << std::endl;
+      //     return Value("");
+      //   }),
+      //   [](Value v1, Value v2) {
+      //     std::cout << "in last callback" << std::endl;
+      //     return Value("");
+      //   }),
+      //   [](Value v1, Value v2) {
+      //     auto node = v1.GetNodeUnique();
+      //
+      //   });
 }
 
 
