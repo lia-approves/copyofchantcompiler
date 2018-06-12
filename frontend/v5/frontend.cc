@@ -844,12 +844,12 @@ void InitializeParsers2(Frontend::Grammar *g) {
   g->stmt = Or(stmt_vec);
   // g->stmt = Int();
 
-  g->stmt = Or(std::vector<Parser>{
-    Frontend::Lazy(g->assign),
-    Frontend::Lazy(g->cond),
-    Frontend::Lazy(g->loop),
-    Frontend::Lazy(g->call)
-  });
+  // g->stmt = Or(std::vector<Parser>{
+  //   Frontend::Lazy(g->assign),
+  //   Frontend::Lazy(g->cond),
+  //   Frontend::Lazy(g->loop),
+  //   Frontend::Lazy(g->call)
+  // });
 
 g->assign = And(Frontend::Lazy(g->lhs),
   And(Literal(':'),
@@ -980,7 +980,7 @@ g->assign = And(Frontend::Lazy(g->lhs),
   g->block = And(Literal('{'),
   And(
     Star(
-      And(Frontend::Lazy(g->stmt), Literal(';'),
+      And(Frontend::Lazy(g->N), Literal(';'),
       [] (Value v1, Value v2) {
         auto v1_node = v1.GetNodeUnique();
         Value ret(std::move(v1_node));
@@ -1290,7 +1290,7 @@ unique_ptr<ast::AstNode> stringToAst(std::string s) {
 
     // Parse
     std::cout << "parse " << s << std::endl;
-    auto result = g.assign(state);
+    auto result = g.stmt(state);
     auto val = result.value();
     return val.GetNodeUnique();
   }
