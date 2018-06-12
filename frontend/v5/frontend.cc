@@ -842,14 +842,6 @@ void InitializeParsers2(Frontend::Grammar *g) {
   stmt_vec.push_back(Frontend::Lazy(g->cond));
   stmt_vec.push_back(Frontend::Lazy(g->loop));
   g->stmt = Or(stmt_vec);
-  // g->stmt = Int();
-
-  // g->stmt = Or(std::vector<Parser>{
-  //   Frontend::Lazy(g->assign),
-  //   Frontend::Lazy(g->cond),
-  //   Frontend::Lazy(g->loop),
-  //   Frontend::Lazy(g->call)
-  // });
 
 g->assign = And(Frontend::Lazy(g->lhs),
   And(Literal(':'),
@@ -1159,13 +1151,13 @@ g->assign = And(Frontend::Lazy(g->lhs),
         [](Value v1, Value v2) {
           // return cond astNode
           std::cout << "in last callback that i have written here" << std::endl;
-          ValueVec block1 = std::move(block_vec_.back());
-          block_vec_.pop_back();
-          std::cout << "got block1 " << block1.size() << std::endl;
-
           ValueVec block2 = std::move(block_vec_.back());
           block_vec_.pop_back();
-          std::cout << "got block2 " << block2.size() <<  std::endl;
+          std::cout << "got block1 " << block2.size() << std::endl;
+
+          ValueVec block1 = std::move(block_vec_.back());
+          block_vec_.pop_back();
+          std::cout << "got block2 " << block1.size() <<  std::endl;
 
           std::vector<std::unique_ptr<const ast::Statement>> true_branch;
           std::vector<std::unique_ptr<const ast::Statement>> false_branch;
@@ -1209,6 +1201,200 @@ g->assign = And(Frontend::Lazy(g->lhs),
           Value retval(std::move(NodePtr));
           return retval;
         });
+
+    g->fundef =
+    And(Literal('d'),
+    And(Literal('e'),
+    And(Literal('f'),
+    And(Literal(' '),
+    And(Frontend::Lazy(g->Fn),
+    And(Literal('('),
+    And(Star(And(Frontend::Lazy(g->V), Literal(';'),
+            [](Value v1, Value v2) {
+              // pass up v value
+              auto curr = v1.GetNodeUnique();
+              Value ret(std::move(curr));
+              return ret;
+            }),
+            [](ValueVec values){
+              // save to global vector
+              var_vec_ = std::move(values);
+              return Value("");
+            }),
+    And(Literal(')'),
+    And(Literal('{'),
+    And(Frontend::Lazy(g->block),
+    And(Literal('r'),
+    And(Literal('e'),
+    And(Literal('t'),
+    And(Literal('u'),
+    And(Literal('r'),
+    And(Literal('n'),
+    And(Literal(' '),
+    And(Frontend::Lazy(g->ae), Literal('}'),
+      [](Value v1, Value v2) {
+        auto curr = v1.GetNodeUnique();
+        Value ret(std::move(curr));
+        return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+        // this is with the star stuff
+        // still, pass ae up the ladder
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+        // this is the function name function
+        // set ret string to the function name (which is in v1)
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          Printer p;
+          auto v_node = v1.GetNodeUnique();
+          v_node->Visit(&p);
+          ret.SetString(p.GetOutput());
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+        // v2 node has the ae
+        // v2 string has the function name
+        // pass both up the ladder
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          ret.SetString(v2.GetString());
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+        // v2 node has the ae
+        // v2 string has the function name
+        // pass both up the ladder
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          ret.SetString(v2.GetString());
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+        // v2 node has the ae
+        // v2 string has the function name
+        // pass both up the ladder
+          auto curr = v2.GetNodeUnique();
+          Value ret(std::move(curr));
+          ret.SetString(v2.GetString());
+          return ret;
+      }),
+      [](Value v1, Value v2) {
+        std::cout << "IN THE LAST CALLBACK AYYYYYYYYYYYYYYYYYY" << std::endl;
+        // make the function definition node and return that
+        // v2 has the ae node in the node
+        // v2 has the function name in the string
+        // var_vec_ has the vector of variables
+        // block_vec_ has the vector of statements
+        auto v2_node = v2.GetNodeUnique();
+        auto ret_expr = unique_cast<const ast::ArithmeticExpr>
+          (std::move(v2_node));
+
+        std::string name = v2.GetString();
+
+        ValueVec vars = std::move(var_vec_);
+        ValueVec block = std::move(block_vec_.back());
+        block_vec_.pop_back();
+
+        // make vars into a vector of VariableExpr
+        std::vector<std::unique_ptr<const ast::VariableExpr>> variables;
+
+        while (vars.size() > 0) {
+          auto curr = std::move(vars.back());
+          vars.pop_back();
+          auto c_node = curr.GetNodeUnique();
+
+          auto c_variable = unique_cast<const ast::VariableExpr>
+            (std::move(c_node));
+          std::vector<std::unique_ptr<const ast::VariableExpr>>::iterator it;
+          it = variables.begin();
+          variables.insert(it, std::move(c_variable));
+        }
+
+      // make block into a vector of statements
+      std::vector<std::unique_ptr<const ast::Statement>> function_body;
+
+      // change both block1 & block2 into Statement::Block s
+      while (block.size() > 0) {
+        auto curr = std::move(block.back());
+        block.pop_back();
+
+        auto c_node = curr.GetNodeUnique();
+        // Printer p;
+        // c_node->Visit(&p);
+        // std::cout << p.GetOutput() << std::endl;
+        auto s = unique_cast<const ast::Statement>
+          (std::move(c_node));
+        function_body.push_back(std::move(s));
+      }
+
+      // make FunctionDef
+      unique_ptr<ast::AstNode> NodePtr;
+      NodePtr.reset(new ast::FunctionDef(name,
+        std::move(variables), std::move(function_body),
+        std::move(ret_expr)));
+
+      Value ret(std::move(NodePtr));
+      return ret;
+      });
 }
 
 
@@ -1290,7 +1476,7 @@ unique_ptr<ast::AstNode> stringToAst(std::string s) {
 
     // Parse
     std::cout << "parse " << s << std::endl;
-    auto result = g.stmt(state);
+    auto result = g.fundef(state);
     auto val = result.value();
     return val.GetNodeUnique();
   }

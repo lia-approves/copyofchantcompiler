@@ -2,7 +2,7 @@
 prog --> fundef* "main(){" stmt* "return " ae "}"
 
 //function definition, ae is return val
-fundef --> "def " fn "(" v* ")" "{" stmt* "return " ae "}"
+fundef --> "def " fn "(" (v;)* ")" "{" stmt* "return " ae "}"
 
 //block
 block --> "{" stmt* "}"
@@ -16,7 +16,7 @@ cond --> "if(" re ")" block1 "else" block2
 //loop statement
 loop --> "while(" re ")" block
 //function call statement
-call --> v ":=" fn "(" (N';')* ")"  
+call --> v ":=" fn "(" (N';')* ")"
 
 //relational expression
 re --> ae (("&&" | "||") re)* | ae rop ae | "!" re
