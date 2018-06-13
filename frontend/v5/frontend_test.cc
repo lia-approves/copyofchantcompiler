@@ -361,18 +361,65 @@ TEST_F(FrontendTest, ProgramTest1) {
 
 TEST_F(FrontendTest, ProgramTest2) {
   auto ret = Frontend::stringToAst(
+    "main(){{if(5<4){if(1>=2){abc_123:=50;}else{a:=5;};}else{a:=5;};}return 3+1}");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(),
+"main(){if((< 5 4)){if((>= 1 2)){(:= abc_123 50);}else{(:= a 5);};}else{(:= a 5);};return (+ 3 1)}");
+}
+
+TEST_F(FrontendTest, ProgramTest3) {
+  auto ret = Frontend::stringToAst(
     "main(){{b:=4;}return 3+1}");
   ret->Visit(&printer_);
   ASSERT_EQ(printer_.GetOutput(),
 "main(){(:= b 4);return (+ 3 1)}");
 }
 
-TEST_F(FrontendTest, ProgramTest3) {
+TEST_F(FrontendTest, ProgramTest4) {
   auto ret = Frontend::stringToAst(
     "def hello(a;b;){{if(5<4){while(!5<4){a:=hello(5;);};}else{a:=5;};}return 4*1}def goodbye(c;d;){{if(5<4){while(!5<4){a:=hello(5;);};}else{a:=5;};}return 4*1}main(){{b:=4;}return 3+1}");
   ret->Visit(&printer_);
   ASSERT_EQ(printer_.GetOutput(),
 "def hello(a,b,){if((< 5 4)){while(!(< 5 4)){a:=hello(5);};}else{(:= a 5);};return (* 4 1)}def goodbye(c,d,){if((< 5 4)){while(!(< 5 4)){a:=hello(5);};}else{(:= a 5);};return (* 4 1)}main(){(:= b 4);return (+ 3 1)}");
+}
+
+TEST_F(FrontendTest, ProgramTest5) {
+  auto ret = Frontend::stringToAst(
+  "def goodbye(){{a:=20;b:=20;}return 5*1}main(){{c1:=goodbye();}return 3+1}");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(),
+"def goodbye(){(:= a 20);(:= b 20);return (* 5 1)}main(){c1:=goodbye();return (+ 3 1)}");
+}
+TEST_F(FrontendTest, ProgramTest6) {
+  auto ret = Frontend::stringToAst(
+    "def goodbye(){{a:=20;if(3=2){a:=hello(5;);b:=12;}else{b_c:=43;};}return 5*1}main(){{c1:=goodbye();}return 3+1}");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(),
+"def goodbye(){(:= a 20);if((= 3 2)){a:=hello(5);(:= b 12);}else{(:= b_c 43);};return (* 5 1)}main(){c1:=goodbye();return (+ 3 1)}");
+}
+
+TEST_F(FrontendTest, ProgramTest7) {
+  auto ret = Frontend::stringToAst(
+    "def goodbye(){{while(5=5){while(3>=4){a:=5;};};}return 5*1}main(){{c1:=goodbye();}return 3+1}");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(),
+"def goodbye(){while((= 5 5)){while((>= 3 4)){(:= a 5);};};return (* 5 1)}main(){c1:=goodbye();return (+ 3 1)}");
+}
+
+TEST_F(FrontendTest, ProgramTest8) {
+  auto ret = Frontend::stringToAst(
+    "main(){{c1:=5*4+8/7+2*4;}return 3+1}");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(),
+"main(){(:= c1 (+ (* 5 4) (+ (/ 8 7) (* 2 4))));return (+ 3 1)}");
+}
+
+TEST_F(FrontendTest, ProgramTest9) {
+  auto ret = Frontend::stringToAst(
+    "main(){{c1:=5*4+8/7+2*4;}return 5-8+9*3/5}");
+  ret->Visit(&printer_);
+  ASSERT_EQ(printer_.GetOutput(),
+"main(){(:= c1 (+ (* 5 4) (+ (/ 8 7) (* 2 4))));return (- 5 (+ 8 (* 9 (/ 3 5))))}");
 }
 
 }  // namespace Parse
