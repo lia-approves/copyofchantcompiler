@@ -8,6 +8,9 @@ namespace cs160 {
 namespace frontend {
 namespace Parse {
 
+bool done_with_star = false;
+
+
 Parser Literal(char c, Converter<std::string> ToValue) {
   return [c, ToValue](State state) {
     if (state.atEnd()) {
@@ -28,6 +31,8 @@ Parser Literal(char c, Converter<std::string> ToValue) {
 
 Parser Range(std::string c, Converter<std::string> ToValue) {
   return [c, ToValue](State state) {
+
+
     if (state.atEnd()) {
       return Result(state, false, "end of file");
     }
@@ -55,6 +60,9 @@ Parser Or(Parser parseA, Parser parseB) {
   // Note: we don't need to rewind the input here.  Since at most ONE parser
   // will successfully run, the input parsers will can rewind for us
   return [parseA, parseB](State state) {
+    // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
+    // exit(0);
+
     auto resultA = parseA(state);
     if (resultA.success()) {
       return resultA;
@@ -69,6 +77,8 @@ Parser Or(Parser parseA, Parser parseB) {
 
 Parser Or(std::vector<Parser> p_vec) {
   return [p_vec](State state) {
+
+
     int size = p_vec.size();
     for (int i=0; i < size; i++) {
       auto curr_parser = p_vec.at(i);
@@ -86,6 +96,9 @@ Parser And(Parser parseA, Parser parseB,
   std::function<Value(Value, Value)> ToValue) {
       return [parseA, parseB, ToValue](State state) {
         // Save position so we can reset later.
+        std::string curr_s = state.getString();
+      //  int pos = state.position();
+
         int oldPosition = state.position();
         auto resultA = parseA(state);
         if (!resultA.success()) {
@@ -106,6 +119,9 @@ Parser And(Parser parseA, Parser parseB,
 Parser And(std::vector<Parser> p_vec,
     std::function<Value(Value, Value)> ToValue) {
   return[p_vec, ToValue](State state) {
+    // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
+    // exit(0);
+
     int size = p_vec.size();
     int oldPosition = state.position();
     auto curr_parser = p_vec.at(0);
@@ -135,14 +151,20 @@ Parser And(std::vector<Parser> p_vec,
 
 Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
   return [Parse, ToNode](State state) {
+
+
     std::vector<Value> results;
     auto currentResult = Parse(state);
     // Parse first element before the loop
     while (currentResult.success()) {
       Value v = currentResult.value();
       results.push_back(std::move(v) );
+      if (currentResult.state().atEnd()) {
+        break;
+      }
       currentResult = Parse(currentResult.state());
     }
+
     // return currentResult;
     return Result(currentResult.state(), ToNode(std::move(results)));
   };
@@ -150,18 +172,24 @@ Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
 
 Parser Not(Parser parse, Converter<std::string> ToValue) {
   return [parse, ToValue](State state) {
-  auto result = parse(state);
-  if (result.success()) {
-     return Result(state, false, "no match for not");
-  }
-  char temp = state.readChar();
-  return Result(state, ToValue(std::string(1, temp)));;
+    // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
+    // exit(0);
+
+    auto result = parse(state);
+    if (result.success()) {
+       return Result(state, false, "no match for not");
+    }
+    char temp = state.readChar();
+    return Result(state, ToValue(std::string(1, temp)));;
   };
 }
 
 // Returns a function which runs a parser 1 or more times, returning all results
 Parser OnePlus(Parser parse, Converter<std::vector<Value>> ToNode) {
   return [parse, ToNode](State state) {
+    // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
+    // exit(0);
+
     std::vector<Value> results;
     auto currentResult = parse(state);
           // Parse first element before the loop
@@ -181,6 +209,9 @@ Parser OnePlus(Parser parse, Converter<std::vector<Value>> ToNode) {
 Parser ExactMatch(std::string str,
     Converter<std::string> ToValue) {
   return [str, ToValue](State state) {
+    // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
+    // exit(0);
+
     if (state.atEnd()) {
       return Result(state, false, "end of file");
     }
@@ -217,6 +248,9 @@ Parser ExactMatch(std::string str,
 // AKA this function ignores whitespace in either state or string
 Parser Match(std::string str, Converter<std::string> ToValue) {
   return [str, ToValue](State state) {
+    // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
+    // exit(0);
+
     if (state.atEnd()) {
       return Result(state, false, "end of file");
     }
@@ -259,6 +293,9 @@ Parser Match(std::string str, Converter<std::string> ToValue) {
 Parser Between(Parser parseA, Parser parseB,
     Parser parseC, Converter<std::string> ToValue) {
   return [parseA, parseB, parseC, ToValue](State state) {
+    // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
+    // exit(0);
+
     // Save position so we can reset later.
     int oldPosition = state.position();
     auto resultA = parseA(state);
@@ -285,6 +322,7 @@ Parser Between(Parser parseA, Parser parseB,
 
 Parser Int(Converter<std::string> ToNode) {
   return [ToNode](State state) {
+
     auto parse = Range("09");
     auto res = parse(state);
     if (!res.success()) {
@@ -292,26 +330,37 @@ Parser Int(Converter<std::string> ToNode) {
     }
     // auto result = Result(res.state(), ToNode(res.value().String()));
     auto v = ToNode(res.value().GetString());
-    std::cout << "node pointer after callback "
-      << v.GetNodePointer() << std::endl;
     return Result(res.state(), std::move(v));
   };
 }
 
 //  Returns a function which runs 3 parsers, and returns an array of their
-//  results.
-Parser Sequence(Parser parseA, Parser parseB, Parser parseC,
-    Converter<std::vector<Value>> ToNode) {
-  return [parseA, parseB, parseC, ToNode](State state) {
+// results.
+
+struct SequenceLambda {
+  Parser parseA, parseB, parseC;
+  Converter<std::vector<Value>> ToNode;
+
+  Result operator()(State state) {
+    // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
+    // exit(0);
+
+    std::string curr_s = state.getString();
+    int pos = state.position();
+    if (curr_s.at(pos) == '}') {
+      state.setPosition(pos);
+      return Result(state, false, "no match for A, B, and C");
+    }
+
     // Save position so we can reset later.
     int oldPosition = state.position();
     std::vector<Value> results;
-
     auto resultA = parseA(state);
     if (!resultA.success()) {
       state.setPosition(oldPosition);
       return Result(state, false, "no match for A, B, and C");
     }
+
     auto resultB = parseB(resultA.state());
     if (!resultB.success()) {
       state.setPosition(oldPosition);
@@ -323,15 +372,33 @@ Parser Sequence(Parser parseA, Parser parseB, Parser parseC,
       state.setPosition(oldPosition);
       return Result(state, false, "no match for A, B, and C");
     }
-
     Value v1 = resultA.value();
     Value v2 = resultB.value();
     Value v3 = resultC.value();
     results.push_back(std::move(v1) );
     results.push_back(std::move(v2) );
     results.push_back(std::move(v3) );
-
     return Result(resultC.state(), ToNode(std::move(results)));
+  }
+};
+
+Parser Sequence(Parser parseA, Parser parseB, Parser parseC,
+    Converter<std::vector<Value>> ToNode) {
+
+  return SequenceLambda {parseA, parseB, parseC, ToNode};
+  // return [parseA, parseB, parseC, ToNode](State state) {
+
+  // };
+}
+
+Parser Debug(Parser parser, std::string text) {
+  return [parser, text](State state) {
+      if (state.position() == state.getString().size()) {
+        std::cout << text << "  ; at end\n";
+      } else {
+        std::cout << text << "  remaining state: " << state.getString().substr(state.position()) << std::endl;
+      }
+      return parser(state);
   };
 }
 

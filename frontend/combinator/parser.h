@@ -18,6 +18,8 @@ namespace frontend {
 
 namespace Parse {
 
+extern bool debug_next;
+
 // Represents a 'parse function': a function which takes a state and returns
 // a result.  Just an alias for convenience; this type does not ever change.
 using Parser = std::function<Result(State)>;
@@ -98,6 +100,8 @@ Parser Int(Converter<std::string> ToNode = [](std::string s) {
 
 Parser Sequence(Parser parseA, Parser parseB, Parser parseC,
   Converter<std::vector<Value>> ToNode);
+
+Parser Debug(Parser parser, std::string text);
 
 }  // namespace Parse
 }  // namespace frontend
