@@ -1,0 +1,104 @@
+Running main() from gtest_main.cc
+[==========] Running 2 tests from 1 test case.
+[----------] Global test environment set-up.
+[----------] 2 tests from Assignment
+[ RUN      ] Assignment.OfVariable
+[       OK ] Assignment.OfVariable (98 ms)
+[ RUN      ] Assignment.OfDereference
+#### Start of IR ####
+
+#S1:	program begin
+#S2:	a = 12
+#S3:	b := (3)
+#S4:	t1 = 3
+#S5:	t1 = a + 30
+#S6:	return t1
+
+#### End of IR ####
+
+#### Start of Assembly ####
+
+mov $0x2d, %rax
+mov $0, %rbx
+syscall
+mov %rax, %rsi
+#### Start of Statements ####
+
+statementnumber_1:
+
+.global main
+.text
+main:
+mov %rsp, %rbp
+sub $16, %rsp
+statementnumber_2:
+
+push $12
+mov %rbp, %rax
+add $-8, %rax
+push %rax
+pop %rax
+pop (%rax)
+
+statementnumber_3:
+
+mov %rbp, %rax
+add $-16, %rax
+push %rax
+pop %rax
+mov %rsi, (%rax)
+add $24, %rsi
+
+statementnumber_4:
+
+push $3
+pop %rax
+pop (%rax)
+
+statementnumber_5:
+
+mov %rbp, %rax
+add $-8, %rax
+push (%rax)
+push $30
+pop %rax
+pop %rbx
+add %rax, %rbx
+push %rbx
+
+
+statementnumber_6:
+
+#### End of Statements ####
+
+pop %rax
+mov     $format, %rdi
+mov     %rax, %rsi
+xor     %rax, %rax
+call    printf
+
+##DESTROY LOCAL VARS
+add $16, %rsp
+##end DESTROY LOCAL VARS
+
+  ret
+format:
+  .asciz  "%d\n"
+
+.data
+
+#### End of Assembly ####
+backend/v5testsAssignmentOps.cc:138: Failure
+Value of: output
+  Actual: ""
+Expected: "42"
+[  FAILED  ] Assignment.OfDereference (83 ms)
+[----------] 2 tests from Assignment (181 ms total)
+
+[----------] Global test environment tear-down
+[==========] 2 tests from 1 test case ran. (182 ms total)
+[  PASSED  ] 1 test.
+[  FAILED  ] 1 test, listed below:
+[  FAILED  ] Assignment.OfDereference
+
+ 1 FAILED TEST
