@@ -31,7 +31,7 @@ Parser Literal(char c, Converter<std::string> ToValue) {
 
 Parser Range(std::string c, Converter<std::string> ToValue) {
   return [c, ToValue](State state) {
-    std::cout << __PRETTY_FUNCTION__ << " ENTERED" << std::endl;
+
 
     if (state.atEnd()) {
       return Result(state, false, "end of file");
@@ -77,7 +77,7 @@ Parser Or(Parser parseA, Parser parseB) {
 
 Parser Or(std::vector<Parser> p_vec) {
   return [p_vec](State state) {
-    std::cout << __PRETTY_FUNCTION__ << " ENTERED" << std::endl;
+
 
     int size = p_vec.size();
     for (int i=0; i < size; i++) {
@@ -95,16 +95,13 @@ Parser Or(std::vector<Parser> p_vec) {
 Parser And(Parser parseA, Parser parseB,
   std::function<Value(Value, Value)> ToValue) {
       return [parseA, parseB, ToValue](State state) {
-         std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
         // Save position so we can reset later.
         std::string curr_s = state.getString();
-        int pos = state.position();
-        std::cout << "current position is: " << curr_s.at(pos) << std::endl;
+      //  int pos = state.position();
 
         int oldPosition = state.position();
         auto resultA = parseA(state);
         if (!resultA.success()) {
-          std::cout << "FAILURE" << std::endl;
           state.setPosition(oldPosition);
           return Result(state, false, "no match for A and B");
         }
@@ -155,7 +152,6 @@ Parser And(std::vector<Parser> p_vec,
 Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
   return [Parse, ToNode](State state) {
 
-    std::cout << "in star" << std::endl;
 
     std::vector<Value> results;
     auto currentResult = Parse(state);
@@ -326,7 +322,6 @@ Parser Between(Parser parseA, Parser parseB,
 
 Parser Int(Converter<std::string> ToNode) {
   return [ToNode](State state) {
-    std::cout <<__PRETTY_FUNCTION__ << "ENTERED" << std::endl;
 
     auto parse = Range("09");
     auto res = parse(state);
@@ -352,40 +347,31 @@ struct SequenceLambda {
 
     std::string curr_s = state.getString();
     int pos = state.position();
-    std::cout << "current position is: " << curr_s.at(pos) << std::endl;
     if (curr_s.at(pos) == '}') {
       state.setPosition(pos);
       return Result(state, false, "no match for A, B, and C");
     }
 
     // Save position so we can reset later.
-    std::cout << "in sequence" << std::endl;
     int oldPosition = state.position();
-        std::cout << "set position" << std::endl;
     std::vector<Value> results;
-        std::cout << "made vector" << std::endl;
     auto resultA = parseA(state);
-    std::cout << "parsed sequence A" << std::endl;
     if (!resultA.success()) {
-      std::cout<< "not a sequence success" << std::endl;
       state.setPosition(oldPosition);
       return Result(state, false, "no match for A, B, and C");
     }
 
-    std::cout << "parsed a" << std::endl;
     auto resultB = parseB(resultA.state());
     if (!resultB.success()) {
       state.setPosition(oldPosition);
       return Result(state, false, "no match for A, B, and C");
     }
 
-    std::cout << "parsed b" << std::endl;
     auto resultC = parseC(resultB.state());
     if (!resultC.success()) {
       state.setPosition(oldPosition);
       return Result(state, false, "no match for A, B, and C");
     }
-    std::cout << "parsed c" << std::endl;
     Value v1 = resultA.value();
     Value v2 = resultB.value();
     Value v3 = resultC.value();

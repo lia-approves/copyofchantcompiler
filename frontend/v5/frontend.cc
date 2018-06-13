@@ -71,7 +71,6 @@ void InitializeParsers(Frontend::Grammar *g) {
 
         if (values.size() == 0) {
           // The variable is only 1 char long
-          std::cout << "size is 0" << std::endl;
           Value v("");
           return v;
         }
@@ -101,7 +100,6 @@ void InitializeParsers(Frontend::Grammar *g) {
       std::string v1_str = v1.GetString();
       // v2_str contains ret from the Star callback
       std::string v2_str = v2.GetString();
-      std::cout << "make v: " << v1_str + v2_str << std::endl;
 
       // make a new AstNode with the concatenated strings
       std::unique_ptr<ast::AstNode> NodePtr;
@@ -118,7 +116,6 @@ void InitializeParsers(Frontend::Grammar *g) {
 
         if (values.size() == 0) {
           // The variable is only 1 char long
-          std::cout << "size is 0" << std::endl;
           Value v("");
           return v;
         }
@@ -170,7 +167,6 @@ g->dref = Sequence(Frontend::Lazy(g->lhs),
                 }),
               Frontend::Lazy(g->ae),
             [] (ValueVec values) {
-              std::cout << "dref callback" << std::endl;
               auto v1 = std::move(values.at(0));
               auto v2 = std::move(values.at(2));
 
@@ -187,7 +183,6 @@ g->dref = Sequence(Frontend::Lazy(g->lhs),
                   <const ast::ArithmeticExpr>(std::move(v2_node));
               Printer p2;
               v2_arith->Visit(&p2);
-              std::cout << "v2 is: " << p2.GetOutput() << std::endl;
               // Make Dereference Node
               std::unique_ptr<ast::AstNode> NodePtr;
               NodePtr.reset(new ast::Dereference(std::move(v1_assignable),
@@ -327,7 +322,6 @@ g->multiply = And(
         // operator in the string
 
         if (values.size() == 0) {
-          std::cout << "mult size 0" << std::endl;
           // No Star output, so return just the unary output from v1
           auto v1_node = v1.GetNodeUnique();
           Value ret(std::move(v1_node));
@@ -460,7 +454,6 @@ g->multiply = And(
             // and the operator in the string
 
             if (values.size() == 0) {
-              std::cout << "add size 0" << std::endl;
               // if there is no values, then the whole thing is just the mult
               // expression in v1
               auto v1_node = v1.GetNodeUnique();
@@ -642,19 +635,16 @@ void InitializeParsers2(Frontend::Grammar *g) {
   // "!" re
   re_vec.push_back(And(Literal('!',
   [] (std::string str) {
-    std::cout << "in literal callback" << str << std::endl;
     return Value("!");
   }), Frontend::Lazy(g->re),
   [] (Value v1, Value v2) {
     // Makes a LogicalNotExpr
     // Get node from v2
     // v1 is not used in this function
-    std::cout << "in ! callback" << std::endl;
 
     auto v2_node = v2.GetNodeUnique();
     Printer p;
     v2_node->Visit(&p);
-    std::cout << "v2_node is: " << p.GetOutput() << std::endl;
     auto v2_relational_expr = unique_cast<const ast::RelationalExpr>
           (std::move(v2_node));
 
@@ -895,32 +885,27 @@ g->assign = And(Frontend::Lazy(g->lhs),
             Printer p;
             auto v1_node = v1.GetNodeUnique();
             v1_node->Visit(&p);
-            std::cout << "v1 in  and is " << p.GetOutput() << std::endl;
+
             Value ret(std::move(v1_node));
             return ret;
           }),
         [](ValueVec values) {
-          std::cout << "star callback values size is: " << values.size()
-              << std::endl;
+
 
           call_vec_ = std::move(values);
           return Value("");
         }), Literal(')'),
         [](Value v1, Value v2) {
-          std::cout << "in and callback" << std::endl;
           return Value("");
         }),
       [](Value v1, Value v2) {
-        std::cout << "in second and callback" << std::endl;
         return Value("");
       }),
         [](Value v1, Value v2) {
-          std::cout << "in fn callback" << std::endl;
           // print v1
           Printer p;
           auto v1_node = v1.GetNodeUnique();
           v1_node->Visit(&p);
-          std::cout << "Fn is " << p.GetOutput() << std::endl;
 
           return Value(p.GetOutput());
         }),
@@ -977,11 +962,9 @@ g->assign = And(Frontend::Lazy(g->lhs),
   [] (Value v1, Value v2) {
     auto v1_node = v1.GetNodeUnique();
     Value ret(std::move(v1_node));
-    std::cout << "in statement callback" << std::endl;
     return ret;
   }),
 [] (ValueVec values) {
-  std::cout << "in star callback " << values.size() << std::endl;
   // PUt the ints in statement
 
   // auto node = values.at(0).GetNodeUnique();
@@ -989,24 +972,22 @@ g->assign = And(Frontend::Lazy(g->lhs),
   // block_vec_ = std::move(values);
   ValueVec vec;
   while (values.size() > 0) {
-    std::cout << "in values" << std::endl;
     auto curr = std::move(values.back());
     values.pop_back();
     auto curr_node = curr.GetNodeUnique();
     Printer p;
     curr_node->Visit(&p);
-    std::cout << p.GetOutput() << std::endl;
+    // std::cout << p.GetOutput() << std::endl;
     Value v(std::move(curr_node));
 
     vec.push_back(std::move(v));
   }
   block_vec_.push_back(std::move(vec));
 
-  std::cout << "right before return" << std::endl;
   return Value("");
 }), Literal('}'),
 [] (Value v1, Value v2) {
-  std::cout << "in and callback" << std::endl;
+
   // ValueVec values = std::move(block_vec_.back());
   // block_vec_.pop_back();
   // std::cout << "values size is " << values.size() << std::endl;
@@ -1027,54 +1008,6 @@ g->assign = And(Frontend::Lazy(g->lhs),
 [](Value v1, Value v2) {
   return Value("");
 });
-  // And(Literal('{'),
-  // And(
-  //   Star(
-  //     And(Frontend::Lazy(g->stmt), Literal(';'),
-  //     [] (Value v1, Value v2) {
-  //       auto v1_node = v1.GetNodeUnique();
-  //       Value ret(std::move(v1_node));
-  //       std::cout << "in statement callback" << std::endl;
-  //       return ret;
-  //     }),
-  //   [] (ValueVec values) {
-  //     std::cout << "in star callback " << values.size() << std::endl;
-  //     // PUt the ints in statement
-  //
-  //     // auto node = values.at(0).GetNodeUnique();
-  //     // Value ret(std::move(node));
-  //     // block_vec_ = std::move(values);
-  //     ValueVec vec;
-  //     while (values.size() > 0) {
-  //       std::cout << "in values" << std::endl;
-  //       auto curr = std::move(values.back());
-  //       values.pop_back();
-  //       auto curr_node = curr.GetNodeUnique();
-  //       Printer p;
-  //       curr_node->Visit(&p);
-  //       std::cout << p.GetOutput() << std::endl;
-  //       Value v(std::move(curr_node));
-  //
-  //       vec.push_back(std::move(v));
-  //     }
-  //     block_vec_.push_back(std::move(vec));
-  //
-  //      return Value("");
-  //   }), Literal('}'),
-  //   [] (Value v1, Value v2) {
-  //     std::cout << "in and callback" << std::endl;
-  //     // auto node = v1.GetNodeUnique();
-  //     // Value ret(std::move(node));
-  //     // return ret;
-  //     return Value("");
-  //   }),
-  // [](Value v1, Value v2) {
-  //   std::cout << "in and callback {" << std::endl;
-  //   // auto node = v2.GetNodeUnique();
-  //   // Value ret(std::move(node));
-  //   // return ret;
-  //   return Value("");
-  // });
 
   g->loop =
   And(Literal('w'),
@@ -1086,7 +1019,6 @@ g->assign = And(Frontend::Lazy(g->lhs),
   And(Frontend::Lazy(g->re),
     And(Literal(')'), Frontend::Lazy(g->block),
         [] (Value v1, Value v2) {
-          std::cout << "in loop callback" << std::endl;
           return Value("");
         }),
       [](Value v1, Value v2) {
@@ -1120,26 +1052,22 @@ g->assign = And(Frontend::Lazy(g->lhs),
         return ret;
       }),
       [](Value v1, Value v2){
-        std::cout << "in last callback" << std::endl;
         // make the loop ast node
         ValueVec values = std::move(block_vec_.back());
         block_vec_.pop_back();
         std::vector<std::unique_ptr<const ast::Statement>> stats;
-        std::cout << "got block_vec_ " << values.size() << std::endl;
 
 
         // make Relational Expr from v2
         auto node = v2.GetNodeUnique();
         auto rela = unique_cast<const ast::RelationalExpr>
             (std::move(node));
-        std::cout << "made relationalexpr" << std::endl;
         Printer p;
         rela->Visit(&p);
-        std::cout << p.GetOutput() << std::endl;
+        // std::cout << p.GetOutput() << std::endl;
 
         // fill stats array
         while (values.size() > 0) {
-          std::cout << "top of while" << std::endl;
           auto curr = std::move(values.back());
           values.pop_back();
 
@@ -1155,7 +1083,6 @@ g->assign = And(Frontend::Lazy(g->lhs),
         unique_ptr<ast::AstNode> NodePtr;
         NodePtr.reset(new ast::Loop(std::move(rela), std::move(stats)));
 
-        std::cout << "made new node ptr" << std::endl;
         Value ret(std::move(NodePtr));
         return ret;
       });
@@ -1180,15 +1107,12 @@ g->assign = And(Frontend::Lazy(g->lhs),
         [](Value v1, Value v2) {
           return Value("");
         }), [](Value v1, Value v2) {
-          std::cout << "in last callback" << std::endl;
           return Value("");
         }),
         [](Value v1, Value v2) {
-          std::cout << "in last callback" << std::endl;
           return Value("");
         }),
         [](Value v1, Value v2) {
-          std::cout << "in last callback" << std::endl;
           return Value("");
         }),
         [](Value v1, Value v2) {
@@ -1208,14 +1132,11 @@ g->assign = And(Frontend::Lazy(g->lhs),
         }),
         [](Value v1, Value v2) {
           // return cond astNode
-          std::cout << "in last callback that i have written here" << std::endl;
           ValueVec block2 = std::move(block_vec_.back());
           block_vec_.pop_back();
-          std::cout << "got block1 " << block2.size() << std::endl;
 
           ValueVec block1 = std::move(block_vec_.back());
           block_vec_.pop_back();
-          std::cout << "got block2 " << block1.size() <<  std::endl;
 
           std::vector<std::unique_ptr<const ast::Statement>> true_branch;
           std::vector<std::unique_ptr<const ast::Statement>> false_branch;
@@ -1560,17 +1481,13 @@ g->assign = And(Frontend::Lazy(g->lhs),
         // v2 has the arithmetic expression
         // get block of statements from block_vec_
         // get function defs from function_vec_
-        std::cout << "IN THE LAST CALLBACK AYYYYYYYYYYYYYYYYYY" << std::endl;
         auto v2_node = v2.GetNodeUnique();
         auto arith_expr = unique_cast<const ast::ArithmeticExpr>
           (std::move(v2_node));
 
-        std::cout << "got v2 node" << std::endl;
         ValueVec block = std::move(block_vec_.back());
         block_vec_.pop_back();
-        std::cout << "got block" << std::endl;
         ValueVec functions = std::move(function_vec_);
-        std::cout << "got functions" << std::endl;
         // Turn block into a vector of FunctionDefs
         std::vector<std::unique_ptr<const ast::FunctionDef>> funcs;
 
@@ -1586,7 +1503,6 @@ g->assign = And(Frontend::Lazy(g->lhs),
           it = funcs.begin();
           funcs.insert(it, std::move(fd));
         }
-        std::cout << "got funcs" << std::endl;
 
         std::vector<std::unique_ptr<const ast::Statement>> stats;
         while (block.size() > 0) {
@@ -1601,12 +1517,10 @@ g->assign = And(Frontend::Lazy(g->lhs),
           it = stats.begin();
           stats.insert(it, std::move(s));
         }
-        std::cout << "got stats" << std::endl;
         // make Program node
         unique_ptr<ast::AstNode> NodePtr;
         NodePtr.reset(new ast::Program(std::move(funcs), std::move(stats),
             std::move(arith_expr)));
-            std::cout << "made nodeptr" << std::endl;
         Value retval(std::move(NodePtr));
         return retval;
       });
