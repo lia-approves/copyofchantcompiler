@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <iostream>
+#include <unordered_map>
 #include "frontend/combinator/parser.h"
 
 namespace cs160 {
@@ -10,9 +11,21 @@ namespace Parse {
 
 bool done_with_star = false;
 
+std::function<CopyVisitor()> Copier;
+
+bool copyVisitorIsSet = false;
+void SetCopyVisitor(std::function<CopyVisitor()> copier) {
+  copyVisitorIsSet = true;
+  Copier = copier;
+}
 
 Parser Literal(char c, Converter<std::string> ToValue) {
+  static std::unordered_map<State, Result> cache;
   return [c, ToValue](State state) {
+    if (copyVisitorIsSet && (cache.find(state) != cache.end())) {
+      std::cout << "retrieving Literal from cache\n";
+
+    }
     if (state.atEnd()) {
       return Result(state, false, "end of file");
     }

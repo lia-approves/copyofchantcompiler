@@ -29,7 +29,6 @@ class Value {
     string_(v.string_) {}
   Value& operator=(Value&& v) {
     if (this != &v) {
-      std::cout << "assignment move constructor\n";
       type_ = v.type_;
       string_ = v.string_;
       node_ = std::move(v.node_);
