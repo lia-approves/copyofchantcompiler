@@ -26,9 +26,12 @@ class State {
       return true;
     }
   }
+  bool operator== (const State &other) const {
+    return (position_ == other.position() && input_ == other.getString());
+  }
   int position() const { return position_; }
   void setPosition(int p) { position_ = p; }
-  std::string getString() {return input_; }
+  std::string getString() const {return input_; }
  private:
   std::string input_;
   int position_;

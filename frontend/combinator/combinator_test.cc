@@ -26,6 +26,16 @@ TEST(CombinatorTest, InstantiateState) {
   State s("hi");
 }
 
+TEST(StateTest, EqualityOperator) {
+  State s1("hi");
+  State s2("hi");
+  ASSERT_TRUE(s1 == s2);
+  s1.advance();
+  ASSERT_FALSE(s1 == s2);
+  s2.advance();
+  ASSERT_TRUE(s1 == s2);
+}
+
 TEST(CombinatorTest, ParseLiteral) {
   State s("hi");
   auto parseH = Literal('h');
