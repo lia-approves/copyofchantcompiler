@@ -29,14 +29,20 @@
         ~ Test cases written for the implementation of v2 AST. Each test case is named to be self-explanatory on what it tests.
       - frontend.cc/frontend.h
         ~ Implementation of our v2 grammar using our combinator parser generator. Basically literal translation of hand-written grammars into their respective form when constructed with methods written in combinator directory.
+          V2/frontend.h contains the struct Grammar, that holds Parsers for each of the rules in the grammar. The Program rule is the top level rule, that is called in the stringToAst(*) function.
+          V2/frontend.cc contains the implementation of the struct Grammar rules, contained in the function InitializeParsers(*). This function initializes all of the parser in the v2 grammar. The Lazy(*) function accomplishes lazy evaluation in the grammar, by evaluating the lambda function at runtime instead of at compile time.
+
     - v5
       - frontend_test.cc
         ~ Test cases for rudimentary programs that should create v5 AST. Information in each test should be sufficient to see what it tests and sample inputs.
       - frontend.cc/frontend.h
         ~ Implementation of our v5 grammar which generates the v5 AST. Essentially the same as v2's frontend but it now generates a v5 AST instead of a v2 one. Utilizes the same principles and methods previously used to generate a proper parser to generate a v5 AST.
+          Similar to V2, V5 has a frontend.h and frontend.cc file. The frontend.h file consists of the definition of the struct Grammar, that holds the parsers for all of the V5 rules. Like V2, the program rule is the top-level production that is called in the stringToAst(*) function. The frontend.cc file contains the initialization of all of the parsers in Grammar, along with the Lazy function, which is the same in V2 and V5.
+
+The tests you should be looking at are in the V2 and V5 folders, not the frontend folder.
 
 * Our clever implementation
-  -
+  - Our parser generator utilizes a multitude of individual parser generation methods to take in a wide variety of input parsers and output a combined output parser. This allows us to create a "automatic" recursive descent generator to parse any given input for a grammar. The building blocks of our parser combinator are built in such a way to allow for modularization and ease of restructuring. As complex rules are generated from simple rules we can endlessly adapt our compiler for more complicated languages by simply implementing them with smaller more simpler parsers. 
 
 * Technical roadblocks
   - Main technical roadblock was having an infinite loop within our parser generator. This was due to the cyclic nature of the grammars and the way we wrote our parser generators.
@@ -47,4 +53,3 @@
 
 * End result
   - A parser generator that is able to create a v5 AST.
-    
