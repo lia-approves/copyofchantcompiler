@@ -1,0 +1,50 @@
+* What's in our codebase?
+  - frontend
+    - combinator
+      - combinator_test
+        ~ Contains test cases for our parser generator, each test is named for the corresponding method it tests. Names should be self-explanatory.
+      - parser.cc/parser.h
+        ~ Contains grammar expressions like "or", "and", "not" etc. that are used to build parse trees. We utilize these methods to convert a grammar into a parse tree.
+      - result.h
+        ~ Holds the Result object which is what we return in most situations. Return object holds important values and can be used to represent any return type. Also contains the Value object which supports many different value types and allows us to have one unified object that is returned no matter what function is run.
+      - state.h
+        ~ State class which holds information about current state, also has methods which allow us to modify the current state and pull information from a given state.
+    - v1
+      - parser
+        - parser_test
+          ~ Simple tests that have self-explanatory names. These test the basic arithmetic from v1 AST.
+        - parser.cc/parser.h
+          ~ Implementation of v1 parser which handles basic arithmetic.
+      - scanner
+        - state_machine
+          - dfa
+            - dfa.cc/dfa.h
+              ~ Holds the Implementation of DFA constructors and methods. Lets us make a DFA and add transitions, etc.
+          - state
+            - Initial state object for the v1 implementation. Behaves similarly to the state in combinator directory, lets us manage state movement etc.
+        - token
+          ~ Composed of many classes which represented a given arithmetic component in their names. Each one took care of the respective retrieval, modification, and setting of a specific arithmetic component.
+    - v2
+      - frontend_test.cc
+        ~ Test cases written for the implementation of v2 AST. Each test case is named to be self-explanatory on what it tests.
+      - frontend.cc/frontend.h
+        ~ Implementation of our v2 grammar using our combinator parser generator. Basically literal translation of hand-written grammars into their respective form when constructed with methods written in combinator directory.
+    - v5
+      - frontend_test.cc
+        ~ Test cases for rudimentary programs that should create v5 AST. Information in each test should be sufficient to see what it tests and sample inputs.
+      - frontend.cc/frontend.h
+        ~ Implementation of our v5 grammar which generates the v5 AST. Essentially the same as v2's frontend but it now generates a v5 AST instead of a v2 one. Utilizes the same principles and methods previously used to generate a proper parser to generate a v5 AST.
+
+* Our clever implementation
+  -
+
+* Technical roadblocks
+  - Main technical roadblock was having an infinite loop within our parser generator. This was due to the cyclic nature of the grammars and the way we wrote our parser generators.
+  - Forced us to implement lazy evaluation because we had issues with our parser generators executing their return function instead of saving them for after the build-up. This was by far the biggest roadblock in implementing v2 and v5 grammar.
+
+* What we would do if we did this again
+  - Take care to implement rudimentary lazy evaluation and memoization properly before fully committing to implementing the grammar to avoid headaches of infinite cycles. Also makes it simpler to integrate when we have some basis ahead of time.
+
+* End result
+  - A parser generator that is able to create a v5 AST.
+    

@@ -22,6 +22,7 @@ class Frontend {
  public:
     ~Frontend(void);
 
+    //Converts strings to AST
     std::unique_ptr<cs160::abstract_syntax::frontend::AstNode>
       stringToAst(std::string input);
 
