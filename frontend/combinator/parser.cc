@@ -11,20 +11,23 @@ namespace Parse {
 
 bool done_with_star = false;
 
-std::function<CopyVisitor()> Copier;
+std::function<CopyVisitor*()> MakeCopyVisitor;
 
 bool copyVisitorIsSet = false;
-void SetCopyVisitor(std::function<CopyVisitor()> copier) {
+void SetCopyVisitor(std::function<CopyVisitor*()> copier) {
   copyVisitorIsSet = true;
-  Copier = copier;
+  MakeCopyVisitor = copier;
 }
 
 Parser Literal(char c, Converter<std::string> ToValue) {
-  static std::unordered_map<State, Result> cache;
+  static std::unordered_map<State, std::unique_ptr<Value>> cache;
   return [c, ToValue](State state) {
     if (copyVisitorIsSet && (cache.find(state) != cache.end())) {
       std::cout << "retrieving Literal from cache\n";
-
+      auto node = cache[state]->GetNodeUnique();
+      auto copier
+        = MakeCopyVisitor();
+      node->Visit(copier);
     }
     if (state.atEnd()) {
       return Result(state, false, "end of file");
