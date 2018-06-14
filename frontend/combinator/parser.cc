@@ -22,12 +22,28 @@ void SetCopyVisitor(std::function<CopyVisitor*()> copier) {
 Parser Literal(char c, Converter<std::string> ToValue) {
   static std::unordered_map<State, std::unique_ptr<Value>> cache;
   return [c, ToValue](State state) {
+    // Check cache first before calculating
     if (copyVisitorIsSet && (cache.find(state) != cache.end())) {
       std::cout << "retrieving Literal from cache\n";
+      // Check if value is empty:
+      if (cache[state]->GetType() == Value::empty) {
+        return Result(state, false, "cached empty value");
+      }
+      // Check if value is a string:
+      if (cache[state]->GetType() == Value::string) {
+        return Result(state, ToValue(cache[state]->GetString()));
+      }
+      // Retrieve the node from cached value.
+      // At this point, the cached value is empty.
       auto node = cache[state]->GetNodeUnique();
       auto copier
         = MakeCopyVisitor();
       node->Visit(copier);
+      auto nodeCopy = copier->GetCopy();
+      // Since restore the cached value.
+      cache[state] = std::make_unique<Value>(Value(std::move(node)));
+      // Return a new result, using the copy of the node we made.
+      return Result(state, Value(std::move(nodeCopy)));
     }
     if (state.atEnd()) {
       return Result(state, false, "end of file");
