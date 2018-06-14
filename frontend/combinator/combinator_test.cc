@@ -1,5 +1,6 @@
 // Copyright (c) 2018, Team-Chant
 #include <vector>
+#include <unordered_map>
 #include "gtest/gtest.h"
 #include "frontend/combinator/parser.h"
 #include "abstract_syntax/print_visitor_v1.h"
@@ -34,6 +35,16 @@ TEST(StateTest, EqualityOperator) {
   ASSERT_FALSE(s1 == s2);
   s2.advance();
   ASSERT_TRUE(s1 == s2);
+}
+
+TEST(StateTest, Hash) {
+  std::unordered_map<State, int> map;
+  State s1("hi");
+  State s2("there");
+  map[s1] = 1;
+  map[s2] = 2;
+  ASSERT_EQ(map[s1], 1);
+  ASSERT_EQ(map[s2], 2);
 }
 
 TEST(CombinatorTest, ParseLiteral) {

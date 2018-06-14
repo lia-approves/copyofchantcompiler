@@ -37,6 +37,18 @@ class State {
   int position_;
 };
 
+
 }  // namespace frontend
 }  // namespace cs160
+
+namespace std {
+
+template <>
+struct hash<cs160::frontend::State> {
+  size_t operator() (const cs160::frontend::State& s) const {
+    return ((hash<std::string>()(s.getString()) ^ (hash<int>()(s.position()) << 1)) >> 1);
+  }
+};
+
+}  // namespace std
 #endif  // FRONTEND_COMBINATOR_STATE_H_
