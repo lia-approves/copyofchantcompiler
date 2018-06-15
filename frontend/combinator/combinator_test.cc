@@ -290,6 +290,13 @@ TEST(CombinatorTest, CaptureIntNode) {
   ASSERT_EQ(printer_.GetOutput(), "1");
 }
 
+TEST(CombinatorTest, CacheTest) {
+  State s("a");
+  auto parse = Literal('b');
+  auto res1 = parse(s);
+  auto res2 = parse(s);
+}
+
 TEST(CombinatorTest, Star) {
   State s("1112");
   auto parseOnes = Star(Literal('1'), ConcatVector);
