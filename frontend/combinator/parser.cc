@@ -19,14 +19,6 @@ void SetCopyVisitor(std::function<CopyVisitor*()> copier) {
   MakeCopyVisitor = copier;
 }
 
-void Cache(
-  State state,
-  std::unique_ptr<Value> value,
-  std::unordered_map<State, std::unique_ptr<Value>> cache) {
-    if (!copyVisitorIsSet) return;
-    cache[state] = std::move(value);
-}
-
 Parser Literal(char c, Converter<std::string> ToValue) {
   static std::unordered_map<State, std::unique_ptr<Value>> cache;
   return [c, ToValue](State state) {
@@ -49,26 +41,32 @@ Parser Literal(char c, Converter<std::string> ToValue) {
       node->Visit(copier);
       auto nodeCopy = copier->GetCopy();
       // Since restore the cached value.
-      Cache(state, std::make_unique<Value>(Value(std::move(node))), cache);
+      cache[state] = std::make_unique<Value>(Value(std::move(node)));
       // Return a new result, using the copy of the node we made.
       return Result(state, Value(std::move(nodeCopy)));
     }
 
     if (state.atEnd()) {
-      cache[state] = std::make_unique<Value>(Value());
+      if (copyVisitorIsSet) {
+        cache[state] = std::make_unique<Value>(Value());
+      }
       return Result(state, false, "end of file");
     }
     char next = state.readChar();
 
     if (next == c) {
       state.advance();
+      if (copyVisitorIsSet) {
+        cache[state] = std::make_unique<Value>(ToValue(std::string(1, c)));
+      }
       return Result(state, ToValue(std::string(1, c)));
     } else {
       std::string err = "no match for character: ";
       err += c;
       std::cout << "caching...\n";
-      cache[state] = std::make_unique<Value>(Value());
-      std::cout << "cache value: " << cache[state]->GetType() << std::endl;
+      if (copyVisitorIsSet) {
+        cache[state] = std::make_unique<Value>(Value());
+      }
       return Result(state, false, err);
     }
   };
