@@ -49,7 +49,7 @@ Parser Literal(char c, Converter<std::string> ToValue) {
       node->Visit(copier);
       auto nodeCopy = copier->GetCopy();
       // Since restore the cached value.
-      cache[state] = std::make_unique<Value>(Value(std::move(node)));
+      Cache(state, std::make_unique<Value>(Value(std::move(node))), cache);
       // Return a new result, using the copy of the node we made.
       return Result(state, Value(std::move(nodeCopy)));
     }
