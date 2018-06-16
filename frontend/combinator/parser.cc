@@ -348,8 +348,30 @@ Parser And(std::vector<Parser> p_vec,
 }
 
 Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
+  static std::unordered_map<State, std::unique_ptr<Value>> cache;
   return [Parse, ToNode](State state) {
-
+    // Check cache first before calculating
+    if (copyVisitorIsSet && (cache.find(state) != cache.end())) {
+      // Check if value is empty:
+      if (cache[state]->GetType() == Value::empty) {
+        return Result(state, false, "cached empty value");
+      }
+      // Check if value is a string:
+      if (cache[state]->GetType() == Value::string) {
+        return Result(state, Value(cache[state]->GetString()));
+      }
+      // Retrieve the node from cached value.
+      // At this point, the cached value is empty.
+      auto node = cache[state]->GetNodeUnique();
+      auto copier
+        = MakeCopyVisitor();
+      node->Visit(copier);
+      auto nodeCopy = copier->GetCopy();
+      // Since restore the cached value.
+      cache[state] = std::make_unique<Value>(Value(std::move(node)));
+      // Return a new result, using the copy of the node we made.
+      return Result(state, Value(std::move(nodeCopy)));
+    }
 
     std::vector<Value> results;
     auto currentResult = Parse(state);
@@ -364,7 +386,8 @@ Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
     }
 
     // return currentResult;
-    return Result(currentResult.state(), ToNode(std::move(results)));
+    Result res(currentResult.state(), ToNode(std::move(results)));
+    return CacheNodeResult(std::move(curr_result), &cache);
   };
 }
 
