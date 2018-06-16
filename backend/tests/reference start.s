@@ -84,14 +84,16 @@ add $16, %rdi #move break by 16 bytes or 2 vars
 mov $12, %rax #call again
 syscall #we have allocated 
 
-mov $12,%rax # brk syscall number
-mov $0, %rdi # 0 is invalid, want to get current position
-syscall  #puts start of current heap in rax
+#mov $12,%rax # brk syscall number
+#mov $0, %rdi # 0 is invalid, want to get current position
+#syscall  #puts start of current heap in rax
           #we will use original rsi for offset
-mov %rax, %rdi #prepare to move allocate by moving breakpoint
-add $16, %rdi #move break by 16 bytes or 2 vars
-mov $12, %rax #call again
-syscall #we have allocated 
+#mov %rax, %rdi #prepare to move allocate by moving breakpoint
+#add $16, %rdi #move break by 16 bytes or 2 vars
+#mov $12, %rax #call again
+#syscall #we have allocated 
+
+mov %rsi,-8(%rbp)
 
 push $1
 pop 0(%rsi)
@@ -100,9 +102,9 @@ pop 8(%rsi)
 push $3
 pop 16(%rsi)
 push $4
-pop 24(%rsi)
+pop 45(%rsi)
 
-push 16(%rsi)
+push 45(%rsi)
 
 
 
@@ -128,3 +130,46 @@ format:
 .data
 
 #### End of Assembly ####
+
+
+/*
+
+foo(bob){
+  if(((bob<100)&&(bob>0))||((bob<=100)&&(bob>=0))) {}
+  while (!(bob==0)){
+    bob=bob-1
+  }
+  return (((12/3)-4)+(3*2))
+}
+
+main(){
+  x[2]
+  x[1]=42
+  param x[1]
+  foo_retval=foo(x[1])
+  return foo_retval
+}
+
+
+x=tuple(2)
+
+a=2
+b=6+5
+
+assignable extends arithExp: variable or dereferece
+
+a,x,b,tom or c[5],x[5],bob[9]
+
+a=5
+c[5]=6+7
+x[6]=b*t
+x=s[4]+4*t+7
+bob[9]=c[t] + 5 * y + x[4 + t]
+
+x = tuple(4)
+x[2] = tuple(6)
+x = {7,tuple(6),4,7}
+x[2][3]=5
+x[2] = {0,0,5,0,0,0}
+
+*/

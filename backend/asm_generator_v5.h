@@ -13,7 +13,7 @@
 using std::endl;
 using std::string;
 using cs160::backend::StatementNode;
-using cs160::backend::Operator;
+using cs160::backend::Instruction;
 using cs160::backend::IrGenVisitor;
 
 namespace cs160 {
@@ -23,6 +23,7 @@ namespace cs160 {
       AsmProgram() {}
       ~AsmProgram() {}
       void IrToAsm(IrGenVisitor* ir);
+      void SSAIRToAsm(std::vector<std::shared_ptr<StatementNode>> SSAIR);
       string GetASMString() { return asm_sstring_.str(); }
       int GetOffSet(string variable);
     private:
@@ -32,43 +33,43 @@ namespace cs160 {
       IrGenVisitor *ir_;
       void NewSymbolTable() { paramVariables_.clear(); localVariables_.clear(); }
       std::vector<string> paramVariables_;
+      std::vector<string> paramVariablesSubscripts_;
       std::vector<string> localVariables_;
+      std::vector<string> localVariablesSubscripts_;
       int offSet_ = 0; //used by switch so we dont redeclare and dont have to create new scope
     };
     void AsmProgram::IrToAsm(IrGenVisitor* ir) {
       ir_ = ir;
-      std::shared_ptr<StatementNode> head = ir_->GetIR();
-      while (head != nullptr) {
-        asm_sstring_
-          << endl << "statementnumber_" << head->GetLabel().GetValue() << ":" << endl;
-        GenerateASM(head);
-        head = head->GetNext();
+      std::vector<std::shared_ptr<StatementNode>> nodes = ir_->GetIR();
+      for (int i = 0; i < nodes.size(); i++) {
+        asm_sstring_ << endl << "S" << i << ":" << endl;
+        GenerateASM(nodes[i]);
       }
     }
     void AsmProgram::GenerateASM(std::shared_ptr<StatementNode> node) {
       switch (node->GetInstruction().GetOpcode()) {
-      case Operator::kAdd:
+      case Instruction::kAdd:
         asm_sstring_
           << "pop %rax" << endl
           << "pop %rbx" << endl
           << "add %rax, %rbx" << endl
           << "push %rbx" << endl;
         break;
-      case Operator::kSubtract:
+      case Instruction::kSubtract:
         asm_sstring_
           << "pop %rax" << endl
           << "pop %rbx" << endl
           << "sub %rax, %rbx" << endl
           << "push %rbx" << endl;
         break;
-      case Operator::kMultiply:
+      case Instruction::kMultiply:
         asm_sstring_
           << "pop %rax" << endl
           << "pop %rbx" << endl
           << "imul %rax, %rbx" << endl
           << "push %rbx" << endl;
         break;
-      case Operator::kDivide:
+      case Instruction::kDivide:
         asm_sstring_
           << "pop %rbx" << endl
           << "pop %rax" << endl
@@ -76,50 +77,50 @@ namespace cs160 {
           << "idiv %rbx" << endl
           << "push %rax" << endl;
         break;
-      case Operator::kLessThan:
+      case Instruction::kLessThan:
         asm_sstring_
           << "pop %rax" << endl
           << "pop %rbx" << endl
           << "cmp %rax, %rbx" << endl
-          << "jl " << node->GetTarget().GetName() << endl;
+          << "jl S" << node->GetTarget().GetValue() << endl;
         break;
-      case Operator::kLessThanEqualTo:
+      case Instruction::kLessThanEqualTo:
         asm_sstring_
           << "pop %rax" << endl
           << "pop %rbx" << endl
           << "cmp %rax, %rbx" << endl
-          << "jle " << node->GetTarget().GetName() << endl;
+          << "jle S" << node->GetTarget().GetValue() << endl;
         break;
-      case Operator::kGreaterThan:
+      case Instruction::kGreaterThan:
         asm_sstring_
           << "pop %rax" << endl
           << "pop %rbx" << endl
           << "cmp %rax, %rbx" << endl
-          << "jg " << node->GetTarget().GetName() << endl;
+          << "jg S" << node->GetTarget().GetValue() << endl;
         break;
-      case Operator::kGreaterThanEqualTo:
+      case Instruction::kGreaterThanEqualTo:
         asm_sstring_
           << "pop %rax" << endl
           << "pop %rbx" << endl
           << "cmp %rax, %rbx" << endl
-          << "jge " << node->GetTarget().GetName() << endl;
+          << "jge S" << node->GetTarget().GetValue() << endl;
         break;
-      case Operator::kEqualTo:
+      case Instruction::kEqualTo:
         asm_sstring_
           << "pop %rax" << endl
           << "pop %rbx" << endl
           << "cmp %rax, %rbx" << endl
-          << "je " << node->GetTarget().GetName() << endl;
+          << "je S" << node->GetTarget().GetValue() << endl;
         break;
-      case Operator::kGoto:
+      case Instruction::kGoto:
         asm_sstring_
-          << "jmp " << node->GetTarget().GetName() << endl;
+          << "jmp S" << node->GetTarget().GetValue() << endl;
         break;
-      case Operator::kPushValueOfInteger:
+      case Instruction::kValueOfInteger:
         asm_sstring_
           << "push $" << node->GetOp2().GetValue() << endl; //only integer visitor uses this
         break;
-      case Operator::kPushValueOfVariable:
+      case Instruction::kValueOfVariable:
         offSet_ = GetOffSet(node->GetOp2().GetName());
         asm_sstring_
           << "mov %rbp,%rcx" << endl;
@@ -134,7 +135,7 @@ namespace cs160 {
         asm_sstring_
           << "push (%rcx)" << endl; //if we want the value at address we put parenthesis around
         break;
-      case Operator::kPushAddressOfVariable:
+      case Instruction::kAddressOfVariable:
         offSet_ = GetOffSet(node->GetOp2().GetName());
         asm_sstring_
           << "mov %rbp,%rcx" << endl;  //get rbp(start of stack) put in rcx
@@ -147,7 +148,7 @@ namespace cs160 {
         }
         asm_sstring_ << "push %rcx" << endl; // address is in rcx we push it
         break;
-      case Operator::kPushAddressOfDereference: // index is at the top of stack, address is at second to last, which has location of pointer as value
+      case Instruction::kAddressOfDereference: // index is at the top of stack, address is at second to last, which has location of pointer as value
         asm_sstring_
           << "pop %rax" << endl //place index at rax
           << "mov $8, %rbx" << endl //multiplier at rbx
@@ -157,7 +158,7 @@ namespace cs160 {
           << "add %rbx,%rax" << endl //add 8*index to address of rax(base array pointer)
           << "push %rax" << endl; //push address what is at %rax(location of array + index)
         break;
-      case Operator::kPushValueOfDereference:
+      case Instruction::kValueOfDereference:
         asm_sstring_
           << "pop %rax" << endl //place index at rax
           << "mov $8, %rbx" << endl //multiplier at rbx
@@ -167,7 +168,7 @@ namespace cs160 {
           << "add %rbx,%rax" << endl //add 8*index to address of rax(base array pointer)
           << "push (%rax)" << endl; //push value of what is at %rax(location of array + index)
         break;
-      case Operator::kAssignmentFromNewTuple: // we store adress of heap at variable directly
+      case Instruction::kAssignmentFromNewTuple: // we store adress of heap at variable directly
         asm_sstring_
           << "#new tuple" << endl //friendly message
           << "mov $12, %rax" << endl // brk syscall number
@@ -184,15 +185,34 @@ namespace cs160 {
           << "syscall" << endl // new heap breakpoint has been moved
           << "pop %rcx" << endl // place adress of reference variable into %rcx (lhs), it was on the stack 
           << "mov %rsi, (%rcx)" << endl;// move heap pointer(the start) into the location of %rcx(address of variable)
-          // at the end, the program break is moved so we dont need to have a new base, every time we request the address of the program break(start of heap), we get a fresh address
+                                        // at the end, the program break is moved so we dont need to have a new base, every time we request the address of the program break(start of heap), we get a fresh address
         break;
-      case Operator::kAssignmentFromArithExp:
+      case Instruction::kAssignmentFromArithExp:
         asm_sstring_
-          << "pop %rbx" << endl  //we visit rhs second so value is a top put it in rbx
-          << "pop %rax" << endl //address is next on stack place it at rax
+          << "pop %rax" << endl // address is top of stack place it at rax
+          << "pop %rbx" << endl  //we visit lhs second so value is at bottomit in rbx
           << "mov %rbx, (%rax)" << endl; //move value rbx to location at address rax
         break;
-      case Operator::kFuncBegin:
+      case Instruction::kAssignmentToVariable:
+        offSet_ = GetOffSet(node->GetTarget().GetName());
+        asm_sstring_
+          << "mov %rbp,%rcx" << endl;
+        if (offSet_ < 0) {
+          asm_sstring_
+            << "sub $" << -1 * offSet_ << ", %rcx" << endl;
+        }
+        else {
+          asm_sstring_
+            << "add $" << offSet_ << " ,%rcx" << endl;
+        }
+        asm_sstring_
+          << "push %rcx" << endl; //if we want the value at address we put parenthesis around
+        asm_sstring_
+          << "pop %rax" << endl // address is top of stack place it at rax
+          << "pop %rbx" << endl  //we visit lhs second so value is at bottomit in rbx
+          << "mov %rbx, (%rax)" << endl; //move value rbx to location at address rax
+        break;
+      case Instruction::kFuncBegin:
         NewSymbolTable();
         asm_sstring_
           << ".type " << node->GetTarget().GetName() << ",@function" << endl
@@ -201,7 +221,7 @@ namespace cs160 {
           << "mov %rsp, %rbp" << endl
           << "sub $" << 8 * node->GetOp2().GetValue() << ", %rsp";
         break;
-      case Operator::kFuncEnd:
+      case Instruction::kFuncEnd:
         asm_sstring_
           << "pop %rax" << endl //return value in rax by convention
           << "mov %rbp, %rsp" << endl
@@ -209,16 +229,16 @@ namespace cs160 {
           << "ret" << endl;
         NewSymbolTable();
         break;
-      case Operator::kArgument:
+      case Instruction::kArgument:
         asm_sstring_
           << "#argument" << endl;
         break;
-      case Operator::kParam:
+      case Instruction::kParam:
         paramVariables_.push_back(node->GetTarget().GetName());
         asm_sstring_
           << "#parameter " << node->GetTarget().GetName() << endl;
         break;
-      case Operator::kCall:
+      case Instruction::kCall:
         offSet_ = GetOffSet(node->GetOp1().GetName());
         asm_sstring_
           << "call " << node->GetTarget().GetName() << endl //call
@@ -226,44 +246,45 @@ namespace cs160 {
           << "pop " << offSet_ << "(%rbp)" << endl // move value to variable( call.lhs.name)
           << "add $" << 8 * node->GetOp2().GetValue() << ", %rsp" << endl;  //should change this whole routine soon it works for now
         break;
-      case Operator::kProgramStart:
+      case Instruction::kProgramStart:
         NewSymbolTable();
         asm_sstring_
-          << "#### Start of Assembly ####" << endl
-          << "#### Start of Statements ####" << endl
           << ".global main" << endl
           << ".text" << endl
           << " main:" << endl
           << "mov %rsp, %rbp" << endl
           << "sub $" << 8 * node->GetOp2().GetValue() << ", %rsp" << endl; //allocate local vars
         break;
-      case Operator::kProgramEnd:
+      case Instruction::kProgramEnd:
         asm_sstring_
-          << "#### End of Statements ####" << endl
           << "pop %rax" << endl //ae will be in rax
-          << "GDB_ENDPROG_BREAKPOINT:" << endl //this is for gdb debugging dont remove
           << "mov $format, %rdi" << endl
           << "mov %rax, %rsi" << endl
           << "mov $0, %rax" << endl
           << "call printf" << endl << endl
-          << "##DESTROY LOCAL VARS" << endl
-          << "add $" << 8 * ir_->NumberOfMainVars() << ", %rsp" << endl
-          << "##END DESTROY LOCAL VARS" << endl << endl
+          << "add $" << 8 * node->GetOp1().GetValue() << ", %rsp" << endl // add to stack to delete local variables
           << "mov $0, %rax" << endl //return code 0 for exit
           << "ret" << endl
           << "format:" << endl
-          << ".asciz  \"%d\\n\"" << endl
-          << endl
-          << "#### End of Assembly ####" << endl;
+          << ".asciz  \"%d\\n\"" << endl;
         break;
-      case Operator::kReturn:
+      case Instruction::kReturn:
         asm_sstring_
-          << "#program prints ae" << endl;
+          << "# Function or Program Returns Value" << endl;
         break;
       default:
         asm_sstring_
           << "error: no suitable enum found" << endl;
         break;
+      case Instruction::kPhiFunction:
+        // todo
+        break;
+      }
+    }
+    void AsmProgram::SSAIRToAsm(std::vector<std::shared_ptr<StatementNode>> SSAIR) {
+      for (int i = 0; i < SSAIR.size(); i++) {
+        asm_sstring_ << endl << "S" << i << ":" << endl;
+        GenerateASM(SSAIR[i]);
       }
     }
     int AsmProgram::GetOffSet(string variable) {

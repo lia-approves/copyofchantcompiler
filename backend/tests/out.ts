@@ -126,9 +126,9 @@ call printf
 add $24, %rsp
 ##END DESTROY LOCAL VARS
 
+mov $0, %rax
 ret
 format:
 .asciz  "%d\n"
 
-.data
 #### End of Assembly ####

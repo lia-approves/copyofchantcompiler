@@ -10,7 +10,6 @@
 #include "backend/lowerer_v5.h"
 #include <algorithm>
 
-
 using cs160::abstract_syntax::version_5::AstVisitor;
 using cs160::abstract_syntax::version_5::ArithmeticExpr;
 using cs160::abstract_syntax::version_5::Assignable;
@@ -40,7 +39,7 @@ using cs160::abstract_syntax::version_5::Program;
 using cs160::backend::StatementNode;
 using cs160::backend::Constant;
 using cs160::backend::Label;
-using cs160::backend::Operator;
+using cs160::backend::Instruction;
 using cs160::backend::Register;
 using cs160::backend::Operand;
 using cs160::backend::Variable;
@@ -163,11 +162,9 @@ namespace cs160 {
       std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
         make_unique<Register>(register_number_),
-        make_unique<Operator>(Operator::kPushValueOfInteger),
+        make_unique<Instruction>(Instruction::kValueOfInteger),
         nullptr,
-        make_unique<Constant>(exp.value()),
-        nullptr
-      );
+        make_unique<Constant>(exp.value()));
       AddToEnd(newhead);
       ir_stack_.push_back(make_unique<Register>(register_number_++));
     }
@@ -180,32 +177,27 @@ namespace cs160 {
           newhead = std::make_shared< StatementNode>(
             make_unique<Label>(labelNum_++),
             make_unique<Register>(register_number_),
-            make_unique<Operator>(Operator::kPushAddressOfVariable),
+            make_unique<Instruction>(Instruction::kAddressOfVariable),
             nullptr,
-            make_unique<Variable>(exp.name()),
-            nullptr
-          );
+            make_unique<Variable>(exp.name()));
         }
         else if (returnAddress == false) {
           newhead = std::make_shared< StatementNode>(
             make_unique<Label>(labelNum_++),
             make_unique<Register>(register_number_),
-            make_unique<Operator>(Operator::kPushValueOfVariable),
+            make_unique<Instruction>(Instruction::kValueOfVariable),
             nullptr,
-            make_unique<Variable>(exp.name()),
-            nullptr
-          );
+            make_unique<Variable>(exp.name()));
         }
         AddToEnd(std::move(newhead));
       }
       else if (readingParams_) {
-        newhead = std::make_shared< StatementNode>(make_unique<Label>(labelNum_++),
+        newhead = std::make_shared< StatementNode>(
+          make_unique<Label>(labelNum_++),
           make_unique<Variable>(exp.name()),
-          make_unique<Operator>(Operator::kParam),
+          make_unique<Instruction>(Instruction::kParam),
           nullptr,
-          nullptr,
-          nullptr
-        );
+          nullptr);
         AddToEnd(std::move(newhead));
       }
       ir_stack_.push_back(make_unique<Register>(register_number_++));
@@ -225,45 +217,53 @@ namespace cs160 {
         std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
           make_unique<Label>(labelNum_++),
           make_unique<Register>(register_number_),
-          make_unique<Operator>(Operator::kPushAddressOfDereference),
+          make_unique<Instruction>(Instruction::kAddressOfDereference),
           std::move(address),
-          std::move(index),
-          nullptr
-        );
+          std::move(index));
         AddToEnd(std::move(newhead));
       }
       else if (returnAddress == false) {
         std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
           make_unique<Label>(labelNum_++),
           make_unique<Register>(register_number_),
-          make_unique<Operator>(Operator::kPushValueOfDereference),
+          make_unique<Instruction>(Instruction::kValueOfDereference),
           std::move(address),
-          std::move(index),
-          nullptr
-        );
+          std::move(index));
         AddToEnd(std::move(newhead));
       }
       ir_stack_.push_back(make_unique<Register>(register_number_++));
     }
     void IrGenVisitor::VisitAssignmentFromArithExp(
       const AssignmentFromArithExp& assignment) {
-      requestAddressFromNextNode = true; //need address from lhs
-      assignment.lhs().Visit(this);
-      requestAddressFromNextNode = false; //need value from rhs
       assignment.rhs().Visit(this);
-      std::unique_ptr<Operand> value = std::move(ir_stack_.back());
-      ir_stack_.pop_back();
-      std::unique_ptr<Operand> address = std::move(ir_stack_.back());
-      ir_stack_.pop_back();
-      std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
-        make_unique<Label>(labelNum_++),
-        std::move(address),
-        make_unique<Operator>(Operator::kAssignmentFromArithExp),
-        nullptr,
-        std::move(value),
-        nullptr
-      );
-      AddToEnd(std::move(newhead));
+      if (const VariableExpr* variable = dynamic_cast<const VariableExpr*>(&assignment.lhs())) {
+        
+        std::unique_ptr<Operand> value = std::move(ir_stack_.back());
+        ir_stack_.pop_back();
+        std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
+          make_unique<Label>(labelNum_++),
+          make_unique<Variable>(variable->name()),
+          make_unique<Instruction>(Instruction::kAssignmentToVariable),
+          nullptr,
+          std::move(value));
+        AddToEnd(std::move(newhead));
+      }
+      else {
+        requestAddressFromNextNode = true; //need address from lhs
+        assignment.lhs().Visit(this);
+        requestAddressFromNextNode = false; //need value from rhs
+        std::unique_ptr<Operand> value = std::move(ir_stack_.back());
+        ir_stack_.pop_back();
+        std::unique_ptr<Operand> address = std::move(ir_stack_.back());
+        ir_stack_.pop_back();
+        std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
+          make_unique<Label>(labelNum_++),
+          std::move(value),
+          make_unique<Instruction>(Instruction::kAssignmentFromArithExp),
+          nullptr,
+          std::move(address));
+        AddToEnd(std::move(newhead));
+      }
     }
     void IrGenVisitor::VisitAssignmentFromNewTuple(const AssignmentFromNewTuple& assignment) {
       requestAddressFromNextNode = true; //address from lhs
@@ -277,10 +277,9 @@ namespace cs160 {
       std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
         std::move(tupleVar),
-        make_unique<Operator>(Operator::kAssignmentFromNewTuple),
+        make_unique<Instruction>(Instruction::kAssignmentFromNewTuple),
         nullptr,
-        std::move(tupleSize),
-        nullptr);
+        std::move(tupleSize));
       AddToEnd(std::move(newhead));
     }
     void IrGenVisitor::VisitAddExpr(const AddExpr& exp) {
@@ -293,10 +292,9 @@ namespace cs160 {
       std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
         make_unique<Register>(register_number_),
-        make_unique<Operator>(Operator::kAdd),
+        make_unique<Instruction>(Instruction::kAdd),
         std::move(op1),
-        std::move(op2),
-        nullptr);
+        std::move(op2));
       AddToEnd(std::move(newhead));
       ir_stack_.push_back(make_unique<Register>(register_number_++)); //push result to stack
     }
@@ -310,10 +308,9 @@ namespace cs160 {
       std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
         make_unique<Register>(register_number_),
-        make_unique<Operator>(Operator::kSubtract),
+        make_unique<Instruction>(Instruction::kSubtract),
         std::move(op1),
-        std::move(op2),
-        nullptr);
+        std::move(op2));
       AddToEnd(std::move(newhead));
       ir_stack_.push_back(make_unique<Register>(register_number_++)); //push result to stack
     }
@@ -327,10 +324,9 @@ namespace cs160 {
       std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
         make_unique<Register>(register_number_),
-        make_unique<Operator>(Operator::kMultiply),
+        make_unique<Instruction>(Instruction::kMultiply),
         std::move(op1),
-        std::move(op2),
-        nullptr);
+        std::move(op2));
       AddToEnd(std::move(newhead));
       ir_stack_.push_back(make_unique<Register>(register_number_++)); //push result to stack
     }
@@ -344,10 +340,9 @@ namespace cs160 {
       std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
         make_unique<Register>(register_number_),
-        make_unique<Operator>(Operator::kDivide),
+        make_unique<Instruction>(Instruction::kDivide),
         std::move(op1),
-        std::move(op2),
-        nullptr);
+        std::move(op2));
       AddToEnd(std::move(newhead));
       ir_stack_.push_back(make_unique<Register>(register_number_++)); //push result to stack
     }
@@ -360,31 +355,25 @@ namespace cs160 {
       std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
         nullptr,
-        make_unique<Operator>(Operator::kProgramStart), //this is so we know how many local vars to alocate on the stack
+        make_unique<Instruction>(Instruction::kProgramStart), //this is so we know how many local vars to alocate on the stack
         nullptr,
-        make_unique<Constant>(mainVars_),
-        nullptr
-      );
+        make_unique<Constant>(mainVars_));
       AddToEnd(std::move(newhead));
       for (auto& statement : program.statements()) { statement->Visit(this); }
       program.arithmetic_exp().Visit(this); //evaluate ae
       newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
         make_unique<Register>(register_number_ - 1),
-        make_unique<Operator>(Operator::kReturn),
+        make_unique<Instruction>(Instruction::kReturn),
         nullptr,
-        nullptr,
-        nullptr
-      );
+        nullptr);
       AddToEnd(std::move(newhead));
       newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
         nullptr,
-        make_unique<Operator>(Operator::kProgramEnd),
-        nullptr,
-        nullptr,
-        nullptr
-      );
+        make_unique<Instruction>(Instruction::kProgramEnd),
+        make_unique<Constant>(mainVars_),
+        nullptr);
       AddToEnd(std::move(newhead));
       localVariables_.clear();
     }
@@ -395,20 +384,17 @@ namespace cs160 {
         std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
           make_unique<Label>(labelNum_++),
           make_unique<Register>(register_number_ - 1),
-          make_unique<Operator>(Operator::kArgument),
+          make_unique<Instruction>(Instruction::kArgument),
           nullptr,
-          nullptr,
-          nullptr
-        );
+          nullptr);
         AddToEnd(std::move(newhead));
       }
       std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
         make_unique<Variable>(call.callee_name()),
-        make_unique<Operator>(Operator::kCall),
+        make_unique<Instruction>(Instruction::kCall),
         make_unique<Variable>(call.lhs().name()),
-        make_unique<Constant>(numArgs),
-        nullptr);
+        make_unique<Constant>(numArgs));
       AddToEnd(std::move(newhead));
     }
     void IrGenVisitor::VisitFunctionDef(const FunctionDef& def) {
@@ -421,10 +407,9 @@ namespace cs160 {
       std::shared_ptr<StatementNode>newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
         make_unique<Variable>(def.function_name()),
-        make_unique<Operator>(Operator::kFuncBegin), //call to crate func
+        make_unique<Instruction>(Instruction::kFuncBegin), //call to crate func
         nullptr,
-        make_unique<Constant>(numLocalVar),
-        nullptr);
+        make_unique<Constant>(numLocalVar));
       AddToEnd(std::move(newhead));
       readingParams_ = true;
       for (auto& param : def.parameters()) { param->Visit(this); }
@@ -434,19 +419,16 @@ namespace cs160 {
       newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
         make_unique<Register>(register_number_ - 1),
-        make_unique<Operator>(Operator::kReturn),
+        make_unique<Instruction>(Instruction::kReturn),
         nullptr,
-        nullptr,
-        nullptr
-      );
+        nullptr);
       AddToEnd(std::move(newhead));
       newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
         make_unique<Variable>(def.function_name()),
-        make_unique<Operator>(Operator::kFuncEnd),
+        make_unique<Instruction>(Instruction::kFuncEnd),
         nullptr,
-        make_unique<Constant>(numLocalVar),
-        nullptr);
+        make_unique<Constant>(numLocalVar));
       AddToEnd(std::move(newhead));
       localVariables_.clear();
       paramVariables_.clear();
@@ -460,11 +442,10 @@ namespace cs160 {
       ir_stack_.pop_back();
       std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
-        make_unique<Label>(labelNum_ + 1),
-        make_unique<Operator>(Operator::kLessThan),
+        make_unique<Constant>(labelNum_ + 2),
+        make_unique<Instruction>(Instruction::kLessThan),
         std::move(op1),
-        std::move(op2),
-        nullptr);
+        std::move(op2));
       AddToEnd(std::move(newhead));
     }
     void IrGenVisitor::VisitLessThanEqualToExpr(const LessThanEqualToExpr& exp) {
@@ -476,11 +457,10 @@ namespace cs160 {
       ir_stack_.pop_back();
       std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
-        make_unique<Label>(labelNum_ + 1),
-        make_unique<Operator>(Operator::kLessThanEqualTo),
+        make_unique<Constant>(labelNum_ + 2),
+        make_unique<Instruction>(Instruction::kLessThanEqualTo),
         std::move(op1),
-        std::move(op2),
-        nullptr);
+        std::move(op2));
       AddToEnd(std::move(newhead));
     }
     void IrGenVisitor::VisitGreaterThanExpr(const GreaterThanExpr& exp) {
@@ -492,11 +472,10 @@ namespace cs160 {
       ir_stack_.pop_back();
       std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
-        make_unique<Label>(labelNum_ + 1),
-        make_unique<Operator>(Operator::kGreaterThan),
+        make_unique<Constant>(labelNum_ + 2),
+        make_unique<Instruction>(Instruction::kGreaterThan),
         std::move(op1),
-        std::move(op2),
-        nullptr);
+        std::move(op2));
       AddToEnd(std::move(newhead));
     }
     void IrGenVisitor::VisitGreaterThanEqualToExpr(const GreaterThanEqualToExpr& exp) {
@@ -508,11 +487,10 @@ namespace cs160 {
       ir_stack_.pop_back();
       std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
-        make_unique<Label>(labelNum_ + 1),
-        make_unique<Operator>(Operator::kGreaterThanEqualTo),
+        make_unique<Constant>(labelNum_ + 2),
+        make_unique<Instruction>(Instruction::kGreaterThanEqualTo),
         std::move(op1),
-        std::move(op2),
-        nullptr);
+        std::move(op2));
       AddToEnd(std::move(newhead));
     }
     void IrGenVisitor::VisitEqualToExpr(const EqualToExpr& exp) {
@@ -524,11 +502,10 @@ namespace cs160 {
       ir_stack_.pop_back();
       std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
-        make_unique<Label>(labelNum_ + 1),
-        make_unique<Operator>(Operator::kEqualTo),
+        make_unique<Constant>(labelNum_ + 2),
+        make_unique<Instruction>(Instruction::kEqualTo),
         std::move(op1),
-        std::move(op2),
-        nullptr);
+        std::move(op2));
       AddToEnd(std::move(newhead));
     }
     void IrGenVisitor::VisitLogicalAndExpr(const LogicalAndExpr& exp) {
@@ -538,9 +515,8 @@ namespace cs160 {
       exp.lhs().Visit(this);
       std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
-        make_unique<Label>(labelNum_ + numRhs),
-        make_unique<Operator>(Operator::kGoto),
-        nullptr,
+        make_unique<Constant>(labelNum_ + numRhs + 1),
+        make_unique<Instruction>(Instruction::kGoto),
         nullptr,
         nullptr);
       AddToEnd(std::move(newhead));
@@ -551,21 +527,19 @@ namespace cs160 {
       exp.rhs().Visit(&countVisitor);
       int numRhs = countVisitor.NumberOfStatements();
       exp.lhs().Visit(this);
-      tail_->GetTarget().SetValue(tail_->GetTarget().GetValue() + numRhs);
+      (*(--nodes.end()))->GetTarget().SetValue((*(--nodes.end()))->GetTarget().GetValue() + numRhs);
       exp.rhs().Visit(this);
       std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
-        make_unique<Label>(labelNum_ + 1),
-        make_unique<Operator>(Operator::kGoto),
-        nullptr,
+        make_unique<Constant>(labelNum_ + 2),
+        make_unique<Instruction>(Instruction::kGoto),
         nullptr,
         nullptr);
       AddToEnd(std::move(newhead));
       newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
-        make_unique<Label>(labelNum_ + 1),
-        make_unique<Operator>(Operator::kGoto),
-        nullptr,
+        make_unique<Constant>(labelNum_ + 2),
+        make_unique<Instruction>(Instruction::kGoto),
         nullptr,
         nullptr);
       AddToEnd(std::move(newhead));
@@ -574,9 +548,8 @@ namespace cs160 {
       exp.operand().Visit(this);
       std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
-        make_unique<Label>(labelNum_ + 1),
-        make_unique<Operator>(Operator::kGoto),
-        nullptr,
+        make_unique<Constant>(labelNum_ + 2),
+        make_unique<Instruction>(Instruction::kGoto),
         nullptr,
         nullptr);
       AddToEnd(std::move(newhead));
@@ -595,9 +568,8 @@ namespace cs160 {
       conditional.guard().Visit(this);
       std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
-        make_unique<Label>(trueStatements + labelNum_ + 1),
-        make_unique<Operator>(Operator::kGoto),
-        nullptr,
+        make_unique<Constant>(trueStatements + labelNum_ + 2),
+        make_unique<Instruction>(Instruction::kGoto),
         nullptr,
         nullptr);
       AddToEnd(std::move(newhead));
@@ -606,9 +578,8 @@ namespace cs160 {
       }
       newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
-        make_unique<Label>(falseStatements + labelNum_),
-        make_unique<Operator>(Operator::kGoto),
-        nullptr,
+        make_unique<Constant>(falseStatements + labelNum_ + 1),
+        make_unique<Instruction>(Instruction::kGoto),
         nullptr,
         nullptr);
       AddToEnd(std::move(newhead));
@@ -628,9 +599,8 @@ namespace cs160 {
       loop.guard().Visit(this);
       std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
-        make_unique<Label>(bodyStatements + labelNum_ + 1),
-        make_unique<Operator>(Operator::kGoto),
-        nullptr,
+        make_unique<Constant>(bodyStatements + labelNum_ + 2),
+        make_unique<Instruction>(Instruction::kGoto),
         nullptr,
         nullptr);
       AddToEnd(std::move(newhead));
@@ -639,41 +609,25 @@ namespace cs160 {
       }
       newhead = std::make_shared< StatementNode>(
         make_unique<Label>(labelNum_++),
-        make_unique<Label>(startLabelNum),
-        make_unique<Operator>(Operator::kGoto),
-        nullptr,
+        make_unique<Constant>(startLabelNum),
+        make_unique<Instruction>(Instruction::kGoto),
         nullptr,
         nullptr);
       AddToEnd(std::move(newhead));
     }
     void IrGenVisitor::AddToEnd(std::shared_ptr<StatementNode> newtail) {
-      if (head_ == nullptr && tail_ == nullptr) {
-        head_ = newtail;
-        tail_ = newtail;
-        return;
-      }
-      tail_->GetNext() = newtail;
-      tail_ = tail_->GetNext();
-      return;
+      nodes.push_back(newtail);
     }
     void IrGenVisitor::PrintIR() {
-      std::shared_ptr<StatementNode> itor = head_;
       std::cout << "#### Start of IR ####" << endl;
-      while (itor != nullptr) {
-        itor->Print();
-        itor = itor->GetNext();
+      for (int i = 0; i < nodes.size(); i++) {
+        nodes[i]->Print();
         std::cout << endl;
       }
       std::cout << "#### END of IR ####" << endl;
     }
     int IrGenVisitor::NumberOfStatements() {
-      std::shared_ptr<StatementNode> itor = head_;
-      int statementCount = 1;
-      while (itor != nullptr) {
-        itor = itor->GetNext();
-        statementCount++;
-      }
-      return statementCount;
+      return nodes.size();
     }
-  }
-}
+  } //namespace backend
+} //namespace cs160

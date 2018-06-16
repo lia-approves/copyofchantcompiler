@@ -41,7 +41,7 @@ using cs160::abstract_syntax::version_5::Program;
 using cs160::backend::StatementNode;
 using cs160::backend::Constant;
 using cs160::backend::Label;
-using cs160::backend::Operator;
+using cs160::backend::Instruction;
 using cs160::backend::Register;
 using cs160::backend::Operand;
 using cs160::backend::Variable;
@@ -111,15 +111,14 @@ namespace cs160 {
       void VisitLogicalNotExpr(const LogicalNotExpr& exp) override;
       void VisitConditional(const Conditional& conditional) override;
       void VisitLoop(const Loop& loop) override;
-      std::shared_ptr<StatementNode> GetIR() { return head_; }
+      std::vector<std::shared_ptr<StatementNode>> GetIR() { return nodes; }
       void AddToEnd(std::shared_ptr<StatementNode> newtail);
       void PrintIR();
       int NumberOfStatements();
       int NumberOfMainVars() { return mainVars_; }
     private:
-      std::shared_ptr<StatementNode> head_ = nullptr;
-      std::shared_ptr<StatementNode> tail_ = nullptr;
-      int labelNum_ = 1; // label number tracker
+      std::vector<std::shared_ptr<StatementNode>> nodes;
+      int labelNum_ = 0; // label number tracker
       int register_number_ = 0; //reg number tracker
       std::vector<std::unique_ptr<Operand>> ir_stack_; //we push registers to this
       int mainVars_ = 0; //used only for the main func to know how many local vars we need to allocate otherwise we use the visitor for the functions

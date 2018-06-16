@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <iomanip>
 #include "utility/memory.h"
 
 using std::stringstream;
@@ -14,9 +15,9 @@ using std::endl;
 using std::string;
 using std::cout;
 
+
 namespace cs160 {
   namespace backend {
-
     class Operand {        // abstract class for operand can be constant(integer),
     public:               // variable or register or label
       Operand() {}
@@ -25,17 +26,6 @@ namespace cs160 {
       virtual void SetValue(int value) = 0;
       virtual std::string GetName() = 0;
     private:
-    };
-
-    class Label : public Operand {
-    public:
-      explicit Label(int labelNum) { value_ = (labelNum); }
-      ~Label() {}
-      int GetValue() { return value_; }
-      void SetValue(int value) { value_ = value; }
-      std::string GetName() { return "statementnumber_" + std::to_string(value_); }
-    private:
-      int value_;
     };
 
     class Register : public Operand {                        // t1, t2 ,etc
@@ -56,6 +46,7 @@ namespace cs160 {
       int GetValue() { return 0; }
       std::string GetName() { return name_; }
       void SetValue(int value) {}
+      void SetName(std::string name) { name_ = name; }
     private:
       std::string name_;
     };
@@ -70,7 +61,17 @@ namespace cs160 {
     private:
       int value_;
     };
-    class Operator {
+    class Label {
+    public:
+      explicit Label(int labelNum) { value_ = labelNum; }
+      ~Label() {}
+      int GetValue() { return value_; }
+      void SetValue(int newValue) { value_= newValue; }
+    private:
+      int value_;
+    };
+
+    class Instruction {
     public:
       enum Opcode {
         kAdd, kSubtract, kMultiply, kDivide,
@@ -78,12 +79,12 @@ namespace cs160 {
         kEqualTo, kGoto,
         kProgramStart, kProgramEnd,
         kFuncBegin, kParam, kFuncEnd, kReturn, kArgument, kCall,
-        kPushValueOfInteger, kPushAddressOfVariable, kPushValueOfVariable,
-        kPushAddressOfDereference, kPushValueOfDereference, kAssignmentFromNewTuple,
-        kAssignmentFromArithExp
+        kValueOfInteger, kAddressOfVariable, kValueOfVariable,
+        kAddressOfDereference, kValueOfDereference, kAssignmentFromNewTuple,
+        kAssignmentFromArithExp, kAssignmentToVariable, kPhiFunction
       };
-      explicit Operator(Opcode o) { op_ = (o); }
-      ~Operator() {}
+      explicit Instruction(Opcode o) { op_ = (o); }
+      ~Instruction() {}
       Opcode GetOpcode() const { return op_; }
     private:
       Opcode op_;
@@ -91,112 +92,114 @@ namespace cs160 {
     class StatementNode {
     public:
       StatementNode(
-        std::unique_ptr<Operand> label,
+        std::unique_ptr<Label> label,
         std::unique_ptr<Operand> target,
-        std::unique_ptr<Operator> instruction,
+        std::unique_ptr<Instruction> instruction,
         std::unique_ptr<Operand> operand1,
-        std::unique_ptr<Operand> operand2,
-        std::shared_ptr<StatementNode> next)
+        std::unique_ptr<Operand> operand2)
         : label_(std::move(label)),
         target_(std::move(target)),
-        operator_(std::move(instruction)),
+        instruction_(std::move(instruction)),
         operand1_(std::move(operand1)),
-        operand2_(std::move(operand2)),
-        next_(std::move(next)) {}
+        operand2_(std::move(operand2)) {}
       ~StatementNode() {}
       void Print() {
-        cout << "#S" << GetLabel().GetValue() << ":\t";
+        cout << "#   S" << GetLabel().GetValue() << ":  ";
         switch (GetInstruction().GetOpcode()) {
-        case Operator::kAdd:
+        case Instruction::kAdd:
           cout << GetTarget().GetName() << " = " << GetOp1().GetName() << " + " << GetOp2().GetName();
           break;
-        case Operator::kSubtract:
+        case Instruction::kSubtract:
           cout << GetTarget().GetName() << " = " << GetOp1().GetName() << " - " << GetOp2().GetName();
           break;
-        case Operator::kMultiply:
+        case Instruction::kMultiply:
           cout << GetTarget().GetName() << " = " << GetOp1().GetName() << " * " << GetOp2().GetName();
           break;
-        case Operator::kDivide:
+        case Instruction::kDivide:
           cout << GetTarget().GetName() << " = " << GetOp1().GetName() << " / " << GetOp2().GetName();
           break;
-        case Operator::kLessThan:
+        case Instruction::kLessThan:
           cout << "if (" << GetOp1().GetName() << " < " << GetOp2().GetName() << ") goto S" << GetTarget().GetValue() << ":";
           break;
-        case Operator::kLessThanEqualTo:
+        case Instruction::kLessThanEqualTo:
           cout << "if (" << GetOp1().GetName() << " <= " << GetOp2().GetName() << ") goto S" << GetTarget().GetValue() << ":";
           break;
-        case Operator::kGreaterThan:
+        case Instruction::kGreaterThan:
           cout << "if (" << GetOp1().GetName() << " > " << GetOp2().GetName() << ") goto S" << GetTarget().GetValue() << ":";
           break;
-        case Operator::kGreaterThanEqualTo:
+        case Instruction::kGreaterThanEqualTo:
           cout << "if (" << GetOp1().GetName() << " >= " << GetOp2().GetName() << ") goto S" << GetTarget().GetValue() << ":";
           break;
-        case Operator::kEqualTo:
+        case Instruction::kEqualTo:
           cout << "if (" << GetOp1().GetName() << " == " << GetOp2().GetName() << ") goto S" << GetTarget().GetValue() << ":";
           break;
-        case Operator::kGoto:
+        case Instruction::kGoto:
           cout << "goto S" << GetTarget().GetValue() << ":";
           break;
-        case Operator::kProgramStart:
-          cout << "program begin";
+        case Instruction::kProgramStart:
+          cout << "main program begin";
           break;
-        case Operator::kParam:
+        case Instruction::kParam:
           cout << "param " << GetTarget().GetName();
           break;
-        case Operator::kProgramEnd:
-          cout << "program end";
+        case Instruction::kProgramEnd:
+          cout << "main program end";
           break;
-        case Operator::kCall:
+        case Instruction::kCall:
           cout << "call " << GetTarget().GetName() << "," << GetOp2().GetValue() << "  --> " << GetOp1().GetName(); //op2 is num of args
           break;
-        case Operator::kArgument:
+        case Instruction::kArgument:
           cout << "argument " << GetTarget().GetName();
           break;
-        case Operator::kFuncBegin:
+        case Instruction::kFuncBegin:
           cout << "func begin " << GetTarget().GetName();
           break;
-        case Operator::kFuncEnd:
+        case Instruction::kFuncEnd:
           cout << "func end " << GetTarget().GetName();
           break;
-        case Operator::kReturn:
+        case Instruction::kReturn:
           cout << "return " << GetTarget().GetName();
           break;
-        case Operator::kPushValueOfInteger:
+        case Instruction::kValueOfInteger:
           cout << GetTarget().GetName() << " = " << GetOp2().GetName();
           break;
-        case Operator::kPushValueOfVariable:
+        case Instruction::kValueOfVariable:
           cout << GetTarget().GetName() << " = " << GetOp2().GetName();
           break;
-        case Operator::kPushAddressOfVariable:
+        case Instruction::kAddressOfVariable:
           cout << GetTarget().GetName() << " = &" << GetOp2().GetName();
           break;
-        case Operator::kPushAddressOfDereference:
+        case Instruction::kAddressOfDereference:
           cout << GetTarget().GetName() << " = &" << GetOp1().GetName() << "[" << GetOp2().GetName() << "]";
           break;
-        case Operator::kPushValueOfDereference:
+        case Instruction::kValueOfDereference:
           cout << GetTarget().GetName() << " = " << GetOp1().GetName() << "[" << GetOp2().GetName() << "]";
           break;
-        case Operator::kAssignmentFromArithExp:
+        case Instruction::kAssignmentFromArithExp:
           cout << "*" << GetTarget().GetName() << " = " << GetOp2().GetName(); // a=5  a is target 2 is in op2, if theres is a single argument in the Three adress code, we normally put it in the second op field
           break;
-        case Operator::kAssignmentFromNewTuple:
+        case Instruction::kAssignmentToVariable:
+          cout << GetTarget().GetName() << " = " << GetOp2().GetName(); // a=5  a is target 2 is in op2, if theres is a single argument in the Three adress code, we normally put it in the second op field
+          break;
+        case Instruction::kAssignmentFromNewTuple:
           cout << "*" << GetTarget().GetName() << " = newTuple(" << GetOp2().GetName() << ")";
+          break;
+        case Instruction::kPhiFunction:
+          cout << GetTarget().GetName() << " = phi(" << GetOp1().GetName() << ", " << GetOp2().GetName()<<")";
           break;
         }
       }
-      Operand& GetLabel() { return *label_; }
+      Label& GetLabel() { return *label_; }
       Operand& GetOp1() { return *operand1_; }
       Operand& GetOp2() { return *operand2_; }
       Operand& GetTarget() { return *target_; }
-      Operator& GetInstruction() { return *operator_; }
-      std::shared_ptr<StatementNode>& GetNext() { return next_; }
+      Instruction& GetInstruction() { return *instruction_; }
     private:
-      std::unique_ptr<Operand> label_;
+      std::unique_ptr<Label> label_;
       std::unique_ptr<Operand> target_;
-      std::unique_ptr<Operator> operator_;
+      std::unique_ptr<Instruction> instruction_;
       std::unique_ptr<Operand> operand1_;
       std::unique_ptr<Operand> operand2_;
-      std::shared_ptr<StatementNode> next_;
     };
   }  // namespace backend
 }  // namespace cs160
