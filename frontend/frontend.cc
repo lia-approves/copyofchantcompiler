@@ -1,39 +1,17 @@
 /*
  MIT License
- 
+
  Copyright (c) 2018, Team-Chant
- 
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
- 
- The above copyright notice and this permission notice shall be included in all
- copies or substantial portions of the Software.
- 
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- SOFTWARE.
  */
-
-
+#include <string>
+#include <iostream>
 #include "frontend/frontend.h"
-#include "frontend/scanner/token/IntegerToken.h"
-#include "frontend/scanner/token/ArithmeticExpressionToken.h"
-#include "frontend/scanner/token/OpenParenthesisToken.h"
-#include "frontend/scanner/token/ClosedParenthesisToken.h"
+#include "frontend/v1/scanner/state_machine/dfa/dfa.h"
 
 namespace cs160 {
 namespace frontend {
 
 namespace ast = cs160::abstract_syntax::frontend;
-namespace scan = cs160::scanner;
 
 Frontend::~Frontend(void) {}
 
@@ -41,31 +19,114 @@ Frontend::~Frontend(void) {}
 
 std::unique_ptr<ast::AstNode> Frontend::stringToAst(std::string input) {
   // return cs160::abstract_syntax::frontend::IntegerExpr node(2);
+  std::cout << "in the stringToAst function" << std::endl;
   auto tokenQueue = Frontend::tokenizeString(input);
+  std::cout << "tokenize string function works" << std::endl;
   return Frontend::makeParseTree(tokenQueue);
 }
 
-std::queue<scan::token::Token> Frontend::tokenizeString(std::string input) {
-  std::queue<scan::token::Token> q;
-  q.push(scan::token::IntegerToken("2"));
-  q.push(scan::token::ArithmeticExpressionToken("*"));
-  q.push(scan::token::OpenParenthesisToken());
-  q.push(scan::token::IntegerToken("1"));
-  q.push(scan::token::ArithmeticExpressionToken("+"));
-  q.push(scan::token::IntegerToken("3"));
-  q.push(scan::token::ClosedParenthesisToken());
-  return q;
+
+std::vector<std::shared_ptr<Token>>
+  Frontend::tokenizeString(std::string input) {
+  DFA dfa = makeDFA();
+  dfa.input(input);
+  std::vector<std::shared_ptr<Token>> p = dfa.GetOutput();
+  dfa.printQueue();
+  return dfa.GetOutput();
 }
 
-std::unique_ptr<ast::AstNode>
-    Frontend::makeParseTree(std::queue<scan::token::Token> tokens) {
-  auto two = cs160::make_unique<ast::IntegerExpr>(2);
+std::unique_ptr<ast::AstNode> Frontend::makeParseTree
+(std::vector<std::shared_ptr<Token>> tokens) {
+  /*auto two = cs160::make_unique<ast::IntegerExpr>(2);
   auto one = cs160::make_unique<ast::IntegerExpr>(1);
   auto three = cs160::make_unique<ast::IntegerExpr>(3);
   auto add = make_unique<ast::AddExpr>(std::move(one), std::move(three));
-
   auto root = make_unique<ast::MultiplyExpr>(std::move(two), std::move(add));
+  */
+  // call parser
+
+  Parser par(tokens);
+  std::cout << "made parser" << std::endl;
+  auto root = par.Parse();
+  std::cout << "right before return" << std::endl;
   return root;
 }
+
+
+DFA Frontend::makeDFA() {
+  cs160::frontend::State start(1);
+  cs160::frontend::State intState(2);
+    intState.makeAccepting();
+  cs160::frontend::State opState(3);
+    opState.makeAccepting();
+  cs160::frontend::State openParenState(4);
+    openParenState.makeAccepting();
+  cs160::frontend::State closeParenState(5);
+    closeParenState.makeAccepting();
+
+  start.addTransition('0', 2);
+  start.addTransition('1', 2);
+  start.addTransition('2', 2);
+  start.addTransition('3', 2);
+  start.addTransition('4', 2);
+  start.addTransition('5', 2);
+  start.addTransition('6', 2);
+  start.addTransition('7', 2);
+  start.addTransition('8', 2);
+  start.addTransition('9', 2);
+
+  start.addTransition('+', 3);
+  start.addTransition('-', 3);
+  start.addTransition('/', 3);
+  start.addTransition('*', 3);
+
+  start.addTransition('(', 4);
+  start.addTransition(')', 5);
+
+    start.setTokenOutput([](std::string str)->
+    std::shared_ptr<cs160::frontend::Token>
+    {return std::shared_ptr<cs160::frontend::Token>
+      (new cs160::frontend::InvalidToken(str));});
+
+  intState.addTransition('0', 2);
+  intState.addTransition('1', 2);
+  intState.addTransition('2', 2);
+  intState.addTransition('3', 2);
+  intState.addTransition('4', 2);
+  intState.addTransition('5', 2);
+  intState.addTransition('6', 2);
+  intState.addTransition('7', 2);
+  intState.addTransition('8', 2);
+  intState.addTransition('9', 2);
+
+    intState.setTokenOutput([](std::string str)->
+    std::shared_ptr<cs160::frontend::Token>
+    {return std::shared_ptr<cs160::frontend::Token>
+      (new cs160::frontend::IntegerToken(str));});
+
+    opState.setTokenOutput([](std::string str)->
+    std::shared_ptr<cs160::frontend::Token>
+    {return std::shared_ptr<cs160::frontend::Token>
+      (new cs160::frontend::ArithmeticExpressionToken(str));});
+
+    openParenState.setTokenOutput([](std::string str)->
+    std::shared_ptr<cs160::frontend::Token>
+    {return std::shared_ptr<cs160::frontend::Token>
+      (new cs160::frontend::OpenParenthesisToken(str));});
+
+    closeParenState.setTokenOutput([](std::string str)->
+    std::shared_ptr<cs160::frontend::Token>
+    {return std::shared_ptr<cs160::frontend::Token>
+      (new cs160::frontend::ClosedParenthesisToken(str));});
+
+  cs160::frontend::DFA arithmeticDFA(start);
+  arithmeticDFA.addState(intState);
+  arithmeticDFA.addState(opState);
+  arithmeticDFA.addState(openParenState);
+  arithmeticDFA.addState(closeParenState);
+
+  return arithmeticDFA;
+}
+
 }  // namespace frontend
 }  // namespace cs160

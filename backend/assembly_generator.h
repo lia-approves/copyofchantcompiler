@@ -1,6 +1,0 @@
-// Copyright msg for cpplint
-#ifndef BACKEND_ASSEMBLY_GENERATOR_H_
-#define BACKEND_ASSEMBLY_GENERATOR_H_
-
-
-#endif  // BACKEND_ASSEMBLY_GENERATOR_H_
