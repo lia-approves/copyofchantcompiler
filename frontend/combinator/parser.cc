@@ -364,7 +364,7 @@ Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
       // At this point, the cached value is empty.
       auto node = cache[state]->GetNodeUnique();
       auto copier
-        = MakeCopyVisitor();
+      = MakeCopyVisitor();
       node->Visit(copier);
       auto nodeCopy = copier->GetCopy();
       // Since restore the cached value.
@@ -387,29 +387,75 @@ Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode) {
 
     // return currentResult;
     Result res(currentResult.state(), ToNode(std::move(results)));
-    return CacheNodeResult(std::move(curr_result), &cache);
+    return CacheNodeResult(std::move(res), &cache);
   };
 }
 
 Parser Not(Parser parse, Converter<std::string> ToValue) {
+  static std::unordered_map<State, std::unique_ptr<Value>> cache;
   return [parse, ToValue](State state) {
-    // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
-    // exit(0);
+    // Check cache first before calculating
+    if (copyVisitorIsSet && (cache.find(state) != cache.end())) {
+      // Check if value is empty:
+      if (cache[state]->GetType() == Value::empty) {
+        return Result(state, false, "cached empty value");
+      }
+      // Check if value is a string:
+      if (cache[state]->GetType() == Value::string) {
+        return Result(state, Value(cache[state]->GetString()));
+      }
+      // Retrieve the node from cached value.
+      // At this point, the cached value is empty.
+      auto node = cache[state]->GetNodeUnique();
+      auto copier
+        = MakeCopyVisitor();
+      node->Visit(copier);
+      auto nodeCopy = copier->GetCopy();
+      // Since restore the cached value.
+      cache[state] = std::make_unique<Value>(Value(std::move(node)));
+      // Return a new result, using the copy of the node we made.
+      return Result(state, Value(std::move(nodeCopy)));
+    }
 
     auto result = parse(state);
     if (result.success()) {
-       return Result(state, false, "no match for not");
+      if (copyVisitorIsSet) {
+        cache[state] = std::make_unique<Value>(Value());
+      }
+      return Result(state, false, "no match for not");
     }
     char temp = state.readChar();
-    return Result(state, ToValue(std::string(1, temp)));;
+    Result res(state, ToValue(std::string(1, temp)));;
+    return CacheNodeResult(std::move(res), &cache);
   };
 }
 
 // Returns a function which runs a parser 1 or more times, returning all results
 Parser OnePlus(Parser parse, Converter<std::vector<Value>> ToNode) {
+  static std::unordered_map<State, std::unique_ptr<Value>> cache;
   return [parse, ToNode](State state) {
-    // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
-    // exit(0);
+    // Check cache first before calculating
+    if (copyVisitorIsSet && (cache.find(state) != cache.end())) {
+      // Check if value is empty:
+      if (cache[state]->GetType() == Value::empty) {
+        return Result(state, false, "cached empty value");
+      }
+      // Check if value is a string:
+      if (cache[state]->GetType() == Value::string) {
+        return Result(state, Value(cache[state]->GetString()));
+      }
+      // Retrieve the node from cached value.
+      // At this point, the cached value is empty.
+      auto node = cache[state]->GetNodeUnique();
+      auto copier
+        = MakeCopyVisitor();
+      node->Visit(copier);
+      auto nodeCopy = copier->GetCopy();
+      // Since restore the cached value.
+      cache[state] = std::make_unique<Value>(Value(std::move(node)));
+      // Return a new result, using the copy of the node we made.
+      return Result(state, Value(std::move(nodeCopy)));
+    }
 
     std::vector<Value> results;
     auto currentResult = parse(state);
@@ -420,20 +466,48 @@ Parser OnePlus(Parser parse, Converter<std::vector<Value>> ToNode) {
       currentResult = parse(currentResult.state());
     }
     if (results.size() == 0) {  // Must have one or more match, unlike Star()
-       return Result(state, false, "no matches at all");
+      if (copyVisitorIsSet) {
+        cache[state] = std::make_unique<Value>(Value());
+      }
+      return Result(state, false, "no matches at all");
     }
-    return Result(currentResult.state(), ToNode(std::move(results)));
+    Result res(currentResult.state(), ToNode(std::move(results)));
+    return CacheNodeResult(std::move(res), &cache);
   };
 }
 
 // Return a function which parses a string (whitespace sensitive)
 Parser ExactMatch(std::string str,
     Converter<std::string> ToValue) {
+  static std::unordered_map<State, std::unique_ptr<Value>> cache;
   return [str, ToValue](State state) {
-    // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
-    // exit(0);
+    // Check cache first before calculating
+    if (copyVisitorIsSet && (cache.find(state) != cache.end())) {
+      // Check if value is empty:
+      if (cache[state]->GetType() == Value::empty) {
+        return Result(state, false, "cached empty value");
+      }
+      // Check if value is a string:
+      if (cache[state]->GetType() == Value::string) {
+        return Result(state, Value(cache[state]->GetString()));
+      }
+      // Retrieve the node from cached value.
+      // At this point, the cached value is empty.
+      auto node = cache[state]->GetNodeUnique();
+      auto copier
+        = MakeCopyVisitor();
+      node->Visit(copier);
+      auto nodeCopy = copier->GetCopy();
+      // Since restore the cached value.
+      cache[state] = std::make_unique<Value>(Value(std::move(node)));
+      // Return a new result, using the copy of the node we made.
+      return Result(state, Value(std::move(nodeCopy)));
+    }
 
     if (state.atEnd()) {
+      if (copyVisitorIsSet) {
+        cache[state] = std::make_unique<Value>(Value());
+      }
       return Result(state, false, "end of file");
     }
 
@@ -444,6 +518,9 @@ Parser ExactMatch(std::string str,
         char next_str = str.at(i);
 
         if (next_p != next_str) {
+          if (copyVisitorIsSet) {
+            cache[state] = std::make_unique<Value>(Value());
+          }
           return Result(state, false, "no match for " + str);
         } else {
           ret += state.readChar();
@@ -454,13 +531,17 @@ Parser ExactMatch(std::string str,
           // checks if it is at the end of the file
           // must have the second statement to avoid
           // returning on the last check
+          if (copyVisitorIsSet) {
+            cache[state] = std::make_unique<Value>(Value());
+          }
           return Result(state, false, "end of file");
         }
     }
     // got to end of string with all characters matching
     // and not reaching end of file
     // therefore, return success
-    return Result(state, ToValue(ret));
+    Result res(state, ToValue(ret));
+    return CacheNodeResult(std::move(res), &cache);
   };
 }
 
@@ -468,11 +549,35 @@ Parser ExactMatch(std::string str,
 // Return a function which parses a string (whitespace insensitive)
 // AKA this function ignores whitespace in either state or string
 Parser Match(std::string str, Converter<std::string> ToValue) {
+  static std::unordered_map<State, std::unique_ptr<Value>> cache;
   return [str, ToValue](State state) {
-    // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
-    // exit(0);
+    // Check cache first before calculating
+    if (copyVisitorIsSet && (cache.find(state) != cache.end())) {
+      // Check if value is empty:
+      if (cache[state]->GetType() == Value::empty) {
+        return Result(state, false, "cached empty value");
+      }
+      // Check if value is a string:
+      if (cache[state]->GetType() == Value::string) {
+        return Result(state, Value(cache[state]->GetString()));
+      }
+      // Retrieve the node from cached value.
+      // At this point, the cached value is empty.
+      auto node = cache[state]->GetNodeUnique();
+      auto copier
+        = MakeCopyVisitor();
+      node->Visit(copier);
+      auto nodeCopy = copier->GetCopy();
+      // Since restore the cached value.
+      cache[state] = std::make_unique<Value>(Value(std::move(node)));
+      // Return a new result, using the copy of the node we made.
+      return Result(state, Value(std::move(nodeCopy)));
+    }
 
     if (state.atEnd()) {
+      if (copyVisitorIsSet) {
+        cache[state] = std::make_unique<Value>(Value());
+      }
       return Result(state, false, "end of file");
     }
 
@@ -498,6 +603,9 @@ Parser Match(std::string str, Converter<std::string> ToValue) {
       }
 
       if (next_p != next_str) {
+        if (copyVisitorIsSet) {
+          cache[state] = std::make_unique<Value>(Value());
+        }
         return Result(state, false, "no match for " + str);
       } else {
         state.advance();
@@ -506,38 +614,70 @@ Parser Match(std::string str, Converter<std::string> ToValue) {
     // got to end of string with all characters matching
     // and not reaching end of file
     // therefore, return success
-    return Result(state, ToValue(str));
+    Result res(state, ToValue(str));
+    return CacheNodeResult(std::move(res), &cache);
   };
 }
 
 
 Parser Between(Parser parseA, Parser parseB,
     Parser parseC, Converter<std::string> ToValue) {
+  static std::unordered_map<State, std::unique_ptr<Value>> cache;
   return [parseA, parseB, parseC, ToValue](State state) {
-    // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
-    // exit(0);
+    // Check cache first before calculating
+    if (copyVisitorIsSet && (cache.find(state) != cache.end())) {
+      // Check if value is empty:
+      if (cache[state]->GetType() == Value::empty) {
+        return Result(state, false, "cached empty value");
+      }
+      // Check if value is a string:
+      if (cache[state]->GetType() == Value::string) {
+        return Result(state, Value(cache[state]->GetString()));
+      }
+      // Retrieve the node from cached value.
+      // At this point, the cached value is empty.
+      auto node = cache[state]->GetNodeUnique();
+      auto copier
+      = MakeCopyVisitor();
+      node->Visit(copier);
+      auto nodeCopy = copier->GetCopy();
+      // Since restore the cached value.
+      cache[state] = std::make_unique<Value>(Value(std::move(node)));
+      // Return a new result, using the copy of the node we made.
+      return Result(state, Value(std::move(nodeCopy)));
+    }
 
     // Save position so we can reset later.
     int oldPosition = state.position();
     auto resultA = parseA(state);
     if (!resultA.success()) {
       state.setPosition(oldPosition);
+      if (copyVisitorIsSet) {
+        cache[state] = std::make_unique<Value>(Value());
+      }
       return Result(state, false, "C is not between A and B");
     }
 
     auto resultB = parseB(resultA.state());
     if (!resultB.success()) {
       state.setPosition(oldPosition);
+      if (copyVisitorIsSet) {
+        cache[state] = std::make_unique<Value>(Value());
+      }
       return Result(state, false, "C is not between A and B");
     }
 
     auto resultC = parseC(resultB.state());
     if (!resultC.success()) {
       state.setPosition(oldPosition);
+      if (copyVisitorIsSet) {
+        cache[state] = std::make_unique<Value>(Value());
+      }
       return Result(state, false, "C is not between A and B");
     }
 
-    return Result(resultB.state(), resultB.value());
+    Result res(resultB.state(), resultB.value());
+    return CacheNodeResult(std::move(res), &cache);
   };
 }
 
