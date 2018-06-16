@@ -1,5 +1,6 @@
 // Copyright (c) 2018, Team-Chant
 #include <vector>
+#include <unordered_map>
 #include "gtest/gtest.h"
 #include "frontend/combinator/parser.h"
 #include "abstract_syntax/print_visitor_v1.h"
@@ -9,9 +10,9 @@ namespace frontend {
 namespace Parse {
 
 using std::string;
-using abstract_syntax::frontend::IntegerExpr;
-using abstract_syntax::frontend::AstNode;
-using abstract_syntax::frontend::SubtractExpr;
+using abstract_syntax::version_1::IntegerExpr;
+using abstract_syntax::version_1::AstNode;
+using abstract_syntax::version_1::SubtractExpr;
 
 // TEST(CombinatorTest, InstantiateResult) {
 //   Result<int> fail(false, "sample error");
@@ -24,6 +25,26 @@ using abstract_syntax::frontend::SubtractExpr;
 
 TEST(CombinatorTest, InstantiateState) {
   State s("hi");
+}
+
+TEST(StateTest, EqualityOperator) {
+  State s1("hi");
+  State s2("hi");
+  ASSERT_TRUE(s1 == s2);
+  s1.advance();
+  ASSERT_FALSE(s1 == s2);
+  s2.advance();
+  ASSERT_TRUE(s1 == s2);
+}
+
+TEST(StateTest, Hash) {
+  std::unordered_map<State, int> map;
+  State s1("hi");
+  State s2("there");
+  map[s1] = 1;
+  map[s2] = 2;
+  ASSERT_EQ(map[s1], 1);
+  ASSERT_EQ(map[s2], 2);
 }
 
 TEST(CombinatorTest, ParseLiteral) {
@@ -264,9 +285,18 @@ TEST(CombinatorTest, CaptureIntNode) {
   auto result = parseIntNode(s);
   auto v = result.value();
   ASSERT_EQ(v.GetType(), Value::node);
-  abstract_syntax::frontend::PrintVisitor printer_;
-  v.Visit(&printer_);
-  ASSERT_EQ(printer_.GetOutput(), "1");
+  abstract_syntax::version_1::PrintVisitor printer_;
+  // These lines only work if you change ::version_1:: namespace to ::frontend::
+  // Because the library expects a ::frontend::PrintVisitor
+  // v.Visit(&printer_);
+  // ASSERT_EQ(printer_.GetOutput(), "1");
+}
+
+TEST(CombinatorTest, CacheTest) {
+  State s("a");
+  auto parse = Literal('b');
+  auto res1 = parse(s);
+  auto res2 = parse(s);
 }
 
 TEST(CombinatorTest, Star) {

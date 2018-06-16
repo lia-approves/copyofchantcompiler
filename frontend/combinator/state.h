@@ -26,14 +26,32 @@ class State {
       return true;
     }
   }
+  bool operator== (const State &other) const {
+    return (position_ == other.position() && input_ == other.getString());
+  }
   int position() const { return position_; }
   void setPosition(int p) { position_ = p; }
-  std::string getString() {return input_; }
+  std::string getString() const {return input_; }
+
  private:
   std::string input_;
   int position_;
 };
 
+
 }  // namespace frontend
 }  // namespace cs160
+
+namespace std {
+
+template <>
+struct hash<cs160::frontend::State> {
+  size_t operator() (const cs160::frontend::State& s) const {
+    return (
+      (hash<std::string>()(s.getString()) ^
+      (hash<int>()(s.position()) << 1)) >> 1);
+  }
+};
+
+}  // namespace std
 #endif  // FRONTEND_COMBINATOR_STATE_H_
