@@ -23,7 +23,6 @@ Result CacheNodeResult(
   Result res,
   // Use raw pointer to because a smart ptr could delete cache.
   std::unordered_map<State, std::unique_ptr<Value>>* cache) {
-
   if (!copyVisitorIsSet) return res;
   // Probably need to use two copiers, since GetCopy() will move the copy.
   auto copier1 = MakeCopyVisitor();
@@ -783,7 +782,11 @@ Parser Debug(Parser parser, std::string text) {
       if (state.position() == state.getString().size()) {
         std::cout << text << "  ; at end\n";
       } else {
-        std::cout << text << "  remaining state: " << state.getString().substr(state.position()) << std::endl;
+        std::cout
+          << text
+          << "  remaining state: "
+          << state.getString().substr(state.position())
+          << std::endl;
       }
       return parser(state);
   };

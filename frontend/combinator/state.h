@@ -32,6 +32,7 @@ class State {
   int position() const { return position_; }
   void setPosition(int p) { position_ = p; }
   std::string getString() const {return input_; }
+
  private:
   std::string input_;
   int position_;
@@ -46,7 +47,9 @@ namespace std {
 template <>
 struct hash<cs160::frontend::State> {
   size_t operator() (const cs160::frontend::State& s) const {
-    return ((hash<std::string>()(s.getString()) ^ (hash<int>()(s.position()) << 1)) >> 1);
+    return (
+      (hash<std::string>()(s.getString()) ^
+      (hash<int>()(s.position()) << 1)) >> 1);
   }
 };
 
