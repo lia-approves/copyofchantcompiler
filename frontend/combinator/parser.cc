@@ -715,10 +715,9 @@ Parser Int(Converter<std::string> ToNode) {
       }
       return Result(state, false, "not an integer");
     }
-    // auto result = Result(res.state(), ToNode(res.value().String()));
     auto v = ToNode(res.value().GetString());
-    Result res(res.state(), std::move(v));
-    return CacheNodeResult(std::move(res), &cache);
+    Result ret(res.state(), std::move(v));
+    return CacheNodeResult(std::move(ret), &cache);
   };
 }
 
