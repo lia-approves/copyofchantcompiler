@@ -1,0 +1,232 @@
+Running main() from gtest_main.cc
+[==========] Running 9 tests from 4 test cases.
+[----------] Global test environment set-up.
+[----------] 5 tests from Assignment
+[ RUN      ] Assignment.OfVariable
+
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+#   S0:  main program begin
+#   S1:  t0 = 12
+#   S2:  a = t0
+#   S3:  t1 = 12
+#   S4:  t2 = 30
+#   S5:  t3 = t1 + t2
+#   S6:  return t3
+#   S7:  main program end
+[       OK ] Assignment.OfVariable (98 ms)
+[ RUN      ] Assignment.OfDereference
+
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+#   S0:  main program begin
+#   S1:  t0 = 12
+#   S2:  a = t0
+#   S3:  t1 = &b
+#   S4:  t2 = 3
+#   S5:  *t1 = newTuple(t2)
+#   S6:  t3 = 5
+#   S7:  t4 = &b
+#   S8:  t5 = 2
+#   S9:  t6 = &t4[t5]
+#   S10:  *t6 = t3
+#   S11:  t7 = a
+#   S12:  t8 = 30
+#   S13:  t9 = t7 + t8
+#   S14:  return t9
+#   S15:  main program end
+[       OK ] Assignment.OfDereference (88 ms)
+[ RUN      ] Assignment.OfDereferenceToDereference
+
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+#   S0:  main program begin
+#   S1:  t0 = 12
+#   S2:  a = t0
+#   S3:  t1 = &b
+#   S4:  t2 = 3
+#   S5:  *t1 = newTuple(t2)
+#   S6:  t3 = &b
+#   S7:  t4 = 3
+#   S8:  t5 = t3[t4]
+#   S9:  t6 = &b
+#   S10:  t7 = 2
+#   S11:  t8 = &t6[t7]
+#   S12:  *t8 = t5
+#   S13:  t9 = a
+#   S14:  t10 = 30
+#   S15:  t11 = t9 + t10
+#   S16:  return t11
+#   S17:  main program end
+[       OK ] Assignment.OfDereferenceToDereference (84 ms)
+[ RUN      ] Assignment.OfNestedDereference
+
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+#   S0:  main program begin
+#   S1:  t0 = 12
+#   S2:  a = t0
+#   S3:  t1 = &b
+#   S4:  t2 = 3
+#   S5:  *t1 = newTuple(t2)
+#   S6:  t3 = 3
+#   S7:  t4 = &b
+#   S8:  t5 = 2
+#   S9:  t6 = &t4[t5]
+#   S10:  *t6 = t3
+#   S11:  t7 = 5
+#   S12:  t8 = &b
+#   S13:  t9 = &b
+#   S14:  t10 = 2
+#   S15:  t11 = t9[t10]
+#   S16:  t12 = &t8[t11]
+#   S17:  *t12 = t7
+#   S18:  t13 = a
+#   S19:  t14 = 30
+#   S20:  t15 = t13 + t14
+#   S21:  return t15
+#   S22:  main program end
+[       OK ] Assignment.OfNestedDereference (86 ms)
+[ RUN      ] Assignment.OfNestedDereference2
+
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+#   S0:  main program begin
+#   S1:  t0 = 2
+#   S2:  a = t0
+#   S3:  t1 = &b
+#   S4:  t2 = 3
+#   S5:  *t1 = newTuple(t2)
+#   S6:  t3 = 3
+#   S7:  t4 = &b
+#   S8:  t5 = 2
+#   S9:  t6 = &t4[t5]
+#   S10:  *t6 = t3
+#   S11:  t7 = 12
+#   S12:  t8 = &b
+#   S13:  t9 = &b
+#   S14:  t10 = a
+#   S15:  t11 = t9[t10]
+#   S16:  t12 = &t8[t11]
+#   S17:  *t12 = t7
+#   S18:  t13 = &b
+#   S19:  t14 = 3
+#   S20:  t15 = t13[t14]
+#   S21:  t16 = 30
+#   S22:  t17 = t15 + t16
+#   S23:  return t17
+#   S24:  main program end
+[       OK ] Assignment.OfNestedDereference2 (94 ms)
+[----------] 5 tests from Assignment (450 ms total)
+
+[----------] 1 test from Access
+[ RUN      ] Access.OfDereference
+
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+#   S0:  main program begin
+#   S1:  t0 = &b
+#   S2:  t1 = 3
+#   S3:  *t0 = newTuple(t1)
+#   S4:  t2 = 30
+#   S5:  t3 = &b
+#   S6:  t4 = 2
+#   S7:  t5 = &t3[t4]
+#   S8:  *t5 = t2
+#   S9:  t6 = 12
+#   S10:  t7 = &b
+#   S11:  t8 = 2
+#   S12:  t9 = t7[t8]
+#   S13:  t10 = t6 + t9
+#   S14:  return t10
+#   S15:  main program end
+[       OK ] Access.OfDereference (86 ms)
+[----------] 1 test from Access (86 ms total)
+
+[----------] 1 test from Create
+[ RUN      ] Create.Function
+
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+
+# BlockId: 11, iDom: -1, Dominates: 11, Dominance Frontier: 
+#   S0:  func begin foo
+#   S1:  param param_a
+#   S2:  t1 = param_a
+#   S3:  t2 = 5
+#   S4:  t3 = t1 + t2
+#   S5:  local_b = t3
+#   S6:  t4 = local_b
+#   S7:  t5 = 5
+#   S8:  t6 = t4 + t5
+#   S9:  return t6
+#   S10:  func end foo
+#   S11:  main program begin
+#   S12:  t7 = 12
+#   S13:  a = t7
+#   S14:  t8 = a
+#   S15:  t9 = 30
+#   S16:  t10 = t8 + t9
+#   S17:  return t10
+#   S18:  main program end
+[       OK ] Create.Function (86 ms)
+[----------] 1 test from Create (86 ms total)
+
+[----------] 2 tests from Call
+[ RUN      ] Call.Function
+
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+
+# BlockId: 9, iDom: -1, Dominates: 9, Dominance Frontier: 
+#   S0:  func begin foo
+#   S1:  param param_a
+#   S2:  t1 = param_a
+#   S3:  t2 = 5
+#   S4:  t3 = t1 + t2
+#   S5:  local_b = t3
+#   S6:  t4 = 22
+#   S7:  return t4
+#   S8:  func end foo
+#   S9:  main program begin
+#   S10:  t5 = 12
+#   S11:  a = t5
+#   S12:  t6 = 12
+#   S13:  argument t6
+#   S14:  call foo,1  --> foo_retval
+#   S15:  t7 = foo_retval
+#   S16:  t8 = 20
+#   S17:  t9 = t7 + t8
+#   S18:  return t9
+#   S19:  main program end
+[       OK ] Call.Function (82 ms)
+[ RUN      ] Call.FunctionTwice
+
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+
+# BlockId: 11, iDom: -1, Dominates: 11, Dominance Frontier: 
+#   S0:  func begin foo
+#   S1:  param param_a
+#   S2:  t1 = param_a
+#   S3:  t2 = 5
+#   S4:  t3 = t1 + t2
+#   S5:  local_b = t3
+#   S6:  t4 = local_b
+#   S7:  t5 = 5
+#   S8:  t6 = t4 + t5
+#   S9:  return t6
+#   S10:  func end foo
+#   S11:  main program begin
+#   S12:  t7 = 12
+#   S13:  a = t7
+#   S14:  t8 = 12
+#   S15:  B = t8
+#   S16:  t9 = 12
+#   S17:  argument t9
+#   S18:  call foo,1  --> foo_retval
+#   S19:  t10 = 22
+#   S20:  argument t10
+#   S21:  call foo,1  --> foo_retval
+#   S22:  t11 = foo_retval
+#   S23:  t12 = 20
+#   S24:  t13 = t11 + t12
+#   S25:  return t13
+#   S26:  main program end
+[       OK ] Call.FunctionTwice (89 ms)
+[----------] 2 tests from Call (171 ms total)
+
+[----------] Global test environment tear-down
+[==========] 9 tests from 4 test cases ran. (794 ms total)
+[  PASSED  ] 9 tests.
