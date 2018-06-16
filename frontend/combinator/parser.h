@@ -37,7 +37,6 @@ using NodeMaker = std::function<Node(T)>;
 template<class T>
 using Converter = std::function<Value(T)>;
 
-//Helper function to return a value version of a string
 Value ToStringValue(std::string s) {
   return Value(s);
 }
@@ -51,7 +50,6 @@ Value Concat(Value v1, Value v2) {
   return Value(v1.GetString() + v2.GetString());
 }
 
-//Helper to concatenate a vector of values properly
 Value ConcatVector(std::vector<Value> values) {
   std::string s;
   for (auto it = values.begin(); it != values.end(); ++it) {
@@ -84,7 +82,6 @@ Parser And(
 Parser And(std::vector<Parser> p_vec,
     std::function<Value(Value, Value)> ToValue = Concat);
 
-// Returns a function which runs a Parser and fulfills the duty of a star operator
 Parser Star(Parser Parse, Converter<std::vector<Value>> ToNode);
 
 Parser OnePlus(Parser parse, Converter<std::vector<Value>> ToNode);
@@ -93,28 +90,22 @@ Parser OnePlus(Parser parse, Converter<std::vector<Value>> ToNode);
 // and a failure if it succeeds
 Parser Not(Parser parse, Converter<std::string> ToValue = ToStringValue);
 
-// Returns a function which checks if a given string value is an exact match
 Parser ExactMatch(std::string str, Converter<std::string>
   ToValue = ToStringValue);
 
-// Returns a function which checks if a given string matches at all
 Parser Match(std::string str, Converter<std::string> ToValue = ToStringValue);
 
-// Returns a function which takes multiple parsers and checks if one is between the others
 Parser Between(Parser parseA, Parser parseB,
     Parser parseC, Converter<std::string> ToValue = ToStringValue);
 
-// Returns a IntegerExpr node
 Parser Int(Converter<std::string> ToNode = [](std::string s) {
   auto node = Node(new abstract_syntax::frontend::IntegerExpr(std::stoi(s)));
   return Value(std::move(node));
 });
 
-// Returns a function to check if multiple parsers are in a sequence
 Parser Sequence(Parser parseA, Parser parseB, Parser parseC,
   Converter<std::vector<Value>> ToNode);
 
-// Helper function to help debug sequences of parsers
 Parser Debug(Parser parser, std::string text);
 
 }  // namespace Parse

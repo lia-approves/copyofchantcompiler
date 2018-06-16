@@ -300,7 +300,7 @@ void InitializeParsers(Frontend::Grammar *g) {
           [](Value v1, Value v2) {
             // First and callback
             // First value will be a literal, second value will be a node
-            auto v2Node = v2.GetNodeUnique();
+          auto v2Node = v2.GetNodeUnique();
            Value ret(std::move(v2Node));
            ret.SetString(v1.GetString());
            return ret;
@@ -441,23 +441,18 @@ void InitializeParsers(Frontend::Grammar *g) {
     Frontend::Lazy(g->Expression_),
     [](ValueVec values) {
       // Sequence callback
-      std::cout << "in assign_" << std::endl;
       auto v = values[0].GetNodeUnique();
       // Make variable expression for lhs
       std::unique_ptr<const ast::VariableExpr> var =
         unique_cast<ast::VariableExpr>(move(v));
-
         // Make Arithmetic expression from Expression_ for rhs
       auto e = values[2].GetNodeUnique();
       std::unique_ptr<const ast::ArithmeticExpr> expression =
-        unique_cast<ast::ArithmeticExpr>(move(e));
-
+        unique_cast<ast::VariableExpr>(move(e));
         // Make assignment expression
       std::unique_ptr<ast::AstNode> ret(new ast::Assignment(move(var),
         move(expression)));
-      Printer p;
-      ret->Visit(&p);
-      std::cout << "return assign, " << p.GetOutput() << std::endl;
+
       return Value(move(ret));
     });
 
@@ -491,7 +486,6 @@ void InitializeParsers(Frontend::Grammar *g) {
       // Callback for Star().
       [](ValueVec values) {
         // If there are no matches in the Star, return an empty value.
-        // int size = values.size();
         if (values.size() == 0) {
           std::vector<std::unique_ptr<const ast::Assignment>> assignments;
           Frontend::assignments_ = std::move(assignments);
@@ -503,37 +497,55 @@ void InitializeParsers(Frontend::Grammar *g) {
           Value ret(std::move(expression));
           return ret;
         }
-
-        while (values.size() > 0) {
-          // make and append to assignments_
-          auto v = std::move(values.back());
-          values.pop_back();
-
-          auto v_node = v.GetNodeUnique();
-
-          auto assignment_v = unique_cast<const ast::Assignment>(move(v_node));
-
-          std::vector<std::unique_ptr<const ast::Assignment>>::iterator it =
-                  assignments_.begin();
-          assignments_.insert(it, std::move(assignment_v));
-        }
         // As long as there are multiple matches, coalesce them into 1.
-        // std::vector<std::unique_ptr<const ast::Assignment>> assignments;
-        // see if I can print assignment
-        Value ret("hello");
-        return ret;
+        std::vector<std::unique_ptr<const ast::Assignment>> assignments;
+        while (values.size() > 1) {
+          // Get the current assignment
+          std::string op = values.back().GetString();
+          auto curr = values.back().GetNodeUnique();
+          auto currAssignment =
+            unique_cast<const ast::Assignment>(move(curr));
+
+            // push to the vector
+          assignments.push_back(move(currAssignment));
+
+          // Replace the last element with newNodePtr
+          values.pop_back();
+        }
+        // If there is 1 match, return it and
+        // the result of the And() (casted).
+        if (values.size() == 1) {
+          // This Value is an ArithmeticExp
+          std::string exp = values[0].GetString();
+          auto v = values[0].GetNodeUnique();
+          auto v2 = unique_cast<ast::ArithmeticExpr, ast::AstNode>(move(v));
+
+          auto ProgExpression = new ast::Program(move(assignments), move(v2));
+          auto expression = make_unique<ast::Program>
+                (std::move(*ProgExpression));
+          Frontend::assignments_ = std::move(assignments);
+          Value ret(std::move(expression));
+          ret.SetString(exp);
+          return ret;
+        }
+        throw std::logic_error("Couldn't coalesce values into 1 expression");
       }), Frontend::Lazy(g->Expression_),
       [] (Value v1, Value v2) {
+        // Callback for And
+        // v1 is a Prog expression already
+        // v2 is an expression
+
+        auto v1_node = v1.GetNodeUnique();
+        auto v1_prog = unique_cast
+              <ast::Program, ast::AstNode>(std::move(v1_node));
         auto v2_node = v2.GetNodeUnique();
         auto v2_expr = unique_cast
               <ast::ArithmeticExpr, ast::AstNode>(std::move(v2_node));
-        std::vector<std::unique_ptr<const ast::Assignment>> assignments
-                = std::move(assignments_);
 
         // Make new Prog Expression
         std::unique_ptr<ast::AstNode> newNodePtr;
         newNodePtr.reset(new ast::Program(
-          std::move(assignments),
+          std::move(Frontend::assignments_),
           std::move(v2_expr)));
       Value ret(std::move(newNodePtr));
       return ret;

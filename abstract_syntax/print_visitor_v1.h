@@ -1,4 +1,3 @@
-// Copyright (c) 2018, Team-Chant
 #ifndef ABSTRACT_SYNTAX_PRINT_VISITOR_V1_H_
 #define ABSTRACT_SYNTAX_PRINT_VISITOR_V1_H_
 
