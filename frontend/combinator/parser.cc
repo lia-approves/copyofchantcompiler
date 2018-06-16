@@ -682,16 +682,43 @@ Parser Between(Parser parseA, Parser parseB,
 }
 
 Parser Int(Converter<std::string> ToNode) {
+  static std::unordered_map<State, std::unique_ptr<Value>> cache;
   return [ToNode](State state) {
+    // Check cache first before calculating
+    if (copyVisitorIsSet && (cache.find(state) != cache.end())) {
+      // Check if value is empty:
+      if (cache[state]->GetType() == Value::empty) {
+        return Result(state, false, "cached empty value");
+      }
+      // Check if value is a string:
+      if (cache[state]->GetType() == Value::string) {
+        return Result(state, Value(cache[state]->GetString()));
+      }
+      // Retrieve the node from cached value.
+      // At this point, the cached value is empty.
+      auto node = cache[state]->GetNodeUnique();
+      auto copier
+        = MakeCopyVisitor();
+      node->Visit(copier);
+      auto nodeCopy = copier->GetCopy();
+      // Since restore the cached value.
+      cache[state] = std::make_unique<Value>(Value(std::move(node)));
+      // Return a new result, using the copy of the node we made.
+      return Result(state, Value(std::move(nodeCopy)));
+    }
 
     auto parse = Range("09");
     auto res = parse(state);
     if (!res.success()) {
+      if (copyVisitorIsSet) {
+        cache[state] = std::make_unique<Value>(Value());
+      }
       return Result(state, false, "not an integer");
     }
     // auto result = Result(res.state(), ToNode(res.value().String()));
     auto v = ToNode(res.value().GetString());
-    return Result(res.state(), std::move(v));
+    Result res(res.state(), std::move(v));
+    return CacheNodeResult(std::move(res), &cache);
   };
 }
 
