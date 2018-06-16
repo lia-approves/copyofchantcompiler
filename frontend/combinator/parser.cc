@@ -135,17 +135,65 @@ Parser Range(std::string c, Converter<std::string> ToValue) {
 Parser Or(Parser parseA, Parser parseB) {
   // Note: we don't need to rewind the input here.  Since at most ONE parser
   // will successfully run, the input parsers will can rewind for us
+  static std::unordered_map<State, std::unique_ptr<Value>> cache;
   return [parseA, parseB](State state) {
-    // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
-    // exit(0);
+    // Check cache first before calculating
+    if (copyVisitorIsSet && (cache.find(state) != cache.end())) {
+      // Check if value is empty:
+      if (cache[state]->GetType() == Value::empty) {
+        return Result(state, false, "cached empty value");
+      }
+      // Check if value is a string:
+      if (cache[state]->GetType() == Value::string) {
+        return Result(state, Value(cache[state]->GetString()));
+      }
+      // Retrieve the node from cached value.
+      // At this point, the cached value is empty.
+      auto node = cache[state]->GetNodeUnique();
+      auto copier
+        = MakeCopyVisitor();
+      node->Visit(copier);
+      auto nodeCopy = copier->GetCopy();
+      // Since restore the cached value.
+      cache[state] = std::make_unique<Value>(Value(std::move(node)));
+      // Return a new result, using the copy of the node we made.
+      return Result(state, Value(std::move(nodeCopy)));
+    }
 
     auto resultA = parseA(state);
     if (resultA.success()) {
+      if (copyVisitorIsSet) {
+        // Probably need to use two copiers, since GetCopy() will move the copy.
+        auto copier1 = MakeCopyVisitor();
+        auto copier2 = MakeCopyVisitor();
+        auto value = resultA.value();
+        value.GetNodeUnique()->Visit(copier1);
+        value.GetNodeUnique()->Visit(copier2);
+        auto copy1 = copier1->GetCopy();
+        auto copy2 = copier2->GetCopy();
+        cache[state] = std::make_unique<Value>(Value(std::move(copy1)));
+        return Result(state, Value(std::move(copy2)));
+      }
       return resultA;
     }
     auto resultB = parseB(state);
     if (resultB.success()) {
+      if (copyVisitorIsSet) {
+        // Probably need to use two copiers, since GetCopy() will move the copy.
+        auto copier1 = MakeCopyVisitor();
+        auto copier2 = MakeCopyVisitor();
+        auto value = resultB.value();
+        value.GetNodeUnique()->Visit(copier1);
+        value.GetNodeUnique()->Visit(copier2);
+        auto copy1 = copier1->GetCopy();
+        auto copy2 = copier2->GetCopy();
+        cache[state] = std::make_unique<Value>(Value(std::move(copy1)));
+        return Result(state, Value(std::move(copy2)));
+      }
       return resultB;
+    }
+    if (copyVisitorIsSet) {
+      cache[state] = std::make_unique<Value>(Value());
     }
     return Result(state, false, "no match for A or B");
   };
