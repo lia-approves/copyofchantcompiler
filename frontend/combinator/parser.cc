@@ -19,6 +19,24 @@ void SetCopyVisitor(std::function<CopyVisitor*()> copier) {
   MakeCopyVisitor = copier;
 }
 
+Result CacheNodeResult(
+  Result res,
+  // Use raw pointer to because a smart ptr could delete cache.
+  std::unordered_map<State, std::unique_ptr<Value>>* cache) {
+
+  if (!copyVisitorIsSet) return res;
+  // Probably need to use two copiers, since GetCopy() will move the copy.
+  auto copier1 = MakeCopyVisitor();
+  auto copier2 = MakeCopyVisitor();
+  auto value = res.value();
+  value.GetNodeUnique()->Visit(copier1);
+  value.GetNodeUnique()->Visit(copier2);
+  auto copy1 = copier1->GetCopy();
+  auto copy2 = copier2->GetCopy();
+  (*cache)[res.state()] = std::make_unique<Value>(Value(std::move(copy1)));
+  return Result(res.state(), Value(std::move(copy2)));
+}
+
 Parser Literal(char c, Converter<std::string> ToValue) {
   static std::unordered_map<State, std::unique_ptr<Value>> cache;
   return [c, ToValue](State state) {
@@ -162,35 +180,11 @@ Parser Or(Parser parseA, Parser parseB) {
 
     auto resultA = parseA(state);
     if (resultA.success()) {
-      if (copyVisitorIsSet) {
-        // Probably need to use two copiers, since GetCopy() will move the copy.
-        auto copier1 = MakeCopyVisitor();
-        auto copier2 = MakeCopyVisitor();
-        auto value = resultA.value();
-        value.GetNodeUnique()->Visit(copier1);
-        value.GetNodeUnique()->Visit(copier2);
-        auto copy1 = copier1->GetCopy();
-        auto copy2 = copier2->GetCopy();
-        cache[state] = std::make_unique<Value>(Value(std::move(copy1)));
-        return Result(state, Value(std::move(copy2)));
-      }
-      return resultA;
+      return CacheNodeResult(std::move(resultA), &cache);
     }
     auto resultB = parseB(state);
     if (resultB.success()) {
-      if (copyVisitorIsSet) {
-        // Probably need to use two copiers, since GetCopy() will move the copy.
-        auto copier1 = MakeCopyVisitor();
-        auto copier2 = MakeCopyVisitor();
-        auto value = resultB.value();
-        value.GetNodeUnique()->Visit(copier1);
-        value.GetNodeUnique()->Visit(copier2);
-        auto copy1 = copier1->GetCopy();
-        auto copy2 = copier2->GetCopy();
-        cache[state] = std::make_unique<Value>(Value(std::move(copy1)));
-        return Result(state, Value(std::move(copy2)));
-      }
-      return resultB;
+      return CacheNodeResult(std::move(resultB), &cache);
     }
     if (copyVisitorIsSet) {
       cache[state] = std::make_unique<Value>(Value());
@@ -200,15 +194,37 @@ Parser Or(Parser parseA, Parser parseB) {
 }
 
 Parser Or(std::vector<Parser> p_vec) {
+  static std::unordered_map<State, std::unique_ptr<Value>> cache;
   return [p_vec](State state) {
-
+    // Check cache first before calculating
+    if (copyVisitorIsSet && (cache.find(state) != cache.end())) {
+      // Check if value is empty:
+      if (cache[state]->GetType() == Value::empty) {
+        return Result(state, false, "cached empty value");
+      }
+      // Check if value is a string:
+      if (cache[state]->GetType() == Value::string) {
+        return Result(state, Value(cache[state]->GetString()));
+      }
+      // Retrieve the node from cached value.
+      // At this point, the cached value is empty.
+      auto node = cache[state]->GetNodeUnique();
+      auto copier
+        = MakeCopyVisitor();
+      node->Visit(copier);
+      auto nodeCopy = copier->GetCopy();
+      // Since restore the cached value.
+      cache[state] = std::make_unique<Value>(Value(std::move(node)));
+      // Return a new result, using the copy of the node we made.
+      return Result(state, Value(std::move(nodeCopy)));
+    }
 
     int size = p_vec.size();
     for (int i=0; i < size; i++) {
       auto curr_parser = p_vec.at(i);
       auto curr_result = curr_parser(state);
       if (curr_result.success()) {
-        return curr_result;
+        return CacheNodeResult(std::move(curr_result), &cache);
       }
     }
 
@@ -218,25 +234,55 @@ Parser Or(std::vector<Parser> p_vec) {
 
 Parser And(Parser parseA, Parser parseB,
   std::function<Value(Value, Value)> ToValue) {
+      static std::unordered_map<State, std::unique_ptr<Value>> cache;
       return [parseA, parseB, ToValue](State state) {
+        // Check cache first before calculating
+        if (copyVisitorIsSet && (cache.find(state) != cache.end())) {
+          // Check if value is empty:
+          if (cache[state]->GetType() == Value::empty) {
+            return Result(state, false, "cached empty value");
+          }
+          // Check if value is a string:
+          if (cache[state]->GetType() == Value::string) {
+            return Result(state, Value(cache[state]->GetString()));
+          }
+          // Retrieve the node from cached value.
+          // At this point, the cached value is empty.
+          auto node = cache[state]->GetNodeUnique();
+          auto copier
+          = MakeCopyVisitor();
+          node->Visit(copier);
+          auto nodeCopy = copier->GetCopy();
+          // Since restore the cached value.
+          cache[state] = std::make_unique<Value>(Value(std::move(node)));
+          // Return a new result, using the copy of the node we made.
+          return Result(state, Value(std::move(nodeCopy)));
+        }
         // Save position so we can reset later.
         std::string curr_s = state.getString();
-      //  int pos = state.position();
+        //  int pos = state.position();
 
         int oldPosition = state.position();
         auto resultA = parseA(state);
         if (!resultA.success()) {
           state.setPosition(oldPosition);
+          if (copyVisitorIsSet) {
+            cache[state] = std::make_unique<Value>(Value());
+          }
           return Result(state, false, "no match for A and B");
         }
         auto resultB = parseB(resultA.state());
         if (!resultB.success()) {
           state.setPosition(oldPosition);
+          if (copyVisitorIsSet) {
+            cache[state] = std::make_unique<Value>(Value());
+          }
           return Result(state, false, "no match for A and B");
         }
-        return Result(
+        Result res(
           resultB.state(),
           ToValue(resultA.value(), resultB.value()));
+        return CacheNodeResult(std::move(res), &cache);
       };
 }
 
