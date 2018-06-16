@@ -288,9 +288,30 @@ Parser And(Parser parseA, Parser parseB,
 
 Parser And(std::vector<Parser> p_vec,
     std::function<Value(Value, Value)> ToValue) {
+  static std::unordered_map<State, std::unique_ptr<Value>> cache;
   return[p_vec, ToValue](State state) {
-    // std::cout <<__PRETTY_FUNCTION__ << "BADNESS 9000" << std::endl;
-    // exit(0);
+    // Check cache first before calculating
+    if (copyVisitorIsSet && (cache.find(state) != cache.end())) {
+      // Check if value is empty:
+      if (cache[state]->GetType() == Value::empty) {
+        return Result(state, false, "cached empty value");
+      }
+      // Check if value is a string:
+      if (cache[state]->GetType() == Value::string) {
+        return Result(state, Value(cache[state]->GetString()));
+      }
+      // Retrieve the node from cached value.
+      // At this point, the cached value is empty.
+      auto node = cache[state]->GetNodeUnique();
+      auto copier
+        = MakeCopyVisitor();
+      node->Visit(copier);
+      auto nodeCopy = copier->GetCopy();
+      // Since restore the cached value.
+      cache[state] = std::make_unique<Value>(Value(std::move(node)));
+      // Return a new result, using the copy of the node we made.
+      return Result(state, Value(std::move(nodeCopy)));
+    }
 
     int size = p_vec.size();
     int oldPosition = state.position();
@@ -298,6 +319,9 @@ Parser And(std::vector<Parser> p_vec,
     auto curr_result = curr_parser(state);
     if (!curr_result.success()) {
       state.setPosition(oldPosition);
+      if (copyVisitorIsSet) {
+        cache[state] = std::make_unique<Value>(Value());
+      }
       return Result(state, false, "No result for vector of parsers");
     }
 
@@ -307,15 +331,19 @@ Parser And(std::vector<Parser> p_vec,
       curr_result = curr_parser(curr_result.state());
       if (!curr_result.success()) {
         state.setPosition(oldPosition);
+        if (copyVisitorIsSet) {
+          cache[state] = std::make_unique<Value>(Value());
+        }
         return Result(state, false, "No result for vector of parsers");
       }
-        curr_value = ToValue(std::move(curr_value), curr_result.value());
+      curr_value = ToValue(std::move(curr_value), curr_result.value());
     }
     // if it does not return in the for loop, then
     // all of the parsers achieve success
     // therefore, return a success
 
-    return Result(curr_result.state(), std::move(curr_value));
+    Result res(curr_result.state(), std::move(curr_value));
+    return CacheNodeResult(std::move(res), &cache);
   };
 }
 
