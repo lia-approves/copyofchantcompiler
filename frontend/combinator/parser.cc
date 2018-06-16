@@ -618,7 +618,7 @@ Parser Match(std::string str, Converter<std::string> ToValue) {
   };
 }
 
-// Returns a function which checks to see if parser C is between the first two parser inputs
+
 Parser Between(Parser parseA, Parser parseB,
     Parser parseC, Converter<std::string> ToValue) {
   static std::unordered_map<State, std::unique_ptr<Value>> cache;
@@ -680,7 +680,6 @@ Parser Between(Parser parseA, Parser parseB,
   };
 }
 
-// Returns a function to generate a integer expression
 Parser Int(Converter<std::string> ToNode) {
   static std::unordered_map<State, std::unique_ptr<Value>> cache;
   return [ToNode](State state) {
@@ -769,7 +768,6 @@ struct SequenceLambda {
   }
 };
 
-// Returns a function which puts multiple parsers in a sequence
 Parser Sequence(Parser parseA, Parser parseB, Parser parseC,
     Converter<std::vector<Value>> ToNode) {
 
@@ -779,7 +777,6 @@ Parser Sequence(Parser parseA, Parser parseB, Parser parseC,
   // };
 }
 
-// Helper function to help with debugging by printing out each state's info
 Parser Debug(Parser parser, std::string text) {
   return [parser, text](State state) {
       if (state.position() == state.getString().size()) {

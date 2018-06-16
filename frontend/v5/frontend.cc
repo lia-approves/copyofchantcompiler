@@ -3,6 +3,7 @@
  */
 #include <string>
 #include <iostream>
+#include <utility>
 #include "frontend/v5/frontend.h"
 #include "abstract_syntax/abstract_syntax.h"
 #include "abstract_syntax/print_visitor_v5.h"
@@ -890,8 +891,6 @@ g->assign = And(Frontend::Lazy(g->lhs),
             return ret;
           }),
         [](ValueVec values) {
-
-
           call_vec_ = std::move(values);
           return Value("");
         }), Literal(')'),
@@ -987,7 +986,6 @@ g->assign = And(Frontend::Lazy(g->lhs),
   return Value("");
 }), Literal('}'),
 [] (Value v1, Value v2) {
-
   // ValueVec values = std::move(block_vec_.back());
   // block_vec_.pop_back();
   // std::cout << "values size is " << values.size() << std::endl;

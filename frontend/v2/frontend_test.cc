@@ -199,23 +199,19 @@ TEST_F(FrontendTest, PrimaryTest3) {
 }
 
 
-TEST_F(FrontendTest, AssignTest1) {
-    auto ret = Frontend::stringToAst("a=2(4*5+8)");
-    ret->Visit(&printer_);
-    ASSERT_EQ(printer_.GetOutput(), "a := 2(+ (* 4 5) 8)");
-}
 
-TEST_F(FrontendTest, AssignTest2) {
-    auto ret = Frontend::stringToAst("abcd_123=2(1*2)");
-    ret->Visit(&printer_);
-    ASSERT_EQ(printer_.GetOutput(), "abcd_123 := 2(* 1 2)");
-}
 
-TEST_F(FrontendTest, AssignTest3) {
-    auto ret = Frontend::stringToAst("abcd_123=2a=3(1*2)");
-    ret->Visit(&printer_);
-    ASSERT_EQ(printer_.GetOutput(), "abcd_123 := 2a := 3(* 1 2)");
-}
+// TEST_F(FrontendTest, AssignTest1) {
+//     auto ret = Frontend::stringToAst("a=2(1*2)");
+//     ret->Visit(&printer_);
+//     ASSERT_EQ(printer_.GetOutput(), "a := 2");
+// }
+//
+// TEST_F(FrontendTest, AssignTest2) {
+//     auto ret = Frontend::stringToAst("abcd_123=2(1*2+4/2)");
+//     ret->Visit(&printer_);
+//     ASSERT_EQ(printer_.GetOutput(), "abcd_123 := 2");
+// }
 
 }  // namespace Parse
 }  // namespace frontend
