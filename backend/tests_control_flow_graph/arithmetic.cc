@@ -29,7 +29,6 @@ using cs160::abstract_syntax::version_5::Program;
 using cs160::backend::AsmProgram;
 using cs160::backend::IrGenVisitor;
 using cs160::backend::AsmProgram;
-using cs160::backend::ControlFlowGraph;
 using cs160::backend::SSA;
 
 using cs160::make_unique;
@@ -49,18 +48,16 @@ TEST(AE, CanAdd) {
   // generate intermediate representation
   IrGenVisitor irGen;
   ast->Visit(&irGen);
-
-  // create control flow graph
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
+  ssatest.DetermineVariableLiveness();
+  ssatest.InsertSSAFunctions();
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
   ssatest.PrintDominators();
-
-  // generate assembly code
   AsmProgram testasm;
-  testasm.IrToAsm(&irGen);
+  testasm.SSAIRToAsm(ssatest.GetSSAIR());
 
   // save & run assembly with gcc
   std::ofstream test_output_file;
@@ -97,18 +94,16 @@ TEST(AE, CanSubtract) {
   // generate intermediate representation
   IrGenVisitor irGen;
   ast->Visit(&irGen);
-
-  // create control flow graph
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
+  ssatest.DetermineVariableLiveness();
+  ssatest.InsertSSAFunctions();
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
   ssatest.PrintDominators();
-
-  // generate assembly code
   AsmProgram testasm;
-  testasm.IrToAsm(&irGen);
+  testasm.SSAIRToAsm(ssatest.GetSSAIR());
 
   // save & run assembly with gcc
   std::ofstream test_output_file;
@@ -140,18 +135,16 @@ TEST(AE, CanMultiply) {
   // generate intermediate representation
   IrGenVisitor irGen;
   ast->Visit(&irGen);
-
-  // create control flow graph
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
+  ssatest.DetermineVariableLiveness();
+  ssatest.InsertSSAFunctions();
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
   ssatest.PrintDominators();
-
-  // generate assembly code
   AsmProgram testasm;
-  testasm.IrToAsm(&irGen);
+  testasm.SSAIRToAsm(ssatest.GetSSAIR());
 
   // save & run assembly with gcc
   std::ofstream test_output_file;
@@ -183,18 +176,16 @@ TEST(AE, CanDivide) {
   // generate intermediate representation
   IrGenVisitor irGen;
   ast->Visit(&irGen);
-
-  // create control flow graph
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
+  ssatest.DetermineVariableLiveness();
+  ssatest.InsertSSAFunctions();
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
   ssatest.PrintDominators();
-
-  // generate assembly code
   AsmProgram testasm;
-  testasm.IrToAsm(&irGen);
+  testasm.SSAIRToAsm(ssatest.GetSSAIR());
 
   // save & run assembly with gcc
   std::ofstream test_output_file;
@@ -247,18 +238,16 @@ TEST(AE, CanConditionalTrue) {
   // generate intermediate representation
   IrGenVisitor irGen;
   ast->Visit(&irGen);
-
-  // create control flow graph
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
+  ssatest.DetermineVariableLiveness();
+  ssatest.InsertSSAFunctions();
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
   ssatest.PrintDominators();
-
-  // generate assembly code
   AsmProgram testasm;
-  testasm.IrToAsm(&irGen);
+  testasm.SSAIRToAsm(ssatest.GetSSAIR());
 
   // save & run assembly with gcc
   std::ofstream test_output_file;
@@ -310,18 +299,16 @@ TEST(AE, CanConditionalFalse) {
   // generate intermediate representation
   IrGenVisitor irGen;
   ast->Visit(&irGen);
-
-  // create control flow graph
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
+  ssatest.DetermineVariableLiveness();
+  ssatest.InsertSSAFunctions();
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
   ssatest.PrintDominators();
-
-  // generate assembly code
   AsmProgram testasm;
-  testasm.IrToAsm(&irGen);
+  testasm.SSAIRToAsm(ssatest.GetSSAIR());
 
   // save & run assembly with gcc
   std::ofstream test_output_file;

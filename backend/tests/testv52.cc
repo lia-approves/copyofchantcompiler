@@ -57,56 +57,50 @@ using cs160::abstract_syntax::version_5::FunctionDef;
 using cs160::abstract_syntax::version_5::Program;
 using cs160::backend::AsmProgram;
 using cs160::backend::SSA;
-using cs160::backend::ControlFlowGraph;
 
 
 int main() {
-    Statement::Block statements;
+  
+  
+
   FunctionDef::Block function_defs;
-  Statement::Block loop_body;
+  Statement::Block statements;
 
-  // x = x + 1
-  loop_body.push_back(std::move(make_unique<const AssignmentFromArithExp>(
-    make_unique<const VariableExpr>("x"),
-    make_unique<const AddExpr>(make_unique<const VariableExpr>("x"),
-      make_unique<const IntegerExpr>(1)))));
+  auto ae = make_unique<const AddExpr>(
+    make_unique<VariableExpr>("a"),
+    make_unique<const IntegerExpr>(0));
 
-  // y = y + x
-  loop_body.push_back(std::move(make_unique<const AssignmentFromArithExp>(
-    make_unique<const VariableExpr>("y"),
-    make_unique<const AddExpr>(make_unique<const VariableExpr>("y"),
-      make_unique<const VariableExpr>("x")))));
+  Statement::Block trueStatements;
+  Statement::Block falseStatements;
 
-  // x = 1
-  statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(
-    make_unique<const VariableExpr>("x"), make_unique<const IntegerExpr>(1))));
-  // y = 2
-  statements.push_back(std::move(make_unique<const AssignmentFromArithExp>(
-    make_unique<const VariableExpr>("y"), make_unique<const IntegerExpr>(2))));
+  trueStatements.push_back(std::move(make_unique<const AssignmentFromArithExp>(
+    make_unique<const VariableExpr>("a"),
+    make_unique<const IntegerExpr>(3))));
 
-  // loop while (x < 100)
-  //     x = x + 1
-  //     y = y + x
-  statements.push_back(std::move(make_unique<const Loop>(
-    make_unique<const LessThanExpr>(make_unique<const VariableExpr>("x"),
-    make_unique<const IntegerExpr>(100)),
-    std::move(loop_body))));
+  falseStatements.push_back(std::move(make_unique<const AssignmentFromArithExp>(
+    make_unique<const VariableExpr>("a"),
+    make_unique<const IntegerExpr>(4))));
 
-  auto ae = make_unique<const VariableExpr>("x");
+  statements.push_back(std::move(make_unique<const Conditional>(
+              make_unique<const LessThanExpr>(
+                  make_unique<const IntegerExpr>(20),
+                  make_unique<const IntegerExpr>(0)),
+      std::move(trueStatements), std::move(falseStatements))));
+
+
   auto ast = make_unique<const Program>(std::move(function_defs),
   std::move(statements), std::move(ae));
 
   IrGenVisitor irGen;
   ast->Visit(&irGen);
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
-  ssatest.PrintDominators();
   ssatest.DetermineVariableLiveness();
   ssatest.InsertSSAFunctions();
-  ssatest.PrintSSA();
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
+  ssatest.PrintDominators();
   AsmProgram testasm;
   testasm.SSAIRToAsm(ssatest.GetSSAIR());
   std::cout << testasm.GetASMString();

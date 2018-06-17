@@ -24,6 +24,7 @@ namespace cs160 {
       virtual ~Operand() {}
       virtual int GetValue() = 0;
       virtual void SetValue(int value) = 0;
+      virtual void SetName(string name) = 0;
       virtual std::string GetName() = 0;
     private:
     };
@@ -35,6 +36,7 @@ namespace cs160 {
       int GetValue() { return value_; }
       void SetValue(int value) { value_ = value; }
       std::string GetName() { return "t" + std::to_string(value_); }
+      void SetName(std::string name) {  }
     private:
       int value_;
     };
@@ -44,11 +46,17 @@ namespace cs160 {
       explicit Variable(std::string s) { name_ = (s); }
       ~Variable() {}
       int GetValue() { return 0; }
-      std::string GetName() { return name_; }
+      std::string GetName() { return name_+subscript_; }
+      void SetSubscript(string subscript) { subscript_= subscript; }
+      std::string GetSubscript() { return subscript_; }
+      std::string GetNameWithoutSubscript() { return name_; }
       void SetValue(int value) {}
       void SetName(std::string name) { name_ = name; }
+
     private:
       std::string name_;
+      string subscript_ = "";
+
     };
 
     class Constant : public Operand {    // 3, 8, 6 etc (integers)
@@ -58,6 +66,8 @@ namespace cs160 {
       int GetValue() { return value_; }
       void SetValue(int value) { value_ = value; }
       std::string GetName() { return std::to_string(value_); }
+      void SetName(std::string name) {  }
+
     private:
       int value_;
     };
@@ -67,6 +77,8 @@ namespace cs160 {
       ~Label() {}
       int GetValue() { return value_; }
       void SetValue(int newValue) { value_= newValue; }
+      void SetName(std::string name) { }
+
     private:
       int value_;
     };
@@ -185,7 +197,7 @@ namespace cs160 {
           cout << "*" << GetTarget().GetName() << " = newTuple(" << GetOp2().GetName() << ")";
           break;
         case Instruction::kPhiFunction:
-          cout << GetTarget().GetName() << " = phi(" << GetOp1().GetName() << ", " << GetOp2().GetName()<<")";
+          cout << GetTarget().GetName() << " = phi(" << GetOp2().GetName()<<")";
           break;
         }
       }

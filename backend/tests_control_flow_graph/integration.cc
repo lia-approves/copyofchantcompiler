@@ -279,16 +279,18 @@ TEST(AE, NestedTuples) {
   ast->Visit(&irGen);
 
   // create control flow graph
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  IrGenVisitor irGen;
+  ast->Visit(&irGen);
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
+  ssatest.DetermineVariableLiveness();
+  ssatest.InsertSSAFunctions();
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
   ssatest.PrintDominators();
-
-  // generate assembly code
   AsmProgram testasm;
-  testasm.IrToAsm(&irGen);
+  testasm.SSAIRToAsm(ssatest.GetSSAIR());
 
   // save & run assembly with gcc
   std::ofstream test_output_file;

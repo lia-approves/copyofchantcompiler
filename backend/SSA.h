@@ -28,6 +28,7 @@ namespace cs160 {
       ~BasicBlock(){}
       void SetAsBlockLeader() { isBlockLeader_ = true; }
       void SetAsBlockEnd() { isBlockEnd_ = true; }
+      void RemoveLeaderEndStatus() { isBlockEnd_ = false; isBlockLeader_ = false; }
       bool IsBlockLeader() { return isBlockLeader_; }
       bool IsBlockEnd() { return isBlockEnd_; }
       void AddIncomingEdge(int incoming) { incomingEdges_.push_back(incoming); }
@@ -46,75 +47,78 @@ namespace cs160 {
       int blockLeaderNum_ = 0;
       int graphIdNum_ = 0;
     };
-
-    class ControlFlowGraph {
-    public:
-      ControlFlowGraph(std::vector<std::shared_ptr<StatementNode>> virgin_IR) { virgin_IR_ = virgin_IR; }
-      std::vector<std::shared_ptr<BasicBlock>> CFG() { return cfg_; }
-      void CreateCFG();
-      void PrintGraph();
-    private:
-      std::vector<std::shared_ptr<StatementNode>> virgin_IR_;
-      std::vector<std::shared_ptr<BasicBlock>> cfg_;
-    };
    
-    class Dominance{
+    class Graph{
     public:
-      Dominance(std::vector<std::shared_ptr<BasicBlock>> &cfg, int startBlockIndex, std::vector<std::shared_ptr<StatementNode>> &original_IR) : cfg_(cfg), startGraphBlockIndex_(startBlockIndex), graphId_(startBlockIndex), original_IR_(original_IR){}
-      void BuildDomInfo();
+      Graph(std::vector<std::shared_ptr<BasicBlock>> &cfg, int startBlockIndex, std::vector<std::shared_ptr<StatementNode>> &original_IR) :  startGraphBlockIndex_(startBlockIndex), graphId_(startBlockIndex), original_IR_(original_IR){}
+      void BuildDomInfo(std::vector<std::shared_ptr<BasicBlock>> &CFG);
       void FindChildrens(int parent,std::vector<int> &children);
-      void FindDominatorFrontiers();
+      void FindDominatorFrontiers(std::vector<std::shared_ptr<BasicBlock>> &CFG);
       void FindPhiFunctionPlacements(int Blockid,std::set<int> &locations);
-      void InsertPhiFunctAt(string variable, int blockId, std::vector<std::shared_ptr<StatementNode>> &IR);
-      std::vector<int> GetImmediateSucessors(int blockNum);
+      void InsertPhiFunctAt(string variable, int blockId, std::vector<std::shared_ptr<StatementNode>> &IR, std::vector<std::shared_ptr<BasicBlock>> &CFG);
+      void RenameAllVariables(std::vector<std::shared_ptr<StatementNode>> &IR, std::vector<std::shared_ptr<BasicBlock>> &CFG,int graphid);
+      int GetRootNode() { return graphId_; }
+      int NewNameWithSubscript(string varName);
+      int CurrentNameWithSubscript(string varName);
+      void RenameBlock(int blockid, std::vector<std::shared_ptr<StatementNode>> &IR, std::vector<std::shared_ptr<BasicBlock>> &CFG);
+      std::vector<int> GetImmediateGraphSucessors(int blockNum, std::vector<std::shared_ptr<BasicBlock>> &CFG);
       int GetGraphId() { return graphId_; }
+      void SetGraphId(int id) { graphId_ = id; }
       void PrintDominatorInfo();
-      void FindGlobalVariables();
-      void InsertSSA(std::vector<std::shared_ptr<StatementNode>> &IR);
+      void FindGlobalVariables(std::vector<std::shared_ptr<BasicBlock>> &CFG);
+      std::vector<int> GetImmediateTreeSucessors(int blockId);
+      int InsertSSA(std::vector<std::shared_ptr<StatementNode>> &IR, std::vector<std::shared_ptr<BasicBlock>> &CFG);
       void AddToAssignmentLocations(string name, int location);
-      struct AssignmentLocation{
+      void UpdateCFG(int offset);
+      struct AssignPoints{
         string name_;
         std::set<int> blockLocations_;
       };
-      // preconditions for the following getter methods is that the vectors
-      // they return aren't empty
+      struct NamesCounterStack {
+        string name_;
+        int counter_;
+        std::vector<int> nameStack_;
+      };
       std::vector<int> GetBlockNums() { return blockNums_; }
       std::vector<std::vector<int>> GetDominated() { return dominated_; }
       std::vector<int> GetIdoms() { return idoms_; }
       std::vector<std::vector<int>> GetDomFrontiers() { return domFrontier_; }
     private:
-      std::vector<std::shared_ptr<BasicBlock>> cfg_;
       int startGraphBlockIndex_;
       std::vector<int> blockNums_;
       std::vector<int> idoms_;
       std::vector<std::vector<int>> dominated_;
       std::vector<std::vector<int>> domFrontier_;
       std::vector<std::vector<int>> allPaths_;
-      void BuildDomInfo(int index);
-      void acyclicPathsFromRoot(int desiredIndex);
-      void acyclicPathsFromRoot(int desiredIndex, int index, std::vector<std::vector<int>> allPaths);
+      void BuildDomInfo(int index, std::vector<std::shared_ptr<BasicBlock>> &CFG);
+      void acyclicPathsFromRoot(int desiredIndex, std::vector<std::shared_ptr<BasicBlock>> &CFG);
+      void acyclicPathsFromRoot(int desiredIndex, int index, std::vector<std::vector<int>> allPaths, std::vector<std::shared_ptr<BasicBlock>> &CFG);
       void findIdom(int index);
       std::vector<int> DomFrontiers(int block);
       int graphId_ = 0;
       std::vector<std::shared_ptr<StatementNode>> original_IR_;
       std::set<string> globalVariables_;
-      std::vector<AssignmentLocation> assignmentPoints_;
+      std::vector<AssignPoints> assignmentPoints_;
+      std::vector<NamesCounterStack> renameStack_;
     };
+
     class SSA {
     public:
-      SSA(std::vector<std::shared_ptr<StatementNode>> original_IR, std::vector<std::shared_ptr<BasicBlock>> cfg) { original_IR_ = original_IR; cfg_ = cfg; }
+      SSA(std::vector<std::shared_ptr<StatementNode>> original_IR) { original_IR_ = original_IR; }
       void GenerateDomination();
       void PrintSSA();
       void PrintDominators();
       void DetermineVariableLiveness();
       void InsertSSAFunctions();
+      void RenameAllVariables();
       std::vector<std::shared_ptr<StatementNode>> GetSSAIR() { return original_IR_; }
-      std::vector<Dominance> GetDominators() { return dominators_; }
-
+      std::vector<Graph> GetDominators() { return dominators_; }
+      void ComputeCFG();
+      void PrintCFG();
     private:
       std::vector<std::shared_ptr<StatementNode>> original_IR_;
       std::vector<std::shared_ptr<BasicBlock>> cfg_;
-      std::vector<Dominance> dominators_;
+      std::vector<Graph> dominators_;
     };
   }  // namespace backend
 }  // namespace cs160

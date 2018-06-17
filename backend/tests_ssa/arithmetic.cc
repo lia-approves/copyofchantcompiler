@@ -29,9 +29,7 @@ using cs160::abstract_syntax::version_5::Program;
 using cs160::backend::AsmProgram;
 using cs160::backend::IrGenVisitor;
 using cs160::backend::AsmProgram;
-using cs160::backend::ControlFlowGraph;
 using cs160::backend::SSA;
-using cs160::backend::Dominance;
 
 using cs160::make_unique;
 
@@ -47,19 +45,19 @@ TEST(AE, CanAdd) {
   auto ast = make_unique<const Program>(std::move(function_defs),
   std::move(statements), std::move(ae));
 
- IrGenVisitor irGen;
+  IrGenVisitor irGen;
   ast->Visit(&irGen);
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
-  ssatest.PrintDominators();
   ssatest.DetermineVariableLiveness();
   ssatest.InsertSSAFunctions();
-  ssatest.PrintSSA();
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
+  ssatest.PrintDominators();
   AsmProgram testasm;
   testasm.SSAIRToAsm(ssatest.GetSSAIR());
+  
   
 
   // save & run assembly with gcc
@@ -94,19 +92,19 @@ TEST(AE, CanSubtract) {
   auto ast = make_unique<const Program>(std::move(function_defs),
   std::move(statements), std::move(ae));
 
- IrGenVisitor irGen;
+  IrGenVisitor irGen;
   ast->Visit(&irGen);
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
-  ssatest.PrintDominators();
   ssatest.DetermineVariableLiveness();
   ssatest.InsertSSAFunctions();
-  ssatest.PrintSSA();
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
+  ssatest.PrintDominators();
   AsmProgram testasm;
   testasm.SSAIRToAsm(ssatest.GetSSAIR());
+  
 
   // save & run assembly with gcc
   std::ofstream test_output_file;
@@ -136,19 +134,19 @@ TEST(AE, CanMultiply) {
   std::move(statements), std::move(ae));
 
   // generate intermediate representation
-IrGenVisitor irGen;
+  IrGenVisitor irGen;
   ast->Visit(&irGen);
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
-  ssatest.PrintDominators();
   ssatest.DetermineVariableLiveness();
   ssatest.InsertSSAFunctions();
-  ssatest.PrintSSA();
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
+  ssatest.PrintDominators();
   AsmProgram testasm;
   testasm.SSAIRToAsm(ssatest.GetSSAIR());
+  
 
   // save & run assembly with gcc
   std::ofstream test_output_file;
@@ -178,19 +176,19 @@ TEST(AE, CanDivide) {
   std::move(statements), std::move(ae));
 
   // generate intermediate representation
-IrGenVisitor irGen;
+  IrGenVisitor irGen;
   ast->Visit(&irGen);
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
-  ssatest.PrintDominators();
   ssatest.DetermineVariableLiveness();
   ssatest.InsertSSAFunctions();
-  ssatest.PrintSSA();
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
+  ssatest.PrintDominators();
   AsmProgram testasm;
   testasm.SSAIRToAsm(ssatest.GetSSAIR());
+  
 
   // save & run assembly with gcc
   std::ofstream test_output_file;
@@ -240,19 +238,19 @@ TEST(AE, CanConditionalTrue) {
   auto ast = make_unique<const Program>(std::move(function_defs),
   std::move(statements), std::move(ae));
 
-IrGenVisitor irGen;
+  IrGenVisitor irGen;
   ast->Visit(&irGen);
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
-  ssatest.PrintDominators();
   ssatest.DetermineVariableLiveness();
   ssatest.InsertSSAFunctions();
-  ssatest.PrintSSA();
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
+  ssatest.PrintDominators();
   AsmProgram testasm;
   testasm.SSAIRToAsm(ssatest.GetSSAIR());
+  
 
   // save & run assembly with gcc
   std::ofstream test_output_file;
@@ -301,19 +299,19 @@ TEST(AE, CanConditionalFalse) {
   auto ast = make_unique<const Program>(std::move(function_defs),
   std::move(statements), std::move(ae));
 
-IrGenVisitor irGen;
+  IrGenVisitor irGen;
   ast->Visit(&irGen);
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
-  ssatest.PrintDominators();
   ssatest.DetermineVariableLiveness();
   ssatest.InsertSSAFunctions();
-  ssatest.PrintSSA();
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
+  ssatest.PrintDominators();
   AsmProgram testasm;
   testasm.SSAIRToAsm(ssatest.GetSSAIR());
+  
 
   // save & run assembly with gcc
   std::ofstream test_output_file;
@@ -350,19 +348,19 @@ TEST(AE, DominatesItself) {
   std::move(statements), std::move(ae));
 
   // generate intermediate representation
-  IrGenVisitor irGen;
-  ast->Visit(&irGen);
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
-  ssatest.GenerateDomination();
-  ssatest.PrintDominators();
-  ssatest.DetermineVariableLiveness();
-  ssatest.InsertSSAFunctions();
-  ssatest.PrintSSA();
-  AsmProgram testasm;
-  testasm.SSAIRToAsm(ssatest.GetSSAIR());
+   IrGenVisitor irGen;
+   ast->Visit(&irGen);
+   SSA ssatest = SSA(irGen.GetIR());
+   ssatest.ComputeCFG();
+   ssatest.GenerateDomination();
+   ssatest.DetermineVariableLiveness();
+   ssatest.InsertSSAFunctions();
+   ssatest.RenameAllVariables();
+   ssatest.PrintCFG();
+   ssatest.PrintDominators();
+   AsmProgram testasm;
+   testasm.SSAIRToAsm(ssatest.GetSSAIR());
+   
 
   // see that the one basic block dominates itself
   int dominates = ((ssatest.GetDominators()[0]).GetDominated())[0][0];
