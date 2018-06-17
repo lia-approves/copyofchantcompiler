@@ -58,7 +58,6 @@ using cs160::abstract_syntax::version_5::Program;
 
 
 using cs160::backend::AsmProgram;
-using cs160::backend::ControlFlowGraph;
 using cs160::backend::SSA;
 
 
@@ -163,123 +162,7 @@ int main() {
     statements.push_back(std::move(make_unique<const FunctionCall>(
       make_unique<const VariableExpr>("foo_retval"), "foo",
       std::move(arguments))));
-    // tuples testing begin
-    statements.push_back(std::move(
-      make_unique<const AssignmentFromNewTuple>(
-        make_unique<const VariableExpr>("x"),
-        make_unique<const IntegerExpr>(20))));
-    // x = newTuple[20]
-    statements.push_back(std::move(
-      make_unique<const AssignmentFromArithExp>(
-        make_unique<const Dereference>(
-          make_unique<const VariableExpr>("x"),
-          make_unique<const IntegerExpr>(0)),
-        make_unique<const IntegerExpr>(2))));
-    // x[0] = 2
-    statements.push_back(std::move(
-      make_unique<const AssignmentFromArithExp>(
-        make_unique<const Dereference>(
-          make_unique<const VariableExpr>("x"),
-          make_unique<const IntegerExpr>(1)),
-        make_unique<const IntegerExpr>(3))));
-    // x[1] = 3
-    statements.push_back(std::move(
-      make_unique<const AssignmentFromArithExp>(
-        make_unique<const Dereference>(
-          make_unique<const VariableExpr>("x"),
-          make_unique<const IntegerExpr>(4)),
-        make_unique<const IntegerExpr>(3))));
-    // x[4] = 3
-    statements.push_back(std::move(
-      make_unique<const AssignmentFromArithExp>(
-        make_unique<const Dereference>(
-          make_unique<const VariableExpr>("x"),
-          make_unique<const IntegerExpr>(5)),
-        make_unique<const IntegerExpr>(1))));
-    // x[5] = 1
-    statements.push_back(std::move(
-      make_unique<const AssignmentFromNewTuple>(
-        make_unique<const Dereference>(
-          make_unique<const VariableExpr>("x"),
-          make_unique<const IntegerExpr>(6)),
-        make_unique<const IntegerExpr>(5))));
-    // x[6] = newTuple[5]
-    statements.push_back(std::move(
-      make_unique<const AssignmentFromArithExp>(
-        make_unique<const Dereference>(
-          make_unique<const Dereference>(
-            make_unique<const VariableExpr>("x"),
-            make_unique<const IntegerExpr>(6)),
-          make_unique<const IntegerExpr>(4)),
-        make_unique<const IntegerExpr>(14))));
-    // x[6][4] = 14
-    statements.push_back(std::move(
-      make_unique<const AssignmentFromArithExp>(
-        make_unique<const Dereference>(
-          make_unique<const VariableExpr>("x"),
-          make_unique<const IntegerExpr>(9)),
-        make_unique<const IntegerExpr>(2))));
-    // x[9] = 2
-    statements.push_back(std::move(
-      make_unique<const AssignmentFromArithExp>(
-        make_unique<const Dereference>(
-          make_unique<const VariableExpr>("x"),
-          make_unique<const IntegerExpr>(8)),
-        make_unique<const IntegerExpr>(4))));
-    // x[8] = 4
 
-    statements.push_back(std::move(
-      make_unique<const AssignmentFromArithExp>(
-        make_unique<const Dereference>(
-          make_unique<const VariableExpr>("x"),
-          make_unique<const IntegerExpr>(11)),
-        make_unique<const IntegerExpr>(22))));
-    // x[11]=22
-    statements.push_back(std::move(
-      make_unique<const AssignmentFromArithExp>(
-        make_unique<const Dereference>(
-          make_unique<const VariableExpr>("x"),
-          make_unique<const IntegerExpr>(14)),
-        make_unique<const IntegerExpr>(15))));
-    // x[14]=15
-
-
-
-    statements.push_back(std::move(
-      make_unique<const AssignmentFromArithExp>(
-        make_unique<const Dereference>(
-          make_unique<const VariableExpr>("x"),
-          make_unique<const SubtractExpr>(
-            make_unique<const Dereference>(
-              make_unique<const VariableExpr>("x"),
-              make_unique<const IntegerExpr>(11)),
-            make_unique<const Dereference>(
-              make_unique<const VariableExpr>("x"),
-              make_unique<const IntegerExpr>(14)))),
-        make_unique<const DivideExpr>(
-          make_unique<const Dereference>(
-            make_unique<const Dereference>(
-              make_unique<const VariableExpr>("x"),
-              make_unique<const MultiplyExpr>(
-                make_unique<const Dereference>(
-                  make_unique<const VariableExpr>("x"),
-                  make_unique<const IntegerExpr>(0)),
-                make_unique<const Dereference>(
-                  make_unique<const VariableExpr>("x"),
-                  make_unique<const IntegerExpr>(1)))),
-            make_unique<const AddExpr>(
-              make_unique<const Dereference>(
-                make_unique<const VariableExpr>("x"),
-                make_unique<const Dereference>(
-                  make_unique<const VariableExpr>("x"),
-                  make_unique<const IntegerExpr>(8))),
-              make_unique<const Dereference>(
-                make_unique<const VariableExpr>("x"),
-                make_unique<const IntegerExpr>(5)))),
-          make_unique<const Dereference>(
-            make_unique<const VariableExpr>("x"),
-            make_unique<const IntegerExpr>(9))))));
-    //x[x[11]-x[14]] = (x[x[0] * x[1]][x[x[8]] + x[5]]) / (x[9])
 
 
     auto ae =
@@ -294,16 +177,14 @@ int main() {
 
     IrGenVisitor irGen;
     ast->Visit(&irGen);
-    //irGen.PrintIR();
-    ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-    cfg.CreateCFG();
-    cfg.PrintGraph();
-    SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+    SSA ssatest = SSA(irGen.GetIR());
+    ssatest.ComputeCFG();
     ssatest.GenerateDomination();
-    ssatest.PrintDominators();
     ssatest.DetermineVariableLiveness();
     ssatest.InsertSSAFunctions();
-    ssatest.PrintSSA();
+    ssatest.RenameAllVariables();
+    ssatest.PrintCFG();
+    ssatest.PrintDominators();
     AsmProgram testasm;
     testasm.SSAIRToAsm(ssatest.GetSSAIR());
     std::cout << testasm.GetASMString();

@@ -31,7 +31,6 @@ using cs160::abstract_syntax::version_5::Program;
 using cs160::backend::AsmProgram;
 using cs160::backend::IrGenVisitor;
 using cs160::backend::AsmProgram;
-using cs160::backend::ControlFlowGraph;
 using cs160::backend::SSA;
 
 using cs160::make_unique;
@@ -53,19 +52,19 @@ TEST(Assignment, OfVariable) {
   auto ast = make_unique<const Program>(std::move(function_defs),
   std::move(statements), std::move(ae));
 
-   IrGenVisitor irGen;
+  IrGenVisitor irGen;
   ast->Visit(&irGen);
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
-  ssatest.PrintDominators();
   ssatest.DetermineVariableLiveness();
   ssatest.InsertSSAFunctions();
-  ssatest.PrintSSA();
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
+  ssatest.PrintDominators();
   AsmProgram testasm;
   testasm.SSAIRToAsm(ssatest.GetSSAIR());
+  
 
   // save & run assembly with gcc
   std::ofstream test_output_file;
@@ -116,19 +115,19 @@ TEST(Assignment, OfDereference) {
   auto ast = make_unique<const Program>(std::move(function_defs),
   std::move(statements), std::move(ae));
 
-    IrGenVisitor irGen;
+  IrGenVisitor irGen;
   ast->Visit(&irGen);
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
-  ssatest.PrintDominators();
   ssatest.DetermineVariableLiveness();
   ssatest.InsertSSAFunctions();
-  ssatest.PrintSSA();
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
+  ssatest.PrintDominators();
   AsmProgram testasm;
   testasm.SSAIRToAsm(ssatest.GetSSAIR());
+  
 
   // save & run assembly with gcc
   std::ofstream test_output_file;
@@ -177,19 +176,19 @@ TEST(Access, OfDereference) {
   auto ast = make_unique<const Program>(std::move(function_defs),
   std::move(statements), std::move(ae));
 
-    IrGenVisitor irGen;
+  IrGenVisitor irGen;
   ast->Visit(&irGen);
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
-  ssatest.PrintDominators();
   ssatest.DetermineVariableLiveness();
   ssatest.InsertSSAFunctions();
-  ssatest.PrintSSA();
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
+  ssatest.PrintDominators();
   AsmProgram testasm;
   testasm.SSAIRToAsm(ssatest.GetSSAIR());
+  
 
   // save & run assembly with gcc
   std::ofstream test_output_file;
@@ -243,19 +242,19 @@ TEST(Assignment, OfDereferenceToDereference) {
   auto ast = make_unique<const Program>(std::move(function_defs),
   std::move(statements), std::move(ae));
 
-   IrGenVisitor irGen;
+  IrGenVisitor irGen;
   ast->Visit(&irGen);
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
-  ssatest.PrintDominators();
   ssatest.DetermineVariableLiveness();
   ssatest.InsertSSAFunctions();
-  ssatest.PrintSSA();
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
+  ssatest.PrintDominators();
   AsmProgram testasm;
   testasm.SSAIRToAsm(ssatest.GetSSAIR());
+  
 
   // save & run assembly with gcc
   std::ofstream test_output_file;
@@ -317,19 +316,19 @@ TEST(Assignment, OfNestedDereference) {
   auto ast = make_unique<const Program>(std::move(function_defs),
   std::move(statements), std::move(ae));
 
-    IrGenVisitor irGen;
+  IrGenVisitor irGen;
   ast->Visit(&irGen);
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
-  ssatest.PrintDominators();
   ssatest.DetermineVariableLiveness();
   ssatest.InsertSSAFunctions();
-  ssatest.PrintSSA();
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
+  ssatest.PrintDominators();
   AsmProgram testasm;
   testasm.SSAIRToAsm(ssatest.GetSSAIR());
+  
 
   // save & run assembly with gcc
   std::ofstream test_output_file;
@@ -394,19 +393,19 @@ TEST(Assignment, OfNestedDereference2) {
   auto ast = make_unique<const Program>(std::move(function_defs),
   std::move(statements), std::move(ae));
 
-    IrGenVisitor irGen;
+  IrGenVisitor irGen;
   ast->Visit(&irGen);
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
-  ssatest.PrintDominators();
   ssatest.DetermineVariableLiveness();
   ssatest.InsertSSAFunctions();
-  ssatest.PrintSSA();
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
+  ssatest.PrintDominators();
   AsmProgram testasm;
   testasm.SSAIRToAsm(ssatest.GetSSAIR());
+  
 
   // save & run assembly with gcc
   std::ofstream test_output_file;
@@ -474,19 +473,19 @@ TEST(Create, Function) {
   auto ast = make_unique<const Program>(std::move(function_defs),
   std::move(statements), std::move(ae));
 
-    IrGenVisitor irGen;
+  IrGenVisitor irGen;
   ast->Visit(&irGen);
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
-  ssatest.PrintDominators();
   ssatest.DetermineVariableLiveness();
   ssatest.InsertSSAFunctions();
-  ssatest.PrintSSA();
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
+  ssatest.PrintDominators();
   AsmProgram testasm;
   testasm.SSAIRToAsm(ssatest.GetSSAIR());
+  
 
   // save & run assembly with gcc
   std::ofstream test_output_file;
@@ -557,19 +556,19 @@ TEST(Call, Function) {
   auto ast = make_unique<const Program>(std::move(function_defs),
   std::move(statements), std::move(ae));
 
-   IrGenVisitor irGen;
+  IrGenVisitor irGen;
   ast->Visit(&irGen);
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
-  ssatest.PrintDominators();
   ssatest.DetermineVariableLiveness();
   ssatest.InsertSSAFunctions();
-  ssatest.PrintSSA();
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
+  ssatest.PrintDominators();
   AsmProgram testasm;
   testasm.SSAIRToAsm(ssatest.GetSSAIR());
+  
 
   // save & run assembly with gcc
   std::ofstream test_output_file;
@@ -651,19 +650,19 @@ TEST(Call, FunctionTwice) {
   auto ast = make_unique<const Program>(std::move(function_defs),
   std::move(statements), std::move(ae));
 
-   IrGenVisitor irGen;
+  IrGenVisitor irGen;
   ast->Visit(&irGen);
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
-  ssatest.PrintDominators();
   ssatest.DetermineVariableLiveness();
   ssatest.InsertSSAFunctions();
-  ssatest.PrintSSA();
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
+  ssatest.PrintDominators();
   AsmProgram testasm;
   testasm.SSAIRToAsm(ssatest.GetSSAIR());
+  
 
   // save & run assembly with gcc
   std::ofstream test_output_file;

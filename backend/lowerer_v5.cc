@@ -379,8 +379,8 @@ namespace cs160 {
     }
     void IrGenVisitor::VisitFunctionCall(const FunctionCall& call) {
       int numArgs = call.arguments().size();
-      for (auto& arg : call.arguments()) {
-        arg->Visit(this); //visit args place on stack need to fix this its backwards
+      for (int i = call.arguments().size() - 1; i >= 0; i--) {
+        call.arguments()[i]->Visit(this);
         std::shared_ptr<StatementNode> newhead = std::make_shared< StatementNode>(
           make_unique<Label>(labelNum_++),
           make_unique<Register>(register_number_ - 1),

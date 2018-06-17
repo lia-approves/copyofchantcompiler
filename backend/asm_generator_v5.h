@@ -47,6 +47,8 @@ namespace cs160 {
       }
     }
     void AsmProgram::GenerateASM(std::shared_ptr<StatementNode> node) {
+      Variable* variableptr;
+
       switch (node->GetInstruction().GetOpcode()) {
       case Instruction::kAdd:
         asm_sstring_
@@ -121,7 +123,9 @@ namespace cs160 {
           << "push $" << node->GetOp2().GetValue() << endl; //only integer visitor uses this
         break;
       case Instruction::kValueOfVariable:
-        offSet_ = GetOffSet(node->GetOp2().GetName());
+        variableptr = dynamic_cast<Variable*>(&node->GetOp2());
+
+        offSet_ = GetOffSet(variableptr->GetNameWithoutSubscript());
         asm_sstring_
           << "mov %rbp,%rcx" << endl;
         if (offSet_ < 0) {
@@ -136,7 +140,9 @@ namespace cs160 {
           << "push (%rcx)" << endl; //if we want the value at address we put parenthesis around
         break;
       case Instruction::kAddressOfVariable:
-        offSet_ = GetOffSet(node->GetOp2().GetName());
+         variableptr = dynamic_cast<Variable*>(&node->GetOp2());
+
+        offSet_ = GetOffSet(variableptr->GetNameWithoutSubscript());
         asm_sstring_
           << "mov %rbp,%rcx" << endl;  //get rbp(start of stack) put in rcx
         if (offSet_ < 0) {
@@ -194,7 +200,9 @@ namespace cs160 {
           << "mov %rbx, (%rax)" << endl; //move value rbx to location at address rax
         break;
       case Instruction::kAssignmentToVariable:
-        offSet_ = GetOffSet(node->GetTarget().GetName());
+        variableptr = dynamic_cast<Variable*>(&node->GetTarget());
+
+        offSet_ = GetOffSet(variableptr->GetNameWithoutSubscript());       
         asm_sstring_
           << "mov %rbp,%rcx" << endl;
         if (offSet_ < 0) {
@@ -239,7 +247,9 @@ namespace cs160 {
           << "#parameter " << node->GetTarget().GetName() << endl;
         break;
       case Instruction::kCall:
-        offSet_ = GetOffSet(node->GetOp1().GetName());
+        variableptr = dynamic_cast<Variable*>(&node->GetOp1());
+
+        offSet_ = GetOffSet(variableptr->GetNameWithoutSubscript());
         asm_sstring_
           << "call " << node->GetTarget().GetName() << endl //call
           << "push %rax" << endl //after func returns, return value in rax
@@ -288,7 +298,7 @@ namespace cs160 {
       }
     }
     int AsmProgram::GetOffSet(string variable) {
-      int pos;
+            int pos;
       int stackOffset;
       bool foundinParams = std::find(paramVariables_.begin(), paramVariables_.end(), (variable)) != paramVariables_.end();
       if (foundinParams) {

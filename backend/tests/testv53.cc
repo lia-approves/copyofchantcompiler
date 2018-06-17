@@ -56,7 +56,6 @@ using cs160::abstract_syntax::version_5::FunctionCall;
 using cs160::abstract_syntax::version_5::FunctionDef;
 using cs160::abstract_syntax::version_5::Program;
 using cs160::backend::AsmProgram;
-using cs160::backend::ControlFlowGraph;
 using cs160::backend::SSA;
 
 
@@ -90,24 +89,18 @@ int main() {
   auto ae = make_unique<const VariableExpr>("x");
   auto ast = make_unique<const Program>(std::move(function_defs), std::move(statements), std::move(ae));
 
+
   IrGenVisitor irGen;
   ast->Visit(&irGen);
-  //irGen.PrintIR();
-  ControlFlowGraph cfg = ControlFlowGraph(irGen.GetIR());
-  cfg.CreateCFG();
-  cfg.PrintGraph();
-  SSA ssatest = SSA(irGen.GetIR(), cfg.CFG());
+  SSA ssatest = SSA(irGen.GetIR());
+  ssatest.ComputeCFG();
   ssatest.GenerateDomination();
-  ssatest.PrintDominators();
   ssatest.DetermineVariableLiveness();
   ssatest.InsertSSAFunctions();
-  ssatest.PrintSSA();
-
-  
-
+  ssatest.RenameAllVariables();
+  ssatest.PrintCFG();
+  ssatest.PrintDominators();
   AsmProgram testasm;
-
-
   testasm.SSAIRToAsm(ssatest.GetSSAIR());
   std::cout << testasm.GetASMString();
   return 0;
