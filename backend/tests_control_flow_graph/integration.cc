@@ -41,7 +41,6 @@ using cs160::abstract_syntax::version_5::Program;
 using cs160::backend::AsmProgram;
 using cs160::backend::IrGenVisitor;
 using cs160::backend::AsmProgram;
-using cs160::backend::ControlFlowGraph;
 using cs160::backend::SSA;
 
 using cs160::make_unique;
@@ -274,9 +273,7 @@ TEST(AE, NestedTuples) {
   auto ast = make_unique<const Program>(std::move(function_defs),
     std::move(statements), std::move(ae));
 
-  // generate intermediate representation
-  IrGenVisitor irGen;
-  ast->Visit(&irGen);
+
 
   // create control flow graph
   IrGenVisitor irGen;
