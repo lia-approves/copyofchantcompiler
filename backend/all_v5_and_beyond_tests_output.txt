@@ -1,0 +1,6230 @@
+Running main() from gtest_main.cc
+[==========] Running 1 test from 1 test case.
+[----------] Global test environment set-up.
+[----------] 1 test from v5
+[ RUN      ] v5.CanLoop
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable x at:0,9,
+
+# Variable assignment for variable y at:0,9,
+
+# Global Variables: x,y,
+# Phi functions to be placed at:5,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 1
+#   S2:  x1 = t0
+#   S3:  t1 = 2
+#   S4:  y1 = t1
+# Block End 
+# Outgoing Edges -> {5}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{11,0} 
+# Block Start Statements:
+#   S5:  y2 = phi( y1 y3)
+#   S6:  x2 = phi( x1 x3)
+#   S7:  t2 = x2
+#   S8:  t3 = 100
+#   S9:  if (t2 < t3) goto S11:
+# Block End 
+# Outgoing Edges -> {True: 11,False: 10}
+# __________________
+
+# __________________
+# Block Id: 10
+# Incoming Edges ->{5} 
+# Block Start Statements:
+#   S10:  goto S20:
+# Block End 
+# Outgoing Edges -> {20}
+# __________________
+
+# __________________
+# Block Id: 11
+# Incoming Edges ->{5} 
+# Block Start Statements:
+#   S11:  t4 = x2
+#   S12:  t5 = 1
+#   S13:  t6 = t4 + t5
+#   S14:  x3 = t6
+#   S15:  t7 = y2
+#   S16:  t8 = x3
+#   S17:  t9 = t7 + t8
+#   S18:  y3 = t9
+#   S19:  goto S5:
+# Block End 
+# Outgoing Edges -> {5}
+# __________________
+
+# __________________
+# Block Id: 20
+# Incoming Edges ->{10} 
+# Block Start Statements:
+#   S20:  t10 = x3
+#   S21:  return t10
+#   S22:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,11,10,20, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5,11,10,20, Dominance Frontier: 5,
+# BlockId: 11, iDom: 5, Dominates: 11, Dominance Frontier: 5,
+# BlockId: 10, iDom: 5, Dominates: 10,20, Dominance Frontier: 
+# BlockId: 20, iDom: 10, Dominates: 20, Dominance Frontier: 
+[       OK ] v5.CanLoop (185 ms)
+[----------] 1 test from v5 (185 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test case ran. (185 ms total)
+[  PASSED  ] 1 test.
+Running main() from gtest_main.cc
+[==========] Running 6 tests from 1 test case.
+[----------] Global test environment set-up.
+[----------] 6 tests from AE
+[ RUN      ] AE.CanAdd
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 12
+#   S2:  t1 = 30
+#   S3:  t2 = t0 + t1
+#   S4:  return t2
+#   S5:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] AE.CanAdd (150 ms)
+[ RUN      ] AE.CanSubtract
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 52
+#   S2:  t1 = 10
+#   S3:  t2 = t0 - t1
+#   S4:  return t2
+#   S5:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] AE.CanSubtract (144 ms)
+[ RUN      ] AE.CanMultiply
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 7
+#   S2:  t1 = 6
+#   S3:  t2 = t0 * t1
+#   S4:  return t2
+#   S5:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] AE.CanMultiply (147 ms)
+[ RUN      ] AE.CanDivide
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 84
+#   S2:  t1 = 2
+#   S3:  t2 = t0 / t1
+#   S4:  return t2
+#   S5:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] AE.CanDivide (149 ms)
+[ RUN      ] AE.CanConditionalTrue
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:5,8,
+
+# Global Variables: a,
+# Phi functions to be placed at:10,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 20
+#   S2:  t1 = 0
+#   S3:  if (t0 > t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S8:
+# Block End 
+# Outgoing Edges -> {8}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  t2 = 3
+#   S6:  a1 = t2
+#   S7:  goto S10:
+# Block End 
+# Outgoing Edges -> {10}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{4} 
+# Block Start Statements:
+#   S8:  t3 = 4
+#   S9:  a3 = t3
+# Block End 
+# Outgoing Edges -> {10}
+# __________________
+
+# __________________
+# Block Id: 10
+# Incoming Edges ->{5,8} 
+# Block Start Statements:
+#   S10:  a2 = phi( a1 a3)
+#   S11:  t4 = a2
+#   S12:  t5 = 0
+#   S13:  t6 = t4 + t5
+#   S14:  return t6
+#   S15:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,10,4,8, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5, Dominance Frontier: 10,
+# BlockId: 10, iDom: 0, Dominates: 10, Dominance Frontier: 
+# BlockId: 4, iDom: 0, Dominates: 4,8, Dominance Frontier: 10,
+# BlockId: 8, iDom: 4, Dominates: 8, Dominance Frontier: 10,
+[       OK ] AE.CanConditionalTrue (141 ms)
+[ RUN      ] AE.CanConditionalFalse
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:5,8,
+
+# Global Variables: a,
+# Phi functions to be placed at:10,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 20
+#   S2:  t1 = 0
+#   S3:  if (t0 < t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S8:
+# Block End 
+# Outgoing Edges -> {8}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  t2 = 3
+#   S6:  a1 = t2
+#   S7:  goto S10:
+# Block End 
+# Outgoing Edges -> {10}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{4} 
+# Block Start Statements:
+#   S8:  t3 = 4
+#   S9:  a3 = t3
+# Block End 
+# Outgoing Edges -> {10}
+# __________________
+
+# __________________
+# Block Id: 10
+# Incoming Edges ->{5,8} 
+# Block Start Statements:
+#   S10:  a2 = phi( a1 a3)
+#   S11:  t4 = a2
+#   S12:  t5 = 0
+#   S13:  t6 = t4 + t5
+#   S14:  return t6
+#   S15:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,10,4,8, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5, Dominance Frontier: 10,
+# BlockId: 10, iDom: 0, Dominates: 10, Dominance Frontier: 
+# BlockId: 4, iDom: 0, Dominates: 4,8, Dominance Frontier: 10,
+# BlockId: 8, iDom: 4, Dominates: 8, Dominance Frontier: 10,
+[       OK ] AE.CanConditionalFalse (138 ms)
+[----------] 6 tests from AE (869 ms total)
+
+[----------] Global test environment tear-down
+[==========] 6 tests from 1 test case ran. (869 ms total)
+[  PASSED  ] 6 tests.
+Running main() from gtest_main.cc
+[==========] Running 9 tests from 4 test cases.
+[----------] Global test environment set-up.
+[----------] 5 tests from Assignment
+[ RUN      ] Assignment.OfVariable
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 12
+#   S2:  a1 = t0
+#   S3:  t1 = 12
+#   S4:  t2 = 30
+#   S5:  t3 = t1 + t2
+#   S6:  return t3
+#   S7:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] Assignment.OfVariable (162 ms)
+[ RUN      ] Assignment.OfDereference
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 12
+#   S2:  a1 = t0
+#   S3:  t1 = &b
+#   S4:  t2 = 3
+#   S5:  *t1 = newTuple(t2)
+#   S6:  t3 = 5
+#   S7:  t4 = &b
+#   S8:  t5 = 2
+#   S9:  t6 = &t4[t5]
+#   S10:  *t6 = t3
+#   S11:  t7 = a0
+#   S12:  t8 = 30
+#   S13:  t9 = t7 + t8
+#   S14:  return t9
+#   S15:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] Assignment.OfDereference (150 ms)
+[ RUN      ] Assignment.OfDereferenceToDereference
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 12
+#   S2:  a1 = t0
+#   S3:  t1 = &b
+#   S4:  t2 = 3
+#   S5:  *t1 = newTuple(t2)
+#   S6:  t3 = &b
+#   S7:  t4 = 3
+#   S8:  t5 = t3[t4]
+#   S9:  t6 = &b
+#   S10:  t7 = 2
+#   S11:  t8 = &t6[t7]
+#   S12:  *t8 = t5
+#   S13:  t9 = a0
+#   S14:  t10 = 30
+#   S15:  t11 = t9 + t10
+#   S16:  return t11
+#   S17:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] Assignment.OfDereferenceToDereference (153 ms)
+[ RUN      ] Assignment.OfNestedDereference
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 12
+#   S2:  a1 = t0
+#   S3:  t1 = &b
+#   S4:  t2 = 3
+#   S5:  *t1 = newTuple(t2)
+#   S6:  t3 = 3
+#   S7:  t4 = &b
+#   S8:  t5 = 2
+#   S9:  t6 = &t4[t5]
+#   S10:  *t6 = t3
+#   S11:  t7 = 5
+#   S12:  t8 = &b
+#   S13:  t9 = &b
+#   S14:  t10 = 2
+#   S15:  t11 = t9[t10]
+#   S16:  t12 = &t8[t11]
+#   S17:  *t12 = t7
+#   S18:  t13 = a0
+#   S19:  t14 = 30
+#   S20:  t15 = t13 + t14
+#   S21:  return t15
+#   S22:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] Assignment.OfNestedDereference (143 ms)
+[ RUN      ] Assignment.OfNestedDereference2
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 2
+#   S2:  a1 = t0
+#   S3:  t1 = &b
+#   S4:  t2 = 3
+#   S5:  *t1 = newTuple(t2)
+#   S6:  t3 = 3
+#   S7:  t4 = &b
+#   S8:  t5 = 2
+#   S9:  t6 = &t4[t5]
+#   S10:  *t6 = t3
+#   S11:  t7 = 12
+#   S12:  t8 = &b
+#   S13:  t9 = &b
+#   S14:  t10 = a0
+#   S15:  t11 = t9[t10]
+#   S16:  t12 = &t8[t11]
+#   S17:  *t12 = t7
+#   S18:  t13 = &b
+#   S19:  t14 = 3
+#   S20:  t15 = t13[t14]
+#   S21:  t16 = 30
+#   S22:  t17 = t15 + t16
+#   S23:  return t17
+#   S24:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] Assignment.OfNestedDereference2 (139 ms)
+[----------] 5 tests from Assignment (748 ms total)
+
+[----------] 1 test from Access
+[ RUN      ] Access.OfDereference
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = &b
+#   S2:  t1 = 3
+#   S3:  *t0 = newTuple(t1)
+#   S4:  t2 = 30
+#   S5:  t3 = &b
+#   S6:  t4 = 2
+#   S7:  t5 = &t3[t4]
+#   S8:  *t5 = t2
+#   S9:  t6 = 12
+#   S10:  t7 = &b
+#   S11:  t8 = 2
+#   S12:  t9 = t7[t8]
+#   S13:  t10 = t6 + t9
+#   S14:  return t10
+#   S15:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] Access.OfDereference (199 ms)
+[----------] 1 test from Access (199 ms total)
+
+[----------] 1 test from Create
+[ RUN      ] Create.Function
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable param_a at:
+# Global Variables: param_a,
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+
+### Live variable info for graphID: 11 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 11 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  func begin foo
+#   S1:  param param_a
+#   S2:  t1 = param_a0
+#   S3:  t2 = 5
+#   S4:  t3 = t1 + t2
+#   S5:  local_b1 = t3
+#   S6:  t4 = local_b0
+#   S7:  t5 = 5
+#   S8:  t6 = t4 + t5
+#   S9:  return t6
+#   S10:  func end foo
+# Block End 
+# __________________
+
+# __________________
+# Block Id: 11
+# Block Start Statements:
+#   S11:  main program begin
+#   S12:  t7 = 12
+#   S13:  a1 = t7
+#   S14:  t8 = a0
+#   S15:  t9 = 30
+#   S16:  t10 = t8 + t9
+#   S17:  return t10
+#   S18:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+
+# ______________________
+# Domination Info for Graph id: 11
+# BlockId: 11, iDom: -1, Dominates: 11, Dominance Frontier: 
+[       OK ] Create.Function (142 ms)
+[----------] 1 test from Create (142 ms total)
+
+[----------] 2 tests from Call
+[ RUN      ] Call.Function
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable param_a at:
+# Global Variables: param_a,
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+
+### Live variable info for graphID: 9 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 9 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  func begin foo
+#   S1:  param param_a
+#   S2:  t1 = param_a0
+#   S3:  t2 = 5
+#   S4:  t3 = t1 + t2
+#   S5:  local_b1 = t3
+#   S6:  t4 = 22
+#   S7:  return t4
+#   S8:  func end foo
+# Block End 
+# __________________
+
+# __________________
+# Block Id: 9
+# Block Start Statements:
+#   S9:  main program begin
+#   S10:  t5 = 12
+#   S11:  a1 = t5
+#   S12:  t6 = 12
+#   S13:  argument t6
+#   S14:  call foo,1  --> foo_retval1
+#   S15:  t7 = foo_retval0
+#   S16:  t8 = 20
+#   S17:  t9 = t7 + t8
+#   S18:  return t9
+#   S19:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+
+# ______________________
+# Domination Info for Graph id: 9
+# BlockId: 9, iDom: -1, Dominates: 9, Dominance Frontier: 
+[       OK ] Call.Function (147 ms)
+[ RUN      ] Call.FunctionTwice
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable param_a at:
+# Global Variables: param_a,
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+
+### Live variable info for graphID: 11 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 11 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  func begin foo
+#   S1:  param param_a
+#   S2:  t1 = param_a0
+#   S3:  t2 = 5
+#   S4:  t3 = t1 + t2
+#   S5:  local_b1 = t3
+#   S6:  t4 = local_b0
+#   S7:  t5 = 5
+#   S8:  t6 = t4 + t5
+#   S9:  return t6
+#   S10:  func end foo
+# Block End 
+# __________________
+
+# __________________
+# Block Id: 11
+# Block Start Statements:
+#   S11:  main program begin
+#   S12:  t7 = 12
+#   S13:  a1 = t7
+#   S14:  t8 = 12
+#   S15:  B1 = t8
+#   S16:  t9 = 12
+#   S17:  argument t9
+#   S18:  call foo,1  --> foo_retval1
+#   S19:  t10 = 22
+#   S20:  argument t10
+#   S21:  call foo,1  --> foo_retval1
+#   S22:  t11 = foo_retval0
+#   S23:  t12 = 20
+#   S24:  t13 = t11 + t12
+#   S25:  return t13
+#   S26:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+
+# ______________________
+# Domination Info for Graph id: 11
+# BlockId: 11, iDom: -1, Dominates: 11, Dominance Frontier: 
+[       OK ] Call.FunctionTwice (148 ms)
+[----------] 2 tests from Call (295 ms total)
+
+[----------] Global test environment tear-down
+[==========] 9 tests from 4 test cases ran. (1384 ms total)
+[  PASSED  ] 9 tests.
+Running main() from gtest_main.cc
+[==========] Running 7 tests from 1 test case.
+[----------] Global test environment set-up.
+[----------] 7 tests from AE
+[ RUN      ] AE.CanAnd
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:9,12,
+
+# Global Variables: a,
+# Phi functions to be placed at:14,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 0
+#   S2:  t1 = 20
+#   S3:  if (t0 < t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S8:
+# Block End 
+# Outgoing Edges -> {8}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  t2 = 9
+#   S6:  t3 = 8
+#   S7:  if (t2 >= t3) goto S9:
+# Block End 
+# Outgoing Edges -> {True: 9,False: 8}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{4,5} 
+# Block Start Statements:
+#   S8:  goto S12:
+# Block End 
+# Outgoing Edges -> {12}
+# __________________
+
+# __________________
+# Block Id: 9
+# Incoming Edges ->{5} 
+# Block Start Statements:
+#   S9:  t4 = 3
+#   S10:  a1 = t4
+#   S11:  goto S14:
+# Block End 
+# Outgoing Edges -> {14}
+# __________________
+
+# __________________
+# Block Id: 12
+# Incoming Edges ->{8} 
+# Block Start Statements:
+#   S12:  t5 = 4
+#   S13:  a3 = t5
+# Block End 
+# Outgoing Edges -> {14}
+# __________________
+
+# __________________
+# Block Id: 14
+# Incoming Edges ->{9,12} 
+# Block Start Statements:
+#   S14:  a2 = phi( a1 a3)
+#   S15:  t6 = a2
+#   S16:  t7 = 0
+#   S17:  t8 = t6 + t7
+#   S18:  return t8
+#   S19:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,14,8,4,9,12, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5,9, Dominance Frontier: 8,14,
+# BlockId: 9, iDom: 5, Dominates: 9, Dominance Frontier: 14,
+# BlockId: 14, iDom: 0, Dominates: 14, Dominance Frontier: 
+# BlockId: 8, iDom: 0, Dominates: 8,12, Dominance Frontier: 14,
+# BlockId: 12, iDom: 8, Dominates: 12, Dominance Frontier: 14,
+# BlockId: 4, iDom: 0, Dominates: 4, Dominance Frontier: 8,
+[       OK ] AE.CanAnd (182 ms)
+[ RUN      ] AE.CanOr
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:10,13,
+
+# Global Variables: a,
+# Phi functions to be placed at:15,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 0
+#   S2:  t1 = 20
+#   S3:  if (t0 < t1) goto S8:
+# Block End 
+# Outgoing Edges -> {True: 8,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  t2 = 9
+#   S5:  t3 = 8
+#   S6:  if (t2 >= t3) goto S8:
+# Block End 
+# Outgoing Edges -> {True: 8,False: 7}
+# __________________
+
+# __________________
+# Block Id: 7
+# Incoming Edges ->{4} 
+# Block Start Statements:
+#   S7:  goto S9:
+# Block End 
+# Outgoing Edges -> {9}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{0,4} 
+# Block Start Statements:
+#   S8:  goto S10:
+# Block End 
+# Outgoing Edges -> {10}
+# __________________
+
+# __________________
+# Block Id: 9
+# Incoming Edges ->{7} 
+# Block Start Statements:
+#   S9:  goto S13:
+# Block End 
+# Outgoing Edges -> {13}
+# __________________
+
+# __________________
+# Block Id: 10
+# Incoming Edges ->{8} 
+# Block Start Statements:
+#   S10:  t4 = 3
+#   S11:  a1 = t4
+#   S12:  goto S15:
+# Block End 
+# Outgoing Edges -> {15}
+# __________________
+
+# __________________
+# Block Id: 13
+# Incoming Edges ->{9} 
+# Block Start Statements:
+#   S13:  t5 = 4
+#   S14:  a3 = t5
+# Block End 
+# Outgoing Edges -> {15}
+# __________________
+
+# __________________
+# Block Id: 15
+# Incoming Edges ->{10,13} 
+# Block Start Statements:
+#   S15:  a2 = phi( a1 a3)
+#   S16:  t6 = a2
+#   S17:  t7 = 0
+#   S18:  t8 = t6 + t7
+#   S19:  return t8
+#   S20:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,8,15,4,10,7,9,13, Dominance Frontier: 
+# BlockId: 8, iDom: 0, Dominates: 8,10, Dominance Frontier: 15,
+# BlockId: 10, iDom: 8, Dominates: 10, Dominance Frontier: 15,
+# BlockId: 15, iDom: 0, Dominates: 15, Dominance Frontier: 
+# BlockId: 4, iDom: 0, Dominates: 4,7,9,13, Dominance Frontier: 8,15,
+# BlockId: 7, iDom: 4, Dominates: 7,9,13, Dominance Frontier: 15,
+# BlockId: 9, iDom: 7, Dominates: 9,13, Dominance Frontier: 15,
+# BlockId: 13, iDom: 9, Dominates: 13, Dominance Frontier: 15,
+[       OK ] AE.CanOr (170 ms)
+[ RUN      ] AE.CanNot
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:6,11,
+
+# Global Variables: a,
+# Phi functions to be placed at:13,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 20
+#   S2:  t1 = 0
+#   S3:  if (t0 < t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S6:
+# Block End 
+# Outgoing Edges -> {6}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  goto S11:
+# Block End 
+# Outgoing Edges -> {11}
+# __________________
+
+# __________________
+# Block Id: 6
+# Incoming Edges ->{4} 
+# Block Start Statements:
+#   S6:  t2 = 1
+#   S7:  t3 = 2
+#   S8:  t4 = t2 + t3
+#   S9:  a3 = t4
+#   S10:  goto S13:
+# Block End 
+# Outgoing Edges -> {13}
+# __________________
+
+# __________________
+# Block Id: 11
+# Incoming Edges ->{5} 
+# Block Start Statements:
+#   S11:  t5 = 4
+#   S12:  a1 = t5
+# Block End 
+# Outgoing Edges -> {13}
+# __________________
+
+# __________________
+# Block Id: 13
+# Incoming Edges ->{6,11} 
+# Block Start Statements:
+#   S13:  a2 = phi( a1 a3)
+#   S14:  t6 = a2
+#   S15:  t7 = 0
+#   S16:  t8 = t6 + t7
+#   S17:  return t8
+#   S18:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,13,4,11,6, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5,11, Dominance Frontier: 13,
+# BlockId: 11, iDom: 5, Dominates: 11, Dominance Frontier: 13,
+# BlockId: 13, iDom: 0, Dominates: 13, Dominance Frontier: 
+# BlockId: 4, iDom: 0, Dominates: 4,6, Dominance Frontier: 13,
+# BlockId: 6, iDom: 4, Dominates: 6, Dominance Frontier: 13,
+[       OK ] AE.CanNot (156 ms)
+[ RUN      ] AE.CanAndNested
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:17,22,
+
+# Global Variables: a,
+# Phi functions to be placed at:24,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 0
+#   S2:  t1 = 20
+#   S3:  if (t0 < t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S8:
+# Block End 
+# Outgoing Edges -> {8}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  t2 = 9
+#   S6:  t3 = 8
+#   S7:  if (t2 >= t3) goto S9:
+# Block End 
+# Outgoing Edges -> {True: 9,False: 8}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{4,5} 
+# Block Start Statements:
+#   S8:  goto S16:
+# Block End 
+# Outgoing Edges -> {16}
+# __________________
+
+# __________________
+# Block Id: 9
+# Incoming Edges ->{5} 
+# Block Start Statements:
+#   S9:  t4 = 0
+#   S10:  t5 = 20
+#   S11:  if (t4 < t5) goto S13:
+# Block End 
+# Outgoing Edges -> {True: 13,False: 12}
+# __________________
+
+# __________________
+# Block Id: 12
+# Incoming Edges ->{9} 
+# Block Start Statements:
+#   S12:  goto S16:
+# Block End 
+# Outgoing Edges -> {16}
+# __________________
+
+# __________________
+# Block Id: 13
+# Incoming Edges ->{9} 
+# Block Start Statements:
+#   S13:  t6 = 9
+#   S14:  t7 = 8
+#   S15:  if (t6 >= t7) goto S17:
+# Block End 
+# Outgoing Edges -> {True: 17,False: 16}
+# __________________
+
+# __________________
+# Block Id: 16
+# Incoming Edges ->{8,12,13} 
+# Block Start Statements:
+#   S16:  goto S22:
+# Block End 
+# Outgoing Edges -> {22}
+# __________________
+
+# __________________
+# Block Id: 17
+# Incoming Edges ->{13} 
+# Block Start Statements:
+#   S17:  t8 = 1
+#   S18:  t9 = 2
+#   S19:  t10 = t8 + t9
+#   S20:  a1 = t10
+#   S21:  goto S24:
+# Block End 
+# Outgoing Edges -> {24}
+# __________________
+
+# __________________
+# Block Id: 22
+# Incoming Edges ->{16} 
+# Block Start Statements:
+#   S22:  t11 = 4
+#   S23:  a3 = t11
+# Block End 
+# Outgoing Edges -> {24}
+# __________________
+
+# __________________
+# Block Id: 24
+# Incoming Edges ->{17,22} 
+# Block Start Statements:
+#   S24:  a2 = phi( a1 a3)
+#   S25:  t12 = a2
+#   S26:  t13 = 0
+#   S27:  t14 = t12 + t13
+#   S28:  return t14
+#   S29:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,24,16,8,4,9,13,12,17,22, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5,9,13,12,17, Dominance Frontier: 8,16,16,24,
+# BlockId: 9, iDom: 5, Dominates: 9,13,12,17, Dominance Frontier: 16,16,24,
+# BlockId: 13, iDom: 9, Dominates: 13,17, Dominance Frontier: 16,24,
+# BlockId: 17, iDom: 13, Dominates: 17, Dominance Frontier: 24,
+# BlockId: 24, iDom: 0, Dominates: 24, Dominance Frontier: 
+# BlockId: 16, iDom: 0, Dominates: 16,22, Dominance Frontier: 24,
+# BlockId: 22, iDom: 16, Dominates: 22, Dominance Frontier: 24,
+# BlockId: 12, iDom: 9, Dominates: 12, Dominance Frontier: 16,
+# BlockId: 8, iDom: 0, Dominates: 8, Dominance Frontier: 16,
+# BlockId: 4, iDom: 0, Dominates: 4, Dominance Frontier: 8,
+[       OK ] AE.CanAndNested (162 ms)
+[ RUN      ] AE.CanMixLogicals1
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:14,19,
+
+# Global Variables: a,
+# Phi functions to be placed at:21,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 2
+#   S2:  t1 = 4
+#   S3:  if (t0 < t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S8:
+# Block End 
+# Outgoing Edges -> {8}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  t2 = 2
+#   S6:  t3 = 0
+#   S7:  if (t2 < t3) goto S12:
+# Block End 
+# Outgoing Edges -> {True: 12,False: 8}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{4,5} 
+# Block Start Statements:
+#   S8:  t4 = 9
+#   S9:  t5 = 9
+#   S10:  if (t4 >= t5) goto S12:
+# Block End 
+# Outgoing Edges -> {True: 12,False: 11}
+# __________________
+
+# __________________
+# Block Id: 11
+# Incoming Edges ->{8} 
+# Block Start Statements:
+#   S11:  goto S13:
+# Block End 
+# Outgoing Edges -> {13}
+# __________________
+
+# __________________
+# Block Id: 12
+# Incoming Edges ->{5,8} 
+# Block Start Statements:
+#   S12:  goto S14:
+# Block End 
+# Outgoing Edges -> {14}
+# __________________
+
+# __________________
+# Block Id: 13
+# Incoming Edges ->{11} 
+# Block Start Statements:
+#   S13:  goto S19:
+# Block End 
+# Outgoing Edges -> {19}
+# __________________
+
+# __________________
+# Block Id: 14
+# Incoming Edges ->{12} 
+# Block Start Statements:
+#   S14:  t6 = 1
+#   S15:  t7 = 2
+#   S16:  t8 = t6 + t7
+#   S17:  a1 = t8
+#   S18:  goto S21:
+# Block End 
+# Outgoing Edges -> {21}
+# __________________
+
+# __________________
+# Block Id: 19
+# Incoming Edges ->{13} 
+# Block Start Statements:
+#   S19:  t9 = 4
+#   S20:  a3 = t9
+# Block End 
+# Outgoing Edges -> {21}
+# __________________
+
+# __________________
+# Block Id: 21
+# Incoming Edges ->{14,19} 
+# Block Start Statements:
+#   S21:  a2 = phi( a1 a3)
+#   S22:  t10 = a2
+#   S23:  t11 = 0
+#   S24:  t12 = t10 + t11
+#   S25:  return t12
+#   S26:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,12,21,8,4,14,11,13,19, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5, Dominance Frontier: 12,8,
+# BlockId: 12, iDom: 0, Dominates: 12,14, Dominance Frontier: 21,
+# BlockId: 14, iDom: 12, Dominates: 14, Dominance Frontier: 21,
+# BlockId: 21, iDom: 0, Dominates: 21, Dominance Frontier: 
+# BlockId: 8, iDom: 0, Dominates: 8,11,13,19, Dominance Frontier: 12,21,
+# BlockId: 11, iDom: 8, Dominates: 11,13,19, Dominance Frontier: 21,
+# BlockId: 13, iDom: 11, Dominates: 13,19, Dominance Frontier: 21,
+# BlockId: 19, iDom: 13, Dominates: 19, Dominance Frontier: 21,
+# BlockId: 4, iDom: 0, Dominates: 4, Dominance Frontier: 8,
+[       OK ] AE.CanMixLogicals1 (154 ms)
+[ RUN      ] AE.CanMixLogicals2
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:14,19,
+
+# Global Variables: a,
+# Phi functions to be placed at:21,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 2
+#   S2:  t1 = 4
+#   S3:  if (t0 < t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S8:
+# Block End 
+# Outgoing Edges -> {8}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  t2 = 2
+#   S6:  t3 = 0
+#   S7:  if (t2 > t3) goto S12:
+# Block End 
+# Outgoing Edges -> {True: 12,False: 8}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{4,5} 
+# Block Start Statements:
+#   S8:  t4 = 9
+#   S9:  t5 = 9
+#   S10:  if (t4 >= t5) goto S12:
+# Block End 
+# Outgoing Edges -> {True: 12,False: 11}
+# __________________
+
+# __________________
+# Block Id: 11
+# Incoming Edges ->{8} 
+# Block Start Statements:
+#   S11:  goto S13:
+# Block End 
+# Outgoing Edges -> {13}
+# __________________
+
+# __________________
+# Block Id: 12
+# Incoming Edges ->{5,8} 
+# Block Start Statements:
+#   S12:  goto S14:
+# Block End 
+# Outgoing Edges -> {14}
+# __________________
+
+# __________________
+# Block Id: 13
+# Incoming Edges ->{11} 
+# Block Start Statements:
+#   S13:  goto S19:
+# Block End 
+# Outgoing Edges -> {19}
+# __________________
+
+# __________________
+# Block Id: 14
+# Incoming Edges ->{12} 
+# Block Start Statements:
+#   S14:  t6 = 1
+#   S15:  t7 = 2
+#   S16:  t8 = t6 + t7
+#   S17:  a1 = t8
+#   S18:  goto S21:
+# Block End 
+# Outgoing Edges -> {21}
+# __________________
+
+# __________________
+# Block Id: 19
+# Incoming Edges ->{13} 
+# Block Start Statements:
+#   S19:  t9 = 4
+#   S20:  a3 = t9
+# Block End 
+# Outgoing Edges -> {21}
+# __________________
+
+# __________________
+# Block Id: 21
+# Incoming Edges ->{14,19} 
+# Block Start Statements:
+#   S21:  a2 = phi( a1 a3)
+#   S22:  t10 = a2
+#   S23:  t11 = 0
+#   S24:  t12 = t10 + t11
+#   S25:  return t12
+#   S26:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,12,21,8,4,14,11,13,19, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5, Dominance Frontier: 12,8,
+# BlockId: 12, iDom: 0, Dominates: 12,14, Dominance Frontier: 21,
+# BlockId: 14, iDom: 12, Dominates: 14, Dominance Frontier: 21,
+# BlockId: 21, iDom: 0, Dominates: 21, Dominance Frontier: 
+# BlockId: 8, iDom: 0, Dominates: 8,11,13,19, Dominance Frontier: 12,21,
+# BlockId: 11, iDom: 8, Dominates: 11,13,19, Dominance Frontier: 21,
+# BlockId: 13, iDom: 11, Dominates: 13,19, Dominance Frontier: 21,
+# BlockId: 19, iDom: 13, Dominates: 19, Dominance Frontier: 21,
+# BlockId: 4, iDom: 0, Dominates: 4, Dominance Frontier: 8,
+[       OK ] AE.CanMixLogicals2 (168 ms)
+[ RUN      ] AE.CanMixLogicals3
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:14,19,
+
+# Global Variables: a,
+# Phi functions to be placed at:23,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 2
+#   S2:  t1 = 4
+#   S3:  if (t0 < t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S8:
+# Block End 
+# Outgoing Edges -> {8}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  t2 = 2
+#   S6:  t3 = 0
+#   S7:  if (t2 > t3) goto S12:
+# Block End 
+# Outgoing Edges -> {True: 12,False: 8}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{4,5} 
+# Block Start Statements:
+#   S8:  t4 = 9
+#   S9:  t5 = 9
+#   S10:  if (t4 >= t5) goto S12:
+# Block End 
+# Outgoing Edges -> {True: 12,False: 11}
+# __________________
+
+# __________________
+# Block Id: 11
+# Incoming Edges ->{8} 
+# Block Start Statements:
+#   S11:  goto S13:
+# Block End 
+# Outgoing Edges -> {13}
+# __________________
+
+# __________________
+# Block Id: 12
+# Incoming Edges ->{5,8} 
+# Block Start Statements:
+#   S12:  goto S14:
+# Block End 
+# Outgoing Edges -> {14}
+# __________________
+
+# __________________
+# Block Id: 13
+# Incoming Edges ->{11} 
+# Block Start Statements:
+#   S13:  goto S19:
+# Block End 
+# Outgoing Edges -> {19}
+# __________________
+
+# __________________
+# Block Id: 14
+# Incoming Edges ->{12} 
+# Block Start Statements:
+#   S14:  t6 = 1
+#   S15:  t7 = 2
+#   S16:  t8 = t6 + t7
+#   S17:  a1 = t8
+#   S18:  goto S23:
+# Block End 
+# Outgoing Edges -> {23}
+# __________________
+
+# __________________
+# Block Id: 19
+# Incoming Edges ->{13} 
+# Block Start Statements:
+#   S19:  t9 = 2
+#   S20:  t10 = 2
+#   S21:  t11 = t9 + t10
+#   S22:  a3 = t11
+# Block End 
+# Outgoing Edges -> {23}
+# __________________
+
+# __________________
+# Block Id: 23
+# Incoming Edges ->{14,19} 
+# Block Start Statements:
+#   S23:  a2 = phi( a1 a3)
+#   S24:  t12 = a2
+#   S25:  t13 = 0
+#   S26:  t14 = t12 + t13
+#   S27:  return t14
+#   S28:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,12,23,8,4,14,11,13,19, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5, Dominance Frontier: 12,8,
+# BlockId: 12, iDom: 0, Dominates: 12,14, Dominance Frontier: 23,
+# BlockId: 14, iDom: 12, Dominates: 14, Dominance Frontier: 23,
+# BlockId: 23, iDom: 0, Dominates: 23, Dominance Frontier: 
+# BlockId: 8, iDom: 0, Dominates: 8,11,13,19, Dominance Frontier: 12,23,
+# BlockId: 11, iDom: 8, Dominates: 11,13,19, Dominance Frontier: 23,
+# BlockId: 13, iDom: 11, Dominates: 13,19, Dominance Frontier: 23,
+# BlockId: 19, iDom: 13, Dominates: 19, Dominance Frontier: 23,
+# BlockId: 4, iDom: 0, Dominates: 4, Dominance Frontier: 8,
+[       OK ] AE.CanMixLogicals3 (151 ms)
+[----------] 7 tests from AE (1143 ms total)
+
+[----------] Global test environment tear-down
+[==========] 7 tests from 1 test case ran. (1143 ms total)
+[  PASSED  ] 7 tests.
+Running main() from gtest_main.cc
+[==========] Running 1 test from 1 test case.
+[----------] Global test environment set-up.
+[----------] 1 test from AE
+[ RUN      ] AE.NestedTuples
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable bob at:29,
+
+# Global Variables: bob,
+# Phi functions to be placed at:24,
+
+### End of  variable info for graphID: 0 ###
+
+
+### Live variable info for graphID: 46 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 46 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  func begin foo
+#   S1:  param bob
+#   S2:  t1 = bob0
+#   S3:  t2 = 100
+#   S4:  if (t1 < t2) goto S6:
+# Block End 
+# Outgoing Edges -> {True: 6,False: 5}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  goto S9:
+# Block End 
+# Outgoing Edges -> {9}
+# __________________
+
+# __________________
+# Block Id: 6
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S6:  t3 = bob0
+#   S7:  t4 = 0
+#   S8:  if (t3 > t4) goto S17:
+# Block End 
+# Outgoing Edges -> {True: 17,False: 9}
+# __________________
+
+# __________________
+# Block Id: 9
+# Incoming Edges ->{5,6} 
+# Block Start Statements:
+#   S9:  t5 = bob2
+#   S10:  t6 = 100
+#   S11:  if (t5 <= t6) goto S13:
+# Block End 
+# Outgoing Edges -> {True: 13,False: 12}
+# __________________
+
+# __________________
+# Block Id: 12
+# Incoming Edges ->{9} 
+# Block Start Statements:
+#   S12:  goto S16:
+# Block End 
+# Outgoing Edges -> {16}
+# __________________
+
+# __________________
+# Block Id: 13
+# Incoming Edges ->{9} 
+# Block Start Statements:
+#   S13:  t7 = bob2
+#   S14:  t8 = 0
+#   S15:  if (t7 >= t8) goto S17:
+# Block End 
+# Outgoing Edges -> {True: 17,False: 16}
+# __________________
+
+# __________________
+# Block Id: 16
+# Incoming Edges ->{12,13} 
+# Block Start Statements:
+#   S16:  goto S18:
+# Block End 
+# Outgoing Edges -> {18}
+# __________________
+
+# __________________
+# Block Id: 17
+# Incoming Edges ->{6,13} 
+# Block Start Statements:
+#   S17:  goto S19:
+# Block End 
+# Outgoing Edges -> {19}
+# __________________
+
+# __________________
+# Block Id: 18
+# Incoming Edges ->{16} 
+# Block Start Statements:
+#   S18:  goto S22:
+# Block End 
+# Outgoing Edges -> {22}
+# __________________
+
+# __________________
+# Block Id: 19
+# Incoming Edges ->{17} 
+# Block Start Statements:
+#   S19:  t9 = 4
+#   S20:  a1 = t9
+#   S21:  goto S24:
+# Block End 
+# Outgoing Edges -> {24}
+# __________________
+
+# __________________
+# Block Id: 22
+# Incoming Edges ->{18} 
+# Block Start Statements:
+#   S22:  t10 = 5
+#   S23:  b1 = t10
+# Block End 
+# Outgoing Edges -> {24}
+# __________________
+
+# __________________
+# Block Id: 24
+# Incoming Edges ->{19,30,22} 
+# Block Start Statements:
+#   S24:  bob1 = phi( bob0 bob2)
+#   S25:  t11 = bob1
+#   S26:  t12 = 0
+#   S27:  if (t11 == t12) goto S29:
+# Block End 
+# Outgoing Edges -> {True: 29,False: 28}
+# __________________
+
+# __________________
+# Block Id: 28
+# Incoming Edges ->{24} 
+# Block Start Statements:
+#   S28:  goto S30:
+# Block End 
+# Outgoing Edges -> {30}
+# __________________
+
+# __________________
+# Block Id: 29
+# Incoming Edges ->{24} 
+# Block Start Statements:
+#   S29:  goto S35:
+# Block End 
+# Outgoing Edges -> {35}
+# __________________
+
+# __________________
+# Block Id: 30
+# Incoming Edges ->{28} 
+# Block Start Statements:
+#   S30:  t13 = bob1
+#   S31:  t14 = 1
+#   S32:  t15 = t13 - t14
+#   S33:  bob2 = t15
+#   S34:  goto S24:
+# Block End 
+# Outgoing Edges -> {24}
+# __________________
+
+# __________________
+# Block Id: 35
+# Incoming Edges ->{29} 
+# Block Start Statements:
+#   S35:  t16 = 12
+#   S36:  t17 = 3
+#   S37:  t18 = t16 / t17
+#   S38:  t19 = 4
+#   S39:  t20 = t18 - t19
+#   S40:  t21 = 3
+#   S41:  t22 = 2
+#   S42:  t23 = t21 * t22
+#   S43:  t24 = t20 + t23
+#   S44:  return t24
+#   S45:  func end foo
+# Block End 
+# __________________
+
+# __________________
+# Block Id: 46
+# Block Start Statements:
+#   S46:  main program begin
+#   S47:  t25 = &x
+#   S48:  t26 = 2
+#   S49:  *t25 = newTuple(t26)
+#   S50:  t27 = 13
+#   S51:  t28 = &x
+#   S52:  t29 = 1
+#   S53:  t30 = &t28[t29]
+#   S54:  *t30 = t27
+#   S55:  t31 = &x
+#   S56:  t32 = 1
+#   S57:  t33 = t31[t32]
+#   S58:  argument t33
+#   S59:  call foo,1  --> foo_retval1
+#   S60:  t34 = &x
+#   S61:  t35 = 20
+#   S62:  *t34 = newTuple(t35)
+#   S63:  t36 = 2
+#   S64:  t37 = &x
+#   S65:  t38 = 0
+#   S66:  t39 = &t37[t38]
+#   S67:  *t39 = t36
+#   S68:  t40 = 3
+#   S69:  t41 = &x
+#   S70:  t42 = 1
+#   S71:  t43 = &t41[t42]
+#   S72:  *t43 = t40
+#   S73:  t44 = 3
+#   S74:  t45 = &x
+#   S75:  t46 = 4
+#   S76:  t47 = &t45[t46]
+#   S77:  *t47 = t44
+#   S78:  t48 = 1
+#   S79:  t49 = &x
+#   S80:  t50 = 5
+#   S81:  t51 = &t49[t50]
+#   S82:  *t51 = t48
+#   S83:  t52 = &x
+#   S84:  t53 = 6
+#   S85:  t54 = &t52[t53]
+#   S86:  t55 = 5
+#   S87:  *t54 = newTuple(t55)
+#   S88:  t56 = 14
+#   S89:  t57 = &x
+#   S90:  t58 = 6
+#   S91:  t59 = &t57[t58]
+#   S92:  t60 = 4
+#   S93:  t61 = &t59[t60]
+#   S94:  *t61 = t56
+#   S95:  t62 = 2
+#   S96:  t63 = &x
+#   S97:  t64 = 9
+#   S98:  t65 = &t63[t64]
+#   S99:  *t65 = t62
+#   S100:  t66 = 4
+#   S101:  t67 = &x
+#   S102:  t68 = 8
+#   S103:  t69 = &t67[t68]
+#   S104:  *t69 = t66
+#   S105:  t70 = 22
+#   S106:  t71 = &x
+#   S107:  t72 = 11
+#   S108:  t73 = &t71[t72]
+#   S109:  *t73 = t70
+#   S110:  t74 = 15
+#   S111:  t75 = &x
+#   S112:  t76 = 14
+#   S113:  t77 = &t75[t76]
+#   S114:  *t77 = t74
+#   S115:  t78 = &x
+#   S116:  t79 = &x
+#   S117:  t80 = 0
+#   S118:  t81 = t79[t80]
+#   S119:  t82 = &x
+#   S120:  t83 = 1
+#   S121:  t84 = t82[t83]
+#   S122:  t85 = t81 * t84
+#   S123:  t86 = &t78[t85]
+#   S124:  t87 = &x
+#   S125:  t88 = &x
+#   S126:  t89 = 8
+#   S127:  t90 = t88[t89]
+#   S128:  t91 = t87[t90]
+#   S129:  t92 = &x
+#   S130:  t93 = 5
+#   S131:  t94 = t92[t93]
+#   S132:  t95 = t91 + t94
+#   S133:  t96 = t86[t95]
+#   S134:  t97 = &x
+#   S135:  t98 = 9
+#   S136:  t99 = t97[t98]
+#   S137:  t100 = t96 / t99
+#   S138:  t101 = &x
+#   S139:  t102 = &x
+#   S140:  t103 = 11
+#   S141:  t104 = t102[t103]
+#   S142:  t105 = &x
+#   S143:  t106 = 14
+#   S144:  t107 = t105[t106]
+#   S145:  t108 = t104 - t107
+#   S146:  t109 = &t101[t108]
+#   S147:  *t109 = t100
+#   S148:  t110 = &x
+#   S149:  t111 = 7
+#   S150:  t112 = t110[t111]
+#   S151:  return t112
+#   S152:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,6,17,24,9,5,19,29,28,35,30,13,16,12,18,22, Dominance Frontier: 
+# BlockId: 6, iDom: 0, Dominates: 6, Dominance Frontier: 17,9,
+# BlockId: 17, iDom: 0, Dominates: 17,19, Dominance Frontier: 24,
+# BlockId: 19, iDom: 17, Dominates: 19, Dominance Frontier: 24,
+# BlockId: 24, iDom: 0, Dominates: 24,29,28,35,30, Dominance Frontier: 24,
+# BlockId: 29, iDom: 24, Dominates: 29,35, Dominance Frontier: 
+# BlockId: 35, iDom: 29, Dominates: 35, Dominance Frontier: 
+# BlockId: 28, iDom: 24, Dominates: 28,30, Dominance Frontier: 24,
+# BlockId: 30, iDom: 28, Dominates: 30, Dominance Frontier: 24,
+# BlockId: 9, iDom: 0, Dominates: 9,13,16,12,18,22, Dominance Frontier: 17,24,
+# BlockId: 13, iDom: 9, Dominates: 13, Dominance Frontier: 17,16,
+# BlockId: 16, iDom: 9, Dominates: 16,18,22, Dominance Frontier: 24,
+# BlockId: 18, iDom: 16, Dominates: 18,22, Dominance Frontier: 24,
+# BlockId: 22, iDom: 18, Dominates: 22, Dominance Frontier: 24,
+# BlockId: 12, iDom: 9, Dominates: 12, Dominance Frontier: 16,
+# BlockId: 5, iDom: 0, Dominates: 5, Dominance Frontier: 9,
+
+# ______________________
+# Domination Info for Graph id: 46
+# BlockId: 46, iDom: -1, Dominates: 46, Dominance Frontier: 
+[       OK ] AE.NestedTuples (157 ms)
+[----------] 1 test from AE (157 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test case ran. (158 ms total)
+[  PASSED  ] 1 test.
+Running main() from gtest_main.cc
+[==========] Running 1 test from 1 test case.
+[----------] Global test environment set-up.
+[----------] 1 test from v5
+[ RUN      ] v5.CanLoop
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable x at:0,9,
+
+# Variable assignment for variable y at:0,9,
+
+# Global Variables: x,y,
+# Phi functions to be placed at:5,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 1
+#   S2:  x1 = t0
+#   S3:  t1 = 2
+#   S4:  y1 = t1
+# Block End 
+# Outgoing Edges -> {5}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{11,0} 
+# Block Start Statements:
+#   S5:  y2 = phi( y1 y3)
+#   S6:  x2 = phi( x1 x3)
+#   S7:  t2 = x2
+#   S8:  t3 = 100
+#   S9:  if (t2 < t3) goto S11:
+# Block End 
+# Outgoing Edges -> {True: 11,False: 10}
+# __________________
+
+# __________________
+# Block Id: 10
+# Incoming Edges ->{5} 
+# Block Start Statements:
+#   S10:  goto S20:
+# Block End 
+# Outgoing Edges -> {20}
+# __________________
+
+# __________________
+# Block Id: 11
+# Incoming Edges ->{5} 
+# Block Start Statements:
+#   S11:  t4 = x2
+#   S12:  t5 = 1
+#   S13:  t6 = t4 + t5
+#   S14:  x3 = t6
+#   S15:  t7 = y2
+#   S16:  t8 = x3
+#   S17:  t9 = t7 + t8
+#   S18:  y3 = t9
+#   S19:  goto S5:
+# Block End 
+# Outgoing Edges -> {5}
+# __________________
+
+# __________________
+# Block Id: 20
+# Incoming Edges ->{10} 
+# Block Start Statements:
+#   S20:  t10 = x3
+#   S21:  return t10
+#   S22:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,11,10,20, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5,11,10,20, Dominance Frontier: 5,
+# BlockId: 11, iDom: 5, Dominates: 11, Dominance Frontier: 5,
+# BlockId: 10, iDom: 5, Dominates: 10,20, Dominance Frontier: 
+# BlockId: 20, iDom: 10, Dominates: 20, Dominance Frontier: 
+[       OK ] v5.CanLoop (152 ms)
+[----------] 1 test from v5 (152 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test case ran. (152 ms total)
+[  PASSED  ] 1 test.
+Running main() from gtest_main.cc
+[==========] Running 6 tests from 1 test case.
+[----------] Global test environment set-up.
+[----------] 6 tests from AE
+[ RUN      ] AE.CanAdd
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 12
+#   S2:  t1 = 30
+#   S3:  t2 = t0 + t1
+#   S4:  return t2
+#   S5:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] AE.CanAdd (216 ms)
+[ RUN      ] AE.CanSubtract
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 52
+#   S2:  t1 = 10
+#   S3:  t2 = t0 - t1
+#   S4:  return t2
+#   S5:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] AE.CanSubtract (208 ms)
+[ RUN      ] AE.CanMultiply
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 7
+#   S2:  t1 = 6
+#   S3:  t2 = t0 * t1
+#   S4:  return t2
+#   S5:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] AE.CanMultiply (179 ms)
+[ RUN      ] AE.CanDivide
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 84
+#   S2:  t1 = 2
+#   S3:  t2 = t0 / t1
+#   S4:  return t2
+#   S5:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] AE.CanDivide (182 ms)
+[ RUN      ] AE.CanConditionalTrue
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:5,8,
+
+# Global Variables: a,
+# Phi functions to be placed at:10,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 20
+#   S2:  t1 = 0
+#   S3:  if (t0 > t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S8:
+# Block End 
+# Outgoing Edges -> {8}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  t2 = 3
+#   S6:  a1 = t2
+#   S7:  goto S10:
+# Block End 
+# Outgoing Edges -> {10}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{4} 
+# Block Start Statements:
+#   S8:  t3 = 4
+#   S9:  a3 = t3
+# Block End 
+# Outgoing Edges -> {10}
+# __________________
+
+# __________________
+# Block Id: 10
+# Incoming Edges ->{5,8} 
+# Block Start Statements:
+#   S10:  a2 = phi( a1 a3)
+#   S11:  t4 = a2
+#   S12:  t5 = 0
+#   S13:  t6 = t4 + t5
+#   S14:  return t6
+#   S15:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,10,4,8, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5, Dominance Frontier: 10,
+# BlockId: 10, iDom: 0, Dominates: 10, Dominance Frontier: 
+# BlockId: 4, iDom: 0, Dominates: 4,8, Dominance Frontier: 10,
+# BlockId: 8, iDom: 4, Dominates: 8, Dominance Frontier: 10,
+[       OK ] AE.CanConditionalTrue (142 ms)
+[ RUN      ] AE.CanConditionalFalse
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:5,8,
+
+# Global Variables: a,
+# Phi functions to be placed at:10,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 20
+#   S2:  t1 = 0
+#   S3:  if (t0 < t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S8:
+# Block End 
+# Outgoing Edges -> {8}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  t2 = 3
+#   S6:  a1 = t2
+#   S7:  goto S10:
+# Block End 
+# Outgoing Edges -> {10}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{4} 
+# Block Start Statements:
+#   S8:  t3 = 4
+#   S9:  a3 = t3
+# Block End 
+# Outgoing Edges -> {10}
+# __________________
+
+# __________________
+# Block Id: 10
+# Incoming Edges ->{5,8} 
+# Block Start Statements:
+#   S10:  a2 = phi( a1 a3)
+#   S11:  t4 = a2
+#   S12:  t5 = 0
+#   S13:  t6 = t4 + t5
+#   S14:  return t6
+#   S15:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,10,4,8, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5, Dominance Frontier: 10,
+# BlockId: 10, iDom: 0, Dominates: 10, Dominance Frontier: 
+# BlockId: 4, iDom: 0, Dominates: 4,8, Dominance Frontier: 10,
+# BlockId: 8, iDom: 4, Dominates: 8, Dominance Frontier: 10,
+[       OK ] AE.CanConditionalFalse (145 ms)
+[----------] 6 tests from AE (1073 ms total)
+
+[----------] Global test environment tear-down
+[==========] 6 tests from 1 test case ran. (1073 ms total)
+[  PASSED  ] 6 tests.
+Running main() from gtest_main.cc
+[==========] Running 9 tests from 4 test cases.
+[----------] Global test environment set-up.
+[----------] 5 tests from Assignment
+[ RUN      ] Assignment.OfVariable
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 12
+#   S2:  a1 = t0
+#   S3:  t1 = 12
+#   S4:  t2 = 30
+#   S5:  t3 = t1 + t2
+#   S6:  return t3
+#   S7:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] Assignment.OfVariable (146 ms)
+[ RUN      ] Assignment.OfDereference
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 12
+#   S2:  a1 = t0
+#   S3:  t1 = &b
+#   S4:  t2 = 3
+#   S5:  *t1 = newTuple(t2)
+#   S6:  t3 = 5
+#   S7:  t4 = &b
+#   S8:  t5 = 2
+#   S9:  t6 = &t4[t5]
+#   S10:  *t6 = t3
+#   S11:  t7 = a0
+#   S12:  t8 = 30
+#   S13:  t9 = t7 + t8
+#   S14:  return t9
+#   S15:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] Assignment.OfDereference (149 ms)
+[ RUN      ] Assignment.OfDereferenceToDereference
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 12
+#   S2:  a1 = t0
+#   S3:  t1 = &b
+#   S4:  t2 = 3
+#   S5:  *t1 = newTuple(t2)
+#   S6:  t3 = &b
+#   S7:  t4 = 3
+#   S8:  t5 = t3[t4]
+#   S9:  t6 = &b
+#   S10:  t7 = 2
+#   S11:  t8 = &t6[t7]
+#   S12:  *t8 = t5
+#   S13:  t9 = a0
+#   S14:  t10 = 30
+#   S15:  t11 = t9 + t10
+#   S16:  return t11
+#   S17:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] Assignment.OfDereferenceToDereference (161 ms)
+[ RUN      ] Assignment.OfNestedDereference
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 12
+#   S2:  a1 = t0
+#   S3:  t1 = &b
+#   S4:  t2 = 3
+#   S5:  *t1 = newTuple(t2)
+#   S6:  t3 = 3
+#   S7:  t4 = &b
+#   S8:  t5 = 2
+#   S9:  t6 = &t4[t5]
+#   S10:  *t6 = t3
+#   S11:  t7 = 5
+#   S12:  t8 = &b
+#   S13:  t9 = &b
+#   S14:  t10 = 2
+#   S15:  t11 = t9[t10]
+#   S16:  t12 = &t8[t11]
+#   S17:  *t12 = t7
+#   S18:  t13 = a0
+#   S19:  t14 = 30
+#   S20:  t15 = t13 + t14
+#   S21:  return t15
+#   S22:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] Assignment.OfNestedDereference (141 ms)
+[ RUN      ] Assignment.OfNestedDereference2
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 2
+#   S2:  a1 = t0
+#   S3:  t1 = &b
+#   S4:  t2 = 3
+#   S5:  *t1 = newTuple(t2)
+#   S6:  t3 = 3
+#   S7:  t4 = &b
+#   S8:  t5 = 2
+#   S9:  t6 = &t4[t5]
+#   S10:  *t6 = t3
+#   S11:  t7 = 12
+#   S12:  t8 = &b
+#   S13:  t9 = &b
+#   S14:  t10 = a0
+#   S15:  t11 = t9[t10]
+#   S16:  t12 = &t8[t11]
+#   S17:  *t12 = t7
+#   S18:  t13 = &b
+#   S19:  t14 = 3
+#   S20:  t15 = t13[t14]
+#   S21:  t16 = 30
+#   S22:  t17 = t15 + t16
+#   S23:  return t17
+#   S24:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] Assignment.OfNestedDereference2 (136 ms)
+[----------] 5 tests from Assignment (734 ms total)
+
+[----------] 1 test from Access
+[ RUN      ] Access.OfDereference
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = &b
+#   S2:  t1 = 3
+#   S3:  *t0 = newTuple(t1)
+#   S4:  t2 = 30
+#   S5:  t3 = &b
+#   S6:  t4 = 2
+#   S7:  t5 = &t3[t4]
+#   S8:  *t5 = t2
+#   S9:  t6 = 12
+#   S10:  t7 = &b
+#   S11:  t8 = 2
+#   S12:  t9 = t7[t8]
+#   S13:  t10 = t6 + t9
+#   S14:  return t10
+#   S15:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] Access.OfDereference (137 ms)
+[----------] 1 test from Access (137 ms total)
+
+[----------] 1 test from Create
+[ RUN      ] Create.Function
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable param_a at:
+# Global Variables: param_a,
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+
+### Live variable info for graphID: 11 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 11 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  func begin foo
+#   S1:  param param_a
+#   S2:  t1 = param_a0
+#   S3:  t2 = 5
+#   S4:  t3 = t1 + t2
+#   S5:  local_b1 = t3
+#   S6:  t4 = local_b0
+#   S7:  t5 = 5
+#   S8:  t6 = t4 + t5
+#   S9:  return t6
+#   S10:  func end foo
+# Block End 
+# __________________
+
+# __________________
+# Block Id: 11
+# Block Start Statements:
+#   S11:  main program begin
+#   S12:  t7 = 12
+#   S13:  a1 = t7
+#   S14:  t8 = a0
+#   S15:  t9 = 30
+#   S16:  t10 = t8 + t9
+#   S17:  return t10
+#   S18:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+
+# ______________________
+# Domination Info for Graph id: 11
+# BlockId: 11, iDom: -1, Dominates: 11, Dominance Frontier: 
+[       OK ] Create.Function (158 ms)
+[----------] 1 test from Create (158 ms total)
+
+[----------] 2 tests from Call
+[ RUN      ] Call.Function
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable param_a at:
+# Global Variables: param_a,
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+
+### Live variable info for graphID: 9 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 9 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  func begin foo
+#   S1:  param param_a
+#   S2:  t1 = param_a0
+#   S3:  t2 = 5
+#   S4:  t3 = t1 + t2
+#   S5:  local_b1 = t3
+#   S6:  t4 = 22
+#   S7:  return t4
+#   S8:  func end foo
+# Block End 
+# __________________
+
+# __________________
+# Block Id: 9
+# Block Start Statements:
+#   S9:  main program begin
+#   S10:  t5 = 12
+#   S11:  a1 = t5
+#   S12:  t6 = 12
+#   S13:  argument t6
+#   S14:  call foo,1  --> foo_retval1
+#   S15:  t7 = foo_retval0
+#   S16:  t8 = 20
+#   S17:  t9 = t7 + t8
+#   S18:  return t9
+#   S19:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+
+# ______________________
+# Domination Info for Graph id: 9
+# BlockId: 9, iDom: -1, Dominates: 9, Dominance Frontier: 
+[       OK ] Call.Function (141 ms)
+[ RUN      ] Call.FunctionTwice
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable param_a at:
+# Global Variables: param_a,
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+
+### Live variable info for graphID: 11 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 11 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  func begin foo
+#   S1:  param param_a
+#   S2:  t1 = param_a0
+#   S3:  t2 = 5
+#   S4:  t3 = t1 + t2
+#   S5:  local_b1 = t3
+#   S6:  t4 = local_b0
+#   S7:  t5 = 5
+#   S8:  t6 = t4 + t5
+#   S9:  return t6
+#   S10:  func end foo
+# Block End 
+# __________________
+
+# __________________
+# Block Id: 11
+# Block Start Statements:
+#   S11:  main program begin
+#   S12:  t7 = 12
+#   S13:  a1 = t7
+#   S14:  t8 = 12
+#   S15:  B1 = t8
+#   S16:  t9 = 12
+#   S17:  argument t9
+#   S18:  call foo,1  --> foo_retval1
+#   S19:  t10 = 22
+#   S20:  argument t10
+#   S21:  call foo,1  --> foo_retval1
+#   S22:  t11 = foo_retval0
+#   S23:  t12 = 20
+#   S24:  t13 = t11 + t12
+#   S25:  return t13
+#   S26:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+
+# ______________________
+# Domination Info for Graph id: 11
+# BlockId: 11, iDom: -1, Dominates: 11, Dominance Frontier: 
+[       OK ] Call.FunctionTwice (138 ms)
+[----------] 2 tests from Call (279 ms total)
+
+[----------] Global test environment tear-down
+[==========] 9 tests from 4 test cases ran. (1309 ms total)
+[  PASSED  ] 9 tests.
+Running main() from gtest_main.cc
+[==========] Running 7 tests from 1 test case.
+[----------] Global test environment set-up.
+[----------] 7 tests from AE
+[ RUN      ] AE.CanAnd
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:9,12,
+
+# Global Variables: a,
+# Phi functions to be placed at:14,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 0
+#   S2:  t1 = 20
+#   S3:  if (t0 < t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S8:
+# Block End 
+# Outgoing Edges -> {8}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  t2 = 9
+#   S6:  t3 = 8
+#   S7:  if (t2 >= t3) goto S9:
+# Block End 
+# Outgoing Edges -> {True: 9,False: 8}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{4,5} 
+# Block Start Statements:
+#   S8:  goto S12:
+# Block End 
+# Outgoing Edges -> {12}
+# __________________
+
+# __________________
+# Block Id: 9
+# Incoming Edges ->{5} 
+# Block Start Statements:
+#   S9:  t4 = 3
+#   S10:  a1 = t4
+#   S11:  goto S14:
+# Block End 
+# Outgoing Edges -> {14}
+# __________________
+
+# __________________
+# Block Id: 12
+# Incoming Edges ->{8} 
+# Block Start Statements:
+#   S12:  t5 = 4
+#   S13:  a3 = t5
+# Block End 
+# Outgoing Edges -> {14}
+# __________________
+
+# __________________
+# Block Id: 14
+# Incoming Edges ->{9,12} 
+# Block Start Statements:
+#   S14:  a2 = phi( a1 a3)
+#   S15:  t6 = a2
+#   S16:  t7 = 0
+#   S17:  t8 = t6 + t7
+#   S18:  return t8
+#   S19:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,14,8,4,9,12, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5,9, Dominance Frontier: 8,14,
+# BlockId: 9, iDom: 5, Dominates: 9, Dominance Frontier: 14,
+# BlockId: 14, iDom: 0, Dominates: 14, Dominance Frontier: 
+# BlockId: 8, iDom: 0, Dominates: 8,12, Dominance Frontier: 14,
+# BlockId: 12, iDom: 8, Dominates: 12, Dominance Frontier: 14,
+# BlockId: 4, iDom: 0, Dominates: 4, Dominance Frontier: 8,
+[       OK ] AE.CanAnd (180 ms)
+[ RUN      ] AE.CanOr
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:10,13,
+
+# Global Variables: a,
+# Phi functions to be placed at:15,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 0
+#   S2:  t1 = 20
+#   S3:  if (t0 < t1) goto S8:
+# Block End 
+# Outgoing Edges -> {True: 8,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  t2 = 9
+#   S5:  t3 = 8
+#   S6:  if (t2 >= t3) goto S8:
+# Block End 
+# Outgoing Edges -> {True: 8,False: 7}
+# __________________
+
+# __________________
+# Block Id: 7
+# Incoming Edges ->{4} 
+# Block Start Statements:
+#   S7:  goto S9:
+# Block End 
+# Outgoing Edges -> {9}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{0,4} 
+# Block Start Statements:
+#   S8:  goto S10:
+# Block End 
+# Outgoing Edges -> {10}
+# __________________
+
+# __________________
+# Block Id: 9
+# Incoming Edges ->{7} 
+# Block Start Statements:
+#   S9:  goto S13:
+# Block End 
+# Outgoing Edges -> {13}
+# __________________
+
+# __________________
+# Block Id: 10
+# Incoming Edges ->{8} 
+# Block Start Statements:
+#   S10:  t4 = 3
+#   S11:  a1 = t4
+#   S12:  goto S15:
+# Block End 
+# Outgoing Edges -> {15}
+# __________________
+
+# __________________
+# Block Id: 13
+# Incoming Edges ->{9} 
+# Block Start Statements:
+#   S13:  t5 = 4
+#   S14:  a3 = t5
+# Block End 
+# Outgoing Edges -> {15}
+# __________________
+
+# __________________
+# Block Id: 15
+# Incoming Edges ->{10,13} 
+# Block Start Statements:
+#   S15:  a2 = phi( a1 a3)
+#   S16:  t6 = a2
+#   S17:  t7 = 0
+#   S18:  t8 = t6 + t7
+#   S19:  return t8
+#   S20:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,8,15,4,10,7,9,13, Dominance Frontier: 
+# BlockId: 8, iDom: 0, Dominates: 8,10, Dominance Frontier: 15,
+# BlockId: 10, iDom: 8, Dominates: 10, Dominance Frontier: 15,
+# BlockId: 15, iDom: 0, Dominates: 15, Dominance Frontier: 
+# BlockId: 4, iDom: 0, Dominates: 4,7,9,13, Dominance Frontier: 8,15,
+# BlockId: 7, iDom: 4, Dominates: 7,9,13, Dominance Frontier: 15,
+# BlockId: 9, iDom: 7, Dominates: 9,13, Dominance Frontier: 15,
+# BlockId: 13, iDom: 9, Dominates: 13, Dominance Frontier: 15,
+[       OK ] AE.CanOr (302 ms)
+[ RUN      ] AE.CanNot
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:6,11,
+
+# Global Variables: a,
+# Phi functions to be placed at:13,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 20
+#   S2:  t1 = 0
+#   S3:  if (t0 < t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S6:
+# Block End 
+# Outgoing Edges -> {6}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  goto S11:
+# Block End 
+# Outgoing Edges -> {11}
+# __________________
+
+# __________________
+# Block Id: 6
+# Incoming Edges ->{4} 
+# Block Start Statements:
+#   S6:  t2 = 1
+#   S7:  t3 = 2
+#   S8:  t4 = t2 + t3
+#   S9:  a3 = t4
+#   S10:  goto S13:
+# Block End 
+# Outgoing Edges -> {13}
+# __________________
+
+# __________________
+# Block Id: 11
+# Incoming Edges ->{5} 
+# Block Start Statements:
+#   S11:  t5 = 4
+#   S12:  a1 = t5
+# Block End 
+# Outgoing Edges -> {13}
+# __________________
+
+# __________________
+# Block Id: 13
+# Incoming Edges ->{6,11} 
+# Block Start Statements:
+#   S13:  a2 = phi( a1 a3)
+#   S14:  t6 = a2
+#   S15:  t7 = 0
+#   S16:  t8 = t6 + t7
+#   S17:  return t8
+#   S18:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,13,4,11,6, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5,11, Dominance Frontier: 13,
+# BlockId: 11, iDom: 5, Dominates: 11, Dominance Frontier: 13,
+# BlockId: 13, iDom: 0, Dominates: 13, Dominance Frontier: 
+# BlockId: 4, iDom: 0, Dominates: 4,6, Dominance Frontier: 13,
+# BlockId: 6, iDom: 4, Dominates: 6, Dominance Frontier: 13,
+[       OK ] AE.CanNot (244 ms)
+[ RUN      ] AE.CanAndNested
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:17,22,
+
+# Global Variables: a,
+# Phi functions to be placed at:24,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 0
+#   S2:  t1 = 20
+#   S3:  if (t0 < t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S8:
+# Block End 
+# Outgoing Edges -> {8}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  t2 = 9
+#   S6:  t3 = 8
+#   S7:  if (t2 >= t3) goto S9:
+# Block End 
+# Outgoing Edges -> {True: 9,False: 8}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{4,5} 
+# Block Start Statements:
+#   S8:  goto S16:
+# Block End 
+# Outgoing Edges -> {16}
+# __________________
+
+# __________________
+# Block Id: 9
+# Incoming Edges ->{5} 
+# Block Start Statements:
+#   S9:  t4 = 0
+#   S10:  t5 = 20
+#   S11:  if (t4 < t5) goto S13:
+# Block End 
+# Outgoing Edges -> {True: 13,False: 12}
+# __________________
+
+# __________________
+# Block Id: 12
+# Incoming Edges ->{9} 
+# Block Start Statements:
+#   S12:  goto S16:
+# Block End 
+# Outgoing Edges -> {16}
+# __________________
+
+# __________________
+# Block Id: 13
+# Incoming Edges ->{9} 
+# Block Start Statements:
+#   S13:  t6 = 9
+#   S14:  t7 = 8
+#   S15:  if (t6 >= t7) goto S17:
+# Block End 
+# Outgoing Edges -> {True: 17,False: 16}
+# __________________
+
+# __________________
+# Block Id: 16
+# Incoming Edges ->{8,12,13} 
+# Block Start Statements:
+#   S16:  goto S22:
+# Block End 
+# Outgoing Edges -> {22}
+# __________________
+
+# __________________
+# Block Id: 17
+# Incoming Edges ->{13} 
+# Block Start Statements:
+#   S17:  t8 = 1
+#   S18:  t9 = 2
+#   S19:  t10 = t8 + t9
+#   S20:  a1 = t10
+#   S21:  goto S24:
+# Block End 
+# Outgoing Edges -> {24}
+# __________________
+
+# __________________
+# Block Id: 22
+# Incoming Edges ->{16} 
+# Block Start Statements:
+#   S22:  t11 = 4
+#   S23:  a3 = t11
+# Block End 
+# Outgoing Edges -> {24}
+# __________________
+
+# __________________
+# Block Id: 24
+# Incoming Edges ->{17,22} 
+# Block Start Statements:
+#   S24:  a2 = phi( a1 a3)
+#   S25:  t12 = a2
+#   S26:  t13 = 0
+#   S27:  t14 = t12 + t13
+#   S28:  return t14
+#   S29:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,24,16,8,4,9,13,12,17,22, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5,9,13,12,17, Dominance Frontier: 8,16,16,24,
+# BlockId: 9, iDom: 5, Dominates: 9,13,12,17, Dominance Frontier: 16,16,24,
+# BlockId: 13, iDom: 9, Dominates: 13,17, Dominance Frontier: 16,24,
+# BlockId: 17, iDom: 13, Dominates: 17, Dominance Frontier: 24,
+# BlockId: 24, iDom: 0, Dominates: 24, Dominance Frontier: 
+# BlockId: 16, iDom: 0, Dominates: 16,22, Dominance Frontier: 24,
+# BlockId: 22, iDom: 16, Dominates: 22, Dominance Frontier: 24,
+# BlockId: 12, iDom: 9, Dominates: 12, Dominance Frontier: 16,
+# BlockId: 8, iDom: 0, Dominates: 8, Dominance Frontier: 16,
+# BlockId: 4, iDom: 0, Dominates: 4, Dominance Frontier: 8,
+[       OK ] AE.CanAndNested (242 ms)
+[ RUN      ] AE.CanMixLogicals1
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:14,19,
+
+# Global Variables: a,
+# Phi functions to be placed at:21,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 2
+#   S2:  t1 = 4
+#   S3:  if (t0 < t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S8:
+# Block End 
+# Outgoing Edges -> {8}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  t2 = 2
+#   S6:  t3 = 0
+#   S7:  if (t2 < t3) goto S12:
+# Block End 
+# Outgoing Edges -> {True: 12,False: 8}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{4,5} 
+# Block Start Statements:
+#   S8:  t4 = 9
+#   S9:  t5 = 9
+#   S10:  if (t4 >= t5) goto S12:
+# Block End 
+# Outgoing Edges -> {True: 12,False: 11}
+# __________________
+
+# __________________
+# Block Id: 11
+# Incoming Edges ->{8} 
+# Block Start Statements:
+#   S11:  goto S13:
+# Block End 
+# Outgoing Edges -> {13}
+# __________________
+
+# __________________
+# Block Id: 12
+# Incoming Edges ->{5,8} 
+# Block Start Statements:
+#   S12:  goto S14:
+# Block End 
+# Outgoing Edges -> {14}
+# __________________
+
+# __________________
+# Block Id: 13
+# Incoming Edges ->{11} 
+# Block Start Statements:
+#   S13:  goto S19:
+# Block End 
+# Outgoing Edges -> {19}
+# __________________
+
+# __________________
+# Block Id: 14
+# Incoming Edges ->{12} 
+# Block Start Statements:
+#   S14:  t6 = 1
+#   S15:  t7 = 2
+#   S16:  t8 = t6 + t7
+#   S17:  a1 = t8
+#   S18:  goto S21:
+# Block End 
+# Outgoing Edges -> {21}
+# __________________
+
+# __________________
+# Block Id: 19
+# Incoming Edges ->{13} 
+# Block Start Statements:
+#   S19:  t9 = 4
+#   S20:  a3 = t9
+# Block End 
+# Outgoing Edges -> {21}
+# __________________
+
+# __________________
+# Block Id: 21
+# Incoming Edges ->{14,19} 
+# Block Start Statements:
+#   S21:  a2 = phi( a1 a3)
+#   S22:  t10 = a2
+#   S23:  t11 = 0
+#   S24:  t12 = t10 + t11
+#   S25:  return t12
+#   S26:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,12,21,8,4,14,11,13,19, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5, Dominance Frontier: 12,8,
+# BlockId: 12, iDom: 0, Dominates: 12,14, Dominance Frontier: 21,
+# BlockId: 14, iDom: 12, Dominates: 14, Dominance Frontier: 21,
+# BlockId: 21, iDom: 0, Dominates: 21, Dominance Frontier: 
+# BlockId: 8, iDom: 0, Dominates: 8,11,13,19, Dominance Frontier: 12,21,
+# BlockId: 11, iDom: 8, Dominates: 11,13,19, Dominance Frontier: 21,
+# BlockId: 13, iDom: 11, Dominates: 13,19, Dominance Frontier: 21,
+# BlockId: 19, iDom: 13, Dominates: 19, Dominance Frontier: 21,
+# BlockId: 4, iDom: 0, Dominates: 4, Dominance Frontier: 8,
+[       OK ] AE.CanMixLogicals1 (230 ms)
+[ RUN      ] AE.CanMixLogicals2
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:14,19,
+
+# Global Variables: a,
+# Phi functions to be placed at:21,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 2
+#   S2:  t1 = 4
+#   S3:  if (t0 < t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S8:
+# Block End 
+# Outgoing Edges -> {8}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  t2 = 2
+#   S6:  t3 = 0
+#   S7:  if (t2 > t3) goto S12:
+# Block End 
+# Outgoing Edges -> {True: 12,False: 8}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{4,5} 
+# Block Start Statements:
+#   S8:  t4 = 9
+#   S9:  t5 = 9
+#   S10:  if (t4 >= t5) goto S12:
+# Block End 
+# Outgoing Edges -> {True: 12,False: 11}
+# __________________
+
+# __________________
+# Block Id: 11
+# Incoming Edges ->{8} 
+# Block Start Statements:
+#   S11:  goto S13:
+# Block End 
+# Outgoing Edges -> {13}
+# __________________
+
+# __________________
+# Block Id: 12
+# Incoming Edges ->{5,8} 
+# Block Start Statements:
+#   S12:  goto S14:
+# Block End 
+# Outgoing Edges -> {14}
+# __________________
+
+# __________________
+# Block Id: 13
+# Incoming Edges ->{11} 
+# Block Start Statements:
+#   S13:  goto S19:
+# Block End 
+# Outgoing Edges -> {19}
+# __________________
+
+# __________________
+# Block Id: 14
+# Incoming Edges ->{12} 
+# Block Start Statements:
+#   S14:  t6 = 1
+#   S15:  t7 = 2
+#   S16:  t8 = t6 + t7
+#   S17:  a1 = t8
+#   S18:  goto S21:
+# Block End 
+# Outgoing Edges -> {21}
+# __________________
+
+# __________________
+# Block Id: 19
+# Incoming Edges ->{13} 
+# Block Start Statements:
+#   S19:  t9 = 4
+#   S20:  a3 = t9
+# Block End 
+# Outgoing Edges -> {21}
+# __________________
+
+# __________________
+# Block Id: 21
+# Incoming Edges ->{14,19} 
+# Block Start Statements:
+#   S21:  a2 = phi( a1 a3)
+#   S22:  t10 = a2
+#   S23:  t11 = 0
+#   S24:  t12 = t10 + t11
+#   S25:  return t12
+#   S26:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,12,21,8,4,14,11,13,19, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5, Dominance Frontier: 12,8,
+# BlockId: 12, iDom: 0, Dominates: 12,14, Dominance Frontier: 21,
+# BlockId: 14, iDom: 12, Dominates: 14, Dominance Frontier: 21,
+# BlockId: 21, iDom: 0, Dominates: 21, Dominance Frontier: 
+# BlockId: 8, iDom: 0, Dominates: 8,11,13,19, Dominance Frontier: 12,21,
+# BlockId: 11, iDom: 8, Dominates: 11,13,19, Dominance Frontier: 21,
+# BlockId: 13, iDom: 11, Dominates: 13,19, Dominance Frontier: 21,
+# BlockId: 19, iDom: 13, Dominates: 19, Dominance Frontier: 21,
+# BlockId: 4, iDom: 0, Dominates: 4, Dominance Frontier: 8,
+[       OK ] AE.CanMixLogicals2 (194 ms)
+[ RUN      ] AE.CanMixLogicals3
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:14,19,
+
+# Global Variables: a,
+# Phi functions to be placed at:23,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 2
+#   S2:  t1 = 4
+#   S3:  if (t0 < t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S8:
+# Block End 
+# Outgoing Edges -> {8}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  t2 = 2
+#   S6:  t3 = 0
+#   S7:  if (t2 > t3) goto S12:
+# Block End 
+# Outgoing Edges -> {True: 12,False: 8}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{4,5} 
+# Block Start Statements:
+#   S8:  t4 = 9
+#   S9:  t5 = 9
+#   S10:  if (t4 >= t5) goto S12:
+# Block End 
+# Outgoing Edges -> {True: 12,False: 11}
+# __________________
+
+# __________________
+# Block Id: 11
+# Incoming Edges ->{8} 
+# Block Start Statements:
+#   S11:  goto S13:
+# Block End 
+# Outgoing Edges -> {13}
+# __________________
+
+# __________________
+# Block Id: 12
+# Incoming Edges ->{5,8} 
+# Block Start Statements:
+#   S12:  goto S14:
+# Block End 
+# Outgoing Edges -> {14}
+# __________________
+
+# __________________
+# Block Id: 13
+# Incoming Edges ->{11} 
+# Block Start Statements:
+#   S13:  goto S19:
+# Block End 
+# Outgoing Edges -> {19}
+# __________________
+
+# __________________
+# Block Id: 14
+# Incoming Edges ->{12} 
+# Block Start Statements:
+#   S14:  t6 = 1
+#   S15:  t7 = 2
+#   S16:  t8 = t6 + t7
+#   S17:  a1 = t8
+#   S18:  goto S23:
+# Block End 
+# Outgoing Edges -> {23}
+# __________________
+
+# __________________
+# Block Id: 19
+# Incoming Edges ->{13} 
+# Block Start Statements:
+#   S19:  t9 = 2
+#   S20:  t10 = 2
+#   S21:  t11 = t9 + t10
+#   S22:  a3 = t11
+# Block End 
+# Outgoing Edges -> {23}
+# __________________
+
+# __________________
+# Block Id: 23
+# Incoming Edges ->{14,19} 
+# Block Start Statements:
+#   S23:  a2 = phi( a1 a3)
+#   S24:  t12 = a2
+#   S25:  t13 = 0
+#   S26:  t14 = t12 + t13
+#   S27:  return t14
+#   S28:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,12,23,8,4,14,11,13,19, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5, Dominance Frontier: 12,8,
+# BlockId: 12, iDom: 0, Dominates: 12,14, Dominance Frontier: 23,
+# BlockId: 14, iDom: 12, Dominates: 14, Dominance Frontier: 23,
+# BlockId: 23, iDom: 0, Dominates: 23, Dominance Frontier: 
+# BlockId: 8, iDom: 0, Dominates: 8,11,13,19, Dominance Frontier: 12,23,
+# BlockId: 11, iDom: 8, Dominates: 11,13,19, Dominance Frontier: 23,
+# BlockId: 13, iDom: 11, Dominates: 13,19, Dominance Frontier: 23,
+# BlockId: 19, iDom: 13, Dominates: 19, Dominance Frontier: 23,
+# BlockId: 4, iDom: 0, Dominates: 4, Dominance Frontier: 8,
+[       OK ] AE.CanMixLogicals3 (242 ms)
+[----------] 7 tests from AE (1635 ms total)
+
+[----------] Global test environment tear-down
+[==========] 7 tests from 1 test case ran. (1635 ms total)
+[  PASSED  ] 7 tests.
+Running main() from gtest_main.cc
+[==========] Running 1 test from 1 test case.
+[----------] Global test environment set-up.
+[----------] 1 test from AE
+[ RUN      ] AE.NestedTuples
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable bob at:29,
+
+# Global Variables: bob,
+# Phi functions to be placed at:24,
+
+### End of  variable info for graphID: 0 ###
+
+
+### Live variable info for graphID: 46 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 46 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  func begin foo
+#   S1:  param bob
+#   S2:  t1 = bob0
+#   S3:  t2 = 100
+#   S4:  if (t1 < t2) goto S6:
+# Block End 
+# Outgoing Edges -> {True: 6,False: 5}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  goto S9:
+# Block End 
+# Outgoing Edges -> {9}
+# __________________
+
+# __________________
+# Block Id: 6
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S6:  t3 = bob0
+#   S7:  t4 = 0
+#   S8:  if (t3 > t4) goto S17:
+# Block End 
+# Outgoing Edges -> {True: 17,False: 9}
+# __________________
+
+# __________________
+# Block Id: 9
+# Incoming Edges ->{5,6} 
+# Block Start Statements:
+#   S9:  t5 = bob2
+#   S10:  t6 = 100
+#   S11:  if (t5 <= t6) goto S13:
+# Block End 
+# Outgoing Edges -> {True: 13,False: 12}
+# __________________
+
+# __________________
+# Block Id: 12
+# Incoming Edges ->{9} 
+# Block Start Statements:
+#   S12:  goto S16:
+# Block End 
+# Outgoing Edges -> {16}
+# __________________
+
+# __________________
+# Block Id: 13
+# Incoming Edges ->{9} 
+# Block Start Statements:
+#   S13:  t7 = bob2
+#   S14:  t8 = 0
+#   S15:  if (t7 >= t8) goto S17:
+# Block End 
+# Outgoing Edges -> {True: 17,False: 16}
+# __________________
+
+# __________________
+# Block Id: 16
+# Incoming Edges ->{12,13} 
+# Block Start Statements:
+#   S16:  goto S18:
+# Block End 
+# Outgoing Edges -> {18}
+# __________________
+
+# __________________
+# Block Id: 17
+# Incoming Edges ->{6,13} 
+# Block Start Statements:
+#   S17:  goto S19:
+# Block End 
+# Outgoing Edges -> {19}
+# __________________
+
+# __________________
+# Block Id: 18
+# Incoming Edges ->{16} 
+# Block Start Statements:
+#   S18:  goto S22:
+# Block End 
+# Outgoing Edges -> {22}
+# __________________
+
+# __________________
+# Block Id: 19
+# Incoming Edges ->{17} 
+# Block Start Statements:
+#   S19:  t9 = 4
+#   S20:  a1 = t9
+#   S21:  goto S24:
+# Block End 
+# Outgoing Edges -> {24}
+# __________________
+
+# __________________
+# Block Id: 22
+# Incoming Edges ->{18} 
+# Block Start Statements:
+#   S22:  t10 = 5
+#   S23:  b1 = t10
+# Block End 
+# Outgoing Edges -> {24}
+# __________________
+
+# __________________
+# Block Id: 24
+# Incoming Edges ->{19,30,22} 
+# Block Start Statements:
+#   S24:  bob1 = phi( bob0 bob2)
+#   S25:  t11 = bob1
+#   S26:  t12 = 0
+#   S27:  if (t11 == t12) goto S29:
+# Block End 
+# Outgoing Edges -> {True: 29,False: 28}
+# __________________
+
+# __________________
+# Block Id: 28
+# Incoming Edges ->{24} 
+# Block Start Statements:
+#   S28:  goto S30:
+# Block End 
+# Outgoing Edges -> {30}
+# __________________
+
+# __________________
+# Block Id: 29
+# Incoming Edges ->{24} 
+# Block Start Statements:
+#   S29:  goto S35:
+# Block End 
+# Outgoing Edges -> {35}
+# __________________
+
+# __________________
+# Block Id: 30
+# Incoming Edges ->{28} 
+# Block Start Statements:
+#   S30:  t13 = bob1
+#   S31:  t14 = 1
+#   S32:  t15 = t13 - t14
+#   S33:  bob2 = t15
+#   S34:  goto S24:
+# Block End 
+# Outgoing Edges -> {24}
+# __________________
+
+# __________________
+# Block Id: 35
+# Incoming Edges ->{29} 
+# Block Start Statements:
+#   S35:  t16 = 12
+#   S36:  t17 = 3
+#   S37:  t18 = t16 / t17
+#   S38:  t19 = 4
+#   S39:  t20 = t18 - t19
+#   S40:  t21 = 3
+#   S41:  t22 = 2
+#   S42:  t23 = t21 * t22
+#   S43:  t24 = t20 + t23
+#   S44:  return t24
+#   S45:  func end foo
+# Block End 
+# __________________
+
+# __________________
+# Block Id: 46
+# Block Start Statements:
+#   S46:  main program begin
+#   S47:  t25 = &x
+#   S48:  t26 = 2
+#   S49:  *t25 = newTuple(t26)
+#   S50:  t27 = 13
+#   S51:  t28 = &x
+#   S52:  t29 = 1
+#   S53:  t30 = &t28[t29]
+#   S54:  *t30 = t27
+#   S55:  t31 = &x
+#   S56:  t32 = 1
+#   S57:  t33 = t31[t32]
+#   S58:  argument t33
+#   S59:  call foo,1  --> foo_retval1
+#   S60:  t34 = &x
+#   S61:  t35 = 20
+#   S62:  *t34 = newTuple(t35)
+#   S63:  t36 = 2
+#   S64:  t37 = &x
+#   S65:  t38 = 0
+#   S66:  t39 = &t37[t38]
+#   S67:  *t39 = t36
+#   S68:  t40 = 3
+#   S69:  t41 = &x
+#   S70:  t42 = 1
+#   S71:  t43 = &t41[t42]
+#   S72:  *t43 = t40
+#   S73:  t44 = 3
+#   S74:  t45 = &x
+#   S75:  t46 = 4
+#   S76:  t47 = &t45[t46]
+#   S77:  *t47 = t44
+#   S78:  t48 = 1
+#   S79:  t49 = &x
+#   S80:  t50 = 5
+#   S81:  t51 = &t49[t50]
+#   S82:  *t51 = t48
+#   S83:  t52 = &x
+#   S84:  t53 = 6
+#   S85:  t54 = &t52[t53]
+#   S86:  t55 = 5
+#   S87:  *t54 = newTuple(t55)
+#   S88:  t56 = 14
+#   S89:  t57 = &x
+#   S90:  t58 = 6
+#   S91:  t59 = &t57[t58]
+#   S92:  t60 = 4
+#   S93:  t61 = &t59[t60]
+#   S94:  *t61 = t56
+#   S95:  t62 = 2
+#   S96:  t63 = &x
+#   S97:  t64 = 9
+#   S98:  t65 = &t63[t64]
+#   S99:  *t65 = t62
+#   S100:  t66 = 4
+#   S101:  t67 = &x
+#   S102:  t68 = 8
+#   S103:  t69 = &t67[t68]
+#   S104:  *t69 = t66
+#   S105:  t70 = 22
+#   S106:  t71 = &x
+#   S107:  t72 = 11
+#   S108:  t73 = &t71[t72]
+#   S109:  *t73 = t70
+#   S110:  t74 = 15
+#   S111:  t75 = &x
+#   S112:  t76 = 14
+#   S113:  t77 = &t75[t76]
+#   S114:  *t77 = t74
+#   S115:  t78 = &x
+#   S116:  t79 = &x
+#   S117:  t80 = 0
+#   S118:  t81 = t79[t80]
+#   S119:  t82 = &x
+#   S120:  t83 = 1
+#   S121:  t84 = t82[t83]
+#   S122:  t85 = t81 * t84
+#   S123:  t86 = &t78[t85]
+#   S124:  t87 = &x
+#   S125:  t88 = &x
+#   S126:  t89 = 8
+#   S127:  t90 = t88[t89]
+#   S128:  t91 = t87[t90]
+#   S129:  t92 = &x
+#   S130:  t93 = 5
+#   S131:  t94 = t92[t93]
+#   S132:  t95 = t91 + t94
+#   S133:  t96 = t86[t95]
+#   S134:  t97 = &x
+#   S135:  t98 = 9
+#   S136:  t99 = t97[t98]
+#   S137:  t100 = t96 / t99
+#   S138:  t101 = &x
+#   S139:  t102 = &x
+#   S140:  t103 = 11
+#   S141:  t104 = t102[t103]
+#   S142:  t105 = &x
+#   S143:  t106 = 14
+#   S144:  t107 = t105[t106]
+#   S145:  t108 = t104 - t107
+#   S146:  t109 = &t101[t108]
+#   S147:  *t109 = t100
+#   S148:  t110 = &x
+#   S149:  t111 = 7
+#   S150:  t112 = t110[t111]
+#   S151:  return t112
+#   S152:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,6,17,24,9,5,19,29,28,35,30,13,16,12,18,22, Dominance Frontier: 
+# BlockId: 6, iDom: 0, Dominates: 6, Dominance Frontier: 17,9,
+# BlockId: 17, iDom: 0, Dominates: 17,19, Dominance Frontier: 24,
+# BlockId: 19, iDom: 17, Dominates: 19, Dominance Frontier: 24,
+# BlockId: 24, iDom: 0, Dominates: 24,29,28,35,30, Dominance Frontier: 24,
+# BlockId: 29, iDom: 24, Dominates: 29,35, Dominance Frontier: 
+# BlockId: 35, iDom: 29, Dominates: 35, Dominance Frontier: 
+# BlockId: 28, iDom: 24, Dominates: 28,30, Dominance Frontier: 24,
+# BlockId: 30, iDom: 28, Dominates: 30, Dominance Frontier: 24,
+# BlockId: 9, iDom: 0, Dominates: 9,13,16,12,18,22, Dominance Frontier: 17,24,
+# BlockId: 13, iDom: 9, Dominates: 13, Dominance Frontier: 17,16,
+# BlockId: 16, iDom: 9, Dominates: 16,18,22, Dominance Frontier: 24,
+# BlockId: 18, iDom: 16, Dominates: 18,22, Dominance Frontier: 24,
+# BlockId: 22, iDom: 18, Dominates: 22, Dominance Frontier: 24,
+# BlockId: 12, iDom: 9, Dominates: 12, Dominance Frontier: 16,
+# BlockId: 5, iDom: 0, Dominates: 5, Dominance Frontier: 9,
+
+# ______________________
+# Domination Info for Graph id: 46
+# BlockId: 46, iDom: -1, Dominates: 46, Dominance Frontier: 
+[       OK ] AE.NestedTuples (232 ms)
+[----------] 1 test from AE (233 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test case ran. (233 ms total)
+[  PASSED  ] 1 test.
+Running main() from gtest_main.cc
+[==========] Running 1 test from 1 test case.
+[----------] Global test environment set-up.
+[----------] 1 test from v5
+[ RUN      ] v5.CanLoop
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable x at:0,9,
+
+# Variable assignment for variable y at:0,9,
+
+# Global Variables: x,y,
+# Phi functions to be placed at:5,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 1
+#   S2:  x1 = t0
+#   S3:  t1 = 2
+#   S4:  y1 = t1
+# Block End 
+# Outgoing Edges -> {5}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{11,0} 
+# Block Start Statements:
+#   S5:  y2 = phi( y1 y3)
+#   S6:  x2 = phi( x1 x3)
+#   S7:  t2 = x2
+#   S8:  t3 = 100
+#   S9:  if (t2 < t3) goto S11:
+# Block End 
+# Outgoing Edges -> {True: 11,False: 10}
+# __________________
+
+# __________________
+# Block Id: 10
+# Incoming Edges ->{5} 
+# Block Start Statements:
+#   S10:  goto S20:
+# Block End 
+# Outgoing Edges -> {20}
+# __________________
+
+# __________________
+# Block Id: 11
+# Incoming Edges ->{5} 
+# Block Start Statements:
+#   S11:  t4 = x2
+#   S12:  t5 = 1
+#   S13:  t6 = t4 + t5
+#   S14:  x3 = t6
+#   S15:  t7 = y2
+#   S16:  t8 = x3
+#   S17:  t9 = t7 + t8
+#   S18:  y3 = t9
+#   S19:  goto S5:
+# Block End 
+# Outgoing Edges -> {5}
+# __________________
+
+# __________________
+# Block Id: 20
+# Incoming Edges ->{10} 
+# Block Start Statements:
+#   S20:  t10 = x3
+#   S21:  return t10
+#   S22:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,11,10,20, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5,11,10,20, Dominance Frontier: 5,
+# BlockId: 11, iDom: 5, Dominates: 11, Dominance Frontier: 5,
+# BlockId: 10, iDom: 5, Dominates: 10,20, Dominance Frontier: 
+# BlockId: 20, iDom: 10, Dominates: 20, Dominance Frontier: 
+[       OK ] v5.CanLoop (202 ms)
+[----------] 1 test from v5 (202 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test case ran. (202 ms total)
+[  PASSED  ] 1 test.
+Running main() from gtest_main.cc
+[==========] Running 7 tests from 1 test case.
+[----------] Global test environment set-up.
+[----------] 7 tests from AE
+[ RUN      ] AE.CanAdd
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 12
+#   S2:  t1 = 30
+#   S3:  t2 = t0 + t1
+#   S4:  return t2
+#   S5:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] AE.CanAdd (409 ms)
+[ RUN      ] AE.CanSubtract
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 52
+#   S2:  t1 = 10
+#   S3:  t2 = t0 - t1
+#   S4:  return t2
+#   S5:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] AE.CanSubtract (247 ms)
+[ RUN      ] AE.CanMultiply
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 7
+#   S2:  t1 = 6
+#   S3:  t2 = t0 * t1
+#   S4:  return t2
+#   S5:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] AE.CanMultiply (164 ms)
+[ RUN      ] AE.CanDivide
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 84
+#   S2:  t1 = 2
+#   S3:  t2 = t0 / t1
+#   S4:  return t2
+#   S5:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] AE.CanDivide (168 ms)
+[ RUN      ] AE.CanConditionalTrue
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:5,8,
+
+# Global Variables: a,
+# Phi functions to be placed at:10,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 20
+#   S2:  t1 = 0
+#   S3:  if (t0 > t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S8:
+# Block End 
+# Outgoing Edges -> {8}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  t2 = 3
+#   S6:  a1 = t2
+#   S7:  goto S10:
+# Block End 
+# Outgoing Edges -> {10}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{4} 
+# Block Start Statements:
+#   S8:  t3 = 4
+#   S9:  a3 = t3
+# Block End 
+# Outgoing Edges -> {10}
+# __________________
+
+# __________________
+# Block Id: 10
+# Incoming Edges ->{5,8} 
+# Block Start Statements:
+#   S10:  a2 = phi( a1 a3)
+#   S11:  t4 = a2
+#   S12:  t5 = 0
+#   S13:  t6 = t4 + t5
+#   S14:  return t6
+#   S15:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,10,4,8, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5, Dominance Frontier: 10,
+# BlockId: 10, iDom: 0, Dominates: 10, Dominance Frontier: 
+# BlockId: 4, iDom: 0, Dominates: 4,8, Dominance Frontier: 10,
+# BlockId: 8, iDom: 4, Dominates: 8, Dominance Frontier: 10,
+[       OK ] AE.CanConditionalTrue (141 ms)
+[ RUN      ] AE.CanConditionalFalse
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:5,8,
+
+# Global Variables: a,
+# Phi functions to be placed at:10,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 20
+#   S2:  t1 = 0
+#   S3:  if (t0 < t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S8:
+# Block End 
+# Outgoing Edges -> {8}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  t2 = 3
+#   S6:  a1 = t2
+#   S7:  goto S10:
+# Block End 
+# Outgoing Edges -> {10}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{4} 
+# Block Start Statements:
+#   S8:  t3 = 4
+#   S9:  a3 = t3
+# Block End 
+# Outgoing Edges -> {10}
+# __________________
+
+# __________________
+# Block Id: 10
+# Incoming Edges ->{5,8} 
+# Block Start Statements:
+#   S10:  a2 = phi( a1 a3)
+#   S11:  t4 = a2
+#   S12:  t5 = 0
+#   S13:  t6 = t4 + t5
+#   S14:  return t6
+#   S15:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,10,4,8, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5, Dominance Frontier: 10,
+# BlockId: 10, iDom: 0, Dominates: 10, Dominance Frontier: 
+# BlockId: 4, iDom: 0, Dominates: 4,8, Dominance Frontier: 10,
+# BlockId: 8, iDom: 4, Dominates: 8, Dominance Frontier: 10,
+[       OK ] AE.CanConditionalFalse (134 ms)
+[ RUN      ] AE.DominatesItself
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = -4
+#   S2:  t1 = 2
+#   S3:  t2 = t0 / t1
+#   S4:  t3 = 101
+#   S5:  t4 = t2 - t3
+#   S6:  t5 = 15
+#   S7:  t6 = 7
+#   S8:  t7 = t5 * t6
+#   S9:  t8 = t4 + t7
+#   S10:  return t8
+#   S11:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] AE.DominatesItself (138 ms)
+[----------] 7 tests from AE (1401 ms total)
+
+[----------] Global test environment tear-down
+[==========] 7 tests from 1 test case ran. (1402 ms total)
+[  PASSED  ] 7 tests.
+Running main() from gtest_main.cc
+[==========] Running 9 tests from 4 test cases.
+[----------] Global test environment set-up.
+[----------] 5 tests from Assignment
+[ RUN      ] Assignment.OfVariable
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 12
+#   S2:  a1 = t0
+#   S3:  t1 = 12
+#   S4:  t2 = 30
+#   S5:  t3 = t1 + t2
+#   S6:  return t3
+#   S7:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] Assignment.OfVariable (177 ms)
+[ RUN      ] Assignment.OfDereference
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 12
+#   S2:  a1 = t0
+#   S3:  t1 = &b
+#   S4:  t2 = 3
+#   S5:  *t1 = newTuple(t2)
+#   S6:  t3 = 5
+#   S7:  t4 = &b
+#   S8:  t5 = 2
+#   S9:  t6 = &t4[t5]
+#   S10:  *t6 = t3
+#   S11:  t7 = a0
+#   S12:  t8 = 30
+#   S13:  t9 = t7 + t8
+#   S14:  return t9
+#   S15:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] Assignment.OfDereference (144 ms)
+[ RUN      ] Assignment.OfDereferenceToDereference
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 12
+#   S2:  a1 = t0
+#   S3:  t1 = &b
+#   S4:  t2 = 3
+#   S5:  *t1 = newTuple(t2)
+#   S6:  t3 = &b
+#   S7:  t4 = 3
+#   S8:  t5 = t3[t4]
+#   S9:  t6 = &b
+#   S10:  t7 = 2
+#   S11:  t8 = &t6[t7]
+#   S12:  *t8 = t5
+#   S13:  t9 = a0
+#   S14:  t10 = 30
+#   S15:  t11 = t9 + t10
+#   S16:  return t11
+#   S17:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] Assignment.OfDereferenceToDereference (150 ms)
+[ RUN      ] Assignment.OfNestedDereference
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 12
+#   S2:  a1 = t0
+#   S3:  t1 = &b
+#   S4:  t2 = 3
+#   S5:  *t1 = newTuple(t2)
+#   S6:  t3 = 3
+#   S7:  t4 = &b
+#   S8:  t5 = 2
+#   S9:  t6 = &t4[t5]
+#   S10:  *t6 = t3
+#   S11:  t7 = 5
+#   S12:  t8 = &b
+#   S13:  t9 = &b
+#   S14:  t10 = 2
+#   S15:  t11 = t9[t10]
+#   S16:  t12 = &t8[t11]
+#   S17:  *t12 = t7
+#   S18:  t13 = a0
+#   S19:  t14 = 30
+#   S20:  t15 = t13 + t14
+#   S21:  return t15
+#   S22:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] Assignment.OfNestedDereference (168 ms)
+[ RUN      ] Assignment.OfNestedDereference2
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 2
+#   S2:  a1 = t0
+#   S3:  t1 = &b
+#   S4:  t2 = 3
+#   S5:  *t1 = newTuple(t2)
+#   S6:  t3 = 3
+#   S7:  t4 = &b
+#   S8:  t5 = 2
+#   S9:  t6 = &t4[t5]
+#   S10:  *t6 = t3
+#   S11:  t7 = 12
+#   S12:  t8 = &b
+#   S13:  t9 = &b
+#   S14:  t10 = a0
+#   S15:  t11 = t9[t10]
+#   S16:  t12 = &t8[t11]
+#   S17:  *t12 = t7
+#   S18:  t13 = &b
+#   S19:  t14 = 3
+#   S20:  t15 = t13[t14]
+#   S21:  t16 = 30
+#   S22:  t17 = t15 + t16
+#   S23:  return t17
+#   S24:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] Assignment.OfNestedDereference2 (150 ms)
+[----------] 5 tests from Assignment (789 ms total)
+
+[----------] 1 test from Access
+[ RUN      ] Access.OfDereference
+
+### Live variable info for graphID: 0 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = &b
+#   S2:  t1 = 3
+#   S3:  *t0 = newTuple(t1)
+#   S4:  t2 = 30
+#   S5:  t3 = &b
+#   S6:  t4 = 2
+#   S7:  t5 = &t3[t4]
+#   S8:  *t5 = t2
+#   S9:  t6 = 12
+#   S10:  t7 = &b
+#   S11:  t8 = 2
+#   S12:  t9 = t7[t8]
+#   S13:  t10 = t6 + t9
+#   S14:  return t10
+#   S15:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+[       OK ] Access.OfDereference (143 ms)
+[----------] 1 test from Access (143 ms total)
+
+[----------] 1 test from Create
+[ RUN      ] Create.Function
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable param_a at:
+# Global Variables: param_a,
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+
+### Live variable info for graphID: 11 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 11 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  func begin foo
+#   S1:  param param_a
+#   S2:  t1 = param_a0
+#   S3:  t2 = 5
+#   S4:  t3 = t1 + t2
+#   S5:  local_b1 = t3
+#   S6:  t4 = local_b0
+#   S7:  t5 = 5
+#   S8:  t6 = t4 + t5
+#   S9:  return t6
+#   S10:  func end foo
+# Block End 
+# __________________
+
+# __________________
+# Block Id: 11
+# Block Start Statements:
+#   S11:  main program begin
+#   S12:  t7 = 12
+#   S13:  a1 = t7
+#   S14:  t8 = a0
+#   S15:  t9 = 30
+#   S16:  t10 = t8 + t9
+#   S17:  return t10
+#   S18:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+
+# ______________________
+# Domination Info for Graph id: 11
+# BlockId: 11, iDom: -1, Dominates: 11, Dominance Frontier: 
+[       OK ] Create.Function (139 ms)
+[----------] 1 test from Create (140 ms total)
+
+[----------] 2 tests from Call
+[ RUN      ] Call.Function
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable param_a at:
+# Global Variables: param_a,
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+
+### Live variable info for graphID: 9 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 9 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  func begin foo
+#   S1:  param param_a
+#   S2:  t1 = param_a0
+#   S3:  t2 = 5
+#   S4:  t3 = t1 + t2
+#   S5:  local_b1 = t3
+#   S6:  t4 = 22
+#   S7:  return t4
+#   S8:  func end foo
+# Block End 
+# __________________
+
+# __________________
+# Block Id: 9
+# Block Start Statements:
+#   S9:  main program begin
+#   S10:  t5 = 12
+#   S11:  a1 = t5
+#   S12:  t6 = 12
+#   S13:  argument t6
+#   S14:  call foo,1  --> foo_retval1
+#   S15:  t7 = foo_retval0
+#   S16:  t8 = 20
+#   S17:  t9 = t7 + t8
+#   S18:  return t9
+#   S19:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+
+# ______________________
+# Domination Info for Graph id: 9
+# BlockId: 9, iDom: -1, Dominates: 9, Dominance Frontier: 
+[       OK ] Call.Function (147 ms)
+[ RUN      ] Call.FunctionTwice
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable param_a at:
+# Global Variables: param_a,
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 0 ###
+
+
+### Live variable info for graphID: 11 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 11 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  func begin foo
+#   S1:  param param_a
+#   S2:  t1 = param_a0
+#   S3:  t2 = 5
+#   S4:  t3 = t1 + t2
+#   S5:  local_b1 = t3
+#   S6:  t4 = local_b0
+#   S7:  t5 = 5
+#   S8:  t6 = t4 + t5
+#   S9:  return t6
+#   S10:  func end foo
+# Block End 
+# __________________
+
+# __________________
+# Block Id: 11
+# Block Start Statements:
+#   S11:  main program begin
+#   S12:  t7 = 12
+#   S13:  a1 = t7
+#   S14:  t8 = 12
+#   S15:  B1 = t8
+#   S16:  t9 = 12
+#   S17:  argument t9
+#   S18:  call foo,1  --> foo_retval1
+#   S19:  t10 = 22
+#   S20:  argument t10
+#   S21:  call foo,1  --> foo_retval1
+#   S22:  t11 = foo_retval0
+#   S23:  t12 = 20
+#   S24:  t13 = t11 + t12
+#   S25:  return t13
+#   S26:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0, Dominance Frontier: 
+
+# ______________________
+# Domination Info for Graph id: 11
+# BlockId: 11, iDom: -1, Dominates: 11, Dominance Frontier: 
+[       OK ] Call.FunctionTwice (158 ms)
+[----------] 2 tests from Call (305 ms total)
+
+[----------] Global test environment tear-down
+[==========] 9 tests from 4 test cases ran. (1377 ms total)
+[  PASSED  ] 9 tests.
+Running main() from gtest_main.cc
+[==========] Running 8 tests from 1 test case.
+[----------] Global test environment set-up.
+[----------] 8 tests from AE
+[ RUN      ] AE.CanAnd
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:9,12,
+
+# Global Variables: a,
+# Phi functions to be placed at:14,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 0
+#   S2:  t1 = 20
+#   S3:  if (t0 < t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S8:
+# Block End 
+# Outgoing Edges -> {8}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  t2 = 9
+#   S6:  t3 = 8
+#   S7:  if (t2 >= t3) goto S9:
+# Block End 
+# Outgoing Edges -> {True: 9,False: 8}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{4,5} 
+# Block Start Statements:
+#   S8:  goto S12:
+# Block End 
+# Outgoing Edges -> {12}
+# __________________
+
+# __________________
+# Block Id: 9
+# Incoming Edges ->{5} 
+# Block Start Statements:
+#   S9:  t4 = 3
+#   S10:  a1 = t4
+#   S11:  goto S14:
+# Block End 
+# Outgoing Edges -> {14}
+# __________________
+
+# __________________
+# Block Id: 12
+# Incoming Edges ->{8} 
+# Block Start Statements:
+#   S12:  t5 = 4
+#   S13:  a3 = t5
+# Block End 
+# Outgoing Edges -> {14}
+# __________________
+
+# __________________
+# Block Id: 14
+# Incoming Edges ->{9,12} 
+# Block Start Statements:
+#   S14:  a2 = phi( a1 a3)
+#   S15:  t6 = a2
+#   S16:  t7 = 0
+#   S17:  t8 = t6 + t7
+#   S18:  return t8
+#   S19:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,14,8,4,9,12, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5,9, Dominance Frontier: 8,14,
+# BlockId: 9, iDom: 5, Dominates: 9, Dominance Frontier: 14,
+# BlockId: 14, iDom: 0, Dominates: 14, Dominance Frontier: 
+# BlockId: 8, iDom: 0, Dominates: 8,12, Dominance Frontier: 14,
+# BlockId: 12, iDom: 8, Dominates: 12, Dominance Frontier: 14,
+# BlockId: 4, iDom: 0, Dominates: 4, Dominance Frontier: 8,
+[       OK ] AE.CanAnd (170 ms)
+[ RUN      ] AE.CanOr
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:10,13,
+
+# Global Variables: a,
+# Phi functions to be placed at:15,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 0
+#   S2:  t1 = 20
+#   S3:  if (t0 < t1) goto S8:
+# Block End 
+# Outgoing Edges -> {True: 8,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  t2 = 9
+#   S5:  t3 = 8
+#   S6:  if (t2 >= t3) goto S8:
+# Block End 
+# Outgoing Edges -> {True: 8,False: 7}
+# __________________
+
+# __________________
+# Block Id: 7
+# Incoming Edges ->{4} 
+# Block Start Statements:
+#   S7:  goto S9:
+# Block End 
+# Outgoing Edges -> {9}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{0,4} 
+# Block Start Statements:
+#   S8:  goto S10:
+# Block End 
+# Outgoing Edges -> {10}
+# __________________
+
+# __________________
+# Block Id: 9
+# Incoming Edges ->{7} 
+# Block Start Statements:
+#   S9:  goto S13:
+# Block End 
+# Outgoing Edges -> {13}
+# __________________
+
+# __________________
+# Block Id: 10
+# Incoming Edges ->{8} 
+# Block Start Statements:
+#   S10:  t4 = 3
+#   S11:  a1 = t4
+#   S12:  goto S15:
+# Block End 
+# Outgoing Edges -> {15}
+# __________________
+
+# __________________
+# Block Id: 13
+# Incoming Edges ->{9} 
+# Block Start Statements:
+#   S13:  t5 = 4
+#   S14:  a3 = t5
+# Block End 
+# Outgoing Edges -> {15}
+# __________________
+
+# __________________
+# Block Id: 15
+# Incoming Edges ->{10,13} 
+# Block Start Statements:
+#   S15:  a2 = phi( a1 a3)
+#   S16:  t6 = a2
+#   S17:  t7 = 0
+#   S18:  t8 = t6 + t7
+#   S19:  return t8
+#   S20:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,8,15,4,10,7,9,13, Dominance Frontier: 
+# BlockId: 8, iDom: 0, Dominates: 8,10, Dominance Frontier: 15,
+# BlockId: 10, iDom: 8, Dominates: 10, Dominance Frontier: 15,
+# BlockId: 15, iDom: 0, Dominates: 15, Dominance Frontier: 
+# BlockId: 4, iDom: 0, Dominates: 4,7,9,13, Dominance Frontier: 8,15,
+# BlockId: 7, iDom: 4, Dominates: 7,9,13, Dominance Frontier: 15,
+# BlockId: 9, iDom: 7, Dominates: 9,13, Dominance Frontier: 15,
+# BlockId: 13, iDom: 9, Dominates: 13, Dominance Frontier: 15,
+[       OK ] AE.CanOr (161 ms)
+[ RUN      ] AE.CanNot
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:6,11,
+
+# Global Variables: a,
+# Phi functions to be placed at:13,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 20
+#   S2:  t1 = 0
+#   S3:  if (t0 < t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S6:
+# Block End 
+# Outgoing Edges -> {6}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  goto S11:
+# Block End 
+# Outgoing Edges -> {11}
+# __________________
+
+# __________________
+# Block Id: 6
+# Incoming Edges ->{4} 
+# Block Start Statements:
+#   S6:  t2 = 1
+#   S7:  t3 = 2
+#   S8:  t4 = t2 + t3
+#   S9:  a3 = t4
+#   S10:  goto S13:
+# Block End 
+# Outgoing Edges -> {13}
+# __________________
+
+# __________________
+# Block Id: 11
+# Incoming Edges ->{5} 
+# Block Start Statements:
+#   S11:  t5 = 4
+#   S12:  a1 = t5
+# Block End 
+# Outgoing Edges -> {13}
+# __________________
+
+# __________________
+# Block Id: 13
+# Incoming Edges ->{6,11} 
+# Block Start Statements:
+#   S13:  a2 = phi( a1 a3)
+#   S14:  t6 = a2
+#   S15:  t7 = 0
+#   S16:  t8 = t6 + t7
+#   S17:  return t8
+#   S18:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,13,4,11,6, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5,11, Dominance Frontier: 13,
+# BlockId: 11, iDom: 5, Dominates: 11, Dominance Frontier: 13,
+# BlockId: 13, iDom: 0, Dominates: 13, Dominance Frontier: 
+# BlockId: 4, iDom: 0, Dominates: 4,6, Dominance Frontier: 13,
+# BlockId: 6, iDom: 4, Dominates: 6, Dominance Frontier: 13,
+[       OK ] AE.CanNot (152 ms)
+[ RUN      ] AE.CanAndNested
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:17,22,
+
+# Global Variables: a,
+# Phi functions to be placed at:24,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 0
+#   S2:  t1 = 20
+#   S3:  if (t0 < t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S8:
+# Block End 
+# Outgoing Edges -> {8}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  t2 = 9
+#   S6:  t3 = 8
+#   S7:  if (t2 >= t3) goto S9:
+# Block End 
+# Outgoing Edges -> {True: 9,False: 8}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{4,5} 
+# Block Start Statements:
+#   S8:  goto S16:
+# Block End 
+# Outgoing Edges -> {16}
+# __________________
+
+# __________________
+# Block Id: 9
+# Incoming Edges ->{5} 
+# Block Start Statements:
+#   S9:  t4 = 0
+#   S10:  t5 = 20
+#   S11:  if (t4 < t5) goto S13:
+# Block End 
+# Outgoing Edges -> {True: 13,False: 12}
+# __________________
+
+# __________________
+# Block Id: 12
+# Incoming Edges ->{9} 
+# Block Start Statements:
+#   S12:  goto S16:
+# Block End 
+# Outgoing Edges -> {16}
+# __________________
+
+# __________________
+# Block Id: 13
+# Incoming Edges ->{9} 
+# Block Start Statements:
+#   S13:  t6 = 9
+#   S14:  t7 = 8
+#   S15:  if (t6 >= t7) goto S17:
+# Block End 
+# Outgoing Edges -> {True: 17,False: 16}
+# __________________
+
+# __________________
+# Block Id: 16
+# Incoming Edges ->{8,12,13} 
+# Block Start Statements:
+#   S16:  goto S22:
+# Block End 
+# Outgoing Edges -> {22}
+# __________________
+
+# __________________
+# Block Id: 17
+# Incoming Edges ->{13} 
+# Block Start Statements:
+#   S17:  t8 = 1
+#   S18:  t9 = 2
+#   S19:  t10 = t8 + t9
+#   S20:  a1 = t10
+#   S21:  goto S24:
+# Block End 
+# Outgoing Edges -> {24}
+# __________________
+
+# __________________
+# Block Id: 22
+# Incoming Edges ->{16} 
+# Block Start Statements:
+#   S22:  t11 = 4
+#   S23:  a3 = t11
+# Block End 
+# Outgoing Edges -> {24}
+# __________________
+
+# __________________
+# Block Id: 24
+# Incoming Edges ->{17,22} 
+# Block Start Statements:
+#   S24:  a2 = phi( a1 a3)
+#   S25:  t12 = a2
+#   S26:  t13 = 0
+#   S27:  t14 = t12 + t13
+#   S28:  return t14
+#   S29:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,24,16,8,4,9,13,12,17,22, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5,9,13,12,17, Dominance Frontier: 8,16,16,24,
+# BlockId: 9, iDom: 5, Dominates: 9,13,12,17, Dominance Frontier: 16,16,24,
+# BlockId: 13, iDom: 9, Dominates: 13,17, Dominance Frontier: 16,24,
+# BlockId: 17, iDom: 13, Dominates: 17, Dominance Frontier: 24,
+# BlockId: 24, iDom: 0, Dominates: 24, Dominance Frontier: 
+# BlockId: 16, iDom: 0, Dominates: 16,22, Dominance Frontier: 24,
+# BlockId: 22, iDom: 16, Dominates: 22, Dominance Frontier: 24,
+# BlockId: 12, iDom: 9, Dominates: 12, Dominance Frontier: 16,
+# BlockId: 8, iDom: 0, Dominates: 8, Dominance Frontier: 16,
+# BlockId: 4, iDom: 0, Dominates: 4, Dominance Frontier: 8,
+[       OK ] AE.CanAndNested (164 ms)
+[ RUN      ] AE.CanMixLogicals1
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:14,19,
+
+# Global Variables: a,
+# Phi functions to be placed at:21,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 2
+#   S2:  t1 = 4
+#   S3:  if (t0 < t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S8:
+# Block End 
+# Outgoing Edges -> {8}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  t2 = 2
+#   S6:  t3 = 0
+#   S7:  if (t2 < t3) goto S12:
+# Block End 
+# Outgoing Edges -> {True: 12,False: 8}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{4,5} 
+# Block Start Statements:
+#   S8:  t4 = 9
+#   S9:  t5 = 9
+#   S10:  if (t4 >= t5) goto S12:
+# Block End 
+# Outgoing Edges -> {True: 12,False: 11}
+# __________________
+
+# __________________
+# Block Id: 11
+# Incoming Edges ->{8} 
+# Block Start Statements:
+#   S11:  goto S13:
+# Block End 
+# Outgoing Edges -> {13}
+# __________________
+
+# __________________
+# Block Id: 12
+# Incoming Edges ->{5,8} 
+# Block Start Statements:
+#   S12:  goto S14:
+# Block End 
+# Outgoing Edges -> {14}
+# __________________
+
+# __________________
+# Block Id: 13
+# Incoming Edges ->{11} 
+# Block Start Statements:
+#   S13:  goto S19:
+# Block End 
+# Outgoing Edges -> {19}
+# __________________
+
+# __________________
+# Block Id: 14
+# Incoming Edges ->{12} 
+# Block Start Statements:
+#   S14:  t6 = 1
+#   S15:  t7 = 2
+#   S16:  t8 = t6 + t7
+#   S17:  a1 = t8
+#   S18:  goto S21:
+# Block End 
+# Outgoing Edges -> {21}
+# __________________
+
+# __________________
+# Block Id: 19
+# Incoming Edges ->{13} 
+# Block Start Statements:
+#   S19:  t9 = 4
+#   S20:  a3 = t9
+# Block End 
+# Outgoing Edges -> {21}
+# __________________
+
+# __________________
+# Block Id: 21
+# Incoming Edges ->{14,19} 
+# Block Start Statements:
+#   S21:  a2 = phi( a1 a3)
+#   S22:  t10 = a2
+#   S23:  t11 = 0
+#   S24:  t12 = t10 + t11
+#   S25:  return t12
+#   S26:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,12,21,8,4,14,11,13,19, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5, Dominance Frontier: 12,8,
+# BlockId: 12, iDom: 0, Dominates: 12,14, Dominance Frontier: 21,
+# BlockId: 14, iDom: 12, Dominates: 14, Dominance Frontier: 21,
+# BlockId: 21, iDom: 0, Dominates: 21, Dominance Frontier: 
+# BlockId: 8, iDom: 0, Dominates: 8,11,13,19, Dominance Frontier: 12,21,
+# BlockId: 11, iDom: 8, Dominates: 11,13,19, Dominance Frontier: 21,
+# BlockId: 13, iDom: 11, Dominates: 13,19, Dominance Frontier: 21,
+# BlockId: 19, iDom: 13, Dominates: 19, Dominance Frontier: 21,
+# BlockId: 4, iDom: 0, Dominates: 4, Dominance Frontier: 8,
+[       OK ] AE.CanMixLogicals1 (152 ms)
+[ RUN      ] AE.CanMixLogicals2
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:14,19,
+
+# Global Variables: a,
+# Phi functions to be placed at:21,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 2
+#   S2:  t1 = 4
+#   S3:  if (t0 < t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S8:
+# Block End 
+# Outgoing Edges -> {8}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  t2 = 2
+#   S6:  t3 = 0
+#   S7:  if (t2 > t3) goto S12:
+# Block End 
+# Outgoing Edges -> {True: 12,False: 8}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{4,5} 
+# Block Start Statements:
+#   S8:  t4 = 9
+#   S9:  t5 = 9
+#   S10:  if (t4 >= t5) goto S12:
+# Block End 
+# Outgoing Edges -> {True: 12,False: 11}
+# __________________
+
+# __________________
+# Block Id: 11
+# Incoming Edges ->{8} 
+# Block Start Statements:
+#   S11:  goto S13:
+# Block End 
+# Outgoing Edges -> {13}
+# __________________
+
+# __________________
+# Block Id: 12
+# Incoming Edges ->{5,8} 
+# Block Start Statements:
+#   S12:  goto S14:
+# Block End 
+# Outgoing Edges -> {14}
+# __________________
+
+# __________________
+# Block Id: 13
+# Incoming Edges ->{11} 
+# Block Start Statements:
+#   S13:  goto S19:
+# Block End 
+# Outgoing Edges -> {19}
+# __________________
+
+# __________________
+# Block Id: 14
+# Incoming Edges ->{12} 
+# Block Start Statements:
+#   S14:  t6 = 1
+#   S15:  t7 = 2
+#   S16:  t8 = t6 + t7
+#   S17:  a1 = t8
+#   S18:  goto S21:
+# Block End 
+# Outgoing Edges -> {21}
+# __________________
+
+# __________________
+# Block Id: 19
+# Incoming Edges ->{13} 
+# Block Start Statements:
+#   S19:  t9 = 4
+#   S20:  a3 = t9
+# Block End 
+# Outgoing Edges -> {21}
+# __________________
+
+# __________________
+# Block Id: 21
+# Incoming Edges ->{14,19} 
+# Block Start Statements:
+#   S21:  a2 = phi( a1 a3)
+#   S22:  t10 = a2
+#   S23:  t11 = 0
+#   S24:  t12 = t10 + t11
+#   S25:  return t12
+#   S26:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,12,21,8,4,14,11,13,19, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5, Dominance Frontier: 12,8,
+# BlockId: 12, iDom: 0, Dominates: 12,14, Dominance Frontier: 21,
+# BlockId: 14, iDom: 12, Dominates: 14, Dominance Frontier: 21,
+# BlockId: 21, iDom: 0, Dominates: 21, Dominance Frontier: 
+# BlockId: 8, iDom: 0, Dominates: 8,11,13,19, Dominance Frontier: 12,21,
+# BlockId: 11, iDom: 8, Dominates: 11,13,19, Dominance Frontier: 21,
+# BlockId: 13, iDom: 11, Dominates: 13,19, Dominance Frontier: 21,
+# BlockId: 19, iDom: 13, Dominates: 19, Dominance Frontier: 21,
+# BlockId: 4, iDom: 0, Dominates: 4, Dominance Frontier: 8,
+[       OK ] AE.CanMixLogicals2 (149 ms)
+[ RUN      ] AE.CanMixLogicals3
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:14,19,
+
+# Global Variables: a,
+# Phi functions to be placed at:23,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 2
+#   S2:  t1 = 4
+#   S3:  if (t0 < t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S8:
+# Block End 
+# Outgoing Edges -> {8}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  t2 = 2
+#   S6:  t3 = 0
+#   S7:  if (t2 > t3) goto S12:
+# Block End 
+# Outgoing Edges -> {True: 12,False: 8}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{4,5} 
+# Block Start Statements:
+#   S8:  t4 = 9
+#   S9:  t5 = 9
+#   S10:  if (t4 >= t5) goto S12:
+# Block End 
+# Outgoing Edges -> {True: 12,False: 11}
+# __________________
+
+# __________________
+# Block Id: 11
+# Incoming Edges ->{8} 
+# Block Start Statements:
+#   S11:  goto S13:
+# Block End 
+# Outgoing Edges -> {13}
+# __________________
+
+# __________________
+# Block Id: 12
+# Incoming Edges ->{5,8} 
+# Block Start Statements:
+#   S12:  goto S14:
+# Block End 
+# Outgoing Edges -> {14}
+# __________________
+
+# __________________
+# Block Id: 13
+# Incoming Edges ->{11} 
+# Block Start Statements:
+#   S13:  goto S19:
+# Block End 
+# Outgoing Edges -> {19}
+# __________________
+
+# __________________
+# Block Id: 14
+# Incoming Edges ->{12} 
+# Block Start Statements:
+#   S14:  t6 = 1
+#   S15:  t7 = 2
+#   S16:  t8 = t6 + t7
+#   S17:  a1 = t8
+#   S18:  goto S23:
+# Block End 
+# Outgoing Edges -> {23}
+# __________________
+
+# __________________
+# Block Id: 19
+# Incoming Edges ->{13} 
+# Block Start Statements:
+#   S19:  t9 = 2
+#   S20:  t10 = 2
+#   S21:  t11 = t9 + t10
+#   S22:  a3 = t11
+# Block End 
+# Outgoing Edges -> {23}
+# __________________
+
+# __________________
+# Block Id: 23
+# Incoming Edges ->{14,19} 
+# Block Start Statements:
+#   S23:  a2 = phi( a1 a3)
+#   S24:  t12 = a2
+#   S25:  t13 = 0
+#   S26:  t14 = t12 + t13
+#   S27:  return t14
+#   S28:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,12,23,8,4,14,11,13,19, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5, Dominance Frontier: 12,8,
+# BlockId: 12, iDom: 0, Dominates: 12,14, Dominance Frontier: 23,
+# BlockId: 14, iDom: 12, Dominates: 14, Dominance Frontier: 23,
+# BlockId: 23, iDom: 0, Dominates: 23, Dominance Frontier: 
+# BlockId: 8, iDom: 0, Dominates: 8,11,13,19, Dominance Frontier: 12,23,
+# BlockId: 11, iDom: 8, Dominates: 11,13,19, Dominance Frontier: 23,
+# BlockId: 13, iDom: 11, Dominates: 13,19, Dominance Frontier: 23,
+# BlockId: 19, iDom: 13, Dominates: 19, Dominance Frontier: 23,
+# BlockId: 4, iDom: 0, Dominates: 4, Dominance Frontier: 8,
+[       OK ] AE.CanMixLogicals3 (158 ms)
+[ RUN      ] AE.RootDominates
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable a at:14,19,
+
+# Global Variables: a,
+# Phi functions to be placed at:23,
+
+### End of  variable info for graphID: 0 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  main program begin
+#   S1:  t0 = 2
+#   S2:  t1 = 4
+#   S3:  if (t0 < t1) goto S5:
+# Block End 
+# Outgoing Edges -> {True: 5,False: 4}
+# __________________
+
+# __________________
+# Block Id: 4
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S4:  goto S8:
+# Block End 
+# Outgoing Edges -> {8}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  t2 = 2
+#   S6:  t3 = 0
+#   S7:  if (t2 > t3) goto S12:
+# Block End 
+# Outgoing Edges -> {True: 12,False: 8}
+# __________________
+
+# __________________
+# Block Id: 8
+# Incoming Edges ->{4,5} 
+# Block Start Statements:
+#   S8:  t4 = 9
+#   S9:  t5 = 9
+#   S10:  if (t4 >= t5) goto S12:
+# Block End 
+# Outgoing Edges -> {True: 12,False: 11}
+# __________________
+
+# __________________
+# Block Id: 11
+# Incoming Edges ->{8} 
+# Block Start Statements:
+#   S11:  goto S13:
+# Block End 
+# Outgoing Edges -> {13}
+# __________________
+
+# __________________
+# Block Id: 12
+# Incoming Edges ->{5,8} 
+# Block Start Statements:
+#   S12:  goto S14:
+# Block End 
+# Outgoing Edges -> {14}
+# __________________
+
+# __________________
+# Block Id: 13
+# Incoming Edges ->{11} 
+# Block Start Statements:
+#   S13:  goto S19:
+# Block End 
+# Outgoing Edges -> {19}
+# __________________
+
+# __________________
+# Block Id: 14
+# Incoming Edges ->{12} 
+# Block Start Statements:
+#   S14:  t6 = 1
+#   S15:  t7 = 2
+#   S16:  t8 = t6 + t7
+#   S17:  a1 = t8
+#   S18:  goto S23:
+# Block End 
+# Outgoing Edges -> {23}
+# __________________
+
+# __________________
+# Block Id: 19
+# Incoming Edges ->{13} 
+# Block Start Statements:
+#   S19:  t9 = 2
+#   S20:  t10 = 2
+#   S21:  t11 = t9 + t10
+#   S22:  a3 = t11
+# Block End 
+# Outgoing Edges -> {23}
+# __________________
+
+# __________________
+# Block Id: 23
+# Incoming Edges ->{14,19} 
+# Block Start Statements:
+#   S23:  a2 = phi( a1 a3)
+#   S24:  t12 = a2
+#   S25:  t13 = 0
+#   S26:  t14 = t12 + t13
+#   S27:  return t14
+#   S28:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,5,12,23,8,4,14,11,13,19, Dominance Frontier: 
+# BlockId: 5, iDom: 0, Dominates: 5, Dominance Frontier: 12,8,
+# BlockId: 12, iDom: 0, Dominates: 12,14, Dominance Frontier: 23,
+# BlockId: 14, iDom: 12, Dominates: 14, Dominance Frontier: 23,
+# BlockId: 23, iDom: 0, Dominates: 23, Dominance Frontier: 
+# BlockId: 8, iDom: 0, Dominates: 8,11,13,19, Dominance Frontier: 12,23,
+# BlockId: 11, iDom: 8, Dominates: 11,13,19, Dominance Frontier: 23,
+# BlockId: 13, iDom: 11, Dominates: 13,19, Dominance Frontier: 23,
+# BlockId: 19, iDom: 13, Dominates: 19, Dominance Frontier: 23,
+# BlockId: 4, iDom: 0, Dominates: 4, Dominance Frontier: 8,
+[       OK ] AE.RootDominates (157 ms)
+[----------] 8 tests from AE (1263 ms total)
+
+[----------] Global test environment tear-down
+[==========] 8 tests from 1 test case ran. (1264 ms total)
+[  PASSED  ] 8 tests.
+Running main() from gtest_main.cc
+[==========] Running 1 test from 1 test case.
+[----------] Global test environment set-up.
+[----------] 1 test from AE
+[ RUN      ] AE.NestedTuples
+
+### Live variable info for graphID: 0 ###
+
+# Variable assignment for variable bob at:29,
+
+# Global Variables: bob,
+# Phi functions to be placed at:24,
+
+### End of  variable info for graphID: 0 ###
+
+
+### Live variable info for graphID: 46 ###
+
+# Global Variables: 
+# Phi functions to be placed at:
+
+### End of  variable info for graphID: 46 ###
+
+## CONTROL FLOW GRAPH BEGIN ##
+## Program Flow starts at "main program end "##
+# __________________
+# Block Id: 0
+# Block Start Statements:
+#   S0:  func begin foo
+#   S1:  param bob
+#   S2:  t1 = bob0
+#   S3:  t2 = 100
+#   S4:  if (t1 < t2) goto S6:
+# Block End 
+# Outgoing Edges -> {True: 6,False: 5}
+# __________________
+
+# __________________
+# Block Id: 5
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S5:  goto S9:
+# Block End 
+# Outgoing Edges -> {9}
+# __________________
+
+# __________________
+# Block Id: 6
+# Incoming Edges ->{0} 
+# Block Start Statements:
+#   S6:  t3 = bob0
+#   S7:  t4 = 0
+#   S8:  if (t3 > t4) goto S17:
+# Block End 
+# Outgoing Edges -> {True: 17,False: 9}
+# __________________
+
+# __________________
+# Block Id: 9
+# Incoming Edges ->{5,6} 
+# Block Start Statements:
+#   S9:  t5 = bob2
+#   S10:  t6 = 100
+#   S11:  if (t5 <= t6) goto S13:
+# Block End 
+# Outgoing Edges -> {True: 13,False: 12}
+# __________________
+
+# __________________
+# Block Id: 12
+# Incoming Edges ->{9} 
+# Block Start Statements:
+#   S12:  goto S16:
+# Block End 
+# Outgoing Edges -> {16}
+# __________________
+
+# __________________
+# Block Id: 13
+# Incoming Edges ->{9} 
+# Block Start Statements:
+#   S13:  t7 = bob2
+#   S14:  t8 = 0
+#   S15:  if (t7 >= t8) goto S17:
+# Block End 
+# Outgoing Edges -> {True: 17,False: 16}
+# __________________
+
+# __________________
+# Block Id: 16
+# Incoming Edges ->{12,13} 
+# Block Start Statements:
+#   S16:  goto S18:
+# Block End 
+# Outgoing Edges -> {18}
+# __________________
+
+# __________________
+# Block Id: 17
+# Incoming Edges ->{6,13} 
+# Block Start Statements:
+#   S17:  goto S19:
+# Block End 
+# Outgoing Edges -> {19}
+# __________________
+
+# __________________
+# Block Id: 18
+# Incoming Edges ->{16} 
+# Block Start Statements:
+#   S18:  goto S22:
+# Block End 
+# Outgoing Edges -> {22}
+# __________________
+
+# __________________
+# Block Id: 19
+# Incoming Edges ->{17} 
+# Block Start Statements:
+#   S19:  t9 = 4
+#   S20:  a1 = t9
+#   S21:  goto S24:
+# Block End 
+# Outgoing Edges -> {24}
+# __________________
+
+# __________________
+# Block Id: 22
+# Incoming Edges ->{18} 
+# Block Start Statements:
+#   S22:  t10 = 5
+#   S23:  b1 = t10
+# Block End 
+# Outgoing Edges -> {24}
+# __________________
+
+# __________________
+# Block Id: 24
+# Incoming Edges ->{19,30,22} 
+# Block Start Statements:
+#   S24:  bob1 = phi( bob0 bob2)
+#   S25:  t11 = bob1
+#   S26:  t12 = 0
+#   S27:  if (t11 == t12) goto S29:
+# Block End 
+# Outgoing Edges -> {True: 29,False: 28}
+# __________________
+
+# __________________
+# Block Id: 28
+# Incoming Edges ->{24} 
+# Block Start Statements:
+#   S28:  goto S30:
+# Block End 
+# Outgoing Edges -> {30}
+# __________________
+
+# __________________
+# Block Id: 29
+# Incoming Edges ->{24} 
+# Block Start Statements:
+#   S29:  goto S35:
+# Block End 
+# Outgoing Edges -> {35}
+# __________________
+
+# __________________
+# Block Id: 30
+# Incoming Edges ->{28} 
+# Block Start Statements:
+#   S30:  t13 = bob1
+#   S31:  t14 = 1
+#   S32:  t15 = t13 - t14
+#   S33:  bob2 = t15
+#   S34:  goto S24:
+# Block End 
+# Outgoing Edges -> {24}
+# __________________
+
+# __________________
+# Block Id: 35
+# Incoming Edges ->{29} 
+# Block Start Statements:
+#   S35:  t16 = 12
+#   S36:  t17 = 3
+#   S37:  t18 = t16 / t17
+#   S38:  t19 = 4
+#   S39:  t20 = t18 - t19
+#   S40:  t21 = 3
+#   S41:  t22 = 2
+#   S42:  t23 = t21 * t22
+#   S43:  t24 = t20 + t23
+#   S44:  return t24
+#   S45:  func end foo
+# Block End 
+# __________________
+
+# __________________
+# Block Id: 46
+# Block Start Statements:
+#   S46:  main program begin
+#   S47:  t25 = &x
+#   S48:  t26 = 2
+#   S49:  *t25 = newTuple(t26)
+#   S50:  t27 = 13
+#   S51:  t28 = &x
+#   S52:  t29 = 1
+#   S53:  t30 = &t28[t29]
+#   S54:  *t30 = t27
+#   S55:  t31 = &x
+#   S56:  t32 = 1
+#   S57:  t33 = t31[t32]
+#   S58:  argument t33
+#   S59:  call foo,1  --> foo_retval1
+#   S60:  t34 = &x
+#   S61:  t35 = 20
+#   S62:  *t34 = newTuple(t35)
+#   S63:  t36 = 2
+#   S64:  t37 = &x
+#   S65:  t38 = 0
+#   S66:  t39 = &t37[t38]
+#   S67:  *t39 = t36
+#   S68:  t40 = 3
+#   S69:  t41 = &x
+#   S70:  t42 = 1
+#   S71:  t43 = &t41[t42]
+#   S72:  *t43 = t40
+#   S73:  t44 = 3
+#   S74:  t45 = &x
+#   S75:  t46 = 4
+#   S76:  t47 = &t45[t46]
+#   S77:  *t47 = t44
+#   S78:  t48 = 1
+#   S79:  t49 = &x
+#   S80:  t50 = 5
+#   S81:  t51 = &t49[t50]
+#   S82:  *t51 = t48
+#   S83:  t52 = &x
+#   S84:  t53 = 6
+#   S85:  t54 = &t52[t53]
+#   S86:  t55 = 5
+#   S87:  *t54 = newTuple(t55)
+#   S88:  t56 = 14
+#   S89:  t57 = &x
+#   S90:  t58 = 6
+#   S91:  t59 = &t57[t58]
+#   S92:  t60 = 4
+#   S93:  t61 = &t59[t60]
+#   S94:  *t61 = t56
+#   S95:  t62 = 2
+#   S96:  t63 = &x
+#   S97:  t64 = 9
+#   S98:  t65 = &t63[t64]
+#   S99:  *t65 = t62
+#   S100:  t66 = 4
+#   S101:  t67 = &x
+#   S102:  t68 = 8
+#   S103:  t69 = &t67[t68]
+#   S104:  *t69 = t66
+#   S105:  t70 = 22
+#   S106:  t71 = &x
+#   S107:  t72 = 11
+#   S108:  t73 = &t71[t72]
+#   S109:  *t73 = t70
+#   S110:  t74 = 15
+#   S111:  t75 = &x
+#   S112:  t76 = 14
+#   S113:  t77 = &t75[t76]
+#   S114:  *t77 = t74
+#   S115:  t78 = &x
+#   S116:  t79 = &x
+#   S117:  t80 = 0
+#   S118:  t81 = t79[t80]
+#   S119:  t82 = &x
+#   S120:  t83 = 1
+#   S121:  t84 = t82[t83]
+#   S122:  t85 = t81 * t84
+#   S123:  t86 = &t78[t85]
+#   S124:  t87 = &x
+#   S125:  t88 = &x
+#   S126:  t89 = 8
+#   S127:  t90 = t88[t89]
+#   S128:  t91 = t87[t90]
+#   S129:  t92 = &x
+#   S130:  t93 = 5
+#   S131:  t94 = t92[t93]
+#   S132:  t95 = t91 + t94
+#   S133:  t96 = t86[t95]
+#   S134:  t97 = &x
+#   S135:  t98 = 9
+#   S136:  t99 = t97[t98]
+#   S137:  t100 = t96 / t99
+#   S138:  t101 = &x
+#   S139:  t102 = &x
+#   S140:  t103 = 11
+#   S141:  t104 = t102[t103]
+#   S142:  t105 = &x
+#   S143:  t106 = 14
+#   S144:  t107 = t105[t106]
+#   S145:  t108 = t104 - t107
+#   S146:  t109 = &t101[t108]
+#   S147:  *t109 = t100
+#   S148:  t110 = &x
+#   S149:  t111 = 7
+#   S150:  t112 = t110[t111]
+#   S151:  return t112
+#   S152:  main program end
+# Block End 
+# __________________
+
+## CONTROL FLOW GRAPH ENDOF ##
+
+# ______________________
+# Domination Info for Graph id: 0
+# BlockId: 0, iDom: -1, Dominates: 0,6,17,24,9,5,19,29,28,35,30,13,16,12,18,22, Dominance Frontier: 
+# BlockId: 6, iDom: 0, Dominates: 6, Dominance Frontier: 17,9,
+# BlockId: 17, iDom: 0, Dominates: 17,19, Dominance Frontier: 24,
+# BlockId: 19, iDom: 17, Dominates: 19, Dominance Frontier: 24,
+# BlockId: 24, iDom: 0, Dominates: 24,29,28,35,30, Dominance Frontier: 24,
+# BlockId: 29, iDom: 24, Dominates: 29,35, Dominance Frontier: 
+# BlockId: 35, iDom: 29, Dominates: 35, Dominance Frontier: 
+# BlockId: 28, iDom: 24, Dominates: 28,30, Dominance Frontier: 24,
+# BlockId: 30, iDom: 28, Dominates: 30, Dominance Frontier: 24,
+# BlockId: 9, iDom: 0, Dominates: 9,13,16,12,18,22, Dominance Frontier: 17,24,
+# BlockId: 13, iDom: 9, Dominates: 13, Dominance Frontier: 17,16,
+# BlockId: 16, iDom: 9, Dominates: 16,18,22, Dominance Frontier: 24,
+# BlockId: 18, iDom: 16, Dominates: 18,22, Dominance Frontier: 24,
+# BlockId: 22, iDom: 18, Dominates: 22, Dominance Frontier: 24,
+# BlockId: 12, iDom: 9, Dominates: 12, Dominance Frontier: 16,
+# BlockId: 5, iDom: 0, Dominates: 5, Dominance Frontier: 9,
+
+# ______________________
+# Domination Info for Graph id: 46
+# BlockId: 46, iDom: -1, Dominates: 46, Dominance Frontier: 
+[       OK ] AE.NestedTuples (167 ms)
+[----------] 1 test from AE (167 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test case ran. (167 ms total)
+[  PASSED  ] 1 test.
